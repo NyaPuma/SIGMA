@@ -25,7 +25,7 @@ O sistema mitiga falhas de comunicação e paragens prolongadas de infraestrutur
 
 ## Localização de Imagens & Recursos Multimédia
 * **Imagens estáticas e diagramas:** `public/images/`
-* **Anexos e uploads de evidências de avarias:** `public/uploads/` e `storage/app/public/tickets`
+* **Anexos e uploads de evidências de avarias:** `public/uploads/` e `storage/app/public/tickets` (acessíveis publicamente via `public/storage`)
 
 ---
 
@@ -62,27 +62,27 @@ git clone [https://github.com/NyaPuma/Projeto-Final-Cesae.git](https://github.co
 cd Projeto-Final-Cesae
 
 2. Instalar dependências
-Bash
 composer install
 npm install
 
 3. Configurar o ambiente
-Bash
 cp .env.example .env
 php artisan key:generate
 
 Configure as credenciais da base de dados MySQL (sigma_maintenance_db), WebSockets (Pusher) e SMTP no ficheiro .env.
 
 4. Preparar base de dados e armazenamento
-Bash
-# Opção A: Executar as migrações e seeders estruturais (caso não importe o dump SQL)
+# Opção A: Importação da Base de Dados: Importar o ficheiro SQL fornecido em anexo (sigma_maintenance_bd.sql) para o MySQL/phpMyAdmin.
+# (Em alternativa, para iniciar uma base vazia do zero:
 php artisan migrate --seed
 
 # Opção B: Criar o link simbólico obrigatório para ficheiros públicos
 php artisan storage:link
 
-5. Iniciar os serviços
-Bash
+5. Compilar Assets de Front-end
+npm run build
+
+6. Iniciar os serviços
 # Terminal 1: Processamento de tarefas e filas em background
 php artisan queue:work
 
@@ -97,11 +97,10 @@ Aceda à plataforma no navegador através de: http://localhost:8000.
 Testes Automatizados
 Para executar a suite de testes automatizados do Laravel:
 
-Bash
 php artisan test
 
 Credenciais de Acesso & Perfis
-Por motivos estritos de segurança corporativa e boas práticas, nenhuma credencial sensível está embutida no repositório. O ficheiro credenciais.txt, enviado em anexo na submissão, detalha os acessos aos 4 perfis configurados (admin, technician, user, developer).
+# Por motivos estritos de segurança corporativa e boas práticas, nenhuma credencial sensível está embutida no repositório. O ficheiro credenciais.txt, enviado em anexo na submissão, detalha os acessos aos 4 perfis configurados (admin, technician, user, developer).
 
 Licença
 Este software está licenciado sob os termos da MIT License. Consulte o ficheiro LICENSE para mais detalhes.
