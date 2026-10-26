@@ -18,7 +18,7 @@
         "@fullcalendar/core": "^7.1.1",
         "@fullcalendar/daygrid": "^6.1.21",
         "@fullcalendar/interaction": "^6.1.21",
-        "@fullcalendar/timegrid": "^6.1.21",
+        "@fullcalendar/timegrid": "^6.1.22",
         "alpinejs": "^3.17.4",
         "chart.js": "^4.5.1",
         "laravel-echo": "^2.6.1",
