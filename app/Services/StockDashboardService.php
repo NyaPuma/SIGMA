@@ -138,7 +138,7 @@ final class StockDashboardService
     /**
      * Simple stockout forecast based on average monthly consumption.
      *
-     * @return Collection<int, array{part_id: int, part_name: string, sku: string, current_stock: int, avg_monthly_usage: float, est_months_of_stock: float}>
+     * @return Collection<int, array{part_id: int<0, max>, part_name: string, sku: string, current_stock: int, avg_monthly_usage: float, est_months_of_stock: float}>
      */
     public function stockRunoutForecast(int $months = 3, int $limit = 50): Collection
     {
@@ -163,7 +163,7 @@ final class StockDashboardService
                 $monthsOfStock = $avgMonthly > 0 ? (int) $part->current_stock / $avgMonthly : PHP_FLOAT_MAX;
 
                 return [
-                    'part_id' => $part->id,
+                    'part_id' => (int) $part->id,
                     'part_name' => $part->name,
                     'sku' => $part->sku,
                     'current_stock' => (int) $part->current_stock,

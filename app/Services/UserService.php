@@ -42,8 +42,12 @@ final class UserService
      */
     public function hashToken(string $token): string
     {
-        /** @var string $appKey */
+        /** @var mixed $appKey */
         $appKey = config('app.key');
+
+        if (! is_string($appKey) || $appKey === '') {
+            throw new \RuntimeException('Application key is not configured.');
+        }
 
         return hash_hmac('sha256', $token, $appKey);
     }
