@@ -17,6 +17,8 @@ class DashboardActiveTicketsTest extends TestCase
 {
     use RefreshDatabase;
 
+    private ?User $adminUser = null;
+
     protected function setUp(): void
     {
         parent::setUp();
@@ -29,11 +31,15 @@ class DashboardActiveTicketsTest extends TestCase
 
     private function admin(): User
     {
-        return User::factory()->create([
-            'profile_id' => UserProfile::where('name', UserRoleEnum::Admin->value)->firstOrFail()->id,
-            'api_token' => Str::random(60),
-            'active' => true,
-        ]);
+        if ($this->adminUser === null) {
+            $this->adminUser = User::factory()->create([
+                'profile_id' => UserProfile::where('name', UserRoleEnum::Admin->value)->firstOrFail()->id,
+                'api_token' => Str::random(60),
+                'active' => true,
+            ]);
+        }
+
+        return $this->adminUser;
     }
 
     private function createTicket(TicketStatusEnum $status, array $overrides = []): Ticket
