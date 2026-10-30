@@ -81,7 +81,7 @@ class NotificationPersistenceTest extends TestCase
     // SECTION 9: NOTIFICATION INTEGRITY
     // ==========================================
 
-    public function test_notification_created_on_ticket_comment(): void
+    public function test_comment_created_on_ticket(): void
     {
         $admin = $this->createAdmin();
         $technician = $this->createTechnician();
