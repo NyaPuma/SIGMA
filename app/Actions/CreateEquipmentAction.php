@@ -17,14 +17,14 @@ final readonly class CreateEquipmentAction
                 'room_id' => $data->roomId,
                 'category_id' => $data->categoryId,
                 'active' => $data->active,
-                'asset_tag' => $data->assetTag,
-                'brand' => $data->brand,
-                'model' => $data->model,
-                'manufacturer' => $data->manufacturer,
+                'asset_tag' => $data->assetTag !== null ? trim($data->assetTag) : null,
+                'brand' => $data->brand !== null ? trim($data->brand) : null,
+                'model' => $data->model !== null ? trim($data->model) : null,
+                'manufacturer' => $data->manufacturer !== null ? trim($data->manufacturer) : null,
                 'purchase_date' => $data->purchaseDate,
                 'warranty_until' => $data->warrantyUntil,
-                'status' => $data->status,
-                'notes' => $data->notes,
+                'status' => $data->status !== null ? trim($data->status) : null,
+                'notes' => $data->notes !== null ? trim($data->notes) : null,
             ]);
 
             return $equipment->load(['room', 'category']);
