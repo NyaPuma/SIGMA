@@ -111,7 +111,7 @@ class CastIntegrityTest extends TestCase
         $ticketId = $response->json('ticket.id');
 
         $ticket = Ticket::find($ticketId);
-        $this->assertIsBool($ticket->scheduled ?? false);
+        $this->assertIsBool($ticket->scheduled);
 
         $ticket->update(['scheduled' => true]);
         $ticket->refresh();
