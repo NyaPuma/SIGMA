@@ -80,7 +80,7 @@ class AnalyticsFeatureTest extends FeatureTestCase
         }
     }
 
-    public function test_export_csv_streams_tickets_report()
+    public function test_export_csv_dispatches_processing_message()
     {
         $admin = $this->createAdmin();
         Ticket::factory()->create();
