@@ -150,6 +150,12 @@ class User extends Authenticatable
      */
     public static function hashToken(string $token): string
     {
-        return hash_hmac('sha256', $token, (string) config('app.key'));
+        $appKey = config('app.key');
+
+        if (! is_string($appKey) || $appKey === '') {
+            throw new \RuntimeException('Application key is not configured.');
+        }
+
+        return hash_hmac('sha256', $token, $appKey);
     }
 }
