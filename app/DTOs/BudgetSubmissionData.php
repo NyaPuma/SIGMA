@@ -20,6 +20,7 @@ final readonly class BudgetSubmissionData
     /**
      * Factory for a simple budget estimate submission.
      */
+    /** @param FormRequest|array<string, mixed> $data */
     public static function fromSubmitEstimate(FormRequest|array $data): self
     {
         $payload = $data instanceof FormRequest ? $data->validated() : $data;
@@ -34,6 +35,7 @@ final readonly class BudgetSubmissionData
     /**
      * Factory for a detailed budget request.
      */
+    /** @param FormRequest|array<string, mixed> $data */
     public static function fromDetailedRequest(FormRequest|array $data): self
     {
         $payload = $data instanceof FormRequest ? $data->validated() : $data;
@@ -50,6 +52,7 @@ final readonly class BudgetSubmissionData
         return MoneyInput::parse($value);
     }
 
+    /** @return array<string, mixed> */
     public function toArray(): array
     {
         return [

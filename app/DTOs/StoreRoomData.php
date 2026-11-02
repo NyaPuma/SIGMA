@@ -26,6 +26,7 @@ final readonly class StoreRoomData
         }
     }
 
+    /** @param FormRequest|array<string, mixed> $data */
     public static function fromRequest(FormRequest|array $data): self
     {
         $payload = $data instanceof FormRequest ? $data->validated() : $data;
@@ -90,6 +91,7 @@ final readonly class StoreRoomData
         return filter_var($value, FILTER_VALIDATE_BOOLEAN);
     }
 
+    /** @return array<string, mixed> */
     public function toArray(): array
     {
         return [

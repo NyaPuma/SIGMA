@@ -14,6 +14,7 @@ final class RequestBudgetRequest extends FormRequest
         return true;
     }
 
+    /** @return array<string, mixed> */
     public function rules(): array
     {
         return [
@@ -28,6 +29,7 @@ final class RequestBudgetRequest extends FormRequest
     /**
      * Custom validation hook to ensure line items sum up to budget_amount.
      */
+    /** @return array<int, callable> */
     public function after(): array
     {
         return [

@@ -33,6 +33,7 @@ final class UpdateRoomRequest extends FormRequest
         }
     }
 
+    /** @return array<string, mixed> */
     public function rules(): array
     {
         /** @var Room|int|string|null $room */

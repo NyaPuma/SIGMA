@@ -7,6 +7,7 @@ namespace App\Models;
 use App\Enums\TicketStatusEnum;
 use App\Services\TicketStatusService;
 use App\Traits\Auditable;
+use Database\Factories\TicketFactory;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -44,7 +45,10 @@ use Illuminate\Support\Carbon;
 final class Ticket extends Model
 {
     use Auditable;
+
+    /** @use HasFactory<TicketFactory> */
     use HasFactory;
+
     use SoftDeletes;
 
     protected static function booted(): void
@@ -111,61 +115,73 @@ final class Ticket extends Model
 
     // --- RELATIONSHIPS ---
 
+    /** @return BelongsTo<User, $this> */
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
     }
 
+    /** @return BelongsTo<User, $this> */
     public function technician(): BelongsTo
     {
         return $this->belongsTo(User::class, 'assigned_to');
     }
 
+    /** @return BelongsTo<TicketStatus, $this> */
     public function status(): BelongsTo
     {
         return $this->belongsTo(TicketStatus::class);
     }
 
+    /** @return BelongsTo<Equipment, $this> */
     public function equipment(): BelongsTo
     {
         return $this->belongsTo(Equipment::class);
     }
 
+    /** @return BelongsTo<Room, $this> */
     public function room(): BelongsTo
     {
         return $this->belongsTo(Room::class);
     }
 
+    /** @return BelongsTo<User, $this> */
     public function budgetApprovedBy(): BelongsTo
     {
         return $this->belongsTo(User::class, 'budget_approved_by');
     }
 
+    /** @return BelongsTo<User, $this> */
     public function resolvedBy(): BelongsTo
     {
         return $this->belongsTo(User::class, 'resolved_by');
     }
 
+    /** @return BelongsTo<User, $this> */
     public function closedBy(): BelongsTo
     {
         return $this->belongsTo(User::class, 'closed_by');
     }
 
+    /** @return BelongsTo<User, $this> */
     public function recommendedTechnician(): BelongsTo
     {
         return $this->belongsTo(User::class, 'recommended_technician_id');
     }
 
+    /** @return HasMany<TicketWorkflowHistory, $this> */
     public function workflowHistory(): HasMany
     {
         return $this->hasMany(TicketWorkflowHistory::class);
     }
 
+    /** @return HasMany<TicketComment, $this> */
     public function comments(): HasMany
     {
         return $this->hasMany(TicketComment::class);
     }
 
+    /** @return HasMany<TicketAttachment, $this> */
     public function attachments(): HasMany
     {
         return $this->hasMany(TicketAttachment::class);
@@ -173,6 +189,8 @@ final class Ticket extends Model
 
     // --- SCOPES ---
 
+    /** @param Builder<Ticket> $query
+     *  @return Builder<Ticket> */
     public function scopeOpen(Builder $query): Builder
     {
         $statusId = app(TicketStatusService::class)->getByName(TicketStatusEnum::Open);
@@ -180,6 +198,8 @@ final class Ticket extends Model
         return $query->where('status_id', $statusId);
     }
 
+    /** @param Builder<Ticket> $query
+     *  @return Builder<Ticket> */
     public function scopeForTechnician(Builder $query, int $technicianId): Builder
     {
         return $query->where('assigned_to', $technicianId);
@@ -190,6 +210,7 @@ final class Ticket extends Model
     /**
      * Calculate pause duration in minutes while awaiting budget approval.
      */
+    /** @return Attribute<int, never> */
     protected function budgetPauseMinutes(): Attribute
     {
         return Attribute::make(

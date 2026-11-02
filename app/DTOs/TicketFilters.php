@@ -24,6 +24,7 @@ final readonly class TicketFilters
         }
     }
 
+    /** @param FormRequest|array<string, mixed> $data */
     public static function fromRequest(FormRequest|array $data): self
     {
         $payload = $data instanceof FormRequest ? $data->validated() : $data;
@@ -109,6 +110,7 @@ final readonly class TicketFilters
     /**
      * Returns only active (non-null) filters for dynamic Eloquent query building.
      */
+    /** @return array<string, mixed> */
     public function toArray(): array
     {
         return array_filter([

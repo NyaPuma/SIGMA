@@ -12,6 +12,7 @@ use Illuminate\Http\Resources\Json\JsonResource;
 /** @mixin StockMovement */
 final class StockMovementResource extends JsonResource
 {
+    /** @return array<string, mixed> */
     public function toArray(Request $request): array
     {
         $type = StockMovementTypeEnum::normalize((string) $this->movement_type);

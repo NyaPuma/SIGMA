@@ -6,7 +6,6 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Casts\Attribute;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Support\Carbon;
@@ -18,7 +17,7 @@ use Illuminate\Support\Carbon;
  */
 final class TicketWorkflowHistory extends Model
 {
-    use HasFactory;
+    // (no factory)
 
     protected $table = 'ticket_workflow_history';
 
@@ -32,21 +31,25 @@ final class TicketWorkflowHistory extends Model
 
     // --- RELATIONSHIPS ---
 
+    /** @return BelongsTo<Ticket, $this> */
     public function ticket(): BelongsTo
     {
         return $this->belongsTo(Ticket::class, 'ticket_id');
     }
 
+    /** @return BelongsTo<TicketStatus, $this> */
     public function originStatus(): BelongsTo
     {
         return $this->belongsTo(TicketStatus::class, 'origin_status_id');
     }
 
+    /** @return BelongsTo<TicketStatus, $this> */
     public function destinationStatus(): BelongsTo
     {
         return $this->belongsTo(TicketStatus::class, 'destination_status_id');
     }
 
+    /** @return BelongsTo<User, $this> */
     public function technician(): BelongsTo
     {
         return $this->belongsTo(User::class, 'technician_id');
@@ -57,6 +60,8 @@ final class TicketWorkflowHistory extends Model
     /**
      * Scope to order workflow history descending chronologically.
      */
+    /** @param Builder<TicketWorkflowHistory> $query
+     *  @return Builder<TicketWorkflowHistory> */
     public function scopeChronological(Builder $query): Builder
     {
         return $query->orderBy('created_at', 'desc');
@@ -67,13 +72,22 @@ final class TicketWorkflowHistory extends Model
     /**
      * Text representation of the status transition (e.g. "Open ➔ In Progress").
      */
+    /** @return Attribute<string, never> */
     protected function transitionLabel(): Attribute
     {
         return Attribute::make(
             get: fn (): string => sprintf(
                 '%s ➔ %s',
-                optional($this->originStatus)->name ?? 'N/A',
-                optional($this->destinationStatus)->name ?? 'N/A'
+                (function () {
+                    $n = $this->originStatus?->name;
+
+                    return is_string($n) ? $n : 'N/A';
+                })(),
+                (function () {
+                    $n = $this->destinationStatus?->name;
+
+                    return is_string($n) ? $n : 'N/A';
+                })()
             )
         );
     }
@@ -81,6 +95,7 @@ final class TicketWorkflowHistory extends Model
     /**
      * Relative time string.
      */
+    /** @return Attribute<string, never> */
     protected function timeAgo(): Attribute
     {
         return Attribute::make(

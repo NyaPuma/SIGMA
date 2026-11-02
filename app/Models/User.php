@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Models;
 
 use App\Enums\UserRoleEnum;
+use Database\Factories\UserFactory;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -28,7 +29,9 @@ use Illuminate\Support\Carbon;
  */
 class User extends Authenticatable
 {
+    /** @use HasFactory<UserFactory> */
     use HasFactory;
+
     use Notifiable;
     use SoftDeletes;
 
@@ -79,6 +82,7 @@ class User extends Authenticatable
 
     // --- ROLE / PROFILE HELPERS ---
 
+    /** @return array<int, string> */
     public static function getAvailableRoles(): array
     {
         return array_column(UserRoleEnum::cases(), 'value');
@@ -109,6 +113,7 @@ class User extends Authenticatable
     /**
      * Tickets reported/created by this user.
      */
+    /** @return HasMany<Ticket, $this> */
     public function tickets(): HasMany
     {
         return $this->hasMany(Ticket::class, 'user_id');
@@ -117,6 +122,7 @@ class User extends Authenticatable
     /**
      * Tickets assigned to this user (as technician).
      */
+    /** @return HasMany<Ticket, $this> */
     public function assignedTickets(): HasMany
     {
         return $this->hasMany(Ticket::class, 'assigned_to');
@@ -125,6 +131,7 @@ class User extends Authenticatable
     /**
      * Role profile associated with this user.
      */
+    /** @return BelongsTo<UserProfile, $this> */
     public function profile(): BelongsTo
     {
         return $this->belongsTo(UserProfile::class, 'profile_id');
@@ -132,11 +139,15 @@ class User extends Authenticatable
 
     // --- SCOPES ---
 
+    /** @param Builder<User> $query
+     *  @return Builder<User> */
     public function scopeActive(Builder $query): Builder
     {
         return $query->where('active', true);
     }
 
+    /** @param Builder<User> $query
+     *  @return Builder<User> */
     public function scopeTechnicians(Builder $query): Builder
     {
         return $query->whereHas('profile', static function (Builder $q): void {

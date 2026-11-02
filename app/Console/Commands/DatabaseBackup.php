@@ -29,7 +29,9 @@ class DatabaseBackup extends Command
 
     public function handle(): int
     {
-        $connection = $this->option('connection') ?? config('backup.database.connection') ?? config('database.default');
+        $rawConnection = $this->option('connection') ?? config('backup.database.connection') ?? config('database.default');
+        $connection = is_string($rawConnection) ? $rawConnection : (is_scalar($rawConnection) ? (string) $rawConnection : '');
+        /** @var array<string, mixed>|null $config */
         $config = config("database.connections.{$connection}");
 
         if (! $config) {
@@ -38,7 +40,8 @@ class DatabaseBackup extends Command
             return self::FAILURE;
         }
 
-        $backupDir = $this->option('path') ?? config('backup.database.destination.path', storage_path('app/backups'));
+        $rawBackupDir = $this->option('path') ?? config('backup.database.destination.path', null);
+        $backupDir = is_string($rawBackupDir) ? $rawBackupDir : storage_path('app/backups');
         File::makeDirectory($backupDir, 0755, true, true);
 
         $timestamp = now()->format('Y-m-d_His');
@@ -47,13 +50,16 @@ class DatabaseBackup extends Command
         $artifacts = [];
 
         $this->info("Starting backup of connection: {$connection}");
-        $this->info("Driver: {$config['driver']}");
+        /** @var array<string, mixed> $config */
+        $driverRaw = $config['driver'] ?? null;
+        $driver = is_string($driverRaw) ? $driverRaw : '';
+        $this->info("Driver: {$driver}");
 
         try {
-            match ($config['driver']) {
+            match ($driver) {
                 'mysql' => $this->backupMysql($config, $filepath),
                 'sqlite' => $this->backupSqlite($config, $filepath),
-                default => throw new RuntimeException("Unsupported driver: {$config['driver']}"),
+                default => throw new RuntimeException("Unsupported driver: {$driver}"),
             };
 
             $this->info("Backup created successfully: {$filepath}");
@@ -107,18 +113,32 @@ class DatabaseBackup extends Command
         }
     }
 
+    /**
+     * @param  array<string, mixed>  $config
+     */
     private function backupMysql(array $config, string $filepath): void
     {
-        $host = $config['host'] ?? '127.0.0.1';
-        $port = $config['port'] ?? 3306;
-        $database = $config['database'];
-        $username = $config['username'] ?? 'root';
-        $password = $config['password'] ?? '';
+        /** @var array<string, mixed> $config */
+        $hostRaw = $config['host'] ?? null;
+        $host = is_string($hostRaw) ? $hostRaw : '127.0.0.1';
+        $portRaw = $config['port'] ?? null;
+        $port = is_numeric($portRaw) ? (int) $portRaw : 3306;
+        $databaseRaw = $config['database'] ?? null;
+        $database = is_string($databaseRaw) ? $databaseRaw : '';
+        $usernameRaw = $config['username'] ?? null;
+        $username = is_string($usernameRaw) ? $usernameRaw : 'root';
+        $passwordRaw = $config['password'] ?? null;
+        $password = is_string($passwordRaw) ? $passwordRaw : '';
 
-        $excludeTables = config('backup.database.exclude_tables', []);
+        $excludeTablesRaw = config('backup.database.exclude_tables', []);
+        /** @var array<int, mixed> $excludeTables */
+        $excludeTables = is_array($excludeTablesRaw) ? $excludeTablesRaw : [];
 
-        $ignoreArgs = $excludeTables
-            ? implode(' ', array_map('escapeshellarg', array_map(fn ($t) => "--ignore-table={$database}.{$t}", $excludeTables)))
+        $ignoreArgs = $excludeTables !== []
+            ? implode(' ', array_map('escapeshellarg', array_map(
+                fn ($t) => "--ignore-table={$database}.".(is_scalar($t) ? (string) $t : ''),
+                $excludeTables
+            )))
             : '';
 
         // We don't pass the password via CLI to avoid exposing it in the process table
@@ -142,9 +162,13 @@ class DatabaseBackup extends Command
         }
     }
 
+    /**
+     * @param  array<string, mixed>  $config
+     */
     private function backupSqlite(array $config, string $filepath): void
     {
-        $database = $config['database'] ?? database_path('database.sqlite');
+        $databaseRaw = $config['database'] ?? database_path('database.sqlite');
+        $database = is_string($databaseRaw) ? $databaseRaw : (is_scalar($databaseRaw) ? (string) $databaseRaw : database_path('database.sqlite'));
 
         if (! File::exists($database)) {
             throw new RuntimeException("SQLite database file not found: {$database}");
@@ -202,15 +226,20 @@ class DatabaseBackup extends Command
 
     private function cleanOldBackups(string $backupDir): void
     {
-        $retentionDays = config('backup.retention.days', 30);
+        $retentionRaw = config('backup.retention.days', 30);
+        $retentionDays = is_numeric($retentionRaw) ? (int) $retentionRaw : 30;
         $cutoff = now()->subDays($retentionDays);
 
         $files = File::glob($backupDir.DIRECTORY_SEPARATOR.'backup_*');
         $removed = 0;
 
         foreach ($files as $file) {
-            if (File::lastModified($file) < $cutoff->timestamp) {
-                File::delete($file);
+            $path = is_string($file) ? $file : (is_scalar($file) ? (string) $file : '');
+            if ($path === '') {
+                continue;
+            }
+            if (File::lastModified($path) < $cutoff->timestamp) {
+                File::delete($path);
                 $removed++;
             }
         }
@@ -221,7 +250,8 @@ class DatabaseBackup extends Command
     private function createStorageArchive(string $backupDir, string $timestamp): string
     {
         $archivePath = rtrim($backupDir, DIRECTORY_SEPARATOR).DIRECTORY_SEPARATOR."storage_{$timestamp}.zip";
-        $root = (string) config('backup.storage.path', storage_path('app'));
+        $rootRaw = config('backup.storage.path', storage_path('app'));
+        $root = is_string($rootRaw) ? $rootRaw : (is_scalar($rootRaw) ? (string) $rootRaw : storage_path('app'));
         $zip = new ZipArchive;
 
         if ($zip->open($archivePath, ZipArchive::CREATE | ZipArchive::OVERWRITE) !== true) {
@@ -235,7 +265,7 @@ class DatabaseBackup extends Command
         );
 
         foreach ($iterator as $file) {
-            if (! $file->isFile() || str_starts_with($file->getPathname(), $backupPrefix)) {
+            if (! $file instanceof \SplFileInfo || ! $file->isFile() || str_starts_with($file->getPathname(), $backupPrefix)) {
                 continue;
             }
 
@@ -249,8 +279,10 @@ class DatabaseBackup extends Command
 
     private function uploadOffsite(string $filepath): void
     {
-        $disk = (string) config('backup.offsite.disk', 's3');
-        $prefix = trim((string) config('backup.offsite.path', 'application-backups'), '/');
+        $diskRaw = config('backup.offsite.disk', 's3');
+        $disk = is_string($diskRaw) ? $diskRaw : (is_scalar($diskRaw) ? (string) $diskRaw : 's3');
+        $prefixRaw = config('backup.offsite.path', 'application-backups');
+        $prefix = trim(is_string($prefixRaw) ? $prefixRaw : (is_scalar($prefixRaw) ? (string) $prefixRaw : 'application-backups'), '/');
         $remotePath = $prefix.'/'.basename($filepath);
         $stream = fopen($filepath, 'rb');
 

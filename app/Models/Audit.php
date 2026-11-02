@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
@@ -19,7 +18,7 @@ use LogicException;
  */
 final class Audit extends Model
 {
-    use HasFactory;
+    // (no factory)
 
     protected $fillable = [
         'user_id',
@@ -63,6 +62,7 @@ final class Audit extends Model
     /**
      * User who triggered the audited event.
      */
+    /** @return BelongsTo<User, $this> */
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
@@ -71,6 +71,7 @@ final class Audit extends Model
     /**
      * Polymorphic model audited (e.g. Ticket, User, Equipment, etc.).
      */
+    /** @return MorphTo<Model, $this> */
     public function auditable(): MorphTo
     {
         return $this->morphTo();

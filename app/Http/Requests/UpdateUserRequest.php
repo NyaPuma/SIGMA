@@ -35,6 +35,7 @@ final class UpdateUserRequest extends FormRequest
         }
     }
 
+    /** @return array<string, mixed> */
     public function rules(): array
     {
         /** @var User|int|string|null $user */
