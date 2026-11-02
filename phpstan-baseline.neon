@@ -1429,26 +1429,8 @@ parameters:
 			path: app/Services/AIService.php
 
 		-
-			message: '#^Cannot call method whereNotIn\(\) on mixed\.$#'
-			identifier: method.nonObject
-			count: 1
-			path: app/Services/AIService.php
-
-		-
-			message: '#^Cannot cast mixed to float\.$#'
-			identifier: cast.double
-			count: 1
-			path: app/Services/AIService.php
-
-		-
-			message: '#^Cannot cast mixed to int\.$#'
-			identifier: cast.int
-			count: 1
-			path: app/Services/AIService.php
-
-		-
-			message: '#^Cannot cast mixed to string\.$#'
-			identifier: cast.string
+			message: '#^Offset ''technician_id'' on non\-empty\-array\<mixed, mixed\> on left side of \?\? always exists and is not nullable\.$#'
+			identifier: nullCoalesce.offset
 			count: 1
 			path: app/Services/AIService.php
 
@@ -1571,18 +1553,6 @@ parameters:
 			identifier: return.type
 			count: 1
 			path: app/Services/CalendarService.php
-
-		-
-			message: '#^Cannot cast mixed to int\.$#'
-			identifier: cast.int
-			count: 4
-			path: app/Services/CircuitBreaker.php
-
-		-
-			message: '#^Method App\\Services\\CurrencyRateService\:\:fetchRatesFromProvider\(\) should return array\<string, float\> but returns mixed\.$#'
-			identifier: return.type
-			count: 1
-			path: app/Services/CurrencyRateService.php
 
 		-
 			message: '#^Cannot access offset ''decimal'' on mixed\.$#'
@@ -1763,18 +1733,6 @@ parameters:
 			identifier: argument.type
 			count: 2
 			path: app/Services/LocalizationService.php
-
-		-
-			message: '#^Parameter \#1 \$time of static method Carbon\\Carbon\:\:parse\(\) expects Carbon\\Month\|Carbon\\WeekDay\|DateTimeInterface\|float\|int\|string\|null, mixed given\.$#'
-			identifier: argument.type
-			count: 1
-			path: app/Services/PasswordResetService.php
-
-		-
-			message: '#^Parameter \#2 \$hashedValue of static method Illuminate\\Support\\Facades\\Hash\:\:check\(\) expects string, mixed given\.$#'
-			identifier: argument.type
-			count: 1
-			path: app/Services/PasswordResetService.php
 
 		-
 			message: '#^Cannot cast mixed to int\.$#'

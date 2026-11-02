@@ -9,6 +9,7 @@ use App\Enums\UserRoleEnum;
 use App\Models\Ticket;
 use App\Models\User;
 use Exception;
+use Illuminate\Database\Eloquent\Builder;
 use OpenAI\Laravel\Facades\OpenAI;
 
 final class AIService
@@ -37,7 +38,7 @@ final class AIService
 
         $technicians = User::whereHas('profile', fn ($q) => $q->where('name', UserRoleEnum::Technician->value))
             ->where('active', true)
-            ->withCount(['assignedTickets as active_tickets' => function (\Illuminate\Database\Eloquent\Builder $query) {
+            ->withCount(['assignedTickets as active_tickets' => function (Builder $query) {
                 $closedStatusId = $this->statusService->getByName(TicketStatusEnum::Closed);
                 $cancelledStatusId = $this->statusService->getByName(TicketStatusEnum::Cancelled);
                 $statusIds = array_filter([$closedStatusId, $cancelledStatusId]);
