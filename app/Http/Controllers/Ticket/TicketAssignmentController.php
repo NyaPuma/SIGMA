@@ -40,7 +40,8 @@ final class TicketAssignmentController extends Controller
         $oldStatus = $ticket->status;
 
         // 4. Execute the assignment in the domain service (supports null = automatic assignment)
-        $technicianId = $request->validated()['technician_id'] ?? null;
+        $technicianIdRaw = $request->validated()['technician_id'] ?? null;
+        $technicianId = is_numeric($technicianIdRaw) ? (int) $technicianIdRaw : null;
         $technician = $this->technicianService->assignToTicket($ticket, $technicianId);
 
         // 5. Handle assignment failure (invalid/unavailable technician)

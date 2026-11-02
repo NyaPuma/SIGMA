@@ -33,7 +33,10 @@ final class RoleMiddleware
             return $this->handleForbidden($request);
         }
 
-        return $next($request);
+        /** @var \Symfony\Component\HttpFoundation\Response $response */
+        $response = $next($request);
+
+        return $response;
     }
 
     /**
