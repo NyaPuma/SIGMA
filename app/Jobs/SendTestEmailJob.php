@@ -46,6 +46,7 @@ final class SendTestEmailJob implements ShouldQueue
     public function handle(): void
     {
         $mailerConfig = config('services.custom.notification.mailer');
+        $mailerConfig = is_string($mailerConfig) ? $mailerConfig : null;
 
         $mailClient = $mailerConfig ? Mail::mailer($mailerConfig) : Mail::mailer();
 

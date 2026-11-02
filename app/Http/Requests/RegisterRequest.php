@@ -46,6 +46,7 @@ final class RegisterRequest extends FormRequest
         ];
     }
 
+    /** @return array<string, mixed> */
     public function rules(): array
     {
         return [

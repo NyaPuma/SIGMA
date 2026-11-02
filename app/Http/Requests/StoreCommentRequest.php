@@ -24,11 +24,12 @@ final class StoreCommentRequest extends FormRequest
     {
         if ($this->has('comment')) {
             $this->merge([
-                'comment' => trim((string) $this->comment),
+                'comment' => trim(is_string($this->comment) ? $this->comment : ''),
             ]);
         }
     }
 
+    /** @return array<string, mixed> */
     public function rules(): array
     {
         return [

@@ -28,6 +28,7 @@ final class StoreEquipmentRequest extends FormRequest
         ]);
     }
 
+    /** @return array<string, mixed> */
     public function rules(): array
     {
         return [

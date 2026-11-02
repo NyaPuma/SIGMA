@@ -40,8 +40,8 @@ final readonly class TicketObserver
 
                 event(new TicketStatusChanged(
                     $ticket,
-                    $oldStatusName ?? TicketStatusEnum::Open->value,
-                    $newStatusName ?? TicketStatusEnum::Open->value,
+                    is_string($oldStatusName) ? $oldStatusName : TicketStatusEnum::Open->value,
+                    is_string($newStatusName) ? $newStatusName : TicketStatusEnum::Open->value,
                 ));
             }
         }

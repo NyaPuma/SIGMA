@@ -48,7 +48,7 @@ final class ThemeController extends Controller
             'theme' => ['required', 'string', Rule::in(array_keys($this->themePresets->all()))],
         ]);
 
-        $preset = $this->themePresets->applyForUser($request->user(), $validated['theme']);
+        $preset = $this->themePresets->applyForUser($this->authenticatedUser($request), $validated['theme']);
 
         return response()->json([
             'ok' => true,

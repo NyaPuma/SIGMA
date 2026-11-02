@@ -25,10 +25,16 @@ use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
  * Excel export class for Tickets.
  * Supports dynamic filtering, native currency/date formatting, and chunked reading.
  */
+/**
+ * @implements WithMapping<Ticket>
+ */
 final class TicketsExport implements FromQuery, ShouldAutoSize, WithChunkReading, WithColumnFormatting, WithEvents, WithHeadings, WithMapping, WithStyles, WithTitle
 {
     /**
      * Allows injecting a custom/filtered query from the Controller.
+     */
+    /**
+     * @param  Builder<Ticket>|null  $customQuery
      */
     public function __construct(
         private readonly ?Builder $customQuery = null
@@ -36,6 +42,9 @@ final class TicketsExport implements FromQuery, ShouldAutoSize, WithChunkReading
 
     /**
      * Base query for the export.
+     */
+    /**
+     * @return Builder<Ticket>
      */
     public function query(): Builder
     {
@@ -71,6 +80,7 @@ final class TicketsExport implements FromQuery, ShouldAutoSize, WithChunkReading
     /**
      * Spreadsheet header row.
      */
+    /** @return array<int, string> */
     public function headings(): array
     {
         return [
@@ -95,10 +105,12 @@ final class TicketsExport implements FromQuery, ShouldAutoSize, WithChunkReading
      *
      * @param  Ticket  $ticket
      */
+    /** @return array<int, mixed> */
     public function map(mixed $ticket): array
     {
         /** @var Ticket $ticket */
-        $statusLabel = (string) (optional($ticket->status)->name ?? 'N/A');
+        $statusName = $ticket->status?->name;
+        $statusLabel = is_string($statusName) ? $statusName : 'N/A';
 
         $priorityLabel = TicketPriorityEnum::normalize($ticket->priority)?->label()
             ?? (string) ($ticket->priority ?? 'N/A');
@@ -123,6 +135,7 @@ final class TicketsExport implements FromQuery, ShouldAutoSize, WithChunkReading
     /**
      * Native column formatting in Excel (enables calculations and sums in cells).
      */
+    /** @return array<string, string> */
     public function columnFormats(): array
     {
         return [
@@ -144,6 +157,7 @@ final class TicketsExport implements FromQuery, ShouldAutoSize, WithChunkReading
      * Sheet events: freezes the header, enables autofilter,
      * and applies zebra striping via conditional formatting.
      */
+    /** @return array<class-string, callable> */
     public function registerEvents(): array
     {
         return [
@@ -177,6 +191,7 @@ final class TicketsExport implements FromQuery, ShouldAutoSize, WithChunkReading
     /**
      * Visual styling for the sheet (header row).
      */
+    /** @return array<int, array<string, mixed>> */
     public function styles(Worksheet $sheet): array
     {
         return [

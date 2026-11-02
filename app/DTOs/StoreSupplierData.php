@@ -17,6 +17,7 @@ final readonly class StoreSupplierData
         public ?int $avgLeadTimeDays,
     ) {}
 
+    /** @param FormRequest|array<string, mixed> $data */
     public static function fromRequest(FormRequest|array $data): self
     {
         if ($data instanceof FormRequest) {

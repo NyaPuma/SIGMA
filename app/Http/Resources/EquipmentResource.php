@@ -11,6 +11,7 @@ use Illuminate\Http\Resources\Json\JsonResource;
 /** @mixin Equipment */
 final class EquipmentResource extends JsonResource
 {
+    /** @return array<string, mixed> */
     public function toArray(Request $request): array
     {
         return [
@@ -28,11 +29,11 @@ final class EquipmentResource extends JsonResource
             'notes' => $this->notes,
             'room_id' => $this->room_id,
             'category_id' => $this->category_id,
-            'room' => $this->whenLoaded('room', fn () => new RoomResource($this->room)),
-            'category' => $this->whenLoaded('category', fn () => [
+            'room' => $this->whenLoaded('room', fn () => $this->room ? new RoomResource($this->room) : null),
+            'category' => $this->whenLoaded('category', fn () => $this->category ? [
                 'id' => $this->category->id,
                 'name' => $this->category->name,
-            ]),
+            ] : null),
             'created_at' => $this->created_at?->toIso8601String(),
             'updated_at' => $this->updated_at?->toIso8601String(),
         ];

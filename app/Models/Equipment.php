@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Models;
 
 use App\Traits\Auditable;
+use Database\Factories\EquipmentFactory;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -22,7 +23,10 @@ use Illuminate\Support\Carbon;
 final class Equipment extends Model
 {
     use Auditable;
+
+    /** @use HasFactory<EquipmentFactory> */
     use HasFactory;
+
     use SoftDeletes;
 
     /**
@@ -58,6 +62,7 @@ final class Equipment extends Model
     /**
      * Category that the equipment belongs to.
      */
+    /** @return BelongsTo<EquipmentCategory, $this> */
     public function category(): BelongsTo
     {
         return $this->belongsTo(EquipmentCategory::class);
@@ -66,6 +71,7 @@ final class Equipment extends Model
     /**
      * Room where the equipment is located.
      */
+    /** @return BelongsTo<Room, $this> */
     public function room(): BelongsTo
     {
         return $this->belongsTo(Room::class);
@@ -74,6 +80,7 @@ final class Equipment extends Model
     /**
      * Maintenance tickets associated with this equipment.
      */
+    /** @return HasMany<Ticket, $this> */
     public function tickets(): HasMany
     {
         return $this->hasMany(Ticket::class);
@@ -82,6 +89,7 @@ final class Equipment extends Model
     /**
      * Preventive maintenance plans defined for this equipment.
      */
+    /** @return HasMany<MaintenancePlan, $this> */
     public function maintenancePlans(): HasMany
     {
         return $this->hasMany(MaintenancePlan::class);
@@ -90,6 +98,8 @@ final class Equipment extends Model
     /**
      * Scope to filter active equipment records.
      */
+    /** @param Builder<Equipment> $query
+     *  @return Builder<Equipment> */
     public function scopeActive(Builder $query): Builder
     {
         return $query->where('active', true);

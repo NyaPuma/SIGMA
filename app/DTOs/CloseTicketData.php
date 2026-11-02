@@ -2,6 +2,7 @@
 
 namespace App\DTOs;
 
+use App\Support\MoneyInput;
 use Illuminate\Foundation\Http\FormRequest;
 
 final readonly class CloseTicketData
@@ -16,12 +17,13 @@ final readonly class CloseTicketData
         }
     }
 
+    /** @param FormRequest|array<string, mixed> $data */
     public static function fromRequest(FormRequest|array $data): self
     {
         $payload = $data instanceof FormRequest ? $data->validated() : $data;
 
         // Sanitize report: trim whitespace and convert empty string to null
-        $rawReport = isset($payload['report']) ? trim((string) $payload['report']) : null;
+        $rawReport = isset($payload['report']) && is_string($payload['report']) ? trim($payload['report']) : null;
         $report = $rawReport !== '' ? $rawReport : null;
 
         // Normalize cost to 2 decimal places
@@ -39,25 +41,13 @@ final readonly class CloseTicketData
 
     /**
      * Sanitize monetary input to a precise float (2 decimal places).
-     * Handles comma-separated decimal strings (e.g. "150,50").
      */
     private static function parseCost(mixed $value): float
     {
-        if (is_numeric($value)) {
-            return round((float) $value, 2);
-        }
-
-        if (is_string($value)) {
-            $cleaned = str_replace(',', '.', preg_replace('/[^\d,.]]/', '', $value));
-
-            if (is_numeric($cleaned)) {
-                return round((float) $cleaned, 2);
-            }
-        }
-
-        return 0.0;
+        return MoneyInput::parse($value);
     }
 
+    /** @return array<string, mixed> */
     public function toArray(): array
     {
         return [

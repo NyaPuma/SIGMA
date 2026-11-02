@@ -16,23 +16,36 @@ final readonly class TicketKpiQuery
         private int $slaTargetMinutes = 480,
     ) {}
 
+    /** @return array<string, mixed> */
     public function execute(): array
     {
         $baseQuery = Ticket::query()->whereNull('tickets.deleted_at');
 
         $kpiRow = $this->buildKpiQuery($baseQuery)->first();
 
+        $openTickets = $kpiRow !== null ? ($kpiRow->open_tickets ?? null) : null;
+        $inProgressTickets = $kpiRow !== null ? ($kpiRow->in_progress_tickets ?? null) : null;
+        $budgetPendingTickets = $kpiRow !== null ? ($kpiRow->budget_pending_tickets ?? null) : null;
+        $closedTickets = $kpiRow !== null ? ($kpiRow->closed_tickets ?? null) : null;
+        $avgResolution = $kpiRow !== null ? ($kpiRow->avg_resolution ?? null) : null;
+        $avgWaiting = $kpiRow !== null ? ($kpiRow->avg_waiting ?? null) : null;
+        $slaMet = $kpiRow !== null ? ($kpiRow->sla_met ?? null) : null;
+
         return [
-            'open_tickets' => (int) ($kpiRow->open_tickets ?? 0),
-            'in_progress_tickets' => (int) ($kpiRow->in_progress_tickets ?? 0),
-            'budget_pending_tickets' => (int) ($kpiRow->budget_pending_tickets ?? 0),
-            'closed_tickets' => (int) ($kpiRow->closed_tickets ?? 0),
-            'avg_resolution' => (float) ($kpiRow->avg_resolution ?? 0),
-            'avg_waiting' => (float) ($kpiRow->avg_waiting ?? 0),
-            'sla_met' => (int) ($kpiRow->sla_met ?? 0),
+            'open_tickets' => is_numeric($openTickets) ? (int) $openTickets : 0,
+            'in_progress_tickets' => is_numeric($inProgressTickets) ? (int) $inProgressTickets : 0,
+            'budget_pending_tickets' => is_numeric($budgetPendingTickets) ? (int) $budgetPendingTickets : 0,
+            'closed_tickets' => is_numeric($closedTickets) ? (int) $closedTickets : 0,
+            'avg_resolution' => is_numeric($avgResolution) ? (float) $avgResolution : 0.0,
+            'avg_waiting' => is_numeric($avgWaiting) ? (float) $avgWaiting : 0.0,
+            'sla_met' => is_numeric($slaMet) ? (int) $slaMet : 0,
         ];
     }
 
+    /**
+     * @param  Builder<Ticket>  $query
+     * @return Builder<Ticket>
+     */
     private function buildKpiQuery(Builder $query): Builder
     {
         $diffExpr = $this->diffMinutesExpression('opened_at', 'closed_at');

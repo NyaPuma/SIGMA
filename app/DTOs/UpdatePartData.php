@@ -27,6 +27,7 @@ final readonly class UpdatePartData
         public ?string $technicalNotes,
     ) {}
 
+    /** @param FormRequest|array<string, mixed> $data */
     public static function fromRequest(FormRequest|array $data): self
     {
         if ($data instanceof FormRequest) {

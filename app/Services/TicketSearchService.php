@@ -79,6 +79,8 @@ final class TicketSearchService
 
     /**
      * Applies date filters to the ticket query safely.
+     *
+     * @param  Builder<Ticket>  $query
      */
     private function applyDateFilters(Builder $query, ?string $dateFrom, ?string $dateTo): void
     {

@@ -35,7 +35,7 @@ final readonly class UserObserver
             $profileName = UserProfile::where('id', $user->profile_id)->value('name');
 
             // Validate that the profile exists and maps to a valid enum case
-            if ($profileName && UserRoleEnum::tryFrom($profileName) !== null) {
+            if (is_string($profileName) && UserRoleEnum::tryFrom($profileName) !== null) {
                 return;
             }
         }

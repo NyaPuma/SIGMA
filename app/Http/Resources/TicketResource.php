@@ -13,6 +13,7 @@ use Illuminate\Http\Resources\Json\JsonResource;
 /** @mixin Ticket */
 final class TicketResource extends JsonResource
 {
+    /** @return array<string, mixed> */
     public function toArray(Request $request): array
     {
         return [
@@ -38,19 +39,19 @@ final class TicketResource extends JsonResource
                 'name' => $this->user->name,
                 'email' => $this->user->email,
             ] : null),
-            'technician' => $this->whenLoaded('technician', fn () => [
+            'technician' => $this->whenLoaded('technician', fn () => $this->technician ? [
                 'id' => $this->technician->id,
                 'name' => $this->technician->name,
-            ]),
-            'equipment' => $this->whenLoaded('equipment', fn () => [
+            ] : null),
+            'equipment' => $this->whenLoaded('equipment', fn () => $this->equipment ? [
                 'id' => $this->equipment->id,
                 'name' => $this->equipment->name,
-            ]),
-            'room' => $this->whenLoaded('room', fn () => [
+            ] : null),
+            'room' => $this->whenLoaded('room', fn () => $this->room ? [
                 'id' => $this->room->id,
                 'name' => $this->room->name,
                 'code' => $this->room->code,
-            ]),
+            ] : null),
             'status_name' => $this->status?->name,
             'opened_at' => $this->opened_at?->toIso8601String(),
             'in_progress_at' => $this->in_progress_at?->toIso8601String(),

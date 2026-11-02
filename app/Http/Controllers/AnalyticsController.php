@@ -57,7 +57,7 @@ final class AnalyticsController extends Controller
         // 1. Authorization via Policy
         $this->authorize('exportAnalytics', Ticket::class);
 
-        $user = $request->user();
+        $user = $this->authenticatedUser($request);
 
         // 2. Dispatch the asynchronous background job
         ExportCsvJob::dispatch($user->id);
@@ -84,7 +84,7 @@ final class AnalyticsController extends Controller
         // 1. Authorization via Policy
         $this->authorize('exportAnalytics', Ticket::class);
 
-        $user = $request->user();
+        $user = $this->authenticatedUser($request);
 
         // 2. Dispatch the asynchronous background job
         ExportPdfJob::dispatch($user->id);
@@ -111,7 +111,7 @@ final class AnalyticsController extends Controller
         // 1. Authorization via Policy
         $this->authorize('exportAnalytics', Ticket::class);
 
-        $user = $request->user();
+        $user = $this->authenticatedUser($request);
 
         // 2. Dispatch the asynchronous background job
         ExportExcelJob::dispatch($user->id);

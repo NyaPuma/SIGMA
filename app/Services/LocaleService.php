@@ -274,7 +274,7 @@ final class LocaleService
         if (class_exists(\Collator::class)) {
             $collator = new \Collator('pt_PT');
 
-            uasort($locales, static fn (array $a, array $b): int => $collator->compare(
+            uasort($locales, static fn (array $a, array $b): int => (int) $collator->compare(
                 (string) ($a['name'] ?? ''),
                 (string) ($b['name'] ?? ''),
             ));
@@ -631,6 +631,8 @@ final class LocaleService
 
     /**
      * Converts a unit of measurement based on the language's unit system.
+     *
+     * @return array{value: float, unit: string, formatted: string}
      */
     public static function convertUnit(float|int $value, string $type, string $fromUnit = '', ?string $locale = null): array
     {

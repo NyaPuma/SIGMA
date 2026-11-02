@@ -32,7 +32,8 @@ final class AuditController extends Controller
         $this->authorize('viewAny', Audit::class);
 
         // 2. Paginated search with Eager Loading of the user relation
-        $perPage = config('services.custom.pagination.admin_per_page', 15);
+        $perPageRaw = config('services.custom.pagination.admin_per_page', 15);
+        $perPage = is_numeric($perPageRaw) ? (int) $perPageRaw : 15;
 
         $audits = Audit::with('user')
             ->latest()

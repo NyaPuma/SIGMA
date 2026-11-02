@@ -115,7 +115,6 @@ class AttachmentPersistenceTest extends TestCase
 
     public function test_workflow_history_model_crud(): void
     {
-        $user = $this->createTechnician();
         $openStatus = TicketStatus::where('name', TicketStatusEnum::Open->value)->first();
         $inProgressStatus = TicketStatus::where('name', TicketStatusEnum::InProgress->value)->first();
 

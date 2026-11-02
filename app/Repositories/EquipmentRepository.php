@@ -69,6 +69,6 @@ final class EquipmentRepository implements EquipmentRepositoryInterface
      */
     public function delete(Equipment $equipment): bool
     {
-        return $equipment->delete();
+        return (bool) $equipment->delete();
     }
 }

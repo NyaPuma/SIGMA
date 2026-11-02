@@ -95,7 +95,7 @@ final class AdminUserController extends Controller
         $this->authorize('inactivate', $targetUser);
 
         // 2. Business rule: prevents the administrator from deactivating themselves
-        if ($request->user()->id === $targetUser->id) {
+        if ($this->authenticatedUser($request)->id === $targetUser->id) {
             return response()->json([
                 'message' => __('common.Não é possível inativar a sua própria conta.'),
             ], 422);
@@ -121,7 +121,7 @@ final class AdminUserController extends Controller
         $this->authorize('delete', $targetUser);
 
         // 2. Business rule: prevents the administrator from deleting themselves
-        if ($request->user()->id === $targetUser->id) {
+        if ($this->authenticatedUser($request)->id === $targetUser->id) {
             return response()->json([
                 'message' => __('common.Não é possível apagar a sua própria conta.'),
             ], 422);

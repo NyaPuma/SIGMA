@@ -30,7 +30,10 @@ final class SetLocaleMiddleware
     {
         App::setLocale($this->resolveLocale($request));
 
-        return $next($request);
+        /** @var Response $response */
+        $response = $next($request);
+
+        return $response;
     }
 
     /**

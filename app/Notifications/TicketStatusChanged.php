@@ -6,6 +6,7 @@ namespace App\Notifications;
 
 use App\Enums\TicketStatusEnum;
 use App\Models\Ticket;
+use App\Models\User;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
@@ -46,7 +47,7 @@ final class TicketStatusChanged extends Notification implements ShouldQueue
 
         return (new MailMessage)
             ->subject($subject)
-            ->greeting(__('notifications.greeting', ['name' => $notifiable->name]))
+            ->greeting(__('notifications.greeting', ['name' => $notifiable instanceof User ? $notifiable->name : '']))
             ->line(__('notifications.status_updated_line'))
             ->line(__('notifications.ticket_line', ['id' => $this->ticket->id, 'title' => $this->ticket->title]))
             ->line(__('notifications.old_status_line', ['status' => $oldLabel]))

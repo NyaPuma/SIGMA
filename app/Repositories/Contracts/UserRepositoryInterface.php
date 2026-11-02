@@ -23,7 +23,7 @@ interface UserRepositoryInterface
      * Return a paginated list of users.
      *
      * @param  array<int, string>  $relations
-     * @return LengthAwarePaginator<User>
+     * @return LengthAwarePaginator<int, User>
      */
     public function getAll(array $relations = [], ?string $search = null, ?string $role = null, ?string $status = null): LengthAwarePaginator;
 

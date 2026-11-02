@@ -6,6 +6,7 @@ namespace App\Models;
 
 use App\Enums\PartUnitOfMeasureEnum;
 use App\Traits\Auditable;
+use Database\Factories\PartFactory;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -24,7 +25,10 @@ use InvalidArgumentException;
 final class Part extends Model
 {
     use Auditable;
+
+    /** @use HasFactory<PartFactory> */
     use HasFactory;
+
     use SoftDeletes;
 
     protected $fillable = [
@@ -59,16 +63,19 @@ final class Part extends Model
         ];
     }
 
+    /** @return BelongsTo<PartCategory, $this> */
     public function category(): BelongsTo
     {
         return $this->belongsTo(PartCategory::class, 'part_category_id');
     }
 
+    /** @return BelongsTo<TaxRate, $this> */
     public function taxRate(): BelongsTo
     {
         return $this->belongsTo(TaxRate::class, 'tax_rate_id');
     }
 
+    /** @return BelongsToMany<Supplier, $this, Pivot> */
     public function suppliers(): BelongsToMany
     {
         return $this->belongsToMany(Supplier::class, 'part_supplier')
@@ -76,11 +83,13 @@ final class Part extends Model
             ->withTimestamps();
     }
 
+    /** @return HasMany<StockMovement, $this> */
     public function movements(): HasMany
     {
         return $this->hasMany(StockMovement::class);
     }
 
+    /** @return BelongsToMany<MaintenancePlan, $this, Pivot> */
     public function maintenancePlans(): BelongsToMany
     {
         return $this->belongsToMany(MaintenancePlan::class, 'maintenance_plan_part')
@@ -88,6 +97,8 @@ final class Part extends Model
             ->withTimestamps();
     }
 
+    /** @param Builder<Part> $query
+     *  @return Builder<Part> */
     public function scopeActive(Builder $query): Builder
     {
         return $query->where('active', true);
@@ -96,6 +107,8 @@ final class Part extends Model
     /**
      * Scope to filter parts at or below minimum stock threshold.
      */
+    /** @param Builder<Part> $query
+     *  @return Builder<Part> */
     public function scopeLowStock(Builder $query): Builder
     {
         return $query
@@ -106,6 +119,8 @@ final class Part extends Model
     /**
      * Scope to filter out-of-stock parts.
      */
+    /** @param Builder<Part> $query
+     *  @return Builder<Part> */
     public function scopeOutOfStock(Builder $query): Builder
     {
         return $query->where('current_stock', 0);

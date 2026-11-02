@@ -55,6 +55,14 @@ class CloseTicketDataTest extends TestCase
     }
 
     #[Test]
+    public function it_parses_currency_symbols_and_thousands_separators(): void
+    {
+        $this->assertEquals(1500.5, CloseTicketData::fromRequest(['actual_cost' => '1.500,50 €'])->actualCost);
+        $this->assertEquals(1500.5, CloseTicketData::fromRequest(['actual_cost' => '1,500.50'])->actualCost);
+        $this->assertEquals(150.5, CloseTicketData::fromRequest(['actual_cost' => '150,50'])->actualCost);
+    }
+
+    #[Test]
     public function it_rejects_negative_costs(): void
     {
         $this->expectException(InvalidArgumentException::class);

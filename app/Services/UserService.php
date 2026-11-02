@@ -42,10 +42,7 @@ final class UserService
      */
     public function hashToken(string $token): string
     {
-        /** @var string $appKey */
-        $appKey = config('app.key');
-
-        return hash_hmac('sha256', $token, $appKey);
+        return User::hashToken($token);
     }
 
     /**

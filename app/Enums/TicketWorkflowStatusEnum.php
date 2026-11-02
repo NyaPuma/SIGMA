@@ -15,6 +15,7 @@ enum TicketWorkflowStatusEnum: string
     /**
      * Return all raw enum values in a simple array.
      */
+    /** @return array<int, string> */
     public static function values(): array
     {
         return array_column(self::cases(), 'value');

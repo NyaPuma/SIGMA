@@ -15,6 +15,7 @@ final class SubmitBudgetRequest extends FormRequest
         return true;
     }
 
+    /** @return array<string, mixed> */
     public function rules(): array
     {
         return [
@@ -36,6 +37,7 @@ final class SubmitBudgetRequest extends FormRequest
     /**
      * Validates that the sum of individual items matches the estimated total.
      */
+    /** @return array<int, callable> */
     public function after(): array
     {
         return [

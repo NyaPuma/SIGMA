@@ -36,9 +36,10 @@ final class CircuitBreaker
             return $result;
         } catch (Throwable $exception) {
             $failures = $state['failures'] + 1;
-            $threshold = max(1, (int) config('observability.circuit_breaker.failure_threshold', 3));
+            $thresholdRaw = config('observability.circuit_breaker.failure_threshold', 3);
+            $threshold = max(1, is_numeric($thresholdRaw) ? (int) $thresholdRaw : 3);
             $openUntil = $failures >= $threshold
-                ? $now + max(1, (int) config('observability.circuit_breaker.cooldown_seconds', 60))
+                ? $now + max(1, is_numeric(config('observability.circuit_breaker.cooldown_seconds', 60)) ? (int) config('observability.circuit_breaker.cooldown_seconds', 60) : 60)
                 : 0;
 
             $this->saveState($name, [
@@ -68,8 +69,8 @@ final class CircuitBreaker
 
             if (is_array($state) && isset($state['failures'], $state['open_until'])) {
                 return [
-                    'failures' => (int) $state['failures'],
-                    'open_until' => (int) $state['open_until'],
+                    'failures' => is_numeric($state['failures']) ? (int) $state['failures'] : 0,
+                    'open_until' => is_numeric($state['open_until']) ? (int) $state['open_until'] : 0,
                 ];
             }
         } catch (Throwable $exception) {

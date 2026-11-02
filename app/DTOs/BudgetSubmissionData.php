@@ -2,6 +2,7 @@
 
 namespace App\DTOs;
 
+use App\Support\MoneyInput;
 use Illuminate\Foundation\Http\FormRequest;
 
 final readonly class BudgetSubmissionData
@@ -19,6 +20,7 @@ final readonly class BudgetSubmissionData
     /**
      * Factory for a simple budget estimate submission.
      */
+    /** @param FormRequest|array<string, mixed> $data */
     public static function fromSubmitEstimate(FormRequest|array $data): self
     {
         $payload = $data instanceof FormRequest ? $data->validated() : $data;
@@ -33,6 +35,7 @@ final readonly class BudgetSubmissionData
     /**
      * Factory for a detailed budget request.
      */
+    /** @param FormRequest|array<string, mixed> $data */
     public static function fromDetailedRequest(FormRequest|array $data): self
     {
         $payload = $data instanceof FormRequest ? $data->validated() : $data;
@@ -44,27 +47,12 @@ final readonly class BudgetSubmissionData
         );
     }
 
-    /**
-     * Sanitize monetary input to a precise float (2 decimal places).
-     * Handles both numeric values and strings like "150,50" (comma decimal separator).
-     */
     private static function parseAmount(mixed $value): float
     {
-        if (is_numeric($value)) {
-            return round((float) $value, 2);
-        }
-
-        if (is_string($value)) {
-            $cleaned = str_replace(',', '.', preg_replace('/[^\d,.]/', '', $value));
-
-            if (is_numeric($cleaned)) {
-                return round((float) $cleaned, 2);
-            }
-        }
-
-        return 0.0;
+        return MoneyInput::parse($value);
     }
 
+    /** @return array<string, mixed> */
     public function toArray(): array
     {
         return [

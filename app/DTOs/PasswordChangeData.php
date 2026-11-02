@@ -23,6 +23,7 @@ final readonly class PasswordChangeData
         }
     }
 
+    /** @param FormRequest|array<string, mixed> $data */
     public static function fromRequest(FormRequest|array $data): self
     {
         $payload = $data instanceof FormRequest ? $data->validated() : $data;
@@ -33,6 +34,7 @@ final readonly class PasswordChangeData
         );
     }
 
+    /** @return array<string, mixed> */
     public function toArray(): array
     {
         return [

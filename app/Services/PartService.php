@@ -12,9 +12,11 @@ final class PartService
     /**
      * Paginated parts listing with search and filters.
      *
+     *
      * @param  string|null  $search  search by sku, name, brand or reference
      * @param  string|null  $status  'low' | 'out' | 'all' | '' | null
      * @param  int|null  $categoryId  filter by category
+     * @return LengthAwarePaginator<int, Part>
      */
     public function listPaginated(
         ?string $search = null,

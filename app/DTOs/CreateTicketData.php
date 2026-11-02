@@ -31,6 +31,7 @@ final readonly class CreateTicketData
         }
     }
 
+    /** @param FormRequest|array<string, mixed> $data */
     public static function fromRequest(FormRequest|array $data): self
     {
         $payload = $data instanceof FormRequest ? $data->validated() : $data;
@@ -39,7 +40,7 @@ final readonly class CreateTicketData
         $rawPriority = $payload['priority'] ?? TicketPriorityEnum::Low;
         $priority = $rawPriority instanceof TicketPriorityEnum
             ? $rawPriority
-            : TicketPriorityEnum::normalize($rawPriority);
+            : (TicketPriorityEnum::normalize($rawPriority) ?? TicketPriorityEnum::Low);
 
         return new self(
             title: trim((string) ($payload['title'] ?? '')),
@@ -60,6 +61,7 @@ final readonly class CreateTicketData
         return $parsed && $parsed > 0 ? $parsed : null;
     }
 
+    /** @return array<string, mixed> */
     public function toArray(): array
     {
         return [

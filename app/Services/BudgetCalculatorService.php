@@ -47,16 +47,24 @@ final class BudgetCalculatorService
     {
         $materialItems = [];
         $laborItems = [];
-        $details = $ticket->budget_details ?? [];
+        $details = is_array($ticket->budget_details) ? $ticket->budget_details : [];
 
         foreach ($details as $item) {
-            $type = $item['type'] ?? 'material';
+            if (! is_array($item)) {
+                continue;
+            }
+
+            $type = is_string($item['type'] ?? null) ? (string) $item['type'] : 'material';
 
             if ($type === 'labor') {
-                $subtotal = (float) (($item['hours'] ?? 0) * ($item['hourly_rate'] ?? 0));
+                $hours = is_numeric($item['hours'] ?? null) ? (float) $item['hours'] : 0.0;
+                $rate = is_numeric($item['hourly_rate'] ?? null) ? (float) $item['hourly_rate'] : 0.0;
+                $subtotal = $hours * $rate;
                 $laborItems[] = array_merge($item, ['subtotal' => $subtotal]);
             } else {
-                $subtotal = (float) (($item['quantity'] ?? 0) * ($item['unit_price'] ?? 0));
+                $qty = is_numeric($item['quantity'] ?? null) ? (float) $item['quantity'] : 0.0;
+                $price = is_numeric($item['unit_price'] ?? null) ? (float) $item['unit_price'] : 0.0;
+                $subtotal = $qty * $price;
                 $materialItems[] = array_merge($item, ['subtotal' => $subtotal]);
             }
         }
@@ -79,15 +87,25 @@ final class BudgetCalculatorService
     private function calculateByType(Ticket $ticket, string $type): float
     {
         $total = 0.0;
-        $details = $ticket->budget_details ?? [];
+        $details = is_array($ticket->budget_details) ? $ticket->budget_details : [];
 
         foreach ($details as $item) {
-            $itemType = $item['type'] ?? 'material';
+            if (! is_array($item)) {
+                continue;
+            }
+
+            $itemType = is_string($item['type'] ?? null) ? (string) $item['type'] : 'material';
 
             if ($itemType === $type) {
-                $subtotal = $type === 'labor'
-                    ? (float) (($item['hours'] ?? 0) * ($item['hourly_rate'] ?? 0))
-                    : (float) (($item['quantity'] ?? 0) * ($item['unit_price'] ?? 0));
+                if ($type === 'labor') {
+                    $hours = is_numeric($item['hours'] ?? null) ? (float) $item['hours'] : 0.0;
+                    $rate = is_numeric($item['hourly_rate'] ?? null) ? (float) $item['hourly_rate'] : 0.0;
+                    $subtotal = $hours * $rate;
+                } else {
+                    $qty = is_numeric($item['quantity'] ?? null) ? (float) $item['quantity'] : 0.0;
+                    $price = is_numeric($item['unit_price'] ?? null) ? (float) $item['unit_price'] : 0.0;
+                    $subtotal = $qty * $price;
+                }
 
                 $total += $subtotal;
             }

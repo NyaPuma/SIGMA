@@ -97,7 +97,7 @@ final class RateLimitMiddleware
      */
     protected function calculateRemainingAttempts(string $key, int $maxAttempts): int
     {
-        return max(0, $maxAttempts - $this->limiter->attempts($key));
+        return max(0, $maxAttempts - (int) $this->limiter->attempts($key));
     }
 
     /**

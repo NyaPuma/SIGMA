@@ -14,17 +14,19 @@ final readonly class CommentData
         }
     }
 
+    /** @param FormRequest|array<string, mixed> $data */
     public static function fromRequest(FormRequest|array $data): self
     {
         $payload = $data instanceof FormRequest ? $data->validated() : $data;
 
-        $content = isset($payload['content']) ? trim((string) $payload['content']) : '';
+        $content = isset($payload['content']) && is_string($payload['content']) ? trim($payload['content']) : '';
 
         return new self(
             content: $content,
         );
     }
 
+    /** @return array<string, mixed> */
     public function toArray(): array
     {
         return [

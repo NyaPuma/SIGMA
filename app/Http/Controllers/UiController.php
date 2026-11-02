@@ -380,7 +380,7 @@ final class UiController extends Controller
      */
     public function themeAppearance(Request $request): View
     {
-        $user = $request->user();
+        $user = $this->authenticatedUser($request);
 
         return view('ui.settings.appearance', [
             'user' => $user,
@@ -401,7 +401,7 @@ final class UiController extends Controller
             'theme' => ['required', 'string', Rule::in(array_keys($this->themePresets->all()))],
         ]);
 
-        $user = $request->user();
+        $user = $this->authenticatedUser($request);
         $preset = $this->themePresets->applyForUser($user, $validated['theme']);
 
         if ($request->expectsJson()) {

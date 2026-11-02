@@ -35,6 +35,7 @@ final class UpdateEquipmentRequest extends FormRequest
         }
     }
 
+    /** @return array<string, mixed> */
     public function rules(): array
     {
         /** @var Equipment|int|string|null $equipment */
