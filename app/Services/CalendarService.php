@@ -78,7 +78,7 @@ final class CalendarService
     /**
      * Gets global scheduled events within an optional date range.
      *
-     * @return Collection<int, array<string, mixed>>
+     * @return Collection<int, array{id: mixed, title: non-falsy-string, start: string, end: string|null}>
      */
     public function getScheduledEvents(?string $from = null, ?string $to = null): Collection
     {
