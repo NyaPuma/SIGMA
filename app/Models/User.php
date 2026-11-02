@@ -15,6 +15,7 @@ use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Carbon;
 
 /**
+ * @property int|null $profile_id
  * @property-read UserProfile|null $profile
  * @property-read int $tickets_ativos
  * @property-read int $active_tickets

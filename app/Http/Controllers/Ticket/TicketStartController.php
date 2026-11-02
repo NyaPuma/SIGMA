@@ -29,7 +29,7 @@ final class TicketStartController extends Controller
         // 1. Centralized authorization via Laravel Policy
         $this->authorize('start', $ticket);
 
-        $user = $request->user();
+        $user = $this->authenticatedUser($request);
 
         // 2. Eligible state validation for starting
         if (! $ticket->hasStatus(TicketStatusEnum::Open)) {

@@ -49,7 +49,7 @@ final class TicketAttachmentController extends Controller
         // 4. Register the attachment in the database
         $attachment = TicketAttachment::create([
             'ticket_id' => $ticket->id,
-            'user_id' => $request->user()->id,
+            'user_id' => $this->authenticatedUser($request)->id,
             'original_name' => $file->getClientOriginalName(),
             'file_name' => $safeFilename,
             'path' => $path,

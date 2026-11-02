@@ -27,7 +27,7 @@ final class AdminController extends Controller
         // 1. Authorization via Policy
         $this->authorize('approveBudget', $ticket);
 
-        $admin = $request->user();
+        $admin = $this->authenticatedUser($request);
 
         // 2. Execute the budget approval/rejection action
         $updatedTicket = $this->approveBudgetAction->execute(
@@ -58,7 +58,7 @@ final class AdminController extends Controller
         // 1. Authorization via Policy (verification in Model class)
         $this->authorize('createPreventive', Ticket::class);
 
-        $admin = $request->user();
+        $admin = $this->authenticatedUser($request);
 
         // 2. Execute the preventive ticket creation with validated data
         $ticket = $this->createPreventiveAction->execute(

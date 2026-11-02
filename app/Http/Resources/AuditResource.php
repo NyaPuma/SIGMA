@@ -16,11 +16,11 @@ final class AuditResource extends JsonResource
         return [
             'id' => $this->id,
             'user_id' => $this->user_id,
-            'user' => $this->whenLoaded('user', fn () => [
+            'user' => $this->whenLoaded('user', fn () => $this->user ? [
                 'id' => $this->user->id,
                 'name' => $this->user->name,
                 'email' => $this->user->email,
-            ]),
+            ] : null),
             'auditable_type' => $this->auditable_type,
             'auditable_id' => $this->auditable_id,
             'event' => $this->event,

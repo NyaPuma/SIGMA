@@ -68,7 +68,7 @@ final class TicketCloseController extends Controller
         // 1. Authorization via Policy
         $this->authorize('close', $ticket);
 
-        $user = $request->user();
+        $user = $this->authenticatedUser($request);
         $force = $request->boolean('force');
         $oldStatus = $ticket->status;
 

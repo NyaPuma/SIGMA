@@ -24,7 +24,7 @@ final class TicketCommentController extends Controller
         // 2. Register the comment with validated data
         $comment = TicketComment::create([
             'ticket_id' => $ticket->id,
-            'user_id' => $request->user()->id,
+            'user_id' => $this->authenticatedUser($request)->id,
             'comment' => $request->validated('comment'),
         ]);
 

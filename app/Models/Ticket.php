@@ -33,6 +33,7 @@ use Illuminate\Support\Carbon;
  * @property Carbon|null $created_at
  * @property Carbon|null $updated_at
  * @property string|null $reference
+ * @property int|null $status_id
  * @property array<int, array<string, mixed>>|null $budget_details
  * @property-read User|null $user
  * @property-read User|null $technician

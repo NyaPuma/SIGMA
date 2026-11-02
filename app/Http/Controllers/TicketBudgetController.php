@@ -37,7 +37,7 @@ final class TicketBudgetController extends Controller
 
         $data = BudgetSubmissionData::fromSubmitEstimate($request->validated());
 
-        $this->applyBudgetChanges($ticket, $data, $request->user());
+        $this->applyBudgetChanges($ticket, $data, $this->authenticatedUser($request));
 
         $threshold = (float) config('services.custom.budget.threshold', 0);
 
@@ -64,7 +64,7 @@ final class TicketBudgetController extends Controller
 
         $data = BudgetSubmissionData::fromDetailedRequest($request->validated());
 
-        $this->applyBudgetChanges($ticket, $data, $request->user());
+        $this->applyBudgetChanges($ticket, $data, $this->authenticatedUser($request));
 
         $threshold = (float) config('services.custom.budget.threshold', 0);
 

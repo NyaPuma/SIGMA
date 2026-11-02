@@ -15,7 +15,7 @@ final class ProfileController extends Controller
      */
     public function changePassword(ChangePasswordRequest $request): JsonResponse
     {
-        $user = $request->user();
+        $user = $this->authenticatedUser($request);
 
         if (! Hash::check($request->input('current_password'), $user->password)) {
             return response()->json([
@@ -36,7 +36,7 @@ final class ProfileController extends Controller
      */
     public function updateProfile(UpdateProfileRequest $request): JsonResponse
     {
-        $user = $request->user();
+        $user = $this->authenticatedUser($request);
 
         $newPassword = $request->input('password');
 

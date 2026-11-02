@@ -631,6 +631,8 @@ final class LocaleService
 
     /**
      * Converts a unit of measurement based on the language's unit system.
+     *
+     * @return array{value: float, unit: string, formatted: string}
      */
     public static function convertUnit(float|int $value, string $type, string $fromUnit = '', ?string $locale = null): array
     {

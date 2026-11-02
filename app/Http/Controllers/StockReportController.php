@@ -156,7 +156,7 @@ final class StockReportController extends Controller
     {
         $this->authorize('viewAny', Part::class);
 
-        $user = $request->user();
+        $user = $this->authenticatedUser($request);
 
         ExportStockCostsPdfJob::dispatch(
             userId: $user->id,
