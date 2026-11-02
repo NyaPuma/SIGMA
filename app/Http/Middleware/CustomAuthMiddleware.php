@@ -25,7 +25,7 @@ final class CustomAuthMiddleware
         $tokensToTry = $this->resolveTokensToTry($request, $candidates);
         [$user, $token] = $this->findUserByTokens($tokensToTry);
 
-        if (! $user) {
+        if (! $user instanceof User) {
             return $this->invalidTokenResponse(
                 $request,
                 $request->cookies->has('api_token') || $request->cookies->has('auth_token')
@@ -43,12 +43,16 @@ final class CustomAuthMiddleware
         Auth::guard('api')->setUser($user);
         Auth::shouldUse('api');
 
-        return $next($request);
+        /** @var \Symfony\Component\HttpFoundation\Response $response */
+        $response = $next($request);
+
+        return $response;
     }
 
     /**
      * Collects all authentication token candidates from the request.
      */
+    /** @return array<int, string> */
     private function collectTokenCandidates(Request $request): array
     {
         $sessionToken = null;
@@ -70,9 +74,14 @@ final class CustomAuthMiddleware
     /**
      * Resolves which tokens to try validating based on request precedence.
      */
+    /**
+     * @param array<int, string> $candidates
+     * @return array<int, string>
+     */
     private function resolveTokensToTry(Request $request, array $candidates): array
     {
         $explicitToken = reset($candidates);
+        $explicitToken = is_string($explicitToken) ? $explicitToken : '';
 
         return $request->header('X-Auth-Token') || $request->bearerToken()
             ? [$explicitToken]
@@ -81,6 +90,10 @@ final class CustomAuthMiddleware
 
     /**
      * Finds a valid user through the candidate tokens.
+     */
+    /**
+     * @param array<int, string> $tokens
+     * @return array{0: User|null, 1: string|null}
      */
     private function findUserByTokens(array $tokens): array
     {
