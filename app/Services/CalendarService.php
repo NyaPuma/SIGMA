@@ -22,6 +22,8 @@ final class CalendarService
      * - Admin sees all schedules;
      * - Technician sees only their assigned tickets;
      * - Regular user sees only their own tickets.
+     *
+     * @return \Illuminate\Support\Collection<int, array<string, mixed>>
      */
     public function getScheduledEventsForUser(User $user): Collection
     {

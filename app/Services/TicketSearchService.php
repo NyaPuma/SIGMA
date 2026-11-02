@@ -79,6 +79,8 @@ final class TicketSearchService
 
     /**
      * Applies date filters to the ticket query safely.
+     *
+     * @param \Illuminate\Database\Eloquent\Builder<\App\Models\Ticket> $query
      */
     private function applyDateFilters(Builder $query, ?string $dateFrom, ?string $dateTo): void
     {

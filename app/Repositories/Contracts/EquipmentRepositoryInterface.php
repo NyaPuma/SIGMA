@@ -18,7 +18,7 @@ interface EquipmentRepositoryInterface
      * Return a paginated list of equipment.
      *
      * @param  array<int, string>  $relations
-     * @return LengthAwarePaginator<Equipment>
+     * @return LengthAwarePaginator<int, Equipment>
      */
     public function getAll(array $relations = [], ?string $search = null, ?string $status = null, ?string $category = null): LengthAwarePaginator;
 

@@ -119,9 +119,12 @@ trait Auditable
             // Fallback to user() when id() is not available
             if ($authId === null && method_exists($auth, 'user')) {
                 $authUser = $auth->user();
-                if ($authUser) {
-                    /** @var mixed $authUser */
-                    $authId = $authUser->id ?? $authUser->getKey();
+                if (is_object($authUser)) {
+                    if (property_exists($authUser, 'id')) {
+                        $authId = $authUser->id;
+                    } elseif (method_exists($authUser, 'getKey')) {
+                        $authId = $authUser->getKey();
+                    }
                 }
             }
 
@@ -139,7 +142,7 @@ trait Auditable
             }
         }
 
-        self::$resolvedUserId = $userId !== null ? (int) $userId : null;
+        self::$resolvedUserId = is_numeric($userId) ? (int) $userId : null;
 
         return self::$resolvedUserId;
     }

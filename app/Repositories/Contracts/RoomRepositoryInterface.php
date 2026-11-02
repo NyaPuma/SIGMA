@@ -19,7 +19,7 @@ interface RoomRepositoryInterface
      *
      * @param  array<int, string>  $relations
      * @param  array<int, string>  $withCounts
-     * @return LengthAwarePaginator<Room>
+     * @return LengthAwarePaginator<int, Room>
      */
     public function getAll(array $relations = [], array $withCounts = []): LengthAwarePaginator;
 

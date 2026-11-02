@@ -25,7 +25,7 @@ final class AuthUserResolver
     public static function fromRequest(Request $request): ?User
     {
         $cached = $request->attributes->get('_auth_user_resolved');
-        if ($cached !== null) {
+        if ($cached instanceof User) {
             return $cached;
         }
 

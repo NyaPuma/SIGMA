@@ -25,7 +25,7 @@ final class TechnicianAssignmentService
 
         return User::whereHas('profile', fn ($q) => $q->where('name', UserRoleEnum::Technician->value))
             ->where('active', true)
-            ->withCount(['assignedTickets' => fn ($q) => $q->where('status_id', $inProgressStatusId)])
+            ->withCount(['assignedTickets' => fn (\Illuminate\Database\Eloquent\Builder $q) => $q->where('status_id', $inProgressStatusId)])
             ->orderBy('assigned_tickets_count', 'asc')
             ->first();
     }

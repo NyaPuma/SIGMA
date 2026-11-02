@@ -12,6 +12,8 @@ final class PartService
     /**
      * Paginated parts listing with search and filters.
      *
+     * @return \Illuminate\Contracts\Pagination\LengthAwarePaginator<int, \App\Models\Part>
+     *
      * @param  string|null  $search  search by sku, name, brand or reference
      * @param  string|null  $status  'low' | 'out' | 'all' | '' | null
      * @param  int|null  $categoryId  filter by category
