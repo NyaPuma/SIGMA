@@ -2,6 +2,7 @@
 
 namespace App\DTOs;
 
+use App\Support\MoneyInput;
 use Illuminate\Foundation\Http\FormRequest;
 
 final readonly class CloseTicketData
@@ -39,23 +40,10 @@ final readonly class CloseTicketData
 
     /**
      * Sanitize monetary input to a precise float (2 decimal places).
-     * Handles comma-separated decimal strings (e.g. "150,50").
      */
     private static function parseCost(mixed $value): float
     {
-        if (is_numeric($value)) {
-            return round((float) $value, 2);
-        }
-
-        if (is_string($value)) {
-            $cleaned = str_replace(',', '.', preg_replace('/[^\d,.]]/', '', $value));
-
-            if (is_numeric($cleaned)) {
-                return round((float) $cleaned, 2);
-            }
-        }
-
-        return 0.0;
+        return MoneyInput::parse($value);
     }
 
     public function toArray(): array

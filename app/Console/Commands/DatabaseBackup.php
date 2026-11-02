@@ -178,7 +178,13 @@ class DatabaseBackup extends Command
         }
 
         while (! feof($fpIn)) {
-            gzwrite($fpOut, fread($fpIn, 524288)); // Read in 512KB chunks
+            $chunk = fread($fpIn, 524288); // Read in 512KB chunks
+
+            if ($chunk === false || $chunk === '') {
+                break;
+            }
+
+            gzwrite($fpOut, $chunk);
         }
 
         fclose($fpIn);

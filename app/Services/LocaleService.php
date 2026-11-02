@@ -274,7 +274,7 @@ final class LocaleService
         if (class_exists(\Collator::class)) {
             $collator = new \Collator('pt_PT');
 
-            uasort($locales, static fn (array $a, array $b): int => $collator->compare(
+            uasort($locales, static fn (array $a, array $b): int => (int) $collator->compare(
                 (string) ($a['name'] ?? ''),
                 (string) ($b['name'] ?? ''),
             ));

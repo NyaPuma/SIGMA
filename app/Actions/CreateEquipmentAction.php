@@ -13,7 +13,7 @@ final readonly class CreateEquipmentAction
         return DB::transaction(function () use ($data) {
             $equipment = Equipment::create([
                 'name' => trim($data->name),
-                'serial' => $data->serial ? strtoupper(trim($data->serial)) : null,
+                'serial' => strtoupper(trim($data->serial)),
                 'room_id' => $data->roomId,
                 'category_id' => $data->categoryId,
                 'active' => $data->active,
@@ -23,7 +23,7 @@ final readonly class CreateEquipmentAction
                 'manufacturer' => $data->manufacturer !== null ? trim($data->manufacturer) : null,
                 'purchase_date' => $data->purchaseDate,
                 'warranty_until' => $data->warrantyUntil,
-                'status' => $data->status !== null ? trim($data->status) : null,
+                'status' => trim($data->status),
                 'notes' => $data->notes !== null ? trim($data->notes) : null,
             ]);
 

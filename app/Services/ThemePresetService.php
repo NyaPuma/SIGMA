@@ -584,7 +584,9 @@ final class ThemePresetService
      */
     public function active(?string $preference = null): array
     {
-        return $this->find($this->effectiveThemeId($preference));
+        return $this->find($this->effectiveThemeId($preference))
+            ?? $this->find(self::DEFAULT_THEME)
+            ?? [];
     }
 
     /**
@@ -592,7 +594,9 @@ final class ThemePresetService
      */
     public function mode(?string $preference = null): string
     {
-        return $this->active($preference)['mode'] === 'dark' ? 'dark' : 'light';
+        $active = $this->active($preference);
+
+        return ($active['mode'] ?? 'light') === 'dark' ? 'dark' : 'light';
     }
 
     /**

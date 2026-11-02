@@ -20,7 +20,8 @@ final class TicketStatus extends Model
     {
         self::creating(function (TicketStatus $status) {
             if ($status->code === null) {
-                $status->code = strtoupper(substr(preg_replace('/[^a-zA-Z0-9]/', '_', $status->name ?? 'status'), 0, 20));
+                $slug = preg_replace('/[^a-zA-Z0-9]/', '_', $status->name ?? 'status') ?? '';
+                $status->code = strtoupper(substr($slug, 0, 20));
             }
         });
     }

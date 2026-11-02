@@ -57,7 +57,7 @@ final class TicketRepository implements TicketRepositoryInterface
      */
     public function delete(Ticket $ticket): bool
     {
-        return $ticket->delete();
+        return (bool) $ticket->delete();
     }
 
     /**

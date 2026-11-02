@@ -108,8 +108,8 @@ final class AIService
             $content = trim($response->choices[0]->message->content ?? '');
 
             // Defensive cleanup in case AI adds markdown blocks to JSON response
-            $content = preg_replace('/^```json\s*([\s\S]*?)\s*```$/i', '$1', $content);
-            $content = preg_replace('/^```\s*([\s\S]*?)\s*```$/i', '$1', $content);
+            $content = preg_replace('/^```json\s*([\s\S]*?)\s*```$/i', '$1', $content) ?? $content;
+            $content = preg_replace('/^```\s*([\s\S]*?)\s*```$/i', '$1', $content) ?? $content;
 
             $result = json_decode(trim($content), true);
 

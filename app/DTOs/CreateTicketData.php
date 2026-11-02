@@ -39,7 +39,7 @@ final readonly class CreateTicketData
         $rawPriority = $payload['priority'] ?? TicketPriorityEnum::Low;
         $priority = $rawPriority instanceof TicketPriorityEnum
             ? $rawPriority
-            : TicketPriorityEnum::normalize($rawPriority);
+            : (TicketPriorityEnum::normalize($rawPriority) ?? TicketPriorityEnum::Low);
 
         return new self(
             title: trim((string) ($payload['title'] ?? '')),

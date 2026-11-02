@@ -240,6 +240,9 @@ final class PreferencesService
     /**
      * Gets the list of supported currencies.
      */
+    /**
+     * @return list<string>
+     */
     public static function supportedCurrencies(): array
     {
         return self::SUPPORTED_CURRENCIES;
