@@ -1,0 +1,2317 @@
+parameters:
+	ignoreErrors:
+		-
+			message: '#^Method App\\Console\\Commands\\FixTicketEncoding\:\:affectedIds\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Console/Commands/FixTicketEncoding.php
+
+		-
+			message: '#^Parameter \#2 \$array of function implode expects array\<string\>, array given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/Console/Commands/FixTicketEncoding.php
+
+		-
+			message: '#^Method App\\Console\\Commands\\PartitionAudits\:\:getExistingPartitions\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Console/Commands/PartitionAudits.php
+
+		-
+			message: '#^Parameter \#2 \$subject of function preg_match expects string, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/Console/Commands/PartitionAudits.php
+
+		-
+			message: '#^Part \$partition \(mixed\) of encapsed string cannot be cast to string\.$#'
+			identifier: encapsedStringPart.nonString
+			count: 2
+			path: app/Console/Commands/PartitionAudits.php
+
+		-
+			message: '#^Binary operation "\." between mixed and "\\n\\n" results in an error\.$#'
+			identifier: binaryOp.invalid
+			count: 1
+			path: app/Console/Commands/SimulateTelemetry.php
+
+		-
+			message: '#^Cannot access offset ''description'' on mixed\.$#'
+			identifier: offsetAccess.nonOffsetAccessible
+			count: 1
+			path: app/Console/Commands/SimulateTelemetry.php
+
+		-
+			message: '#^Cannot access offset ''priority'' on mixed\.$#'
+			identifier: offsetAccess.nonOffsetAccessible
+			count: 1
+			path: app/Console/Commands/SimulateTelemetry.php
+
+		-
+			message: '#^Cannot access offset ''title'' on mixed\.$#'
+			identifier: offsetAccess.nonOffsetAccessible
+			count: 3
+			path: app/Console/Commands/SimulateTelemetry.php
+
+		-
+			message: '#^Cannot call method where\(\) on mixed\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: app/Console/Commands/SimulateTelemetry.php
+
+		-
+			message: '#^Part \$anomaly\[''title''\] \(mixed\) of encapsed string cannot be cast to string\.$#'
+			identifier: encapsedStringPart.nonString
+			count: 3
+			path: app/Console/Commands/SimulateTelemetry.php
+
+		-
+			message: '#^Property App\\Console\\Commands\\SimulateTelemetry\:\:\$anomalyTypes type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Console/Commands/SimulateTelemetry.php
+
+		-
+			message: '#^Cannot cast mixed to string\.$#'
+			identifier: cast.string
+			count: 1
+			path: app/DTOs/BudgetDecisionData.php
+
+		-
+			message: '#^Parameter \#1 \$value of static method App\\Enums\\BudgetDecisionEnum\:\:from\(\) expects int\|string, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/DTOs/BudgetDecisionData.php
+
+		-
+			message: '#^Method App\\DTOs\\BudgetSubmissionData\:\:__construct\(\) has parameter \$budgetDetails with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/DTOs/BudgetSubmissionData.php
+
+		-
+			message: '#^Parameter \$budgetDetails of class App\\DTOs\\BudgetSubmissionData constructor expects array\|null, mixed given\.$#'
+			identifier: argument.type
+			count: 2
+			path: app/DTOs/BudgetSubmissionData.php
+
+		-
+			message: '#^Cannot cast mixed to string\.$#'
+			identifier: cast.string
+			count: 1
+			path: app/DTOs/CloseTicketData.php
+
+		-
+			message: '#^Cannot cast mixed to string\.$#'
+			identifier: cast.string
+			count: 1
+			path: app/DTOs/CommentData.php
+
+		-
+			message: '#^Cannot cast mixed to string\.$#'
+			identifier: cast.string
+			count: 2
+			path: app/DTOs/CreateTicketData.php
+
+		-
+			message: '#^Cannot cast mixed to string\.$#'
+			identifier: cast.string
+			count: 2
+			path: app/DTOs/PasswordChangeData.php
+
+		-
+			message: '#^Cannot cast mixed to string\.$#'
+			identifier: cast.string
+			count: 4
+			path: app/DTOs/ScheduleMaintenanceData.php
+
+		-
+			message: '#^Cannot cast mixed to string\.$#'
+			identifier: cast.string
+			count: 1
+			path: app/DTOs/ScheduleTicketData.php
+
+		-
+			message: '#^Cannot cast mixed to string\.$#'
+			identifier: cast.string
+			count: 2
+			path: app/DTOs/StoreEquipmentData.php
+
+		-
+			message: '#^Cannot cast mixed to float\.$#'
+			identifier: cast.double
+			count: 2
+			path: app/DTOs/StorePartData.php
+
+		-
+			message: '#^Cannot cast mixed to int\.$#'
+			identifier: cast.int
+			count: 5
+			path: app/DTOs/StorePartData.php
+
+		-
+			message: '#^Cannot cast mixed to string\.$#'
+			identifier: cast.string
+			count: 9
+			path: app/DTOs/StorePartData.php
+
+		-
+			message: '#^Cannot cast mixed to string\.$#'
+			identifier: cast.string
+			count: 1
+			path: app/DTOs/StoreRoomData.php
+
+		-
+			message: '#^Cannot cast mixed to int\.$#'
+			identifier: cast.int
+			count: 1
+			path: app/DTOs/StoreSupplierData.php
+
+		-
+			message: '#^Cannot cast mixed to string\.$#'
+			identifier: cast.string
+			count: 5
+			path: app/DTOs/StoreSupplierData.php
+
+		-
+			message: '#^Cannot cast mixed to string\.$#'
+			identifier: cast.string
+			count: 3
+			path: app/DTOs/StoreUserData.php
+
+		-
+			message: '#^Cannot cast mixed to string\.$#'
+			identifier: cast.string
+			count: 1
+			path: app/DTOs/TicketFilters.php
+
+		-
+			message: '#^Cannot cast mixed to float\.$#'
+			identifier: cast.double
+			count: 2
+			path: app/DTOs/UpdatePartData.php
+
+		-
+			message: '#^Cannot cast mixed to int\.$#'
+			identifier: cast.int
+			count: 4
+			path: app/DTOs/UpdatePartData.php
+
+		-
+			message: '#^Cannot cast mixed to string\.$#'
+			identifier: cast.string
+			count: 9
+			path: app/DTOs/UpdatePartData.php
+
+		-
+			message: '#^Cannot cast mixed to int\.$#'
+			identifier: cast.int
+			count: 1
+			path: app/DTOs/UpdateSupplierData.php
+
+		-
+			message: '#^Cannot cast mixed to string\.$#'
+			identifier: cast.string
+			count: 5
+			path: app/DTOs/UpdateSupplierData.php
+
+		-
+			message: '#^Cannot cast mixed to int\.$#'
+			identifier: cast.int
+			count: 2
+			path: app/Domain/Ticket/Actions/CheckHigherPriorityAction.php
+
+		-
+			message: '#^Cannot access property \$closed_count on mixed\.$#'
+			identifier: property.nonObject
+			count: 1
+			path: app/Domain/Ticket/Queries/MonthlyTicketsQuery.php
+
+		-
+			message: '#^Cannot access property \$in_progress_count on mixed\.$#'
+			identifier: property.nonObject
+			count: 1
+			path: app/Domain/Ticket/Queries/MonthlyTicketsQuery.php
+
+		-
+			message: '#^Cannot access property \$open_count on mixed\.$#'
+			identifier: property.nonObject
+			count: 1
+			path: app/Domain/Ticket/Queries/MonthlyTicketsQuery.php
+
+		-
+			message: '#^Cannot access property \$total_cost on mixed\.$#'
+			identifier: property.nonObject
+			count: 1
+			path: app/Domain/Ticket/Queries/MonthlyTicketsQuery.php
+
+		-
+			message: '#^Cannot call method get\(\) on mixed\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: app/Domain/Ticket/Queries/MonthlyTicketsQuery.php
+
+		-
+			message: '#^Cannot cast mixed to float\.$#'
+			identifier: cast.double
+			count: 1
+			path: app/Domain/Ticket/Queries/MonthlyTicketsQuery.php
+
+		-
+			message: '#^Cannot cast mixed to int\.$#'
+			identifier: cast.int
+			count: 3
+			path: app/Domain/Ticket/Queries/MonthlyTicketsQuery.php
+
+		-
+			message: '#^Method App\\Domain\\Ticket\\Queries\\MonthlyTicketsQuery\:\:buildQuery\(\) has parameter \$monthKeys with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Domain/Ticket/Queries/MonthlyTicketsQuery.php
+
+		-
+			message: '#^Method App\\Domain\\Ticket\\Queries\\MonthlyTicketsQuery\:\:buildQuery\(\) return type with generic class Illuminate\\Database\\Eloquent\\Collection does not specify its types\: TKey, TModel$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Domain/Ticket/Queries/MonthlyTicketsQuery.php
+
+		-
+			message: '#^Method App\\Domain\\Ticket\\Queries\\MonthlyTicketsQuery\:\:execute\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Domain/Ticket/Queries/MonthlyTicketsQuery.php
+
+		-
+			message: '#^Method App\\Domain\\Ticket\\Queries\\MonthlyTicketsQuery\:\:formatResults\(\) has parameter \$monthKeys with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Domain/Ticket/Queries/MonthlyTicketsQuery.php
+
+		-
+			message: '#^Method App\\Domain\\Ticket\\Queries\\MonthlyTicketsQuery\:\:formatResults\(\) has parameter \$rows with no type specified\.$#'
+			identifier: missingType.parameter
+			count: 1
+			path: app/Domain/Ticket/Queries/MonthlyTicketsQuery.php
+
+		-
+			message: '#^Method App\\Domain\\Ticket\\Queries\\MonthlyTicketsQuery\:\:formatResults\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Domain/Ticket/Queries/MonthlyTicketsQuery.php
+
+		-
+			message: '#^Method App\\Domain\\Ticket\\Queries\\MonthlyTicketsQuery\:\:generateMonthKeys\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Domain/Ticket/Queries/MonthlyTicketsQuery.php
+
+		-
+			message: '#^Method App\\Domain\\Ticket\\Queries\\ScheduledEventsQuery\:\:execute\(\) return type with generic class Illuminate\\Support\\Collection does not specify its types\: TKey, TValue$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Domain/Ticket/Queries/ScheduledEventsQuery.php
+
+		-
+			message: '#^Cannot cast mixed to float\.$#'
+			identifier: cast.double
+			count: 2
+			path: app/Domain/Ticket/Queries/TicketKpiQuery.php
+
+		-
+			message: '#^Cannot cast mixed to int\.$#'
+			identifier: cast.int
+			count: 5
+			path: app/Domain/Ticket/Queries/TicketKpiQuery.php
+
+		-
+			message: '#^Method App\\Domain\\Ticket\\Queries\\TicketKpiQuery\:\:buildKpiQuery\(\) has parameter \$query with generic class Illuminate\\Database\\Eloquent\\Builder but does not specify its types\: TModel$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Domain/Ticket/Queries/TicketKpiQuery.php
+
+		-
+			message: '#^Method App\\Domain\\Ticket\\Queries\\TicketKpiQuery\:\:buildKpiQuery\(\) return type with generic class Illuminate\\Database\\Eloquent\\Builder does not specify its types\: TModel$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Domain/Ticket/Queries/TicketKpiQuery.php
+
+		-
+			message: '#^Method App\\Domain\\Ticket\\Queries\\TicketKpiQuery\:\:execute\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Domain/Ticket/Queries/TicketKpiQuery.php
+
+		-
+			message: '#^Cannot cast mixed to int\.$#'
+			identifier: cast.int
+			count: 3
+			path: app/Domain/Ticket/Queries/TicketPriorityQuery.php
+
+		-
+			message: '#^Method App\\Domain\\Ticket\\Queries\\TicketPriorityQuery\:\:__construct\(\) has parameter \$baseQuery with generic class Illuminate\\Database\\Eloquent\\Builder but does not specify its types\: TModel$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Domain/Ticket/Queries/TicketPriorityQuery.php
+
+		-
+			message: '#^Method App\\Domain\\Ticket\\Queries\\TicketPriorityQuery\:\:execute\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Domain/Ticket/Queries/TicketPriorityQuery.php
+
+		-
+			message: '#^Cannot cast mixed to int\.$#'
+			identifier: cast.int
+			count: 3
+			path: app/Domain/Ticket/Queries/TopEntitiesQuery.php
+
+		-
+			message: '#^Cannot cast mixed to string\.$#'
+			identifier: cast.string
+			count: 3
+			path: app/Domain/Ticket/Queries/TopEntitiesQuery.php
+
+		-
+			message: '#^Method App\\Domain\\Ticket\\Queries\\TopEntitiesQuery\:\:__construct\(\) has parameter \$baseQuery with generic class Illuminate\\Database\\Eloquent\\Builder but does not specify its types\: TModel$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Domain/Ticket/Queries/TopEntitiesQuery.php
+
+		-
+			message: '#^Cannot access property \$name on mixed\.$#'
+			identifier: property.nonObject
+			count: 1
+			path: app/Exports/TicketsExport.php
+
+		-
+			message: '#^Cannot cast mixed to string\.$#'
+			identifier: cast.string
+			count: 1
+			path: app/Exports/TicketsExport.php
+
+		-
+			message: '#^Class App\\Exports\\TicketsExport implements generic interface Maatwebsite\\Excel\\Concerns\\WithMapping but does not specify its types\: RowType$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Exports/TicketsExport.php
+
+		-
+			message: '#^Method App\\Exports\\TicketsExport\:\:__construct\(\) has parameter \$customQuery with generic class Illuminate\\Database\\Eloquent\\Builder but does not specify its types\: TModel$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Exports/TicketsExport.php
+
+		-
+			message: '#^Method App\\Exports\\TicketsExport\:\:columnFormats\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Exports/TicketsExport.php
+
+		-
+			message: '#^Method App\\Exports\\TicketsExport\:\:headings\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Exports/TicketsExport.php
+
+		-
+			message: '#^Method App\\Exports\\TicketsExport\:\:map\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Exports/TicketsExport.php
+
+		-
+			message: '#^Method App\\Exports\\TicketsExport\:\:query\(\) return type with generic class Illuminate\\Database\\Eloquent\\Builder does not specify its types\: TModel$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Exports/TicketsExport.php
+
+		-
+			message: '#^Method App\\Exports\\TicketsExport\:\:registerEvents\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Exports/TicketsExport.php
+
+		-
+			message: '#^Method App\\Exports\\TicketsExport\:\:styles\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Exports/TicketsExport.php
+
+		-
+			message: '#^Cannot access property \$name on mixed\.$#'
+			identifier: property.nonObject
+			count: 1
+			path: app/Http/Controllers/ActivityFeedController.php
+
+		-
+			message: '#^Cannot cast mixed to string\.$#'
+			identifier: cast.string
+			count: 2
+			path: app/Http/Controllers/ActivityFeedController.php
+
+		-
+			message: '#^Parameter \#2 \$replace of function __ expects array\<string, bool\|\(Closure\(string\)\: string\)\|float\|int\|string\|null\>, array\{subject\: string, user\: mixed\} given\.$#'
+			identifier: argument.type
+			count: 7
+			path: app/Http/Controllers/ActivityFeedController.php
+
+		-
+			message: '#^Parameter \#2 \$replace of function __ expects array\<string, bool\|\(Closure\(string\)\: string\)\|float\|int\|string\|null\>, array\{user\: mixed\} given\.$#'
+			identifier: argument.type
+			count: 2
+			path: app/Http/Controllers/ActivityFeedController.php
+
+		-
+			message: '#^Parameter \$description of method App\\Actions\\CreatePreventiveTicketAction\:\:execute\(\) expects string\|null, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/Http/Controllers/AdminController.php
+
+		-
+			message: '#^Parameter \$technician of method App\\Actions\\CreatePreventiveTicketAction\:\:execute\(\) expects App\\Models\\User\|int\|null, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/Http/Controllers/AdminController.php
+
+		-
+			message: '#^Parameter \$title of method App\\Actions\\CreatePreventiveTicketAction\:\:execute\(\) expects string, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/Http/Controllers/AdminController.php
+
+		-
+			message: '#^Parameter \#2 \$search of method App\\Repositories\\Contracts\\EquipmentRepositoryInterface\:\:getAll\(\) expects string\|null, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/Http/Controllers/AdminEquipmentController.php
+
+		-
+			message: '#^Parameter \#3 \$status of method App\\Repositories\\Contracts\\EquipmentRepositoryInterface\:\:getAll\(\) expects string\|null, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/Http/Controllers/AdminEquipmentController.php
+
+		-
+			message: '#^Parameter \#4 \$category of method App\\Repositories\\Contracts\\EquipmentRepositoryInterface\:\:getAll\(\) expects string\|null, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/Http/Controllers/AdminEquipmentController.php
+
+		-
+			message: '#^Parameter \#2 \$search of method App\\Repositories\\Contracts\\UserRepositoryInterface\:\:getAll\(\) expects string\|null, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/Http/Controllers/AdminUserController.php
+
+		-
+			message: '#^Parameter \#3 \$role of method App\\Repositories\\Contracts\\UserRepositoryInterface\:\:getAll\(\) expects string\|null, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/Http/Controllers/AdminUserController.php
+
+		-
+			message: '#^Parameter \#4 \$status of method App\\Repositories\\Contracts\\UserRepositoryInterface\:\:getAll\(\) expects string\|null, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/Http/Controllers/AdminUserController.php
+
+		-
+			message: '#^Parameter \#1 \$perPage of method Illuminate\\Database\\Eloquent\\Builder\<App\\Models\\Audit\>\:\:paginate\(\) expects int\|null, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/Http/Controllers/AuditController.php
+
+		-
+			message: '#^Binary operation "\*" between mixed and 60 results in an error\.$#'
+			identifier: binaryOp.invalid
+			count: 1
+			path: app/Http/Controllers/AuthController.php
+
+		-
+			message: '#^Parameter \#1 \$string of function strtolower expects string, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/Http/Controllers/AuthController.php
+
+		-
+			message: '#^Parameter \#1 \$value of method Carbon\\Carbon\:\:addMinutes\(\) expects float\|int, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/Http/Controllers/AuthController.php
+
+		-
+			message: '#^Parameter \#1 \$value of static method Illuminate\\Support\\Facades\\Hash\:\:check\(\) expects string, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/Http/Controllers/AuthController.php
+
+		-
+			message: '#^Parameter \#1 \$value of static method Illuminate\\Support\\Facades\\Hash\:\:make\(\) expects string, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/Http/Controllers/AuthController.php
+
+		-
+			message: '#^Parameter \#1 \$time of static method Carbon\\Carbon\:\:parse\(\) expects Carbon\\Month\|Carbon\\WeekDay\|DateTimeInterface\|float\|int\|string\|null, mixed given\.$#'
+			identifier: argument.type
+			count: 2
+			path: app/Http/Controllers/CalendarController.php
+
+		-
+			message: '#^Cannot cast mixed to string\.$#'
+			identifier: cast.string
+			count: 1
+			path: app/Http/Controllers/LocaleController.php
+
+		-
+			message: '#^Cannot cast mixed to int\.$#'
+			identifier: cast.int
+			count: 5
+			path: app/Http/Controllers/MaintenancePlanController.php
+
+		-
+			message: '#^Parameter \$description of method App\\Actions\\MaintenancePlanActions\:\:create\(\) expects string\|null, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/Http/Controllers/MaintenancePlanController.php
+
+		-
+			message: '#^Parameter \$description of method App\\Actions\\MaintenancePlanActions\:\:update\(\) expects string\|null, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/Http/Controllers/MaintenancePlanController.php
+
+		-
+			message: '#^Parameter \$name of method App\\Actions\\MaintenancePlanActions\:\:create\(\) expects string, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/Http/Controllers/MaintenancePlanController.php
+
+		-
+			message: '#^Parameter \$name of method App\\Actions\\MaintenancePlanActions\:\:update\(\) expects string, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/Http/Controllers/MaintenancePlanController.php
+
+		-
+			message: '#^Cannot call method subject\(\) on mixed\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: app/Http/Controllers/PageController.php
+
+		-
+			message: '#^Cannot call method to\(\) on mixed\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: app/Http/Controllers/PageController.php
+
+		-
+			message: '#^Parameter \$name of method App\\Actions\\PartCategoryActions\:\:create\(\) expects string, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/Http/Controllers/PartCategoryController.php
+
+		-
+			message: '#^Parameter \$name of method App\\Actions\\PartCategoryActions\:\:update\(\) expects string, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/Http/Controllers/PartCategoryController.php
+
+		-
+			message: '#^Parameter \#1 \$email of method App\\Services\\PasswordResetService\:\:createResetToken\(\) expects string, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/Http/Controllers/PasswordResetController.php
+
+		-
+			message: '#^Parameter \#1 \$email of method App\\Services\\PasswordResetService\:\:validateToken\(\) expects string, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/Http/Controllers/PasswordResetController.php
+
+		-
+			message: '#^Parameter \#1 \$string of function trim expects string, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/Http/Controllers/PasswordResetController.php
+
+		-
+			message: '#^Parameter \#2 \$password of method App\\Services\\PasswordResetService\:\:resetPassword\(\) expects string, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/Http/Controllers/PasswordResetController.php
+
+		-
+			message: '#^Parameter \#2 \$token of method App\\Services\\PasswordResetService\:\:validateToken\(\) expects string, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/Http/Controllers/PasswordResetController.php
+
+		-
+			message: '#^Cannot access offset ''currency'' on mixed\.$#'
+			identifier: offsetAccess.nonOffsetAccessible
+			count: 2
+			path: app/Http/Controllers/PreferencesController.php
+
+		-
+			message: '#^Cannot access offset ''date_format'' on mixed\.$#'
+			identifier: offsetAccess.nonOffsetAccessible
+			count: 2
+			path: app/Http/Controllers/PreferencesController.php
+
+		-
+			message: '#^Cannot access offset ''language'' on mixed\.$#'
+			identifier: offsetAccess.nonOffsetAccessible
+			count: 2
+			path: app/Http/Controllers/PreferencesController.php
+
+		-
+			message: '#^Cannot access offset ''number_format'' on mixed\.$#'
+			identifier: offsetAccess.nonOffsetAccessible
+			count: 2
+			path: app/Http/Controllers/PreferencesController.php
+
+		-
+			message: '#^Cannot access offset ''time_format'' on mixed\.$#'
+			identifier: offsetAccess.nonOffsetAccessible
+			count: 2
+			path: app/Http/Controllers/PreferencesController.php
+
+		-
+			message: '#^Method App\\Http\\Controllers\\PreferencesController\:\:currentPreferences\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Http/Controllers/PreferencesController.php
+
+		-
+			message: '#^Method App\\Http\\Controllers\\PreferencesController\:\:persist\(\) has parameter \$preferences with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Http/Controllers/PreferencesController.php
+
+		-
+			message: '#^Parameter \#1 \$locale of static method App\\Services\\LocaleService\:\:sanitize\(\) expects string, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/Http/Controllers/PreferencesController.php
+
+		-
+			message: '#^Parameter \#3 \$preferences of method App\\Http\\Controllers\\PreferencesController\:\:persist\(\) expects array, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/Http/Controllers/PreferencesController.php
+
+		-
+			message: '#^Parameter \#4 \$locale of method App\\Http\\Controllers\\PreferencesController\:\:persist\(\) expects string, mixed given\.$#'
+			identifier: argument.type
+			count: 5
+			path: app/Http/Controllers/PreferencesController.php
+
+		-
+			message: '#^Parameter \#1 \$value of static method Illuminate\\Support\\Facades\\Hash\:\:check\(\) expects string, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/Http/Controllers/ProfileController.php
+
+		-
+			message: '#^Parameter \#1 \$value of static method Illuminate\\Support\\Facades\\Hash\:\:make\(\) expects string, mixed given\.$#'
+			identifier: argument.type
+			count: 2
+			path: app/Http/Controllers/ProfileController.php
+
+		-
+			message: '#^Property App\\Models\\User\:\:\$name \(string\) does not accept mixed\.$#'
+			identifier: assign.propertyType
+			count: 1
+			path: app/Http/Controllers/ProfileController.php
+
+		-
+			message: '#^Cannot access property \$name on mixed\.$#'
+			identifier: property.nonObject
+			count: 1
+			path: app/Http/Controllers/PublicTicketController.php
+
+		-
+			message: '#^Cannot cast mixed to int\.$#'
+			identifier: cast.int
+			count: 1
+			path: app/Http/Controllers/PublicTicketController.php
+
+		-
+			message: '#^Parameter \#2 \$replace of function __ expects array\<string, bool\|\(Closure\(string\)\: string\)\|float\|int\|string\|null\>, array\{reference\: string\|null, equipment\: mixed, priority\: ''alta''\|''baixa''\|''crítica''\|''média''\} given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/Http/Controllers/PublicTicketController.php
+
+		-
+			message: '#^Parameter \$description of method App\\Actions\\CreatePublicTicketAction\:\:execute\(\) expects string, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/Http/Controllers/PublicTicketController.php
+
+		-
+			message: '#^Parameter \$reporterContact of method App\\Actions\\CreatePublicTicketAction\:\:execute\(\) expects string\|null, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/Http/Controllers/PublicTicketController.php
+
+		-
+			message: '#^Parameter \$reporterName of method App\\Actions\\CreatePublicTicketAction\:\:execute\(\) expects string\|null, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/Http/Controllers/PublicTicketController.php
+
+		-
+			message: '#^Parameter \#1 \$string of function strtolower expects string, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/Http/Controllers/RegisterController.php
+
+		-
+			message: '#^Parameter \#1 \$value of static method Illuminate\\Support\\Facades\\Hash\:\:make\(\) expects string, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/Http/Controllers/RegisterController.php
+
+		-
+			message: '#^Cannot cast mixed to float\.$#'
+			identifier: cast.double
+			count: 1
+			path: app/Http/Controllers/StockMovementController.php
+
+		-
+			message: '#^Cannot cast mixed to int\.$#'
+			identifier: cast.int
+			count: 4
+			path: app/Http/Controllers/StockMovementController.php
+
+		-
+			message: '#^Parameter \$reason of method App\\Services\\StockMovementService\:\:record\(\) expects string\|null, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/Http/Controllers/StockMovementController.php
+
+		-
+			message: '#^Cannot access offset ''reset'' on mixed\.$#'
+			identifier: offsetAccess.nonOffsetAccessible
+			count: 1
+			path: app/Http/Controllers/SystemSettingsController.php
+
+		-
+			message: '#^Parameter \#1 \$groupId of method App\\Services\\SystemSettingsService\:\:reset\(\) expects string, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/Http/Controllers/SystemSettingsController.php
+
+		-
+			message: '#^Parameter \#1 \$updates of method App\\Services\\SystemSettingsService\:\:update\(\) expects array\<string, mixed\>, array given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/Http/Controllers/SystemSettingsController.php
+
+		-
+			message: '#^Cannot cast mixed to float\.$#'
+			identifier: cast.double
+			count: 2
+			path: app/Http/Controllers/TaxRateController.php
+
+		-
+			message: '#^Parameter \$name of method App\\Actions\\TaxRateActions\:\:create\(\) expects string, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/Http/Controllers/TaxRateController.php
+
+		-
+			message: '#^Parameter \$name of method App\\Actions\\TaxRateActions\:\:update\(\) expects string, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/Http/Controllers/TaxRateController.php
+
+		-
+			message: '#^Cannot access offset ''theme'' on mixed\.$#'
+			identifier: offsetAccess.nonOffsetAccessible
+			count: 3
+			path: app/Http/Controllers/ThemeController.php
+
+		-
+			message: '#^Cannot cast mixed to string\.$#'
+			identifier: cast.string
+			count: 1
+			path: app/Http/Controllers/ThemeController.php
+
+		-
+			message: '#^Method App\\Http\\Controllers\\ThemeController\:\:buildCss\(\) has parameter \$settings with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Http/Controllers/ThemeController.php
+
+		-
+			message: '#^Method App\\Http\\Controllers\\ThemeController\:\:hexToRgb\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Http/Controllers/ThemeController.php
+
+		-
+			message: '#^Parameter \#1 \$channel of closure expects int, mixed given\.$#'
+			identifier: argument.type
+			count: 6
+			path: app/Http/Controllers/ThemeController.php
+
+		-
+			message: '#^Parameter \#1 \$hex of method App\\Http\\Controllers\\ThemeController\:\:darkenHex\(\) expects string, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/Http/Controllers/ThemeController.php
+
+		-
+			message: '#^Parameter \#1 \$hex of method App\\Http\\Controllers\\ThemeController\:\:hexToRgb\(\) expects string, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/Http/Controllers/ThemeController.php
+
+		-
+			message: '#^Parameter \#1 \$hex of method App\\Http\\Controllers\\ThemeController\:\:readableOnColor\(\) expects string, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/Http/Controllers/ThemeController.php
+
+		-
+			message: '#^Parameter \#1 \$id of method App\\Services\\ThemePresetService\:\:valuesFor\(\) expects string, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/Http/Controllers/ThemeController.php
+
+		-
+			message: '#^Parameter \#2 \$id of method App\\Services\\ThemePresetService\:\:applyForUser\(\) expects string, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/Http/Controllers/ThemeController.php
+
+		-
+			message: '#^Parameter \#2 \.\.\.\$values of function sprintf expects bool\|float\|int\|string\|null, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/Http/Controllers/ThemeController.php
+
+		-
+			message: '#^Parameter \#3 \.\.\.\$values of function sprintf expects bool\|float\|int\|string\|null, mixed given\.$#'
+			identifier: argument.type
+			count: 2
+			path: app/Http/Controllers/ThemeController.php
+
+		-
+			message: '#^Parameter \#4 \.\.\.\$values of function sprintf expects bool\|float\|int\|string\|null, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/Http/Controllers/ThemeController.php
+
+		-
+			message: '#^Parameter \#2 \$technicianId of method App\\Services\\TechnicianAssignmentService\:\:assignToTicket\(\) expects int\|null, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/Http/Controllers/Ticket/TicketAssignmentController.php
+
+		-
+			message: '#^Parameter \$report of method App\\Services\\TicketWorkflowService\:\:close\(\) expects string\|null, mixed given\.$#'
+			identifier: argument.type
+			count: 2
+			path: app/Http/Controllers/Ticket/TicketCloseController.php
+
+		-
+			message: '#^Cannot cast mixed to float\.$#'
+			identifier: cast.double
+			count: 2
+			path: app/Http/Controllers/TicketBudgetController.php
+
+		-
+			message: '#^Property App\\Models\\Ticket\:\:\$budget_details \(array\<int, array\<string, mixed\>\>\|null\) does not accept array\.$#'
+			identifier: assign.propertyType
+			count: 1
+			path: app/Http/Controllers/TicketBudgetController.php
+
+		-
+			message: '#^Cannot cast mixed to int\.$#'
+			identifier: cast.int
+			count: 1
+			path: app/Http/Controllers/TicketController.php
+
+		-
+			message: '#^Parameter \#1 \$data of static method App\\DTOs\\TicketFilters\:\:fromRequest\(\) expects array\<string, mixed\>\|Illuminate\\Foundation\\Http\\FormRequest, array given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/Http/Controllers/TicketController.php
+
+		-
+			message: '#^Cannot access offset ''theme'' on mixed\.$#'
+			identifier: offsetAccess.nonOffsetAccessible
+			count: 2
+			path: app/Http/Controllers/UiController.php
+
+		-
+			message: '#^Cannot call method where\(\) on mixed\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: app/Http/Controllers/UiController.php
+
+		-
+			message: '#^Cannot call method whereHas\(\) on mixed\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: app/Http/Controllers/UiController.php
+
+		-
+			message: '#^Parameter \#2 \$id of method App\\Services\\ThemePresetService\:\:applyForUser\(\) expects string, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/Http/Controllers/UiController.php
+
+		-
+			message: '#^Cannot cast mixed to string\.$#'
+			identifier: cast.string
+			count: 1
+			path: app/Http/Middleware/CsrfMiddleware.php
+
+		-
+			message: '#^Method App\\Http\\Middleware\\CsrfMiddleware\:\:getCsrfTokenFromRequest\(\) should return string\|null but returns mixed\.$#'
+			identifier: return.type
+			count: 1
+			path: app/Http/Middleware/CsrfMiddleware.php
+
+		-
+			message: '#^Method App\\Http\\Middleware\\CsrfMiddleware\:\:handle\(\) should return Symfony\\Component\\HttpFoundation\\Response but returns mixed\.$#'
+			identifier: return.type
+			count: 2
+			path: app/Http/Middleware/CsrfMiddleware.php
+
+		-
+			message: '#^Method App\\Http\\Middleware\\CustomAuthMiddleware\:\:collectTokenCandidates\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Http/Middleware/CustomAuthMiddleware.php
+
+		-
+			message: '#^Method App\\Http\\Middleware\\CustomAuthMiddleware\:\:findUserByTokens\(\) has parameter \$tokens with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Http/Middleware/CustomAuthMiddleware.php
+
+		-
+			message: '#^Method App\\Http\\Middleware\\CustomAuthMiddleware\:\:findUserByTokens\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Http/Middleware/CustomAuthMiddleware.php
+
+		-
+			message: '#^Method App\\Http\\Middleware\\CustomAuthMiddleware\:\:handle\(\) should return Symfony\\Component\\HttpFoundation\\Response but returns mixed\.$#'
+			identifier: return.type
+			count: 1
+			path: app/Http/Middleware/CustomAuthMiddleware.php
+
+		-
+			message: '#^Method App\\Http\\Middleware\\CustomAuthMiddleware\:\:resolveTokensToTry\(\) has parameter \$candidates with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Http/Middleware/CustomAuthMiddleware.php
+
+		-
+			message: '#^Method App\\Http\\Middleware\\CustomAuthMiddleware\:\:resolveTokensToTry\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Http/Middleware/CustomAuthMiddleware.php
+
+		-
+			message: '#^Parameter \#1 \$token of static method App\\Models\\User\:\:hashToken\(\) expects string, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/Http/Middleware/CustomAuthMiddleware.php
+
+		-
+			message: '#^Parameter \#1 \$user of method App\\Http\\Middleware\\CustomAuthMiddleware\:\:hasInvalidProfile\(\) expects App\\Models\\User, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/Http/Middleware/CustomAuthMiddleware.php
+
+		-
+			message: '#^Parameter \#1 \$user of method App\\Http\\Middleware\\CustomAuthMiddleware\:\:isTokenExpired\(\) expects App\\Models\\User, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/Http/Middleware/CustomAuthMiddleware.php
+
+		-
+			message: '#^Parameter \#1 \$user of method Illuminate\\Contracts\\Auth\\Guard\:\:setUser\(\) expects Illuminate\\Contracts\\Auth\\Authenticatable, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/Http/Middleware/CustomAuthMiddleware.php
+
+		-
+			message: '#^Cannot access property \$headers on mixed\.$#'
+			identifier: property.nonObject
+			count: 1
+			path: app/Http/Middleware/LocalizeSwaggerDocument.php
+
+		-
+			message: '#^Cannot call method getContent\(\) on mixed\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: app/Http/Middleware/LocalizeSwaggerDocument.php
+
+		-
+			message: '#^Cannot call method set\(\) on mixed\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: app/Http/Middleware/LocalizeSwaggerDocument.php
+
+		-
+			message: '#^Cannot call method setContent\(\) on mixed\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: app/Http/Middleware/LocalizeSwaggerDocument.php
+
+		-
+			message: '#^Method App\\Http\\Middleware\\LocalizeSwaggerDocument\:\:handle\(\) should return Symfony\\Component\\HttpFoundation\\Response but returns mixed\.$#'
+			identifier: return.type
+			count: 2
+			path: app/Http/Middleware/LocalizeSwaggerDocument.php
+
+		-
+			message: '#^Parameter \#1 \$json of function json_decode expects string, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/Http/Middleware/LocalizeSwaggerDocument.php
+
+		-
+			message: '#^Cannot cast mixed to int\.$#'
+			identifier: cast.int
+			count: 1
+			path: app/Http/Middleware/RateLimitMiddleware.php
+
+		-
+			message: '#^Cannot cast mixed to string\.$#'
+			identifier: cast.string
+			count: 1
+			path: app/Http/Middleware/RateLimitMiddleware.php
+
+		-
+			message: '#^Parameter \#1 \$response of method App\\Http\\Middleware\\RateLimitMiddleware\:\:addHeaders\(\) expects Symfony\\Component\\HttpFoundation\\Response, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/Http/Middleware/RateLimitMiddleware.php
+
+		-
+			message: '#^Cannot access property \$headers on mixed\.$#'
+			identifier: property.nonObject
+			count: 1
+			path: app/Http/Middleware/RequestContextMiddleware.php
+
+		-
+			message: '#^Cannot call method getStatusCode\(\) on mixed\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: app/Http/Middleware/RequestContextMiddleware.php
+
+		-
+			message: '#^Cannot call method set\(\) on mixed\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: app/Http/Middleware/RequestContextMiddleware.php
+
+		-
+			message: '#^Cannot cast mixed to float\.$#'
+			identifier: cast.double
+			count: 2
+			path: app/Http/Middleware/RequestContextMiddleware.php
+
+		-
+			message: '#^Method App\\Http\\Middleware\\RequestContextMiddleware\:\:handle\(\) should return Symfony\\Component\\HttpFoundation\\Response but returns mixed\.$#'
+			identifier: return.type
+			count: 1
+			path: app/Http/Middleware/RequestContextMiddleware.php
+
+		-
+			message: '#^Method App\\Http\\Middleware\\RoleMiddleware\:\:handle\(\) should return Symfony\\Component\\HttpFoundation\\Response but returns mixed\.$#'
+			identifier: return.type
+			count: 1
+			path: app/Http/Middleware/RoleMiddleware.php
+
+		-
+			message: '#^Method App\\Http\\Middleware\\SetLocaleMiddleware\:\:handle\(\) should return Symfony\\Component\\HttpFoundation\\Response but returns mixed\.$#'
+			identifier: return.type
+			count: 1
+			path: app/Http/Middleware/SetLocaleMiddleware.php
+
+		-
+			message: '#^Method App\\Http\\Middleware\\SetUserPreferencesMiddleware\:\:handle\(\) should return Symfony\\Component\\HttpFoundation\\Response but returns mixed\.$#'
+			identifier: return.type
+			count: 1
+			path: app/Http/Middleware/SetUserPreferencesMiddleware.php
+
+		-
+			message: '#^Method App\\Http\\Requests\\ChangePasswordRequest\:\:rules\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Http/Requests/ChangePasswordRequest.php
+
+		-
+			message: '#^Cannot cast mixed to string\.$#'
+			identifier: cast.string
+			count: 1
+			path: app/Http/Requests/LoginRequest.php
+
+		-
+			message: '#^Cannot cast mixed to string\.$#'
+			identifier: cast.string
+			count: 2
+			path: app/Http/Requests/RegisterRequest.php
+
+		-
+			message: '#^Method App\\Http\\Requests\\RegisterRequest\:\:passwordRules\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Http/Requests/RegisterRequest.php
+
+		-
+			message: '#^Cannot cast mixed to float\.$#'
+			identifier: cast.double
+			count: 2
+			path: app/Http/Requests/RequestBudgetRequest.php
+
+		-
+			message: '#^Cannot cast mixed to int\.$#'
+			identifier: cast.int
+			count: 1
+			path: app/Http/Requests/RequestBudgetRequest.php
+
+		-
+			message: '#^Parameter \#2 \$callback of function array_reduce expects callable\(float, mixed\)\: float, Closure\(float, array\)\: float given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/Http/Requests/RequestBudgetRequest.php
+
+		-
+			message: '#^Cannot cast mixed to string\.$#'
+			identifier: cast.string
+			count: 1
+			path: app/Http/Requests/ResetPasswordRequest.php
+
+		-
+			message: '#^Cannot cast mixed to string\.$#'
+			identifier: cast.string
+			count: 2
+			path: app/Http/Requests/ScheduleMaintenanceRequest.php
+
+		-
+			message: '#^Cannot cast mixed to string\.$#'
+			identifier: cast.string
+			count: 1
+			path: app/Http/Requests/SendResetLinkRequest.php
+
+		-
+			message: '#^Cannot cast mixed to string\.$#'
+			identifier: cast.string
+			count: 1
+			path: app/Http/Requests/StoreCommentRequest.php
+
+		-
+			message: '#^Cannot cast mixed to string\.$#'
+			identifier: cast.string
+			count: 2
+			path: app/Http/Requests/StoreEquipmentRequest.php
+
+		-
+			message: '#^Cannot cast mixed to string\.$#'
+			identifier: cast.string
+			count: 2
+			path: app/Http/Requests/StorePartRequest.php
+
+		-
+			message: '#^Cannot cast mixed to string\.$#'
+			identifier: cast.string
+			count: 2
+			path: app/Http/Requests/StorePreventiveRequest.php
+
+		-
+			message: '#^Cannot cast mixed to string\.$#'
+			identifier: cast.string
+			count: 2
+			path: app/Http/Requests/StoreRoomRequest.php
+
+		-
+			message: '#^Cannot cast mixed to string\.$#'
+			identifier: cast.string
+			count: 1
+			path: app/Http/Requests/StoreSupplierRequest.php
+
+		-
+			message: '#^Cannot cast mixed to string\.$#'
+			identifier: cast.string
+			count: 2
+			path: app/Http/Requests/StoreTicketRequest.php
+
+		-
+			message: '#^Cannot cast mixed to string\.$#'
+			identifier: cast.string
+			count: 2
+			path: app/Http/Requests/StoreUserRequest.php
+
+		-
+			message: '#^Cannot cast mixed to float\.$#'
+			identifier: cast.double
+			count: 5
+			path: app/Http/Requests/SubmitBudgetRequest.php
+
+		-
+			message: '#^Parameter \#2 \$callback of function array_reduce expects callable\(float, mixed\)\: float, Closure\(float, array\)\: float given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/Http/Requests/SubmitBudgetRequest.php
+
+		-
+			message: '#^Cannot cast mixed to string\.$#'
+			identifier: cast.string
+			count: 2
+			path: app/Http/Requests/UpdateEquipmentRequest.php
+
+		-
+			message: '#^Cannot cast mixed to string\.$#'
+			identifier: cast.string
+			count: 2
+			path: app/Http/Requests/UpdatePartRequest.php
+
+		-
+			message: '#^Cannot cast mixed to string\.$#'
+			identifier: cast.string
+			count: 1
+			path: app/Http/Requests/UpdateProfileRequest.php
+
+		-
+			message: '#^Cannot cast mixed to string\.$#'
+			identifier: cast.string
+			count: 2
+			path: app/Http/Requests/UpdateRoomRequest.php
+
+		-
+			message: '#^Cannot cast mixed to string\.$#'
+			identifier: cast.string
+			count: 1
+			path: app/Http/Requests/UpdateSupplierRequest.php
+
+		-
+			message: '#^Cannot cast mixed to string\.$#'
+			identifier: cast.string
+			count: 2
+			path: app/Http/Requests/UpdateUserRequest.php
+
+		-
+			message: '#^Cannot cast mixed to int\.$#'
+			identifier: cast.int
+			count: 1
+			path: app/Http/Requests/UploadPhotoRequest.php
+
+		-
+			message: '#^Parameter \#1 \$mimetypes of method Illuminate\\Validation\\Rules\\File\:\:types\(\) expects array\<int, string\>\|string, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/Http/Requests/UploadPhotoRequest.php
+
+		-
+			message: '#^Parameter \#1 \$name of static method Illuminate\\Support\\Facades\\Mail\:\:mailer\(\) expects string\|null, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/Jobs/SendTestEmailJob.php
+
+		-
+			message: '#^Parameter \#1 \$context of method App\\Logging\\RequestContextProcessor\:\:sanitize\(\) expects array\<string, mixed\>, array\<mixed, mixed\> given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/Logging/RequestContextProcessor.php
+
+		-
+			message: '#^Parameter \#1 \$context of method App\\Logging\\RequestContextProcessor\:\:sanitize\(\) expects array\<string, mixed\>, array\<mixed\> given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/Logging/RequestContextProcessor.php
+
+		-
+			message: '#^Cannot access property \$id on mixed\.$#'
+			identifier: property.nonObject
+			count: 1
+			path: app/Models/Equipment.php
+
+		-
+			message: '#^Cannot call method getKey\(\) on mixed\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: app/Models/Equipment.php
+
+		-
+			message: '#^Cannot cast mixed to int\.$#'
+			identifier: cast.int
+			count: 1
+			path: app/Models/Equipment.php
+
+		-
+			message: '#^Cannot access property \$id on mixed\.$#'
+			identifier: property.nonObject
+			count: 1
+			path: app/Models/Part.php
+
+		-
+			message: '#^Cannot call method getKey\(\) on mixed\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: app/Models/Part.php
+
+		-
+			message: '#^Cannot cast mixed to int\.$#'
+			identifier: cast.int
+			count: 1
+			path: app/Models/Part.php
+
+		-
+			message: '#^Cannot access property \$id on mixed\.$#'
+			identifier: property.nonObject
+			count: 1
+			path: app/Models/Room.php
+
+		-
+			message: '#^Cannot call method getKey\(\) on mixed\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: app/Models/Room.php
+
+		-
+			message: '#^Cannot cast mixed to int\.$#'
+			identifier: cast.int
+			count: 1
+			path: app/Models/Room.php
+
+		-
+			message: '#^Cannot access property \$id on mixed\.$#'
+			identifier: property.nonObject
+			count: 1
+			path: app/Models/Ticket.php
+
+		-
+			message: '#^Cannot call method getKey\(\) on mixed\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: app/Models/Ticket.php
+
+		-
+			message: '#^Cannot cast mixed to int\.$#'
+			identifier: cast.int
+			count: 1
+			path: app/Models/Ticket.php
+
+		-
+			message: '#^Parameter \#2 \$oldStatus of class App\\Events\\TicketStatusChanged constructor expects App\\Enums\\TicketStatusEnum\|string, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/Observers/TicketObserver.php
+
+		-
+			message: '#^Parameter \#3 \$newStatus of class App\\Events\\TicketStatusChanged constructor expects App\\Enums\\TicketStatusEnum\|string, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/Observers/TicketObserver.php
+
+		-
+			message: '#^Parameter \#1 \$value of static method App\\Enums\\UserRoleEnum\:\:tryFrom\(\) expects int\|string, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/Observers/UserObserver.php
+
+		-
+			message: '#^Cannot call method isAdmin\(\) on mixed\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: app/Providers/AppServiceProvider.php
+
+		-
+			message: '#^Cannot cast mixed to float\.$#'
+			identifier: cast.double
+			count: 2
+			path: app/Providers/AppServiceProvider.php
+
+		-
+			message: '#^Parameter \#1 \$extra of method Sentry\\Event\:\:setExtra\(\) expects array\<string, mixed\>, array\<mixed, mixed\> given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/Providers/AppServiceProvider.php
+
+		-
+			message: '#^Parameter \#1 \$request of method Sentry\\Event\:\:setRequest\(\) expects array\<string, mixed\>, array\<mixed, mixed\> given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/Providers/AppServiceProvider.php
+
+		-
+			message: '#^Parameter \#2 \$data of method Sentry\\Event\:\:setContext\(\) expects array\<string, mixed\>, array\<mixed, mixed\> given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/Providers/AppServiceProvider.php
+
+		-
+			message: '#^Method App\\Repositories\\Contracts\\EquipmentRepositoryInterface\:\:getAll\(\) return type with generic class Illuminate\\Pagination\\LengthAwarePaginator does not specify its types\: TKey, TValue$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Repositories/Contracts/EquipmentRepositoryInterface.php
+
+		-
+			message: '#^Method App\\Repositories\\Contracts\\RoomRepositoryInterface\:\:getAll\(\) return type with generic class Illuminate\\Pagination\\LengthAwarePaginator does not specify its types\: TKey, TValue$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Repositories/Contracts/RoomRepositoryInterface.php
+
+		-
+			message: '#^Method App\\Repositories\\Contracts\\TicketRepositoryInterface\:\:getAll\(\) return type with generic class Illuminate\\Pagination\\LengthAwarePaginator does not specify its types\: TKey, TValue$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Repositories/Contracts/TicketRepositoryInterface.php
+
+		-
+			message: '#^Method App\\Repositories\\Contracts\\TicketRepositoryInterface\:\:getOpenTickets\(\) return type with generic class Illuminate\\Pagination\\LengthAwarePaginator does not specify its types\: TKey, TValue$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Repositories/Contracts/TicketRepositoryInterface.php
+
+		-
+			message: '#^Method App\\Repositories\\Contracts\\TicketRepositoryInterface\:\:getTicketsByTechnician\(\) return type with generic class Illuminate\\Pagination\\LengthAwarePaginator does not specify its types\: TKey, TValue$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Repositories/Contracts/TicketRepositoryInterface.php
+
+		-
+			message: '#^Method App\\Repositories\\Contracts\\TicketRepositoryInterface\:\:getTicketsByUser\(\) return type with generic class Illuminate\\Pagination\\LengthAwarePaginator does not specify its types\: TKey, TValue$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Repositories/Contracts/TicketRepositoryInterface.php
+
+		-
+			message: '#^Method App\\Repositories\\Contracts\\UserRepositoryInterface\:\:getAll\(\) return type with generic class Illuminate\\Pagination\\LengthAwarePaginator does not specify its types\: TKey, TValue$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Repositories/Contracts/UserRepositoryInterface.php
+
+		-
+			message: '#^Method App\\Repositories\\EquipmentRepository\:\:getAll\(\) return type with generic class Illuminate\\Pagination\\LengthAwarePaginator does not specify its types\: TKey, TValue$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Repositories/EquipmentRepository.php
+
+		-
+			message: '#^Method App\\Repositories\\RoomRepository\:\:getActive\(\) should return array\<int, App\\Models\\Room\> but returns array\<mixed\>\.$#'
+			identifier: return.type
+			count: 1
+			path: app/Repositories/RoomRepository.php
+
+		-
+			message: '#^Method App\\Repositories\\RoomRepository\:\:getAll\(\) return type with generic class Illuminate\\Pagination\\LengthAwarePaginator does not specify its types\: TKey, TValue$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Repositories/RoomRepository.php
+
+		-
+			message: '#^Method App\\Repositories\\TicketRepository\:\:getAll\(\) return type with generic class Illuminate\\Pagination\\LengthAwarePaginator does not specify its types\: TKey, TValue$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Repositories/TicketRepository.php
+
+		-
+			message: '#^Method App\\Repositories\\TicketRepository\:\:getOpenTickets\(\) return type with generic class Illuminate\\Pagination\\LengthAwarePaginator does not specify its types\: TKey, TValue$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Repositories/TicketRepository.php
+
+		-
+			message: '#^Method App\\Repositories\\TicketRepository\:\:getTicketsByTechnician\(\) return type with generic class Illuminate\\Pagination\\LengthAwarePaginator does not specify its types\: TKey, TValue$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Repositories/TicketRepository.php
+
+		-
+			message: '#^Method App\\Repositories\\TicketRepository\:\:getTicketsByUser\(\) return type with generic class Illuminate\\Pagination\\LengthAwarePaginator does not specify its types\: TKey, TValue$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Repositories/TicketRepository.php
+
+		-
+			message: '#^Parameter \#1 \$perPage of method Illuminate\\Database\\Eloquent\\Builder\<App\\Models\\Ticket\>\:\:paginate\(\) expects int\|null, mixed given\.$#'
+			identifier: argument.type
+			count: 4
+			path: app/Repositories/TicketRepository.php
+
+		-
+			message: '#^Method App\\Repositories\\UserRepository\:\:getActiveTechnicians\(\) should return array\<int, App\\Models\\User\> but returns array\<mixed\>\.$#'
+			identifier: return.type
+			count: 1
+			path: app/Repositories/UserRepository.php
+
+		-
+			message: '#^Method App\\Repositories\\UserRepository\:\:getAdmins\(\) should return array\<int, App\\Models\\User\> but returns array\<mixed\>\.$#'
+			identifier: return.type
+			count: 1
+			path: app/Repositories/UserRepository.php
+
+		-
+			message: '#^Method App\\Repositories\\UserRepository\:\:getAll\(\) return type with generic class Illuminate\\Pagination\\LengthAwarePaginator does not specify its types\: TKey, TValue$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Repositories/UserRepository.php
+
+		-
+			message: '#^Cannot access offset 0 on mixed\.$#'
+			identifier: offsetAccess.nonOffsetAccessible
+			count: 1
+			path: app/Services/AIService.php
+
+		-
+			message: '#^Cannot access property \$choices on mixed\.$#'
+			identifier: property.nonObject
+			count: 1
+			path: app/Services/AIService.php
+
+		-
+			message: '#^Cannot access property \$content on mixed\.$#'
+			identifier: property.nonObject
+			count: 1
+			path: app/Services/AIService.php
+
+		-
+			message: '#^Cannot access property \$message on mixed\.$#'
+			identifier: property.nonObject
+			count: 1
+			path: app/Services/AIService.php
+
+		-
+			message: '#^Cannot call method whereNotIn\(\) on mixed\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: app/Services/AIService.php
+
+		-
+			message: '#^Cannot cast mixed to float\.$#'
+			identifier: cast.double
+			count: 1
+			path: app/Services/AIService.php
+
+		-
+			message: '#^Cannot cast mixed to int\.$#'
+			identifier: cast.int
+			count: 1
+			path: app/Services/AIService.php
+
+		-
+			message: '#^Cannot cast mixed to string\.$#'
+			identifier: cast.string
+			count: 1
+			path: app/Services/AIService.php
+
+		-
+			message: '#^Parameter \#1 \$string of function trim expects string, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/Services/AIService.php
+
+		-
+			message: '#^Binary operation "/" between mixed and mixed results in an error\.$#'
+			identifier: binaryOp.invalid
+			count: 1
+			path: app/Services/AnalyticsDashboardService.php
+
+		-
+			message: '#^Cannot access property \$name on mixed\.$#'
+			identifier: property.nonObject
+			count: 1
+			path: app/Services/AnalyticsDashboardService.php
+
+		-
+			message: '#^Cannot cast mixed to float\.$#'
+			identifier: cast.double
+			count: 2
+			path: app/Services/AnalyticsDashboardService.php
+
+		-
+			message: '#^Cannot cast mixed to int\.$#'
+			identifier: cast.int
+			count: 11
+			path: app/Services/AnalyticsDashboardService.php
+
+		-
+			message: '#^Cannot cast mixed to string\.$#'
+			identifier: cast.string
+			count: 3
+			path: app/Services/AnalyticsDashboardService.php
+
+		-
+			message: '#^Method App\\Services\\AnalyticsDashboardService\:\:budgetBreakdown\(\) has parameter \$baseQuery with generic class Illuminate\\Database\\Eloquent\\Builder but does not specify its types\: TModel$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Services/AnalyticsDashboardService.php
+
+		-
+			message: '#^Method App\\Services\\AnalyticsDashboardService\:\:costByEquipment\(\) should return array\{labels\: Illuminate\\Support\\Collection\<int, string\>, data\: Illuminate\\Support\\Collection\<int, float\>\} but returns array\{labels\: Illuminate\\Support\\Collection\<\(int\|string\), mixed\>, data\: Illuminate\\Support\\Collection\<\(int\|string\), float\>\}\.$#'
+			identifier: return.type
+			count: 1
+			path: app/Services/AnalyticsDashboardService.php
+
+		-
+			message: '#^Method App\\Services\\AnalyticsDashboardService\:\:lowStockParts\(\) should return array\{labels\: Illuminate\\Support\\Collection\<int, string\>, data\: Illuminate\\Support\\Collection\<int, int\>\} but returns array\{labels\: Illuminate\\Support\\Collection\<\(int\|string\), mixed\>, data\: Illuminate\\Support\\Collection\<\(int\|string\), int\>\}\.$#'
+			identifier: return.type
+			count: 1
+			path: app/Services/AnalyticsDashboardService.php
+
+		-
+			message: '#^Method App\\Services\\AnalyticsDashboardService\:\:roomBreakdown\(\) has parameter \$baseQuery with generic class Illuminate\\Database\\Eloquent\\Builder but does not specify its types\: TModel$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Services/AnalyticsDashboardService.php
+
+		-
+			message: '#^Method App\\Services\\AnalyticsDashboardService\:\:roomBreakdown\(\) should return array\{labels\: Illuminate\\Support\\Collection\<int, string\>, data\: Illuminate\\Support\\Collection\<int, int\>\} but returns array\{labels\: Illuminate\\Support\\Collection\<\(int\|string\), mixed\>, data\: Illuminate\\Support\\Collection\<\(int\|string\), int\>\}\.$#'
+			identifier: return.type
+			count: 1
+			path: app/Services/AnalyticsDashboardService.php
+
+		-
+			message: '#^Method App\\Services\\AnalyticsDashboardService\:\:sourceBreakdown\(\) has parameter \$baseQuery with generic class Illuminate\\Database\\Eloquent\\Builder but does not specify its types\: TModel$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Services/AnalyticsDashboardService.php
+
+		-
+			message: '#^Method App\\Services\\AnalyticsDashboardService\:\:urgencyBreakdown\(\) has parameter \$baseQuery with generic class Illuminate\\Database\\Eloquent\\Builder but does not specify its types\: TModel$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Services/AnalyticsDashboardService.php
+
+		-
+			message: '#^Parameter \#1 \$monthLabels of method App\\Services\\AnalyticsDashboardService\:\:monthlyPerformanceData\(\) expects array\<int, string\>, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/Services/AnalyticsDashboardService.php
+
+		-
+			message: '#^Parameter \#1 \$monthLabels of method App\\Services\\AnalyticsDashboardService\:\:stockMonthlyData\(\) expects array\<int, string\>, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/Services/AnalyticsDashboardService.php
+
+		-
+			message: '#^Parameter \#1 \$num of function round expects float\|int, mixed given\.$#'
+			identifier: argument.type
+			count: 2
+			path: app/Services/AnalyticsDashboardService.php
+
+		-
+			message: '#^Parameter \#4 \$slaTargetMinutes of class App\\Domain\\Ticket\\Queries\\TicketKpiQuery constructor expects int, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/Services/AnalyticsDashboardService.php
+
+		-
+			message: '#^Method App\\Services\\AuthUserResolver\:\:fromRequest\(\) should return App\\Models\\User\|null but returns mixed\.$#'
+			identifier: return.type
+			count: 1
+			path: app/Services/AuthUserResolver.php
+
+		-
+			message: '#^Binary operation "\*" between mixed and mixed results in an error\.$#'
+			identifier: binaryOp.invalid
+			count: 4
+			path: app/Services/BudgetCalculatorService.php
+
+		-
+			message: '#^Cannot cast mixed to float\.$#'
+			identifier: cast.double
+			count: 2
+			path: app/Services/BudgetCalculatorService.php
+
+		-
+			message: '#^Method App\\Services\\CalendarService\:\:getScheduledEventsForUser\(\) return type with generic class Illuminate\\Support\\Collection does not specify its types\: TKey, TValue$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Services/CalendarService.php
+
+		-
+			message: '#^Cannot cast mixed to int\.$#'
+			identifier: cast.int
+			count: 4
+			path: app/Services/CircuitBreaker.php
+
+		-
+			message: '#^Method App\\Services\\CurrencyRateService\:\:fetchRatesFromProvider\(\) should return array\<string, float\> but returns mixed\.$#'
+			identifier: return.type
+			count: 1
+			path: app/Services/CurrencyRateService.php
+
+		-
+			message: '#^Cannot access offset ''decimal'' on mixed\.$#'
+			identifier: offsetAccess.nonOffsetAccessible
+			count: 1
+			path: app/Services/LocaleService.php
+
+		-
+			message: '#^Cannot access offset ''languages'' on mixed\.$#'
+			identifier: offsetAccess.nonOffsetAccessible
+			count: 1
+			path: app/Services/LocaleService.php
+
+		-
+			message: '#^Cannot access offset ''thousand'' on mixed\.$#'
+			identifier: offsetAccess.nonOffsetAccessible
+			count: 1
+			path: app/Services/LocaleService.php
+
+		-
+			message: '#^Cannot access offset 0 on mixed\.$#'
+			identifier: offsetAccess.nonOffsetAccessible
+			count: 1
+			path: app/Services/LocaleService.php
+
+		-
+			message: '#^Cannot cast mixed to string\.$#'
+			identifier: cast.string
+			count: 8
+			path: app/Services/LocaleService.php
+
+		-
+			message: '#^Method App\\Services\\LocaleService\:\:default\(\) should return string but returns mixed\.$#'
+			identifier: return.type
+			count: 1
+			path: app/Services/LocaleService.php
+
+		-
+			message: '#^Method App\\Services\\LocaleService\:\:grouped\(\) should return array\<string, array\<string, mixed\>\> but returns array\<array\<mixed, mixed\>\>\.$#'
+			identifier: return.type
+			count: 1
+			path: app/Services/LocaleService.php
+
+		-
+			message: '#^Method App\\Services\\LocaleService\:\:groupedByContinent\(\) should return array\<string, list\<array\<string, mixed\>\>\> but returns array\<non\-empty\-list\<non\-empty\-array\<string, mixed\>\>\>\.$#'
+			identifier: return.type
+			count: 1
+			path: app/Services/LocaleService.php
+
+		-
+			message: '#^Method App\\Services\\LocaleService\:\:resolveDefaultLocale\(\) should return array\{code\: string, default_locale\: string\} but returns array\{code\: string, default_locale\: mixed\}\.$#'
+			identifier: return.type
+			count: 2
+			path: app/Services/LocaleService.php
+
+		-
+			message: '#^Method App\\Services\\LocaleService\:\:resolveLocale\(\) should return array\{code\: string, locale\: string\} but returns array\{code\: string, locale\: mixed\}\.$#'
+			identifier: return.type
+			count: 1
+			path: app/Services/LocaleService.php
+
+		-
+			message: '#^Method App\\Services\\LocaleService\:\:sanitize\(\) should return string but returns mixed\.$#'
+			identifier: return.type
+			count: 3
+			path: app/Services/LocaleService.php
+
+		-
+			message: '#^Method App\\Services\\LocaleService\:\:userCurrency\(\) should return string but returns mixed\.$#'
+			identifier: return.type
+			count: 1
+			path: app/Services/LocaleService.php
+
+		-
+			message: '#^Method App\\Services\\LocaleService\:\:userDateFormat\(\) should return string but returns mixed\.$#'
+			identifier: return.type
+			count: 1
+			path: app/Services/LocaleService.php
+
+		-
+			message: '#^Parameter \#1 \$locale of static method App\\Services\\LocaleService\:\:meta\(\) expects string, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/Services/LocaleService.php
+
+		-
+			message: '#^Parameter \#3 \$decimal_separator of function number_format expects string\|null, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/Services/LocaleService.php
+
+		-
+			message: '#^Parameter \#4 \$thousands_separator of function number_format expects string\|null, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/Services/LocaleService.php
+
+		-
+			message: '#^Possibly invalid array key type mixed\.$#'
+			identifier: offsetAccess.invalidOffset
+			count: 1
+			path: app/Services/LocaleService.php
+
+		-
+			message: '#^Binary operation "\." between non\-falsy\-string and mixed results in an error\.$#'
+			identifier: binaryOp.invalid
+			count: 1
+			path: app/Services/LocalizationService.php
+
+		-
+			message: '#^Cannot call method format\(\) on mixed\.$#'
+			identifier: method.nonObject
+			count: 4
+			path: app/Services/LocalizationService.php
+
+		-
+			message: '#^Cannot call method getName\(\) on mixed\.$#'
+			identifier: method.nonObject
+			count: 2
+			path: app/Services/LocalizationService.php
+
+		-
+			message: '#^Cannot call method getTimezone\(\) on mixed\.$#'
+			identifier: method.nonObject
+			count: 2
+			path: app/Services/LocalizationService.php
+
+		-
+			message: '#^Cannot call method locale\(\) on mixed\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: app/Services/LocalizationService.php
+
+		-
+			message: '#^Cannot call method translatedFormat\(\) on mixed\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: app/Services/LocalizationService.php
+
+		-
+			message: '#^Cannot cast mixed to string\.$#'
+			identifier: cast.string
+			count: 3
+			path: app/Services/LocalizationService.php
+
+		-
+			message: '#^Method App\\Services\\LocalizationService\:\:formatDateFallback\(\) should return string but returns mixed\.$#'
+			identifier: return.type
+			count: 2
+			path: app/Services/LocalizationService.php
+
+		-
+			message: '#^Method App\\Services\\LocalizationService\:\:preferences\(\) should return array\<string, mixed\> but returns array\.$#'
+			identifier: return.type
+			count: 1
+			path: app/Services/LocalizationService.php
+
+		-
+			message: '#^Method App\\Services\\LocalizationService\:\:preferences\(\) should return array\<string, mixed\> but returns array\<mixed, mixed\>\.$#'
+			identifier: return.type
+			count: 1
+			path: app/Services/LocalizationService.php
+
+		-
+			message: '#^Parameter \#1 \$datetime of method IntlDateFormatter\:\:format\(\) expects array\|DateTimeInterface\|float\|int\|IntlCalendar\|string, mixed given\.$#'
+			identifier: argument.type
+			count: 2
+			path: app/Services/LocalizationService.php
+
+		-
+			message: '#^Parameter \#1 \$time of static method Carbon\\Carbon\:\:parse\(\) expects Carbon\\Month\|Carbon\\WeekDay\|DateTimeInterface\|float\|int\|string\|null, mixed given\.$#'
+			identifier: argument.type
+			count: 2
+			path: app/Services/LocalizationService.php
+
+		-
+			message: '#^Parameter \#4 \$timezone of static method IntlDateFormatter\:\:create\(\) expects DateTimeZone\|IntlTimeZone\|string\|null, mixed given\.$#'
+			identifier: argument.type
+			count: 2
+			path: app/Services/LocalizationService.php
+
+		-
+			message: '#^Method App\\Services\\PartService\:\:listPaginated\(\) return type with generic interface Illuminate\\Contracts\\Pagination\\LengthAwarePaginator does not specify its types\: TKey, TValue$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Services/PartService.php
+
+		-
+			message: '#^Parameter \#1 \$time of static method Carbon\\Carbon\:\:parse\(\) expects Carbon\\Month\|Carbon\\WeekDay\|DateTimeInterface\|float\|int\|string\|null, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/Services/PasswordResetService.php
+
+		-
+			message: '#^Parameter \#2 \$hashedValue of static method Illuminate\\Support\\Facades\\Hash\:\:check\(\) expects string, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/Services/PasswordResetService.php
+
+		-
+			message: '#^Cannot cast mixed to int\.$#'
+			identifier: cast.int
+			count: 2
+			path: app/Services/PreferencesService.php
+
+		-
+			message: '#^Method App\\Services\\PreferencesService\:\:current\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Services/PreferencesService.php
+
+		-
+			message: '#^Method App\\Services\\PreferencesService\:\:forUser\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Services/PreferencesService.php
+
+		-
+			message: '#^Method App\\Services\\PreferencesService\:\:fromSession\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Services/PreferencesService.php
+
+		-
+			message: '#^Method App\\Services\\PreferencesService\:\:getCurrency\(\) should return string but returns mixed\.$#'
+			identifier: return.type
+			count: 1
+			path: app/Services/PreferencesService.php
+
+		-
+			message: '#^Method App\\Services\\PreferencesService\:\:getDateFormat\(\) should return string but returns mixed\.$#'
+			identifier: return.type
+			count: 1
+			path: app/Services/PreferencesService.php
+
+		-
+			message: '#^Method App\\Services\\PreferencesService\:\:getLanguage\(\) should return string but returns mixed\.$#'
+			identifier: return.type
+			count: 1
+			path: app/Services/PreferencesService.php
+
+		-
+			message: '#^Method App\\Services\\PreferencesService\:\:getNumberFormat\(\) should return string but returns mixed\.$#'
+			identifier: return.type
+			count: 1
+			path: app/Services/PreferencesService.php
+
+		-
+			message: '#^Method App\\Services\\PreferencesService\:\:getNumberSeparators\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Services/PreferencesService.php
+
+		-
+			message: '#^Method App\\Services\\PreferencesService\:\:getTimeFormat\(\) should return string but returns mixed\.$#'
+			identifier: return.type
+			count: 1
+			path: app/Services/PreferencesService.php
+
+		-
+			message: '#^Method App\\Services\\PreferencesService\:\:saveForUser\(\) has parameter \$preferences with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Services/PreferencesService.php
+
+		-
+			message: '#^Method App\\Services\\PreferencesService\:\:saveToSession\(\) has parameter \$preferences with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Services/PreferencesService.php
+
+		-
+			message: '#^Method App\\Services\\PreferencesService\:\:supportedDateFormats\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Services/PreferencesService.php
+
+		-
+			message: '#^Method App\\Services\\PreferencesService\:\:supportedNumberFormats\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Services/PreferencesService.php
+
+		-
+			message: '#^Method App\\Services\\PreferencesService\:\:supportedTimeFormats\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Services/PreferencesService.php
+
+		-
+			message: '#^Method App\\Services\\PreferencesService\:\:validatePreferences\(\) has parameter \$preferences with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Services/PreferencesService.php
+
+		-
+			message: '#^Method App\\Services\\PreferencesService\:\:validatePreferences\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Services/PreferencesService.php
+
+		-
+			message: '#^Parameter \#1 \$currency of static method App\\Services\\PreferencesService\:\:validateCurrency\(\) expects string, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/Services/PreferencesService.php
+
+		-
+			message: '#^Parameter \#1 \$format of static method App\\Services\\PreferencesService\:\:validateDateFormat\(\) expects string, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/Services/PreferencesService.php
+
+		-
+			message: '#^Parameter \#1 \$format of static method App\\Services\\PreferencesService\:\:validateNumberFormat\(\) expects string, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/Services/PreferencesService.php
+
+		-
+			message: '#^Parameter \#1 \$format of static method App\\Services\\PreferencesService\:\:validateTimeFormat\(\) expects string, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/Services/PreferencesService.php
+
+		-
+			message: '#^Parameter \#1 \$language of static method App\\Services\\PreferencesService\:\:validateLanguage\(\) expects string, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/Services/PreferencesService.php
+
+		-
+			message: '#^Parameter \#2 \$values of static method Illuminate\\Database\\Eloquent\\Builder\<App\\Models\\UserPreference\>\:\:updateOrCreate\(\) expects array\<string, mixed\>, array given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/Services/PreferencesService.php
+
+		-
+			message: '#^Parameter \#3 \$decimal_separator of function number_format expects string\|null, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/Services/PreferencesService.php
+
+		-
+			message: '#^Parameter \#4 \$thousands_separator of function number_format expects string\|null, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/Services/PreferencesService.php
+
+		-
+			message: '#^Argument of an invalid type mixed supplied for foreach, only iterables are supported\.$#'
+			identifier: foreach.nonIterable
+			count: 3
+			path: app/Services/SystemSettingsService.php
+
+		-
+			message: '#^Cannot access offset ''default'' on mixed\.$#'
+			identifier: offsetAccess.nonOffsetAccessible
+			count: 2
+			path: app/Services/SystemSettingsService.php
+
+		-
+			message: '#^Cannot access offset ''fields'' on mixed\.$#'
+			identifier: offsetAccess.nonOffsetAccessible
+			count: 2
+			path: app/Services/SystemSettingsService.php
+
+		-
+			message: '#^Cannot access offset string on mixed\.$#'
+			identifier: offsetAccess.nonOffsetAccessible
+			count: 1
+			path: app/Services/SystemSettingsService.php
+
+		-
+			message: '#^Cannot cast mixed to float\.$#'
+			identifier: cast.double
+			count: 3
+			path: app/Services/SystemSettingsService.php
+
+		-
+			message: '#^Cannot cast mixed to int\.$#'
+			identifier: cast.int
+			count: 2
+			path: app/Services/SystemSettingsService.php
+
+		-
+			message: '#^Cannot cast mixed to string\.$#'
+			identifier: cast.string
+			count: 8
+			path: app/Services/SystemSettingsService.php
+
+		-
+			message: '#^Method App\\Services\\SystemSettingsService\:\:cast\(\) has parameter \$field with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Services/SystemSettingsService.php
+
+		-
+			message: '#^Method App\\Services\\SystemSettingsService\:\:findField\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Services/SystemSettingsService.php
+
+		-
+			message: '#^Method App\\Services\\SystemSettingsService\:\:findField\(\) should return array\|null but returns mixed\.$#'
+			identifier: return.type
+			count: 1
+			path: app/Services/SystemSettingsService.php
+
+		-
+			message: '#^Method App\\Services\\SystemSettingsService\:\:findGroup\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Services/SystemSettingsService.php
+
+		-
+			message: '#^Method App\\Services\\SystemSettingsService\:\:findGroup\(\) should return array\|null but returns mixed\.$#'
+			identifier: return.type
+			count: 1
+			path: app/Services/SystemSettingsService.php
+
+		-
+			message: '#^Method App\\Services\\SystemSettingsService\:\:groups\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Services/SystemSettingsService.php
+
+		-
+			message: '#^Method App\\Services\\SystemSettingsService\:\:mailers\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Services/SystemSettingsService.php
+
+		-
+			message: '#^Method App\\Services\\SystemSettingsService\:\:normalize\(\) has parameter \$field with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Services/SystemSettingsService.php
+
+		-
+			message: '#^Method App\\Services\\SystemSettingsService\:\:normalizeSelect\(\) has parameter \$field with no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Services/SystemSettingsService.php
+
+		-
+			message: '#^Method App\\Services\\SystemSettingsService\:\:reset\(\) should return array\<string, mixed\> but returns array\.$#'
+			identifier: return.type
+			count: 1
+			path: app/Services/SystemSettingsService.php
+
+		-
+			message: '#^Method App\\Services\\SystemSettingsService\:\:timezones\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Services/SystemSettingsService.php
+
+		-
+			message: '#^Method App\\Services\\SystemSettingsService\:\:values\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Services/SystemSettingsService.php
+
+		-
+			message: '#^Parameter \#1 \$array of function array_key_first expects array, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/Services/SystemSettingsService.php
+
+		-
+			message: '#^Parameter \#1 \$array of function array_values expects array\<T\>, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/Services/SystemSettingsService.php
+
+		-
+			message: '#^Parameter \#1 \$field of method App\\Services\\SystemSettingsService\:\:cast\(\) expects array, mixed given\.$#'
+			identifier: argument.type
+			count: 4
+			path: app/Services/SystemSettingsService.php
+
+		-
+			message: '#^Parameter \#1 \$key of function array_key_exists expects int\|string, mixed given\.$#'
+			identifier: argument.type
+			count: 2
+			path: app/Services/SystemSettingsService.php
+
+		-
+			message: '#^Parameter \#1 \$key of function config expects array\<string, mixed\>\|string\|null, array\<bool\|float\|int\|string\> given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/Services/SystemSettingsService.php
+
+		-
+			message: '#^Parameter \#1 \$key of function config expects array\<string, mixed\>\|string\|null, mixed given\.$#'
+			identifier: argument.type
+			count: 2
+			path: app/Services/SystemSettingsService.php
+
+		-
+			message: '#^Parameter \#1 \$num of function round expects float\|int, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/Services/SystemSettingsService.php
+
+		-
+			message: '#^Parameter \#2 \$array of function array_key_exists expects array, mixed given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/Services/SystemSettingsService.php
+
+		-
+			message: '#^Possibly invalid array key type mixed\.$#'
+			identifier: offsetAccess.invalidOffset
+			count: 2
+			path: app/Services/SystemSettingsService.php
+
+		-
+			message: '#^Cannot call method where\(\) on mixed\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: app/Services/TechnicianAssignmentService.php
+
+		-
+			message: '#^Method App\\Services\\ThemePresetService\:\:active\(\) should return array\<string, string\> but returns array\.$#'
+			identifier: return.type
+			count: 1
+			path: app/Services/ThemePresetService.php
+
+		-
+			message: '#^Method App\\Services\\ThemePresetService\:\:apply\(\) should return array\<string, string\> but returns array\.$#'
+			identifier: return.type
+			count: 1
+			path: app/Services/ThemePresetService.php
+
+		-
+			message: '#^Method App\\Services\\ThemePresetService\:\:applyForUser\(\) should return array\<string, string\> but returns array\.$#'
+			identifier: return.type
+			count: 1
+			path: app/Services/ThemePresetService.php
+
+		-
+			message: '#^Method App\\Services\\ThemePresetService\:\:colorKeys\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Services/ThemePresetService.php
+
+		-
+			message: '#^Method App\\Services\\ThemePresetService\:\:find\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Services/ThemePresetService.php
+
+		-
+			message: '#^Method App\\Services\\ThemePresetService\:\:paired\(\) return type has no value type specified in iterable type array\.$#'
+			identifier: missingType.iterableValue
+			count: 1
+			path: app/Services/ThemePresetService.php
+
+		-
+			message: '#^Method App\\Services\\ThemePresetService\:\:valuesFor\(\) should return array\<string, string\> but returns array\<string, mixed\>\.$#'
+			identifier: return.type
+			count: 1
+			path: app/Services/ThemePresetService.php
+
+		-
+			message: '#^Method App\\Services\\TicketSearchService\:\:applyDateFilters\(\) has parameter \$query with generic class Illuminate\\Database\\Eloquent\\Builder but does not specify its types\: TModel$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Services/TicketSearchService.php
