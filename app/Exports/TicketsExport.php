@@ -26,7 +26,7 @@ use PhpOffice\PhpSpreadsheet\Worksheet\Worksheet;
  * Supports dynamic filtering, native currency/date formatting, and chunked reading.
  */
 /**
- * @implements \Maatwebsite\Excel\Concerns\WithMapping<\App\Models\Ticket>
+ * @implements WithMapping<Ticket>
  */
 final class TicketsExport implements FromQuery, ShouldAutoSize, WithChunkReading, WithColumnFormatting, WithEvents, WithHeadings, WithMapping, WithStyles, WithTitle
 {
@@ -34,7 +34,7 @@ final class TicketsExport implements FromQuery, ShouldAutoSize, WithChunkReading
      * Allows injecting a custom/filtered query from the Controller.
      */
     /**
-     * @param \Illuminate\Database\Eloquent\Builder<\App\Models\Ticket>|null $customQuery
+     * @param  Builder<Ticket>|null  $customQuery
      */
     public function __construct(
         private readonly ?Builder $customQuery = null
@@ -44,7 +44,7 @@ final class TicketsExport implements FromQuery, ShouldAutoSize, WithChunkReading
      * Base query for the export.
      */
     /**
-     * @return \Illuminate\Database\Eloquent\Builder<\App\Models\Ticket>
+     * @return Builder<Ticket>
      */
     public function query(): Builder
     {

@@ -382,66 +382,6 @@ parameters:
 			message: '#^Cannot access property \$name on mixed\.$#'
 			identifier: property.nonObject
 			count: 1
-			path: app/Exports/TicketsExport.php
-
-		-
-			message: '#^Cannot cast mixed to string\.$#'
-			identifier: cast.string
-			count: 1
-			path: app/Exports/TicketsExport.php
-
-		-
-			message: '#^Class App\\Exports\\TicketsExport implements generic interface Maatwebsite\\Excel\\Concerns\\WithMapping but does not specify its types\: RowType$#'
-			identifier: missingType.generics
-			count: 1
-			path: app/Exports/TicketsExport.php
-
-		-
-			message: '#^Method App\\Exports\\TicketsExport\:\:__construct\(\) has parameter \$customQuery with generic class Illuminate\\Database\\Eloquent\\Builder but does not specify its types\: TModel$#'
-			identifier: missingType.generics
-			count: 1
-			path: app/Exports/TicketsExport.php
-
-		-
-			message: '#^Method App\\Exports\\TicketsExport\:\:columnFormats\(\) return type has no value type specified in iterable type array\.$#'
-			identifier: missingType.iterableValue
-			count: 1
-			path: app/Exports/TicketsExport.php
-
-		-
-			message: '#^Method App\\Exports\\TicketsExport\:\:headings\(\) return type has no value type specified in iterable type array\.$#'
-			identifier: missingType.iterableValue
-			count: 1
-			path: app/Exports/TicketsExport.php
-
-		-
-			message: '#^Method App\\Exports\\TicketsExport\:\:map\(\) return type has no value type specified in iterable type array\.$#'
-			identifier: missingType.iterableValue
-			count: 1
-			path: app/Exports/TicketsExport.php
-
-		-
-			message: '#^Method App\\Exports\\TicketsExport\:\:query\(\) return type with generic class Illuminate\\Database\\Eloquent\\Builder does not specify its types\: TModel$#'
-			identifier: missingType.generics
-			count: 1
-			path: app/Exports/TicketsExport.php
-
-		-
-			message: '#^Method App\\Exports\\TicketsExport\:\:registerEvents\(\) return type has no value type specified in iterable type array\.$#'
-			identifier: missingType.iterableValue
-			count: 1
-			path: app/Exports/TicketsExport.php
-
-		-
-			message: '#^Method App\\Exports\\TicketsExport\:\:styles\(\) return type has no value type specified in iterable type array\.$#'
-			identifier: missingType.iterableValue
-			count: 1
-			path: app/Exports/TicketsExport.php
-
-		-
-			message: '#^Cannot access property \$name on mixed\.$#'
-			identifier: property.nonObject
-			count: 1
 			path: app/Http/Controllers/ActivityFeedController.php
 
 		-
@@ -1331,24 +1271,6 @@ parameters:
 			identifier: argument.type
 			count: 1
 			path: app/Logging/RequestContextProcessor.php
-
-		-
-			message: '#^Parameter \#2 \$oldStatus of class App\\Events\\TicketStatusChanged constructor expects App\\Enums\\TicketStatusEnum\|string, mixed given\.$#'
-			identifier: argument.type
-			count: 1
-			path: app/Observers/TicketObserver.php
-
-		-
-			message: '#^Parameter \#3 \$newStatus of class App\\Events\\TicketStatusChanged constructor expects App\\Enums\\TicketStatusEnum\|string, mixed given\.$#'
-			identifier: argument.type
-			count: 1
-			path: app/Observers/TicketObserver.php
-
-		-
-			message: '#^Parameter \#1 \$value of static method App\\Enums\\UserRoleEnum\:\:tryFrom\(\) expects int\|string, mixed given\.$#'
-			identifier: argument.type
-			count: 1
-			path: app/Observers/UserObserver.php
 
 		-
 			message: '#^Cannot call method isAdmin\(\) on mixed\.$#'
