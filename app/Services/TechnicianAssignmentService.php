@@ -9,6 +9,7 @@ use App\Enums\TicketStatusEnum;
 use App\Enums\UserRoleEnum;
 use App\Models\Ticket;
 use App\Models\User;
+use Illuminate\Database\Eloquent\Builder;
 
 final class TechnicianAssignmentService
 {
@@ -25,7 +26,7 @@ final class TechnicianAssignmentService
 
         return User::whereHas('profile', fn ($q) => $q->where('name', UserRoleEnum::Technician->value))
             ->where('active', true)
-            ->withCount(['assignedTickets' => fn (\Illuminate\Database\Eloquent\Builder $q) => $q->where('status_id', $inProgressStatusId)])
+            ->withCount(['assignedTickets' => fn (Builder $q) => $q->where('status_id', $inProgressStatusId)])
             ->orderBy('assigned_tickets_count', 'asc')
             ->first();
     }

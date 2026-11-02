@@ -1333,78 +1333,6 @@ parameters:
 			path: app/Logging/RequestContextProcessor.php
 
 		-
-			message: '#^Cannot access property \$id on mixed\.$#'
-			identifier: property.nonObject
-			count: 1
-			path: app/Models/Equipment.php
-
-		-
-			message: '#^Cannot call method getKey\(\) on mixed\.$#'
-			identifier: method.nonObject
-			count: 1
-			path: app/Models/Equipment.php
-
-		-
-			message: '#^Cannot cast mixed to int\.$#'
-			identifier: cast.int
-			count: 1
-			path: app/Models/Equipment.php
-
-		-
-			message: '#^Cannot access property \$id on mixed\.$#'
-			identifier: property.nonObject
-			count: 1
-			path: app/Models/Part.php
-
-		-
-			message: '#^Cannot call method getKey\(\) on mixed\.$#'
-			identifier: method.nonObject
-			count: 1
-			path: app/Models/Part.php
-
-		-
-			message: '#^Cannot cast mixed to int\.$#'
-			identifier: cast.int
-			count: 1
-			path: app/Models/Part.php
-
-		-
-			message: '#^Cannot access property \$id on mixed\.$#'
-			identifier: property.nonObject
-			count: 1
-			path: app/Models/Room.php
-
-		-
-			message: '#^Cannot call method getKey\(\) on mixed\.$#'
-			identifier: method.nonObject
-			count: 1
-			path: app/Models/Room.php
-
-		-
-			message: '#^Cannot cast mixed to int\.$#'
-			identifier: cast.int
-			count: 1
-			path: app/Models/Room.php
-
-		-
-			message: '#^Cannot access property \$id on mixed\.$#'
-			identifier: property.nonObject
-			count: 1
-			path: app/Models/Ticket.php
-
-		-
-			message: '#^Cannot call method getKey\(\) on mixed\.$#'
-			identifier: method.nonObject
-			count: 1
-			path: app/Models/Ticket.php
-
-		-
-			message: '#^Cannot cast mixed to int\.$#'
-			identifier: cast.int
-			count: 1
-			path: app/Models/Ticket.php
-
-		-
 			message: '#^Parameter \#2 \$oldStatus of class App\\Events\\TicketStatusChanged constructor expects App\\Enums\\TicketStatusEnum\|string, mixed given\.$#'
 			identifier: argument.type
 			count: 1
@@ -1453,88 +1381,10 @@ parameters:
 			path: app/Providers/AppServiceProvider.php
 
 		-
-			message: '#^Method App\\Repositories\\Contracts\\EquipmentRepositoryInterface\:\:getAll\(\) return type with generic class Illuminate\\Pagination\\LengthAwarePaginator does not specify its types\: TKey, TValue$#'
-			identifier: missingType.generics
-			count: 1
-			path: app/Repositories/Contracts/EquipmentRepositoryInterface.php
-
-		-
-			message: '#^Method App\\Repositories\\Contracts\\RoomRepositoryInterface\:\:getAll\(\) return type with generic class Illuminate\\Pagination\\LengthAwarePaginator does not specify its types\: TKey, TValue$#'
-			identifier: missingType.generics
-			count: 1
-			path: app/Repositories/Contracts/RoomRepositoryInterface.php
-
-		-
-			message: '#^Method App\\Repositories\\Contracts\\TicketRepositoryInterface\:\:getAll\(\) return type with generic class Illuminate\\Pagination\\LengthAwarePaginator does not specify its types\: TKey, TValue$#'
-			identifier: missingType.generics
-			count: 1
-			path: app/Repositories/Contracts/TicketRepositoryInterface.php
-
-		-
-			message: '#^Method App\\Repositories\\Contracts\\TicketRepositoryInterface\:\:getOpenTickets\(\) return type with generic class Illuminate\\Pagination\\LengthAwarePaginator does not specify its types\: TKey, TValue$#'
-			identifier: missingType.generics
-			count: 1
-			path: app/Repositories/Contracts/TicketRepositoryInterface.php
-
-		-
-			message: '#^Method App\\Repositories\\Contracts\\TicketRepositoryInterface\:\:getTicketsByTechnician\(\) return type with generic class Illuminate\\Pagination\\LengthAwarePaginator does not specify its types\: TKey, TValue$#'
-			identifier: missingType.generics
-			count: 1
-			path: app/Repositories/Contracts/TicketRepositoryInterface.php
-
-		-
-			message: '#^Method App\\Repositories\\Contracts\\TicketRepositoryInterface\:\:getTicketsByUser\(\) return type with generic class Illuminate\\Pagination\\LengthAwarePaginator does not specify its types\: TKey, TValue$#'
-			identifier: missingType.generics
-			count: 1
-			path: app/Repositories/Contracts/TicketRepositoryInterface.php
-
-		-
-			message: '#^Method App\\Repositories\\Contracts\\UserRepositoryInterface\:\:getAll\(\) return type with generic class Illuminate\\Pagination\\LengthAwarePaginator does not specify its types\: TKey, TValue$#'
-			identifier: missingType.generics
-			count: 1
-			path: app/Repositories/Contracts/UserRepositoryInterface.php
-
-		-
-			message: '#^Method App\\Repositories\\EquipmentRepository\:\:getAll\(\) return type with generic class Illuminate\\Pagination\\LengthAwarePaginator does not specify its types\: TKey, TValue$#'
-			identifier: missingType.generics
-			count: 1
-			path: app/Repositories/EquipmentRepository.php
-
-		-
 			message: '#^Method App\\Repositories\\RoomRepository\:\:getActive\(\) should return array\<int, App\\Models\\Room\> but returns array\<mixed\>\.$#'
 			identifier: return.type
 			count: 1
 			path: app/Repositories/RoomRepository.php
-
-		-
-			message: '#^Method App\\Repositories\\RoomRepository\:\:getAll\(\) return type with generic class Illuminate\\Pagination\\LengthAwarePaginator does not specify its types\: TKey, TValue$#'
-			identifier: missingType.generics
-			count: 1
-			path: app/Repositories/RoomRepository.php
-
-		-
-			message: '#^Method App\\Repositories\\TicketRepository\:\:getAll\(\) return type with generic class Illuminate\\Pagination\\LengthAwarePaginator does not specify its types\: TKey, TValue$#'
-			identifier: missingType.generics
-			count: 1
-			path: app/Repositories/TicketRepository.php
-
-		-
-			message: '#^Method App\\Repositories\\TicketRepository\:\:getOpenTickets\(\) return type with generic class Illuminate\\Pagination\\LengthAwarePaginator does not specify its types\: TKey, TValue$#'
-			identifier: missingType.generics
-			count: 1
-			path: app/Repositories/TicketRepository.php
-
-		-
-			message: '#^Method App\\Repositories\\TicketRepository\:\:getTicketsByTechnician\(\) return type with generic class Illuminate\\Pagination\\LengthAwarePaginator does not specify its types\: TKey, TValue$#'
-			identifier: missingType.generics
-			count: 1
-			path: app/Repositories/TicketRepository.php
-
-		-
-			message: '#^Method App\\Repositories\\TicketRepository\:\:getTicketsByUser\(\) return type with generic class Illuminate\\Pagination\\LengthAwarePaginator does not specify its types\: TKey, TValue$#'
-			identifier: missingType.generics
-			count: 1
-			path: app/Repositories/TicketRepository.php
 
 		-
 			message: '#^Parameter \#1 \$perPage of method Illuminate\\Database\\Eloquent\\Builder\<App\\Models\\Ticket\>\:\:paginate\(\) expects int\|null, mixed given\.$#'
@@ -1551,12 +1401,6 @@ parameters:
 		-
 			message: '#^Method App\\Repositories\\UserRepository\:\:getAdmins\(\) should return array\<int, App\\Models\\User\> but returns array\<mixed\>\.$#'
 			identifier: return.type
-			count: 1
-			path: app/Repositories/UserRepository.php
-
-		-
-			message: '#^Method App\\Repositories\\UserRepository\:\:getAll\(\) return type with generic class Illuminate\\Pagination\\LengthAwarePaginator does not specify its types\: TKey, TValue$#'
-			identifier: missingType.generics
 			count: 1
 			path: app/Repositories/UserRepository.php
 
@@ -1711,12 +1555,6 @@ parameters:
 			path: app/Services/AnalyticsDashboardService.php
 
 		-
-			message: '#^Method App\\Services\\AuthUserResolver\:\:fromRequest\(\) should return App\\Models\\User\|null but returns mixed\.$#'
-			identifier: return.type
-			count: 1
-			path: app/Services/AuthUserResolver.php
-
-		-
 			message: '#^Binary operation "\*" between mixed and mixed results in an error\.$#'
 			identifier: binaryOp.invalid
 			count: 4
@@ -1729,8 +1567,8 @@ parameters:
 			path: app/Services/BudgetCalculatorService.php
 
 		-
-			message: '#^Method App\\Services\\CalendarService\:\:getScheduledEventsForUser\(\) return type with generic class Illuminate\\Support\\Collection does not specify its types\: TKey, TValue$#'
-			identifier: missingType.generics
+			message: '#^Method App\\Services\\CalendarService\:\:getScheduledEventsForUser\(\) should return Illuminate\\Support\\Collection\<int, array\<string, mixed\>\> but returns Illuminate\\Support\\Collection\<int, array\{id\: int, title\: string, start\: string, end\: string\|null, extendedProps\: array\{url\: string, scheduled\: bool, equipment\: string\|null, technician\: string\|null, description\: string\}, editable\: bool\}\>\.$#'
+			identifier: return.type
 			count: 1
 			path: app/Services/CalendarService.php
 
@@ -1925,12 +1763,6 @@ parameters:
 			identifier: argument.type
 			count: 2
 			path: app/Services/LocalizationService.php
-
-		-
-			message: '#^Method App\\Services\\PartService\:\:listPaginated\(\) return type with generic interface Illuminate\\Contracts\\Pagination\\LengthAwarePaginator does not specify its types\: TKey, TValue$#'
-			identifier: missingType.generics
-			count: 1
-			path: app/Services/PartService.php
 
 		-
 			message: '#^Parameter \#1 \$time of static method Carbon\\Carbon\:\:parse\(\) expects Carbon\\Month\|Carbon\\WeekDay\|DateTimeInterface\|float\|int\|string\|null, mixed given\.$#'
@@ -2263,12 +2095,6 @@ parameters:
 			path: app/Services/SystemSettingsService.php
 
 		-
-			message: '#^Cannot call method where\(\) on mixed\.$#'
-			identifier: method.nonObject
-			count: 1
-			path: app/Services/TechnicianAssignmentService.php
-
-		-
 			message: '#^Method App\\Services\\ThemePresetService\:\:active\(\) should return array\<string, string\> but returns array\.$#'
 			identifier: return.type
 			count: 1
@@ -2309,9 +2135,3 @@ parameters:
 			identifier: return.type
 			count: 1
 			path: app/Services/ThemePresetService.php
-
-		-
-			message: '#^Method App\\Services\\TicketSearchService\:\:applyDateFilters\(\) has parameter \$query with generic class Illuminate\\Database\\Eloquent\\Builder but does not specify its types\: TModel$#'
-			identifier: missingType.generics
-			count: 1
-			path: app/Services/TicketSearchService.php
