@@ -13,7 +13,7 @@ final readonly class ScheduledEventsQuery
         private ?string $to = null,
     ) {}
 
-    /** @return \Illuminate\Support\Collection<int, array<string, mixed>> */
+    /** @return Collection<int, array<string, mixed>> */
     public function execute(): Collection
     {
         $query = Ticket::query()

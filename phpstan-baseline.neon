@@ -193,8 +193,8 @@ parameters:
 			path: app/Domain/Ticket/Actions/CheckHigherPriorityAction.php
 
 		-
-			message: '#^Method App\\Domain\\Ticket\\Queries\\ScheduledEventsQuery\:\:execute\(\) return type with generic class Illuminate\\Support\\Collection does not specify its types\: TKey, TValue$#'
-			identifier: missingType.generics
+			message: '#^Method App\\Domain\\Ticket\\Queries\\ScheduledEventsQuery\:\:execute\(\) should return Illuminate\\Support\\Collection\<int, array\<string, mixed\>\> but returns Illuminate\\Support\\Collection\<int, array\{id\: mixed, title\: non\-falsy\-string, start\: string, end\: string\|null\}\>\.$#'
+			identifier: return.type
 			count: 1
 			path: app/Domain/Ticket/Queries/ScheduledEventsQuery.php
 
@@ -819,12 +819,6 @@ parameters:
 		-
 			message: '#^Cannot cast mixed to string\.$#'
 			identifier: cast.string
-			count: 1
-			path: app/Http/Requests/LoginRequest.php
-
-		-
-			message: '#^Cannot cast mixed to string\.$#'
-			identifier: cast.string
 			count: 2
 			path: app/Http/Requests/RegisterRequest.php
 
@@ -855,26 +849,8 @@ parameters:
 		-
 			message: '#^Cannot cast mixed to string\.$#'
 			identifier: cast.string
-			count: 1
-			path: app/Http/Requests/ResetPasswordRequest.php
-
-		-
-			message: '#^Cannot cast mixed to string\.$#'
-			identifier: cast.string
 			count: 2
 			path: app/Http/Requests/ScheduleMaintenanceRequest.php
-
-		-
-			message: '#^Cannot cast mixed to string\.$#'
-			identifier: cast.string
-			count: 1
-			path: app/Http/Requests/SendResetLinkRequest.php
-
-		-
-			message: '#^Cannot cast mixed to string\.$#'
-			identifier: cast.string
-			count: 1
-			path: app/Http/Requests/StoreCommentRequest.php
 
 		-
 			message: '#^Cannot cast mixed to string\.$#'
@@ -899,12 +875,6 @@ parameters:
 			identifier: cast.string
 			count: 2
 			path: app/Http/Requests/StoreRoomRequest.php
-
-		-
-			message: '#^Cannot cast mixed to string\.$#'
-			identifier: cast.string
-			count: 1
-			path: app/Http/Requests/StoreSupplierRequest.php
 
 		-
 			message: '#^Cannot cast mixed to string\.$#'
@@ -945,20 +915,8 @@ parameters:
 		-
 			message: '#^Cannot cast mixed to string\.$#'
 			identifier: cast.string
-			count: 1
-			path: app/Http/Requests/UpdateProfileRequest.php
-
-		-
-			message: '#^Cannot cast mixed to string\.$#'
-			identifier: cast.string
 			count: 2
 			path: app/Http/Requests/UpdateRoomRequest.php
-
-		-
-			message: '#^Cannot cast mixed to string\.$#'
-			identifier: cast.string
-			count: 1
-			path: app/Http/Requests/UpdateSupplierRequest.php
 
 		-
 			message: '#^Cannot cast mixed to string\.$#'
@@ -979,7 +937,7 @@ parameters:
 			path: app/Http/Requests/UploadPhotoRequest.php
 
 		-
-			message: '#^Method App\\Repositories\\RoomRepository\:\:getActive\(\) should return array\<int, App\\Models\\Room\> but returns array\<mixed\>\.$#'
+			message: '#^Method App\\Repositories\\RoomRepository\:\:getActive\(\) should return array\<int, array\<string, mixed\>\> but returns array\<mixed\>\.$#'
 			identifier: return.type
 			count: 1
 			path: app/Repositories/RoomRepository.php
@@ -1145,12 +1103,6 @@ parameters:
 			identifier: cast.double
 			count: 2
 			path: app/Services/BudgetCalculatorService.php
-
-		-
-			message: '#^Method App\\Services\\CalendarService\:\:getScheduledEventsForUser\(\) should return Illuminate\\Support\\Collection\<int, array\<string, mixed\>\> but returns Illuminate\\Support\\Collection\<int, array\{id\: int, title\: string, start\: string, end\: string\|null, extendedProps\: array\{url\: string, scheduled\: bool, equipment\: string\|null, technician\: string\|null, description\: string\}, editable\: bool\}\>\.$#'
-			identifier: return.type
-			count: 1
-			path: app/Services/CalendarService.php
 
 		-
 			message: '#^Cannot access offset ''decimal'' on mixed\.$#'
