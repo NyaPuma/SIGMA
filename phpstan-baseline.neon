@@ -99,18 +99,6 @@ parameters:
 		-
 			message: '#^Cannot cast mixed to string\.$#'
 			identifier: cast.string
-			count: 1
-			path: app/DTOs/CloseTicketData.php
-
-		-
-			message: '#^Cannot cast mixed to string\.$#'
-			identifier: cast.string
-			count: 1
-			path: app/DTOs/CommentData.php
-
-		-
-			message: '#^Cannot cast mixed to string\.$#'
-			identifier: cast.string
 			count: 2
 			path: app/DTOs/CreateTicketData.php
 
@@ -125,12 +113,6 @@ parameters:
 			identifier: cast.string
 			count: 4
 			path: app/DTOs/ScheduleMaintenanceData.php
-
-		-
-			message: '#^Cannot cast mixed to string\.$#'
-			identifier: cast.string
-			count: 1
-			path: app/DTOs/ScheduleTicketData.php
 
 		-
 			message: '#^Cannot cast mixed to string\.$#'
@@ -157,12 +139,6 @@ parameters:
 			path: app/DTOs/StorePartData.php
 
 		-
-			message: '#^Cannot cast mixed to string\.$#'
-			identifier: cast.string
-			count: 1
-			path: app/DTOs/StoreRoomData.php
-
-		-
 			message: '#^Cannot cast mixed to int\.$#'
 			identifier: cast.int
 			count: 1
@@ -179,12 +155,6 @@ parameters:
 			identifier: cast.string
 			count: 3
 			path: app/DTOs/StoreUserData.php
-
-		-
-			message: '#^Cannot cast mixed to string\.$#'
-			identifier: cast.string
-			count: 1
-			path: app/DTOs/TicketFilters.php
 
 		-
 			message: '#^Cannot cast mixed to float\.$#'
