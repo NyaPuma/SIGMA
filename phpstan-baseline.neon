@@ -193,12 +193,6 @@ parameters:
 			path: app/Domain/Ticket/Actions/CheckHigherPriorityAction.php
 
 		-
-			message: '#^Method App\\Domain\\Ticket\\Queries\\ScheduledEventsQuery\:\:execute\(\) should return Illuminate\\Support\\Collection\<int, array\{id\: mixed, title\: string, start\: string, end\: string\|null\}\> but returns Illuminate\\Support\\Collection\<int, array\{id\: mixed, title\: non\-falsy\-string, start\: string, end\: string\|null\}\>\.$#'
-			identifier: return.type
-			count: 1
-			path: app/Domain/Ticket/Queries/ScheduledEventsQuery.php
-
-		-
 			message: '#^Cannot access property \$name on mixed\.$#'
 			identifier: property.nonObject
 			count: 1
@@ -1091,12 +1085,6 @@ parameters:
 			identifier: cast.double
 			count: 2
 			path: app/Services/BudgetCalculatorService.php
-
-		-
-			message: '#^Method App\\Services\\CalendarService\:\:getScheduledEvents\(\) should return Illuminate\\Support\\Collection\<int, array\<string, mixed\>\> but returns Illuminate\\Support\\Collection\<int, array\{id\: mixed, title\: string, start\: string, end\: string\|null\}\>\.$#'
-			identifier: return.type
-			count: 1
-			path: app/Services/CalendarService.php
 
 		-
 			message: '#^Cannot access offset ''decimal'' on mixed\.$#'
