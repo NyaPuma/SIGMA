@@ -43,8 +43,8 @@ final readonly class TicketKpiQuery
     }
 
     /**
-     * @param \Illuminate\Database\Eloquent\Builder<\App\Models\Ticket> $query
-     * @return \Illuminate\Database\Eloquent\Builder<\App\Models\Ticket>
+     * @param  Builder<Ticket>  $query
+     * @return Builder<Ticket>
      */
     private function buildKpiQuery(Builder $query): Builder
     {

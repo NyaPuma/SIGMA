@@ -3,12 +3,13 @@
 namespace App\Domain\Ticket\Queries;
 
 use App\Enums\TicketPriorityEnum;
+use App\Models\Ticket;
 use Illuminate\Database\Eloquent\Builder;
 
 final readonly class TicketPriorityQuery
 {
     /**
-     * @param \Illuminate\Database\Eloquent\Builder<\App\Models\Ticket> $baseQuery
+     * @param  Builder<Ticket>  $baseQuery
      */
     public function __construct(
         private Builder $baseQuery,

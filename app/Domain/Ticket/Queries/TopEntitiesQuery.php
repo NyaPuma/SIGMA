@@ -2,6 +2,7 @@
 
 namespace App\Domain\Ticket\Queries;
 
+use App\Models\Ticket;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
@@ -9,7 +10,7 @@ use Illuminate\Support\Facades\DB;
 final readonly class TopEntitiesQuery
 {
     /**
-     * @param \Illuminate\Database\Eloquent\Builder<\App\Models\Ticket> $baseQuery
+     * @param  Builder<Ticket>  $baseQuery
      */
     public function __construct(
         private Builder $baseQuery,

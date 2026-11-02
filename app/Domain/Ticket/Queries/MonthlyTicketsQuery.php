@@ -38,8 +38,8 @@ final readonly class MonthlyTicketsQuery
     }
 
     /**
-     * @param array<int, string> $monthKeys
-     * @return \Illuminate\Database\Eloquent\Collection<int, \App\Models\Ticket>
+     * @param  array<int, string>  $monthKeys
+     * @return Collection<int, Ticket>
      */
     private function buildQuery(array $monthKeys): Collection
     {
@@ -74,8 +74,8 @@ final readonly class MonthlyTicketsQuery
     }
 
     /**
-     * @param array<int, string> $monthKeys
-     * @param \Illuminate\Support\Collection<string, \App\Models\Ticket> $rows
+     * @param  array<int, string>  $monthKeys
+     * @param  \Illuminate\Support\Collection<string, Ticket>  $rows
      * @return array<string, mixed>
      */
     private function formatResults(array $monthKeys, $rows): array
