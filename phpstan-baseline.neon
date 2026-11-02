@@ -1417,9 +1417,9 @@ parameters:
 			path: app/Services/AnalyticsDashboardService.php
 
 		-
-			message: '#^Binary operation "\*" between mixed and mixed results in an error\.$#'
-			identifier: binaryOp.invalid
-			count: 4
+			message: '#^Call to function is_array\(\) with array\<string, mixed\> will always evaluate to true\.$#'
+			identifier: function.alreadyNarrowedType
+			count: 2
 			path: app/Services/BudgetCalculatorService.php
 
 		-
