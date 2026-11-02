@@ -58,7 +58,10 @@ final class AnalyticsDashboardService
 
         $baseQuery = Ticket::query()->whereNull('tickets.deleted_at');
 
-        $kpiData = (new TicketKpiQuery($openStatusId, $inProgressStatusId, $closedStatusId, config('services.analytics.sla_target_minutes', 480)))->execute();
+        $slaTarget = config('services.analytics.sla_target_minutes', 480);
+        $slaTargetMinutes = is_numeric($slaTarget) ? (int) $slaTarget : 480;
+
+        $kpiData = (new TicketKpiQuery($openStatusId, $inProgressStatusId, $closedStatusId, $slaTargetMinutes))->execute();
         $priorityData = (new TicketPriorityQuery($baseQuery))->execute();
         $monthlyData = (new MonthlyTicketsQuery($openStatusId, $inProgressStatusId, $closedStatusId, now()))->execute();
         $topEntities = new TopEntitiesQuery($baseQuery);
@@ -142,8 +145,12 @@ final class AnalyticsDashboardService
      */
     private function monthlyPerformanceData(array $monthLabels): array
     {
+        if ($monthLabels === []) {
+            return ['sla' => [], 'mttr' => []];
+        }
+
         $start = Carbon::parse($monthLabels[0])->startOfMonth();
-        $end = Carbon::parse(end($monthLabels))->endOfMonth();
+        $end = Carbon::parse($monthLabels[array_key_last($monthLabels)])->endOfMonth();
 
         $driver = DB::connection()->getDriverName();
         $monthExpr = $driver === 'sqlite'
@@ -152,7 +159,8 @@ final class AnalyticsDashboardService
         $diffExpr = $driver === 'sqlite'
             ? '(julianday(closed_at) - julianday(opened_at)) * 1440'
             : 'TIMESTAMPDIFF(MINUTE, opened_at, closed_at)';
-        $targetMinutes = (int) config('services.analytics.sla_target_minutes', 480);
+        $targetRaw = config('services.analytics.sla_target_minutes', 480);
+        $targetMinutes = is_numeric($targetRaw) ? (int) $targetRaw : 480;
 
         $rows = Ticket::query()
             ->selectRaw("
@@ -176,10 +184,13 @@ final class AnalyticsDashboardService
 
         foreach ($monthLabels as $month) {
             $row = $rows->get($month);
-            $closed = (int) ($row->closed_count ?? 0);
-            $sla[] = $closed > 0 ? round((((int) ($row->sla_met ?? 0)) / $closed) * 100, 1) : null;
+            $closedCount = data_get($row, 'closed_count');
+            $slaMetCount = data_get($row, 'sla_met');
+            $closed = is_numeric($closedCount) ? (int) $closedCount : 0;
+            $slaMet = is_numeric($slaMetCount) ? (int) $slaMetCount : 0;
+            $sla[] = $closed > 0 ? round(($slaMet / $closed) * 100, 1) : null;
             $averageResolution = data_get($row, 'avg_resolution');
-            $mttr[] = $averageResolution !== null ? round((float) $averageResolution, 1) : null;
+            $mttr[] = is_numeric($averageResolution) ? round((float) $averageResolution, 1) : null;
         }
 
         return [
@@ -191,6 +202,7 @@ final class AnalyticsDashboardService
     /**
      * Ticket distribution by urgency.
      *
+     * @param  Builder<Ticket>  $baseQuery
      * @return array{labels: Collection<int, string>, data: Collection<int, int<0, max>>}
      */
     private function urgencyBreakdown(Builder $baseQuery): array
@@ -210,6 +222,7 @@ final class AnalyticsDashboardService
     /**
      * Ticket distribution by room (top 8).
      *
+     * @param  Builder<Ticket>  $baseQuery
      * @return array{labels: Collection<int, string>, data: Collection<int, int>}
      */
     private function roomBreakdown(Builder $baseQuery): array
@@ -224,14 +237,19 @@ final class AnalyticsDashboardService
             ->get();
 
         return [
-            'labels' => $rows->pluck('name'),
-            'data' => $rows->pluck('total')->map(fn ($v) => (int) $v),
+            'labels' => $rows->pluck('name')
+                ->map(static fn (mixed $value): string => is_scalar($value) ? (string) $value : '')
+                ->values(),
+            'data' => $rows->pluck('total')
+                ->map(static fn (mixed $value): int => is_numeric($value) ? (int) $value : 0)
+                ->values(),
         ];
     }
 
     /**
      * Ticket distribution by budget status.
      *
+     * @param  Builder<Ticket>  $baseQuery
      * @return array{labels: Collection<int, string>, data: Collection<int, int>}
      */
     private function budgetBreakdown(Builder $baseQuery): array
@@ -246,14 +264,19 @@ final class AnalyticsDashboardService
         $labels = collect([BudgetStatusEnum::Pending, BudgetStatusEnum::Approved, BudgetStatusEnum::Rejected]);
 
         return [
-            'labels' => $labels->map(fn ($s) => $s->label()),
-            'data' => $labels->map(fn ($s) => (int) ($rows[$s->value] ?? 0)),
+            'labels' => $labels->map(fn ($s) => $s->label())->values(),
+            'data' => $labels->map(function ($status) use ($rows): int {
+                $value = $rows[$status->value] ?? 0;
+
+                return is_numeric($value) ? (int) $value : 0;
+            })->values(),
         ];
     }
 
     /**
      * Ticket distribution by source (web, qr, api, ...).
      *
+     * @param  Builder<Ticket>  $baseQuery
      * @return array{labels: Collection<int, string>, data: Collection<int, int>}
      */
     private function sourceBreakdown(Builder $baseQuery): array
@@ -275,8 +298,12 @@ final class AnalyticsDashboardService
         ];
 
         return [
-            'labels' => $labels->map(fn (string $s): string => (string) ($sourceLabels[$s] ?? $s)),
-            'data' => $labels->map(fn (string $s): int => (int) (data_get($rows->firstWhere('source', $s), 'total') ?? 0)),
+            'labels' => $labels->map(fn (string $s): string => (string) ($sourceLabels[$s] ?? $s))->values(),
+            'data' => $labels->map(function (string $s) use ($rows): int {
+                $total = data_get($rows->firstWhere('source', $s), 'total');
+
+                return is_numeric($total) ? (int) $total : 0;
+            })->values(),
         ];
     }
 
@@ -299,8 +326,12 @@ final class AnalyticsDashboardService
             ->get();
 
         return [
-            'labels' => $rows->pluck('name'),
-            'data' => $rows->pluck('total')->map(fn ($v) => round((float) $v, 2)),
+            'labels' => $rows->pluck('name')
+                ->map(static fn (mixed $value): string => is_scalar($value) ? (string) $value : '')
+                ->values(),
+            'data' => $rows->pluck('total')
+                ->map(static fn (mixed $value): float => is_numeric($value) ? round((float) $value, 2) : 0.0)
+                ->values(),
         ];
     }
 
@@ -312,8 +343,12 @@ final class AnalyticsDashboardService
      */
     private function stockMonthlyData(array $monthLabels): array
     {
+        if ($monthLabels === []) {
+            return ['labels' => [], 'in' => [], 'out' => []];
+        }
+
         $start = Carbon::parse($monthLabels[0])->startOfMonth();
-        $end = Carbon::parse(end($monthLabels))->endOfMonth();
+        $end = Carbon::parse($monthLabels[array_key_last($monthLabels)])->endOfMonth();
 
         $driver = DB::connection()->getDriverName();
         $monthExpr = $driver === 'sqlite'
@@ -336,8 +371,10 @@ final class AnalyticsDashboardService
 
         foreach ($monthLabels as $month) {
             $row = $rows->get($month);
-            $in[] = (int) ($row->total_in ?? 0);
-            $out[] = (int) ($row->total_out ?? 0);
+            $totalIn = data_get($row, 'total_in');
+            $totalOut = data_get($row, 'total_out');
+            $in[] = is_numeric($totalIn) ? (int) $totalIn : 0;
+            $out[] = is_numeric($totalOut) ? (int) $totalOut : 0;
         }
 
         return [
@@ -362,8 +399,12 @@ final class AnalyticsDashboardService
             ->get(['name', 'current_stock']);
 
         return [
-            'labels' => $parts->pluck('name'),
-            'data' => $parts->pluck('current_stock')->map(fn ($v) => (int) $v),
+            'labels' => $parts->pluck('name')
+                ->map(static fn (mixed $value): string => is_scalar($value) ? (string) $value : '')
+                ->values(),
+            'data' => $parts->pluck('current_stock')
+                ->map(static fn (mixed $value): int => is_numeric($value) ? (int) $value : 0)
+                ->values(),
         ];
     }
 
@@ -382,8 +423,8 @@ final class AnalyticsDashboardService
             ->get();
 
         return [
-            'labels' => $rows->pluck('type')->map(function ($type) {
-                $value = (string) $type;
+            'labels' => $rows->pluck('type')->map(function (mixed $type) {
+                $value = is_scalar($type) ? (string) $type : '';
 
                 return match ($value) {
                     'ticket_updated' => __('analytics_data.ticket_updated'),
@@ -393,8 +434,10 @@ final class AnalyticsDashboardService
                     'budget_request' => __('analytics_data.budget_request'),
                     default => NotificationTypeEnum::tryFrom($value)?->label() ?? ucfirst($value),
                 };
-            }),
-            'data' => $rows->pluck('total')->map(fn ($v) => (int) $v),
+            })->values(),
+            'data' => $rows->pluck('total')
+                ->map(static fn (mixed $value): int => is_numeric($value) ? (int) $value : 0)
+                ->values(),
         ];
     }
 
@@ -414,8 +457,12 @@ final class AnalyticsDashboardService
             ->get();
 
         return [
-            'labels' => $rows->pluck('name')->map(fn ($name) => ucfirst((string) $name)),
-            'data' => $rows->pluck('total')->map(fn ($v) => (int) $v),
+            'labels' => $rows->pluck('name')
+                ->map(static fn (mixed $name): string => ucfirst(is_scalar($name) ? (string) $name : ''))
+                ->values(),
+            'data' => $rows->pluck('total')
+                ->map(static fn (mixed $value): int => is_numeric($value) ? (int) $value : 0)
+                ->values(),
         ];
     }
 
@@ -431,11 +478,16 @@ final class AnalyticsDashboardService
             ->latest()
             ->take(6)
             ->get()
-            ->map(fn (Audit $audit): array => [
-                'title' => (string) (optional($audit->user)->name ?? 'Sistema'),
-                'description' => $this->getAuditDescription($audit->event),
-                'time' => (string) ($audit->created_at?->diffForHumans() ?? 'recentemente'),
-            ])
+            ->map(function (Audit $audit): array {
+                $userName = $audit->user?->name;
+                $createdAt = $audit->created_at?->diffForHumans();
+
+                return [
+                    'title' => is_scalar($userName) ? (string) $userName : 'Sistema',
+                    'description' => $this->getAuditDescription($audit->event),
+                    'time' => is_string($createdAt) ? $createdAt : 'recentemente',
+                ];
+            })
             ->values();
     }
 

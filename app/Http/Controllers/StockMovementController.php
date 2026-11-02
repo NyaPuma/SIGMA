@@ -106,6 +106,7 @@ final class StockMovementController extends Controller
     {
         $this->authorize('create', StockMovement::class);
 
+        /** @var array{part_id: int|string, movement_type: string, quantity: int|string, reason?: string|null, ticket_id?: int|string|null, equipment_id?: int|string|null, unit_price_snapshot?: int|float|string|null} $validated */
         $validated = $request->validated();
 
         $part = Part::query()->findOrFail((int) $validated['part_id']);

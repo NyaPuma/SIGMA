@@ -472,6 +472,7 @@ final class ThemePresetService
         ];
     }
 
+    /** @return array<string, mixed>|null */
     public function find(string $id): ?array
     {
         $preset = $this->all()[$id] ?? null;
@@ -488,6 +489,7 @@ final class ThemePresetService
     /**
      * Family pair with opposite mode (light <-> dark).
      */
+    /** @return array<string, mixed>|null */
     public function paired(string $id): ?array
     {
         $preset = $this->find($id);
@@ -521,7 +523,7 @@ final class ThemePresetService
         $values = [];
 
         foreach (self::TOKENS as $field => $token) {
-            $values[$token] = $preset[$field];
+            $values[$token] = is_string($preset[$field] ?? null) ? (string) $preset[$field] : '';
         }
 
         return $values;
@@ -584,7 +586,12 @@ final class ThemePresetService
      */
     public function active(?string $preference = null): array
     {
-        return $this->find($this->effectiveThemeId($preference));
+        $result = $this->find($this->effectiveThemeId($preference))
+            ?? $this->find(self::DEFAULT_THEME)
+            ?? [];
+
+        /** @var array<string, string> $result */
+        return $result;
     }
 
     /**
@@ -592,7 +599,9 @@ final class ThemePresetService
      */
     public function mode(?string $preference = null): string
     {
-        return $this->active($preference)['mode'] === 'dark' ? 'dark' : 'light';
+        $active = $this->active($preference);
+
+        return ($active['mode'] ?? 'light') === 'dark' ? 'dark' : 'light';
     }
 
     /**
@@ -617,6 +626,7 @@ final class ThemePresetService
 
         ThemeSetting::updateOrCreate(['key' => 'theme_name'], ['value' => $id]);
 
+        /** @var array<string, string> $preset */
         return $preset;
     }
 
@@ -636,9 +646,12 @@ final class ThemePresetService
         $user->theme = $id;
         $user->save();
 
+        /** @var array<string, string> $preset */
         return $preset;
     }
 
+    /** @return array<int, string> */
+    /** @return array<int, string> */
     public function colorKeys(): array
     {
         return self::COLOR_KEYS;

@@ -26,7 +26,7 @@ final class NotificationController extends Controller
     )]
     public function index(Request $request): JsonResponse
     {
-        $user = $request->user();
+        $user = $this->authenticatedUser($request);
 
         $requestedPerPage = (int) $request->query('per_page', 50);
         $perPage = $requestedPerPage >= 1 ? min($requestedPerPage, 200) : 50;
@@ -58,7 +58,7 @@ final class NotificationController extends Controller
     )]
     public function markAsRead(Request $request, int $id): JsonResponse
     {
-        $user = $request->user();
+        $user = $this->authenticatedUser($request);
 
         // Ensures the notification strictly belongs to the authenticated user
         $notification = Notification::where('user_id', $user->id)->find($id);
@@ -92,7 +92,7 @@ final class NotificationController extends Controller
     )]
     public function sendTestEmail(Request $request): JsonResponse
     {
-        $user = $request->user();
+        $user = $this->authenticatedUser($request);
 
         SendTestEmailJob::dispatch($user->email, $user->name);
 

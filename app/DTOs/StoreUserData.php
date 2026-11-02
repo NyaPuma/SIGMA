@@ -30,14 +30,19 @@ final readonly class StoreUserData
         }
     }
 
+    /** @param FormRequest|array<string, mixed> $data */
     public static function fromRequest(FormRequest|array $data): self
     {
         $payload = $data instanceof FormRequest ? $data->validated() : $data;
 
+        $rawName = $payload['name'] ?? '';
+        $rawEmail = $payload['email'] ?? '';
+        $rawPassword = $payload['password'] ?? '';
+
         return new self(
-            name: trim((string) ($payload['name'] ?? '')),
-            email: mb_strtolower(trim((string) ($payload['email'] ?? ''))),
-            password: (string) ($payload['password'] ?? ''),
+            name: trim(is_scalar($rawName) ? (string) $rawName : ''),
+            email: mb_strtolower(trim(is_scalar($rawEmail) ? (string) $rawEmail : '')),
+            password: is_scalar($rawPassword) ? (string) $rawPassword : '',
             profileId: self::parseNullableInt($payload['profile_id'] ?? null),
             active: self::parseBool($payload['active'] ?? true),
         );
@@ -66,6 +71,7 @@ final readonly class StoreUserData
         return filter_var($value, FILTER_VALIDATE_BOOLEAN);
     }
 
+    /** @return array<string, mixed> */
     public function toArray(): array
     {
         return [

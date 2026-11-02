@@ -12,12 +12,31 @@ use Illuminate\Support\Facades\Schema;
  * drivers). Each option corresponds to a real `config()` key; chosen values
  * are stored in `system_settings` and applied at runtime by `applyOverrides()`
  * (overrides `config/*.php` files without modifying them).
+ *
+ * @phpstan-type SettingField array{
+ *     label: string,
+ *     type: string,
+ *     default: int|float|bool|string,
+ *     min?: int|float,
+ *     max?: int|float,
+ *     step?: int|float,
+ *     unit?: string,
+ *     help: string,
+ *     options?: array<string, string>
+ * }
+ * @phpstan-type SettingGroup array{
+ *     label: string,
+ *     description: string,
+ *     fields: array<string, SettingField>
+ * }
  */
 final class SystemSettingsService
 {
     /**
      * Configuration groups shown on the page, in order.
      * `type`: text | number | float | select | bool
+     *
+     * @return array<string, SettingGroup>
      */
     public function groups(): array
     {
@@ -208,24 +227,18 @@ final class SystemSettingsService
     /**
      * Effective value of a key: DB-stored override if exists,
      * otherwise the current config() value.
+     *
+     * @return array<string, mixed>
      */
     public function values(): array
     {
+        /** @var array<string, mixed> $overrides */
         $overrides = SystemSetting::query()->pluck('value', 'key')->toArray();
+
         $values = [];
 
         foreach ($this->groups() as $group) {
-            foreach ($group['fields'] as $key => $field) {
-                if (array_key_exists($key, $overrides)) {
-                    $values[$key] = $this->cast($field, $overrides[$key]);
-
-                    continue;
-                }
-
-                $current = config($key);
-
-                $values[$key] = $current !== null ? $this->cast($field, $current) : $field['default'];
-            }
+            $values = array_merge($values, $this->resolveValues($group, $overrides));
         }
 
         return $values;
@@ -274,11 +287,23 @@ final class SystemSettingsService
             return [];
         }
 
-        foreach ($group['fields'] as $key => $field) {
+        foreach (array_keys($group['fields']) as $key) {
             SystemSetting::query()->where('key', $key)->delete();
         }
 
+        /** @var array<string, mixed> $overrides */
         $overrides = SystemSetting::query()->pluck('value', 'key')->toArray();
+
+        return $this->resolveValues($group, $overrides);
+    }
+
+    /**
+     * @param  SettingGroup  $group
+     * @param  array<string, mixed>  $overrides
+     * @return array<string, mixed>
+     */
+    private function resolveValues(array $group, array $overrides): array
+    {
         $values = [];
 
         foreach ($group['fields'] as $key => $field) {
@@ -311,6 +336,7 @@ final class SystemSettingsService
         }
 
         try {
+            /** @var array<string, mixed> $rows */
             $rows = SystemSetting::query()->pluck('value', 'key')->toArray();
 
             foreach ($rows as $key => $value) {
@@ -333,11 +359,17 @@ final class SystemSettingsService
         }
     }
 
+    /**
+     * @return SettingGroup|null
+     */
     private function findGroup(string $groupId): ?array
     {
         return $this->groups()[$groupId] ?? null;
     }
 
+    /**
+     * @return SettingField|null
+     */
     private function findField(string $key): ?array
     {
         foreach ($this->groups() as $group) {
@@ -349,40 +381,50 @@ final class SystemSettingsService
         return null;
     }
 
+    /**
+     * @param  SettingField  $field
+     */
     private function cast(array $field, mixed $value): int|float|bool|string
     {
         return match ($field['type']) {
-            'number' => (int) $value,
-            'float' => (float) $value,
+            'number' => is_numeric($value) ? (int) $value : 0,
+            'float' => is_numeric($value) ? (float) $value : 0.0,
             'bool' => filter_var($value, FILTER_VALIDATE_BOOL),
-            default => (string) $value,
+            default => is_scalar($value) ? (string) $value : '',
         };
     }
 
+    /**
+     * @param  SettingField  $field
+     */
     private function normalize(array $field, mixed $value): int|float|bool|string
     {
         return match ($field['type']) {
-            'number' => (int) max($field['min'] ?? 0, min($field['max'] ?? PHP_INT_MAX, (int) round($value))),
-            'float' => (float) max($field['min'] ?? 0, min($field['max'] ?? PHP_INT_MAX, (float) $value)),
+            'number' => (int) max($field['min'] ?? 0, min($field['max'] ?? PHP_INT_MAX, is_numeric($value) ? (int) round((float) $value) : 0)),
+            'float' => (float) max($field['min'] ?? 0, min($field['max'] ?? PHP_INT_MAX, is_numeric($value) ? (float) $value : 0.0)),
             'bool' => filter_var($value, FILTER_VALIDATE_BOOL),
             'select' => $this->normalizeSelect($field, $value),
-            default => trim((string) $value),
+            default => is_scalar($value) ? trim((string) $value) : '',
         };
     }
 
+    /**
+     * @param  SettingField  $field
+     */
     private function normalizeSelect(array $field, mixed $value): string
     {
+        $candidate = is_scalar($value) ? (string) $value : '';
         $options = $field['options'] ?? [];
 
-        if (array_key_exists((string) $value, $options)) {
-            return (string) $value;
+        if (array_key_exists($candidate, $options)) {
+            return $candidate;
         }
 
-        if (in_array((string) $value, array_values($options), true)) {
-            return (string) $value;
+        if (in_array($candidate, array_values($options), true)) {
+            return $candidate;
         }
 
-        return (string) ($field['default'] ?? array_key_first($options));
+        return (string) $field['default'];
     }
 
     /**
@@ -395,7 +437,7 @@ final class SystemSettingsService
         $options = [];
 
         foreach (LocaleService::all() as $code => $meta) {
-            $options[$code] = (string) ($meta['name'] ?? $code);
+            $options[$code] = $meta['name'];
         }
 
         return $options;
@@ -403,11 +445,13 @@ final class SystemSettingsService
 
     /**
      * Available email options, derived from the configured mailers.
+     *
+     * @return array<string, string>
      */
     private function mailers(): array
     {
-        $mailers = config('mail.mailers', []);
-        $keys = array_keys(is_array($mailers) ? $mailers : []);
+        $mailers = config('mail.mailers');
+        $keys = is_array($mailers) ? array_keys($mailers) : [];
 
         $labels = [
             'log' => __('auth.Registo (log)'),
@@ -427,6 +471,10 @@ final class SystemSettingsService
         $options = [];
 
         foreach ($keys as $key) {
+            if (! is_string($key)) {
+                continue;
+            }
+
             $options[$key] = $labels[$key] ?? $key;
         }
 
@@ -439,6 +487,8 @@ final class SystemSettingsService
 
     /**
      * Most common timezones, with UTC first.
+     *
+     * @return array<string, string>
      */
     private function timezones(): array
     {

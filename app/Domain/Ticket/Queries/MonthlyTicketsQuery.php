@@ -16,6 +16,7 @@ final readonly class MonthlyTicketsQuery
         private Carbon $now,
     ) {}
 
+    /** @return array{labels: array<int, string>, open: array<int, int>, in_progress: array<int, int>, closed: array<int, int>, cost_data: array<int, float>} */
     public function execute(): array
     {
         $monthKeys = $this->generateMonthKeys();
@@ -24,6 +25,7 @@ final readonly class MonthlyTicketsQuery
         return $this->formatResults($monthKeys, $rows);
     }
 
+    /** @return array<int, string> */
     private function generateMonthKeys(): array
     {
         $keys = [];
@@ -35,6 +37,10 @@ final readonly class MonthlyTicketsQuery
         return $keys;
     }
 
+    /**
+     * @param  array<int, string>  $monthKeys
+     * @return Collection<int, Ticket>
+     */
     private function buildQuery(array $monthKeys): Collection
     {
         $startMonth = $this->now->copy()->subMonths(5)->startOfMonth()->toDateTimeString();
@@ -67,16 +73,25 @@ final readonly class MonthlyTicketsQuery
         };
     }
 
+    /**
+     * @param  array<int, string>  $monthKeys
+     * @param  \Illuminate\Support\Collection<string, Ticket>  $rows
+     * @return array{labels: array<int, string>, open: array<int, int>, in_progress: array<int, int>, closed: array<int, int>, cost_data: array<int, float>}
+     */
     private function formatResults(array $monthKeys, $rows): array
     {
         $open = $inProgress = $closed = $costData = [];
 
         foreach ($monthKeys as $key) {
             $row = $rows->get($key);
-            $open[] = (int) ($row->open_count ?? 0);
-            $inProgress[] = (int) ($row->in_progress_count ?? 0);
-            $closed[] = (int) ($row->closed_count ?? 0);
-            $costData[] = round((float) ($row->total_cost ?? 0), 2);
+            $openCount = $row !== null ? ($row->open_count ?? null) : null;
+            $inProgressCount = $row !== null ? ($row->in_progress_count ?? null) : null;
+            $closedCount = $row !== null ? ($row->closed_count ?? null) : null;
+            $totalCost = $row !== null ? ($row->total_cost ?? null) : null;
+            $open[] = is_numeric($openCount) ? (int) $openCount : 0;
+            $inProgress[] = is_numeric($inProgressCount) ? (int) $inProgressCount : 0;
+            $closed[] = is_numeric($closedCount) ? (int) $closedCount : 0;
+            $costData[] = round(is_numeric($totalCost) ? (float) $totalCost : 0.0, 2);
         }
 
         return [

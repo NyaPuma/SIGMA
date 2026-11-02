@@ -18,6 +18,7 @@ final class StartTicketRequest extends FormRequest
         return $ticket !== null && $this->user()?->can('update', $ticket) === true;
     }
 
+    /** @return array<string, mixed> */
     public function rules(): array
     {
         return [

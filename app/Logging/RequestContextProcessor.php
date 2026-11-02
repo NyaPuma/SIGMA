@@ -34,7 +34,9 @@ final class RequestContextProcessor implements ProcessorInterface
     public function __invoke(LogRecord $record): LogRecord
     {
         $context = $this->requestContext();
-        $merged = $this->sanitize(array_merge($record->context, $context));
+        /** @var array<string, mixed> $mergedInput */
+        $mergedInput = array_merge($record->context, $context);
+        $merged = $this->sanitize($mergedInput);
 
         return $record->with(context: $merged);
     }
@@ -98,9 +100,12 @@ final class RequestContextProcessor implements ProcessorInterface
                 continue;
             }
 
-            $sanitized[$key] = is_array($value)
-                ? $this->sanitize($value)
-                : $value;
+            if (is_array($value)) {
+                /** @var array<string, mixed> $value */
+                $sanitized[$key] = $this->sanitize($value);
+            } else {
+                $sanitized[$key] = $value;
+            }
         }
 
         return $sanitized;

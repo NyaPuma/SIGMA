@@ -26,6 +26,7 @@ final readonly class UpdateUserData
         }
     }
 
+    /** @param FormRequest|array<string, mixed> $data */
     public static function fromRequest(FormRequest|array $data): self
     {
         $payload = $data instanceof FormRequest ? $data->validated() : $data;
@@ -107,6 +108,7 @@ final readonly class UpdateUserData
      * Returns fields provided for Eloquent update; password is excluded
      * (handled separately via hashing in the service layer).
      */
+    /** @return array<string, mixed> */
     public function toArray(): array
     {
         return array_filter([

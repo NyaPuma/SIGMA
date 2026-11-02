@@ -42,6 +42,7 @@ final readonly class UpdateEquipmentData
         }
     }
 
+    /** @param FormRequest|array<string, mixed> $data */
     public static function fromRequest(FormRequest|array $data): self
     {
         $payload = $data instanceof FormRequest ? $data->validated() : $data;
@@ -115,6 +116,7 @@ final readonly class UpdateEquipmentData
     /**
      * Returns only the fields that were provided for partial Eloquent updates.
      */
+    /** @return array<string, mixed> */
     public function toArray(): array
     {
         return array_filter([

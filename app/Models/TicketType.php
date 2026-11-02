@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Models;
 
+use Database\Factories\TicketTypeFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -13,7 +14,9 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 /** @property string|null $code */
 final class TicketType extends Model
 {
+    /** @use HasFactory<TicketTypeFactory> */
     use HasFactory;
+
     use SoftDeletes;
 
     protected static function booted(): void
@@ -42,6 +45,7 @@ final class TicketType extends Model
 
     // --- RELATIONSHIPS ---
 
+    /** @return HasMany<TicketStatus, $this> */
     public function statuses(): HasMany
     {
         return $this->hasMany(TicketStatus::class, 'type_id');
@@ -50,6 +54,7 @@ final class TicketType extends Model
     /**
      * Direct relationship to tickets associated with this type via statuses.
      */
+    /** @return HasManyThrough<Ticket, TicketStatus, $this> */
     public function tickets(): HasManyThrough
     {
         return $this->hasManyThrough(

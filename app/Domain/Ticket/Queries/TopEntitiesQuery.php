@@ -2,12 +2,16 @@
 
 namespace App\Domain\Ticket\Queries;
 
+use App\Models\Ticket;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 
 final readonly class TopEntitiesQuery
 {
+    /**
+     * @param  Builder<Ticket>  $baseQuery
+     */
     public function __construct(
         private Builder $baseQuery,
     ) {}
@@ -26,8 +30,8 @@ final readonly class TopEntitiesQuery
             ->limit(5)
             ->get()
             ->map(fn (mixed $row): array => [
-                'name' => (string) data_get($row, 'name'),
-                'total' => (int) data_get($row, 'total'),
+                'name' => is_string(data_get($row, 'name')) ? (string) data_get($row, 'name') : '',
+                'total' => is_numeric(data_get($row, 'total')) ? (int) data_get($row, 'total') : 0,
                 'subtitle' => 'interventions',
             ]);
     }
@@ -46,8 +50,8 @@ final readonly class TopEntitiesQuery
             ->limit(5)
             ->get()
             ->map(fn (mixed $row): array => [
-                'name' => (string) data_get($row, 'name'),
-                'total' => (int) data_get($row, 'total'),
+                'name' => is_string(data_get($row, 'name')) ? (string) data_get($row, 'name') : '',
+                'total' => is_numeric(data_get($row, 'total')) ? (int) data_get($row, 'total') : 0,
                 'subtitle' => 'tickets',
             ]);
     }
@@ -66,8 +70,8 @@ final readonly class TopEntitiesQuery
             ->limit(5)
             ->get()
             ->map(fn (mixed $row): array => [
-                'name' => (string) data_get($row, 'name'),
-                'total' => (int) data_get($row, 'total'),
+                'name' => is_string(data_get($row, 'name')) ? (string) data_get($row, 'name') : '',
+                'total' => is_numeric(data_get($row, 'total')) ? (int) data_get($row, 'total') : 0,
                 'subtitle' => 'actions',
             ]);
     }

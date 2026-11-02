@@ -2,10 +2,14 @@
 
 namespace App\DTOs;
 
+use App\Support\MoneyInput;
 use Illuminate\Foundation\Http\FormRequest;
 
 final readonly class BudgetSubmissionData
 {
+    /**
+     * @param  array<array-key, mixed>|null  $budgetDetails
+     */
     public function __construct(
         public float $estimatedBudget,
         public ?array $budgetDetails = null,
@@ -19,13 +23,14 @@ final readonly class BudgetSubmissionData
     /**
      * Factory for a simple budget estimate submission.
      */
+    /** @param FormRequest|array<string, mixed> $data */
     public static function fromSubmitEstimate(FormRequest|array $data): self
     {
         $payload = $data instanceof FormRequest ? $data->validated() : $data;
 
         return new self(
             estimatedBudget: self::parseAmount($payload['estimatedBudget'] ?? $payload['estimated_budget'] ?? 0),
-            budgetDetails: $payload['budget_details'] ?? null,
+            budgetDetails: self::parseBudgetDetails($payload['budget_details'] ?? null),
             isDetailedRequest: false,
         );
     }
@@ -33,38 +38,37 @@ final readonly class BudgetSubmissionData
     /**
      * Factory for a detailed budget request.
      */
+    /** @param FormRequest|array<string, mixed> $data */
     public static function fromDetailedRequest(FormRequest|array $data): self
     {
         $payload = $data instanceof FormRequest ? $data->validated() : $data;
 
         return new self(
             estimatedBudget: self::parseAmount($payload['budget_amount'] ?? 0),
-            budgetDetails: $payload['budget_details'] ?? null,
+            budgetDetails: self::parseBudgetDetails($payload['budget_details'] ?? null),
             isDetailedRequest: true,
         );
     }
 
     /**
-     * Sanitize monetary input to a precise float (2 decimal places).
-     * Handles both numeric values and strings like "150,50" (comma decimal separator).
+     * @return array<array-key, mixed>|null
      */
-    private static function parseAmount(mixed $value): float
+    private static function parseBudgetDetails(mixed $value): ?array
     {
-        if (is_numeric($value)) {
-            return round((float) $value, 2);
+        if (! is_array($value)) {
+            return null;
         }
 
-        if (is_string($value)) {
-            $cleaned = str_replace(',', '.', preg_replace('/[^\d,.]/', '', $value));
-
-            if (is_numeric($cleaned)) {
-                return round((float) $cleaned, 2);
-            }
-        }
-
-        return 0.0;
+        /** @var array<array-key, mixed> $value */
+        return $value;
     }
 
+    private static function parseAmount(mixed $value): float
+    {
+        return MoneyInput::parse($value);
+    }
+
+    /** @return array<string, mixed> */
     public function toArray(): array
     {
         return [

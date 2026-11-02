@@ -57,7 +57,9 @@ final class ActivityFeedController extends Controller
 
     private function descriptionFor(Audit $audit): string
     {
-        $user = optional($audit->user)->name ?? __('activity.system');
+        $systemLabel = __('activity.system');
+        $userName = $audit->user?->name;
+        $user = is_string($userName) ? $userName : (is_string($systemLabel) ? $systemLabel : 'Sistema');
         $subject = $this->subjectName($audit);
 
         $subjectPart = $subject !== null ? sprintf('«%s»', $subject) : null;
@@ -90,11 +92,11 @@ final class ActivityFeedController extends Controller
             return null;
         }
 
-        if (isset($values['title'])) {
+        if (isset($values['title']) && is_scalar($values['title'])) {
             return (string) $values['title'];
         }
 
-        return isset($values['name']) ? (string) $values['name'] : null;
+        return isset($values['name']) && is_scalar($values['name']) ? (string) $values['name'] : null;
     }
 
     private function iconBgFor(Audit $audit): string

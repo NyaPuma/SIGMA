@@ -22,7 +22,8 @@ final class LocaleController extends Controller
      */
     public function switch(Request $request): RedirectResponse
     {
-        $requestedLocale = (string) $request->input('locale');
+        $requestedLocaleRaw = $request->input('locale');
+        $requestedLocale = is_string($requestedLocaleRaw) ? $requestedLocaleRaw : '';
 
         if (! LocaleService::isSupported($requestedLocale)) {
             return back()->withErrors(['locale' => __('common.Idioma não suportado.')]);

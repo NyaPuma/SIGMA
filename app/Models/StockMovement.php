@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Models;
 
 use App\Enums\StockMovementTypeEnum;
+use Database\Factories\StockMovementFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -12,6 +13,7 @@ use InvalidArgumentException;
 
 final class StockMovement extends Model
 {
+    /** @use HasFactory<StockMovementFactory> */
     use HasFactory;
 
     protected $fillable = [
@@ -35,21 +37,25 @@ final class StockMovement extends Model
         ];
     }
 
+    /** @return BelongsTo<Part, $this> */
     public function part(): BelongsTo
     {
         return $this->belongsTo(Part::class);
     }
 
+    /** @return BelongsTo<Ticket, $this> */
     public function ticket(): BelongsTo
     {
         return $this->belongsTo(Ticket::class);
     }
 
+    /** @return BelongsTo<Equipment, $this> */
     public function equipment(): BelongsTo
     {
         return $this->belongsTo(Equipment::class);
     }
 
+    /** @return BelongsTo<User, $this> */
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
@@ -60,12 +66,15 @@ final class StockMovement extends Model
      */
     public function delta(): int
     {
-        return match ((string) $this->getAttribute('movement_type')) {
+        /** @var string $movementType */
+        $movementType = $this->movement_type;
+
+        return match ($movementType) {
             StockMovementTypeEnum::In->value,
             StockMovementTypeEnum::Return->value => abs((int) $this->quantity),
             StockMovementTypeEnum::Out->value => -abs((int) $this->quantity),
             StockMovementTypeEnum::Adjust->value => (int) $this->quantity,
-            default => throw new InvalidArgumentException("Invalid movement type: {$this->movement_type}"),
+            default => throw new InvalidArgumentException("Invalid movement type: {$movementType}"),
         };
     }
 }

@@ -198,7 +198,7 @@ final class CurrencyRateService
         try {
             $breaker = $this->circuitBreaker ?? new CircuitBreaker;
 
-            return $breaker->run('frankfurter', function (): array {
+            $result = $breaker->run('frankfurter', function (): array {
                 $response = Http::timeout(self::TIMEOUT)
                     ->retry(3, 100, throw: false)
                     ->acceptJson()
@@ -226,6 +226,13 @@ final class CurrencyRateService
 
                 return $rates;
             }, []);
+
+            if (! is_array($result)) {
+                return [];
+            }
+
+            /** @var array<string, float> $result */
+            return $result;
         } catch (\Throwable $e) {
             return [];
         }

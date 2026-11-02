@@ -16,6 +16,7 @@ final readonly class ScheduleTicketData
         }
     }
 
+    /** @param FormRequest|array<string, mixed> $data */
     public static function fromRequest(FormRequest|array $data): self
     {
         $payload = $data instanceof FormRequest ? $data->validated() : $data;
@@ -51,12 +52,13 @@ final readonly class ScheduleTicketData
         }
 
         try {
-            return CarbonImmutable::parse((string) $value);
+            return CarbonImmutable::parse(is_string($value) ? $value : (string) (is_scalar($value) ? $value : ''));
         } catch (\Throwable) {
             return null;
         }
     }
 
+    /** @return array<string, mixed> */
     public function toArray(): array
     {
         return [

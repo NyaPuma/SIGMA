@@ -13,6 +13,7 @@ use Illuminate\Http\Resources\Json\JsonResource;
 /** @mixin MaintenancePlan */
 final class MaintenancePlanResource extends JsonResource
 {
+    /** @return array<string, mixed> */
     public function toArray(Request $request): array
     {
         $intervalType = MaintenancePlanIntervalTypeEnum::normalize((string) $this->interval_type);

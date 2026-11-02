@@ -101,7 +101,7 @@ final class AppServiceProvider extends ServiceProvider
     {
         // Laravel Pulse dashboard is restricted to administrators. In non-local
         // environments Life just overrides Pulse's default local-only ability.
-        Gate::define('viewPulse', fn ($user = null) => $user?->isAdmin() === true);
+        Gate::define('viewPulse', fn (?User $user = null) => $user?->isAdmin() === true);
 
         Gate::policy(Ticket::class, TicketPolicy::class);
         Gate::policy(User::class, UserPolicy::class);
@@ -156,7 +156,8 @@ final class AppServiceProvider extends ServiceProvider
             return;
         }
 
-        $thresholdMs = (float) config('database.connections.mysql.slow_query_threshold_ms', 100);
+        $thresholdMsRaw = config('database.connections.mysql.slow_query_threshold_ms', 100);
+        $thresholdMs = is_numeric($thresholdMsRaw) ? (float) $thresholdMsRaw : 100.0;
 
         DB::listen(function (QueryExecuted $query) use ($thresholdMs): void {
             if ($query->time >= $thresholdMs) {
@@ -192,7 +193,8 @@ final class AppServiceProvider extends ServiceProvider
 
             $durationMs = round((microtime(true) - $started) * 1000, 2);
 
-            if ($durationMs >= (float) config('observability.queue_slow_job_threshold_ms', 1000)) {
+            $threshold = config('observability.queue_slow_job_threshold_ms', 1000);
+            if ($durationMs >= (is_numeric($threshold) ? (float) $threshold : 1000.0)) {
                 Log::warning('Slow queue job detected', [
                     'metric' => 'queue.job.duration_ms',
                     'job' => $event->job->resolveName(),
@@ -268,6 +270,7 @@ final class AppServiceProvider extends ServiceProvider
                 $request = $sanitize($event->getRequest());
 
                 if (is_array($request)) {
+                    /** @var array<string, mixed> $request */
                     $event->setRequest($request);
                 }
 
@@ -275,6 +278,7 @@ final class AppServiceProvider extends ServiceProvider
                     $sanitizedContext = $sanitize($context);
 
                     if (is_array($sanitizedContext)) {
+                        /** @var array<string, mixed> $sanitizedContext */
                         $event->setContext($name, $sanitizedContext);
                     }
                 }
@@ -282,6 +286,7 @@ final class AppServiceProvider extends ServiceProvider
                 $extra = $sanitize($event->getExtra());
 
                 if (is_array($extra)) {
+                    /** @var array<string, mixed> $extra */
                     $event->setExtra($extra);
                 }
 

@@ -16,6 +16,7 @@ use App\Models\User;
 use App\Services\EquipmentService;
 use App\Services\ThemePresetService;
 use App\Services\TicketStatusService;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
@@ -313,8 +314,8 @@ final class UiController extends Controller
             ->whereHas('profile', fn ($q) => $q->where('name', UserRoleEnum::Technician->value))
             ->where('active', true)
             ->withCount([
-                'assignedTickets as in_progress_tickets' => fn ($q) => $q
-                    ->whereHas('status', fn ($s) => $s->where('name', TicketStatusEnum::InProgress->value)),
+                'assignedTickets as in_progress_tickets' => fn (Builder $q) => $q
+                    ->whereHas('status', fn (Builder $s) => $s->where('name', TicketStatusEnum::InProgress->value)),
             ])
             ->get(['id', 'name'])
             ->map(fn (User $user) => [
@@ -380,7 +381,7 @@ final class UiController extends Controller
      */
     public function themeAppearance(Request $request): View
     {
-        $user = $request->user();
+        $user = $this->authenticatedUser($request);
 
         return view('ui.settings.appearance', [
             'user' => $user,
@@ -397,11 +398,12 @@ final class UiController extends Controller
      */
     public function themeAppearanceUpdate(Request $request): JsonResponse|RedirectResponse
     {
+        /** @var array{theme: string} $validated */
         $validated = $request->validate([
             'theme' => ['required', 'string', Rule::in(array_keys($this->themePresets->all()))],
         ]);
 
-        $user = $request->user();
+        $user = $this->authenticatedUser($request);
         $preset = $this->themePresets->applyForUser($user, $validated['theme']);
 
         if ($request->expectsJson()) {

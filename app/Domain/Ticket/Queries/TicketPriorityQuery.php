@@ -3,14 +3,19 @@
 namespace App\Domain\Ticket\Queries;
 
 use App\Enums\TicketPriorityEnum;
+use App\Models\Ticket;
 use Illuminate\Database\Eloquent\Builder;
 
 final readonly class TicketPriorityQuery
 {
+    /**
+     * @param  Builder<Ticket>  $baseQuery
+     */
     public function __construct(
         private Builder $baseQuery,
     ) {}
 
+    /** @return array<string, int> */
     public function execute(): array
     {
         // Clone to avoid unintended mutation of the original $baseQuery
@@ -27,10 +32,14 @@ final readonly class TicketPriorityQuery
             ])
             ->first();
 
+        $low = $row !== null ? ($row->low ?? null) : null;
+        $medium = $row !== null ? ($row->medium ?? null) : null;
+        $high = $row !== null ? ($row->high ?? null) : null;
+
         return [
-            'low' => (int) ($row->low ?? 0),
-            'medium' => (int) ($row->medium ?? 0),
-            'high' => (int) ($row->high ?? 0),
+            'low' => is_numeric($low) ? (int) $low : 0,
+            'medium' => is_numeric($medium) ? (int) $medium : 0,
+            'high' => is_numeric($high) ? (int) $high : 0,
         ];
     }
 }

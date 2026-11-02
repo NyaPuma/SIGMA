@@ -19,6 +19,8 @@ final class RateLimitMiddleware
 
     /**
      * Handle an incoming request.
+     *
+     * @param  Closure(Request): Response  $next
      */
     public function handle(
         Request $request,
@@ -51,7 +53,7 @@ final class RateLimitMiddleware
     protected function resolveRequestSignature(Request $request): string
     {
         if ($this->isAuthEndpoint($request)) {
-            $email = (string) $request->input('email', '');
+            $email = $request->string('email')->toString();
 
             return sha1($request->ip().'|'.$email);
         }
@@ -97,7 +99,9 @@ final class RateLimitMiddleware
      */
     protected function calculateRemainingAttempts(string $key, int $maxAttempts): int
     {
-        return max(0, $maxAttempts - $this->limiter->attempts($key));
+        $attempts = $this->limiter->attempts($key);
+
+        return max(0, $maxAttempts - (is_numeric($attempts) ? (int) $attempts : 0));
     }
 
     /**

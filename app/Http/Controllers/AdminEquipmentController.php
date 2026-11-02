@@ -31,9 +31,13 @@ final class AdminEquipmentController extends Controller
         $this->authorize('viewAny', Equipment::class);
 
         // 2. Get filters from request
-        $search = $request->input('q');
-        $status = $request->input('status');
-        $category = $request->input('category');
+        $search = $request->query('q');
+        $status = $request->query('status');
+        $category = $request->query('category');
+
+        $search = is_string($search) ? $search : null;
+        $status = is_string($status) ? $status : null;
+        $category = is_string($category) ? $category : null;
 
         // 3. Search for equipment with applied filters
         $equipments = $this->equipmentRepository->getAll(['room', 'category'], $search, $status, $category);

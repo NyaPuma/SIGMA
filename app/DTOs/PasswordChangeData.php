@@ -23,16 +23,21 @@ final readonly class PasswordChangeData
         }
     }
 
+    /** @param FormRequest|array<string, mixed> $data */
     public static function fromRequest(FormRequest|array $data): self
     {
         $payload = $data instanceof FormRequest ? $data->validated() : $data;
 
+        $rawCurrent = $payload['current_password'] ?? '';
+        $rawNew = $payload['new_password'] ?? '';
+
         return new self(
-            currentPassword: (string) ($payload['current_password'] ?? ''),
-            newPassword: (string) ($payload['new_password'] ?? ''),
+            currentPassword: is_scalar($rawCurrent) ? (string) $rawCurrent : '',
+            newPassword: is_scalar($rawNew) ? (string) $rawNew : '',
         );
     }
 
+    /** @return array<string, mixed> */
     public function toArray(): array
     {
         return [

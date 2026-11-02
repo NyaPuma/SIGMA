@@ -27,7 +27,7 @@ final class AdminController extends Controller
         // 1. Authorization via Policy
         $this->authorize('approveBudget', $ticket);
 
-        $admin = $request->user();
+        $admin = $this->authenticatedUser($request);
 
         // 2. Execute the budget approval/rejection action
         $updatedTicket = $this->approveBudgetAction->execute(
@@ -58,14 +58,18 @@ final class AdminController extends Controller
         // 1. Authorization via Policy (verification in Model class)
         $this->authorize('createPreventive', Ticket::class);
 
-        $admin = $request->user();
+        $admin = $this->authenticatedUser($request);
 
         // 2. Execute the preventive ticket creation with validated data
+        /** @var array{title: string, description?: string|null, technician_id?: int|string|null} $data */
+        $data = $request->validated();
+        $technicianId = $data['technician_id'] ?? null;
+
         $ticket = $this->createPreventiveAction->execute(
             admin: $admin,
-            title: $request->validated('title'),
-            description: $request->validated('description'),
-            technician: $request->validated('technician_id'),
+            title: $data['title'],
+            description: $data['description'] ?? null,
+            technician: is_numeric($technicianId) ? (int) $technicianId : null,
             scheduledAt: $request->date('scheduled_at')
         );
 

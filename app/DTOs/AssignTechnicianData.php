@@ -18,6 +18,7 @@ final readonly class AssignTechnicianData
     /**
      * Creates the DTO from an Array or FormRequest.
      */
+    /** @param FormRequest|array<string, mixed> $data */
     public static function fromRequest(FormRequest|array $data): self
     {
         $payload = $data instanceof FormRequest ? $data->validated() : $data;
@@ -35,6 +36,7 @@ final readonly class AssignTechnicianData
     /**
      * Converts the DTO to an array for use in Models or Services.
      */
+    /** @return array<string, mixed> */
     public function toArray(): array
     {
         return [

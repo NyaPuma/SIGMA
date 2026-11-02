@@ -10,7 +10,7 @@ use App\Models\Ticket;
 use App\Models\User;
 use App\Services\TicketStatusService;
 use Illuminate\Console\Command;
-use Illuminate\Support\Arr;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Facades\DB;
 
 /**
@@ -26,6 +26,7 @@ class SimulateTelemetry extends Command
 
     protected $description = 'Simulates equipment telemetry and automatically generates preventive-maintenance tickets when anomalies are detected.';
 
+    /** @var list<array{title: string, description: string, priority: string}> */
     private array $anomalyTypes = [
         [
             'title' => 'Temperature above operational limit',
@@ -75,11 +76,13 @@ class SimulateTelemetry extends Command
         $openStatusId = $statusService->getByName(TicketStatusEnum::Open);
 
         // Load active equipment with eager-loaded unresolved tickets to avoid N+1
+        $hasOpenTicket = function (Builder $query) use ($openStatusId): void {
+            // Considers it open if status is Open or active non-completed states
+            $query->where('status_id', $openStatusId);
+        };
+
         $equipments = Equipment::where('active', true)
-            ->withExists(['tickets as has_open_ticket' => function ($query) use ($openStatusId) {
-                // Considers it open if status is Open or active non-completed states
-                $query->where('status_id', $openStatusId);
-            }])
+            ->withExists(['tickets as has_open_ticket' => $hasOpenTicket])
             ->inRandomOrder()
             ->limit($maxEquipments)
             ->get();
@@ -107,7 +110,7 @@ class SimulateTelemetry extends Command
                 continue;
             }
 
-            $anomaly = Arr::random($this->anomalyTypes);
+            $anomaly = $this->anomalyTypes[random_int(0, count($this->anomalyTypes) - 1)];
 
             if ($dryRun) {
                 $this->info("  [DRY-RUN] Would create Ticket for equip. #{$equipment->id} ({$equipment->name}): {$anomaly['title']}");

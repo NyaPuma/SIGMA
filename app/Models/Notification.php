@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\MorphTo;
@@ -19,7 +18,7 @@ use Illuminate\Support\Carbon;
  */
 final class Notification extends Model
 {
-    use HasFactory;
+    // (no factory)
     use SoftDeletes;
 
     protected $fillable = [
@@ -47,11 +46,13 @@ final class Notification extends Model
         ];
     }
 
+    /** @return BelongsTo<User, $this> */
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
     }
 
+    /** @return MorphTo<Model, $this> */
     public function notifiable(): MorphTo
     {
         return $this->morphTo();
@@ -60,6 +61,8 @@ final class Notification extends Model
     /**
      * Scope to filter unread notifications.
      */
+    /** @param Builder<Notification> $query
+     *  @return Builder<Notification> */
     public function scopeUnread(Builder $query): Builder
     {
         return $query->where('is_read', false);
@@ -68,6 +71,8 @@ final class Notification extends Model
     /**
      * Scope to filter read notifications.
      */
+    /** @param Builder<Notification> $query
+     *  @return Builder<Notification> */
     public function scopeRead(Builder $query): Builder
     {
         return $query->where('is_read', true);

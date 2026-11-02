@@ -53,6 +53,7 @@ final readonly class StoreEquipmentData
         }
     }
 
+    /** @param FormRequest|array<string, mixed> $data */
     public static function fromRequest(FormRequest|array $data): self
     {
         $payload = $data instanceof FormRequest ? $data->validated() : $data;
@@ -62,9 +63,12 @@ final readonly class StoreEquipmentData
             $status = 'operacional';
         }
 
+        $rawName = $payload['name'] ?? '';
+        $rawSerial = $payload['serial'] ?? '';
+
         return new self(
-            name: trim((string) ($payload['name'] ?? '')),
-            serial: strtoupper(trim((string) ($payload['serial'] ?? ''))),
+            name: trim(is_scalar($rawName) ? (string) $rawName : ''),
+            serial: strtoupper(trim(is_scalar($rawSerial) ? (string) $rawSerial : '')),
             roomId: self::parseNullableInt($payload['room_id'] ?? null),
             categoryId: self::parseNullableInt($payload['category_id'] ?? null),
             active: self::parseBool($payload['active'] ?? true),
@@ -116,6 +120,7 @@ final readonly class StoreEquipmentData
         return filter_var($value, FILTER_VALIDATE_BOOLEAN);
     }
 
+    /** @return array<string, mixed> */
     public function toArray(): array
     {
         return [

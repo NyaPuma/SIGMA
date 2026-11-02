@@ -15,15 +15,15 @@ final class ProfileController extends Controller
      */
     public function changePassword(ChangePasswordRequest $request): JsonResponse
     {
-        $user = $request->user();
+        $user = $this->authenticatedUser($request);
 
-        if (! Hash::check($request->input('current_password'), $user->password)) {
+        if (! Hash::check($request->string('current_password')->toString(), $user->password)) {
             return response()->json([
                 'message' => __('auth.Password atual incorreta'),
             ], 403);
         }
 
-        $user->password = Hash::make($request->input('new_password'));
+        $user->password = Hash::make($request->string('new_password')->toString());
         $user->save();
 
         return response()->json([
@@ -36,17 +36,17 @@ final class ProfileController extends Controller
      */
     public function updateProfile(UpdateProfileRequest $request): JsonResponse
     {
-        $user = $request->user();
+        $user = $this->authenticatedUser($request);
 
-        $newPassword = $request->input('password');
+        $newPassword = $request->string('password')->toString();
 
-        if (! empty($newPassword)) {
+        if ($newPassword !== '') {
             $user->password = Hash::make($newPassword);
         }
 
-        $name = $request->input('name');
+        $name = $request->string('name')->toString();
 
-        if (! empty($name)) {
+        if ($name !== '') {
             $user->name = $name;
         }
 

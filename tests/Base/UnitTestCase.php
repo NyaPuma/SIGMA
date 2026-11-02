@@ -3,6 +3,7 @@
 namespace Tests\Base;
 
 use Illuminate\Foundation\Testing\TestCase as BaseTestCase;
+use OpenAI\Laravel\Facades\OpenAI;
 
 abstract class UnitTestCase extends BaseTestCase
 {
@@ -12,6 +13,7 @@ abstract class UnitTestCase extends BaseTestCase
     protected function setUp(): void
     {
         parent::setUp();
+        OpenAI::fake();
         $this->createViteManifest();
     }
 

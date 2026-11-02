@@ -47,7 +47,7 @@ final class QrCodeController extends Controller
      */
     public function exportPdf(Request $request): JsonResponse
     {
-        $user = $request->user();
+        $user = $this->authenticatedUser($request);
 
         ExportEquipmentQrPdfJob::dispatch($user->id);
 

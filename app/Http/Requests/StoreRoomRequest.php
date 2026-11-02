@@ -20,12 +20,16 @@ final class StoreRoomRequest extends FormRequest
      */
     protected function prepareForValidation(): void
     {
+        $name = $this->input('name');
+        $location = $this->input('location');
+
         $this->merge([
-            'name' => $this->filled('name') ? trim((string) $this->name) : $this->name,
-            'location' => $this->filled('location') ? trim((string) $this->location) : $this->location,
+            'name' => $this->filled('name') && is_scalar($name) ? trim((string) $name) : $name,
+            'location' => $this->filled('location') && is_scalar($location) ? trim((string) $location) : $location,
         ]);
     }
 
+    /** @return array<string, mixed> */
     public function rules(): array
     {
         return [

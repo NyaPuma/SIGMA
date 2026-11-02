@@ -20,12 +20,16 @@ final class StorePartRequest extends FormRequest
 
     protected function prepareForValidation(): void
     {
+        $sku = $this->input('sku');
+        $name = $this->input('name');
+
         $this->merge([
-            'sku' => $this->filled('sku') ? trim((string) $this->sku) : $this->sku,
-            'name' => $this->filled('name') ? trim((string) $this->name) : $this->name,
+            'sku' => $this->filled('sku') && is_scalar($sku) ? trim((string) $sku) : $sku,
+            'name' => $this->filled('name') && is_scalar($name) ? trim((string) $name) : $name,
         ]);
     }
 
+    /** @return array<string, mixed> */
     public function rules(): array
     {
         return [

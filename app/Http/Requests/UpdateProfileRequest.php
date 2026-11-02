@@ -21,11 +21,12 @@ final class UpdateProfileRequest extends FormRequest
     {
         if ($this->has('name')) {
             $this->merge([
-                'name' => $this->filled('name') ? trim((string) $this->name) : $this->name,
+                'name' => $this->filled('name') ? trim(is_string($this->name) ? $this->name : '') : $this->name,
             ]);
         }
     }
 
+    /** @return array<string, mixed> */
     public function rules(): array
     {
         return [

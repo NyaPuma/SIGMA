@@ -35,7 +35,7 @@ final class TicketController extends Controller
         // 1. Authorization via Policy (ViewAny)
         $this->authorize('viewAny', Ticket::class);
 
-        $user = $request->user();
+        $user = $this->authenticatedUser($request);
 
         // Technicians only see the tickets assigned to them; admins see all.
         if ($user->isTechnician()) {
@@ -60,7 +60,7 @@ final class TicketController extends Controller
         // 1. Authorization via Policy (Create)
         $this->authorize('create', Ticket::class);
 
-        $user = $request->user();
+        $user = $this->authenticatedUser($request);
         $data = CreateTicketData::fromRequest($request->validated());
 
         $ticket = $this->createTicketAction->execute($user, $data);
@@ -96,7 +96,7 @@ final class TicketController extends Controller
 
         // Regular users only search their own tickets; technicians only
         // search the tickets assigned to them.
-        $user = $request->user();
+        $user = $this->authenticatedUser($request);
         if ($user->isTechnician()) {
             $filters = new TicketFilters(
                 query: $filters->query,
@@ -164,7 +164,7 @@ final class TicketController extends Controller
         // 1. Authorization via Policy (ViewAny restricted to technicians/admins)
         $this->authorize('viewAny', Ticket::class);
 
-        $user = $request->user();
+        $user = $this->authenticatedUser($request);
         if (! $user->profile || ! in_array($user->profile->name, [UserRoleEnum::Technician->value, UserRoleEnum::Admin->value], true)) {
             return response()->json(['message' => __('common.Acesso proibido para o seu perfil.')], 403);
         }
@@ -185,12 +185,12 @@ final class TicketController extends Controller
         $this->authorize('viewAny', Ticket::class);
 
         // Restricted to technicians/admins (sensitive operational data)
-        $user = $request->user();
+        $user = $this->authenticatedUser($request);
         if (! $user->profile || ! in_array($user->profile->name, [UserRoleEnum::Technician->value, UserRoleEnum::Admin->value], true)) {
             return response()->json(['message' => __('common.Acesso proibido para o seu perfil.')], 403);
         }
 
-        $excludeId = (int) $request->input('exclude', 0);
+        $excludeId = $request->integer('exclude');
         $ticket = $this->technicianService->findMostUrgentOpenTicket($excludeId > 0 ? $excludeId : null);
 
         if (! $ticket) {

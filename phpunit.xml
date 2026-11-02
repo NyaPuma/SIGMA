@@ -44,6 +44,7 @@
     </source>
     <php>
         <env name="APP_ENV" value="testing"/>
+        <env name="APP_KEY" value="base64:2CK4nP+T1v4NFYQWc4TXQ79OW1zZp6eqKNsN2sANVHQ="/>
         <env name="APP_LOCALE" value="pt-PT"/>
         <env name="APP_FALLBACK_LOCALE" value="pt-PT"/>
         <env name="APP_MAINTENANCE_DRIVER" value="file"/>

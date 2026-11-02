@@ -22,12 +22,16 @@ final class StoreEquipmentRequest extends FormRequest
      */
     protected function prepareForValidation(): void
     {
+        $name = $this->input('name');
+        $serial = $this->input('serial');
+
         $this->merge([
-            'name' => $this->filled('name') ? trim((string) $this->name) : $this->name,
-            'serial' => $this->filled('serial') ? trim((string) $this->serial) : $this->serial,
+            'name' => $this->filled('name') && is_scalar($name) ? trim((string) $name) : $name,
+            'serial' => $this->filled('serial') && is_scalar($serial) ? trim((string) $serial) : $serial,
         ]);
     }
 
+    /** @return array<string, mixed> */
     public function rules(): array
     {
         return [

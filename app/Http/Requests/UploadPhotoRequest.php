@@ -15,15 +15,20 @@ final class UploadPhotoRequest extends FormRequest
         return true;
     }
 
+    /** @return array<string, mixed> */
     public function rules(): array
     {
-        $allowedMimes = config('services.upload.allowed_photo_mimes', ['jpeg', 'jpg', 'png', 'gif', 'webp']);
+        $configuredMimes = config('services.upload.allowed_photo_mimes', ['jpeg', 'jpg', 'png', 'gif', 'webp']);
+        $allowedMimes = is_array($configuredMimes)
+            ? array_values(array_filter($configuredMimes, 'is_string'))
+            : [];
+
         if ($allowedMimes === []) {
             $allowedMimes = ['jpeg', 'jpg', 'png', 'gif', 'webp'];
         }
 
-        /** @var int $maxPhotoSizeKb */
-        $maxPhotoSizeKb = (int) config('services.upload.max_photo_size_kb', 2048);
+        $configuredMaxSize = config('services.upload.max_photo_size_kb', 2048);
+        $maxPhotoSizeKb = is_numeric($configuredMaxSize) ? (int) $configuredMaxSize : 2048;
 
         return [
             'photo' => [

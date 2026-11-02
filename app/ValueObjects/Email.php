@@ -33,12 +33,12 @@ final readonly class Email
 
     public function domain(): string
     {
-        return substr(strrchr($this->value, '@'), 1);
+        return substr(strrchr($this->value, '@') ?: '', 1);
     }
 
     public function localPart(): string
     {
-        return strstr($this->value, '@', true);
+        return strstr($this->value, '@', true) ?: '';
     }
 
     public function equals(Email $other): bool

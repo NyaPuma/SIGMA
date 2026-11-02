@@ -25,7 +25,7 @@ interface TicketRepositoryInterface
      * Return a paginated list of tickets.
      *
      * @param  array<int, string>  $relations
-     * @return LengthAwarePaginator<Ticket>
+     * @return LengthAwarePaginator<int, Ticket>
      */
     public function getAll(array $relations = []): LengthAwarePaginator;
 
@@ -51,21 +51,21 @@ interface TicketRepositoryInterface
     /**
      * Return all open tickets in a paginated manner.
      *
-     * @return LengthAwarePaginator<Ticket>
+     * @return LengthAwarePaginator<int, Ticket>
      */
     public function getOpenTickets(): LengthAwarePaginator;
 
     /**
      * Return tickets assigned to a specific technician.
      *
-     * @return LengthAwarePaginator<Ticket>
+     * @return LengthAwarePaginator<int, Ticket>
      */
     public function getTicketsByTechnician(int $technicianId): LengthAwarePaginator;
 
     /**
      * Return tickets created by a specific user.
      *
-     * @return LengthAwarePaginator<Ticket>
+     * @return LengthAwarePaginator<int, Ticket>
      */
     public function getTicketsByUser(int $userId): LengthAwarePaginator;
 }

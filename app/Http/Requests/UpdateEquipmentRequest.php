@@ -23,18 +23,21 @@ final class UpdateEquipmentRequest extends FormRequest
     protected function prepareForValidation(): void
     {
         if ($this->has('name')) {
+            $name = $this->input('name');
             $this->merge([
-                'name' => $this->filled('name') ? trim((string) $this->name) : $this->name,
+                'name' => $this->filled('name') && is_scalar($name) ? trim((string) $name) : $name,
             ]);
         }
 
         if ($this->has('serial')) {
+            $serial = $this->input('serial');
             $this->merge([
-                'serial' => $this->filled('serial') ? trim((string) $this->serial) : $this->serial,
+                'serial' => $this->filled('serial') && is_scalar($serial) ? trim((string) $serial) : $serial,
             ]);
         }
     }
 
+    /** @return array<string, mixed> */
     public function rules(): array
     {
         /** @var Equipment|int|string|null $equipment */

@@ -27,7 +27,7 @@ final class CalendarController extends Controller
      */
     public function index(Request $request): View
     {
-        $user = $request->user();
+        $user = $this->authenticatedUser($request);
         $events = $this->calendarService->getScheduledEventsForUser($user);
 
         return view('calendar', compact('events', 'user'));
@@ -38,7 +38,7 @@ final class CalendarController extends Controller
      */
     public function events(Request $request): JsonResponse
     {
-        $user = $request->user();
+        $user = $this->authenticatedUser($request);
         $events = $this->calendarService->getScheduledEventsForUser($user);
 
         return response()->json([
@@ -55,7 +55,7 @@ final class CalendarController extends Controller
 
         try {
             $ticket = $this->scheduleMaintenanceAction->execute(
-                $request->user(),
+                $this->authenticatedUser($request),
                 ScheduleMaintenanceData::fromRequest($request),
             );
         } catch (InvalidArgumentException $e) {
@@ -75,7 +75,7 @@ final class CalendarController extends Controller
      */
     public function reschedule(Ticket $ticket, RescheduleEventRequest $request): JsonResponse
     {
-        $user = $request->user();
+        $user = $this->authenticatedUser($request);
 
         $allowed = $user->isAdmin()
             || ($user->isTechnician() && $ticket->assigned_to === $user->id);
@@ -90,11 +90,11 @@ final class CalendarController extends Controller
             ], 422);
         }
 
-        $start = Carbon::parse($request->validated('start'));
+        $start = $request->date('start') ?? Carbon::now();
 
         $ticket->scheduled_at = $start;
         $ticket->scheduled_end = $request->filled('end')
-            ? Carbon::parse($request->validated('end'))
+            ? ($request->date('end') ?? $start->copy()->addHours(2))
             : $start->copy()->addHours(2);
         $ticket->save();
 

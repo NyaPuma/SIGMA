@@ -14,6 +14,7 @@ final class RequestBudgetRequest extends FormRequest
         return true;
     }
 
+    /** @return array<string, mixed> */
     public function rules(): array
     {
         return [
@@ -28,6 +29,7 @@ final class RequestBudgetRequest extends FormRequest
     /**
      * Custom validation hook to ensure line items sum up to budget_amount.
      */
+    /** @return array<int, callable> */
     public function after(): array
     {
         return [
@@ -44,11 +46,14 @@ final class RequestBudgetRequest extends FormRequest
 
                 $calculatedTotal = array_reduce(
                     $details,
-                    fn (float $acc, array $item) => $acc + ((int) ($item['quantity'] ?? 0) * (float) ($item['unit_price'] ?? 0)),
+                    fn (float $acc, mixed $item): float => $acc + self::lineTotal($item),
                     0.0
                 );
 
-                if (abs($calculatedTotal - (float) $this->input('budget_amount')) > 0.01) {
+                $budgetAmount = $this->input('budget_amount');
+                $budgetAmount = is_numeric($budgetAmount) ? (float) $budgetAmount : 0.0;
+
+                if (abs($calculatedTotal - $budgetAmount) > 0.01) {
                     $validator->errors()->add(
                         'budget_amount',
                         'The total budget amount does not match the sum of the line item details.'
@@ -56,6 +61,21 @@ final class RequestBudgetRequest extends FormRequest
                 }
             },
         ];
+    }
+
+    private static function lineTotal(mixed $item): float
+    {
+        if (! is_array($item)) {
+            return 0.0;
+        }
+
+        $quantity = $item['quantity'] ?? 0;
+        $unitPrice = $item['unit_price'] ?? 0;
+
+        $quantity = is_numeric($quantity) ? (int) $quantity : 0;
+        $unitPrice = is_numeric($unitPrice) ? (float) $unitPrice : 0.0;
+
+        return $quantity * $unitPrice;
     }
 
     /**

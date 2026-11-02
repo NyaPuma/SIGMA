@@ -126,6 +126,7 @@ final class MaintenancePlanController extends Controller
     {
         $this->authorize('create', MaintenancePlan::class);
 
+        /** @var array{equipment_id: int|string, name: string, interval_type: string, interval_value: int|string, description?: string|null, active?: bool|int|string} $validated */
         $validated = $request->validated();
 
         $equipment = Equipment::query()->findOrFail((int) $validated['equipment_id']);
@@ -194,6 +195,7 @@ final class MaintenancePlanController extends Controller
     {
         $this->authorize('update', $plan);
 
+        /** @var array{equipment_id?: int|string|null, name: string, interval_type: string, interval_value: int|string, description?: string|null, active?: bool|int|string} $validated */
         $validated = $request->validated();
 
         $intervalType = MaintenancePlanIntervalTypeEnum::normalize($validated['interval_type'])
@@ -260,8 +262,10 @@ final class MaintenancePlanController extends Controller
                 continue;
             }
 
-            $partId = (int) ($entry['part_id'] ?? $entry['id'] ?? 0);
-            $quantity = (int) ($entry['expected_quantity'] ?? 1);
+            $partIdRaw = $entry['part_id'] ?? $entry['id'] ?? 0;
+            $quantityRaw = $entry['expected_quantity'] ?? 1;
+            $partId = is_numeric($partIdRaw) ? (int) $partIdRaw : 0;
+            $quantity = is_numeric($quantityRaw) ? (int) $quantityRaw : 1;
 
             if ($partId > 0) {
                 $payload[$partId] = max(1, $quantity);

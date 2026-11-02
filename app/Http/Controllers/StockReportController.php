@@ -10,6 +10,7 @@ use App\Services\LocalizationService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use OpenApi\Attributes as OA;
+use RuntimeException;
 use Symfony\Component\HttpFoundation\StreamedResponse;
 
 final class StockReportController extends Controller
@@ -36,6 +37,11 @@ final class StockReportController extends Controller
 
         return response()->streamDownload(function (): void {
             $handle = fopen('php://output', 'w');
+
+            if ($handle === false) {
+                throw new RuntimeException('Could not open output stream.');
+            }
+
             fwrite($handle, "\xEF\xBB\xBF");
             fputcsv($handle, [
                 __('exports.csv_sku'),
@@ -87,6 +93,11 @@ final class StockReportController extends Controller
 
         return response()->streamDownload(function (): void {
             $handle = fopen('php://output', 'w');
+
+            if ($handle === false) {
+                throw new RuntimeException('Could not open output stream.');
+            }
+
             fwrite($handle, "\xEF\xBB\xBF");
             fputcsv($handle, [
                 __('exports.csv_sku'),
@@ -145,7 +156,7 @@ final class StockReportController extends Controller
     {
         $this->authorize('viewAny', Part::class);
 
-        $user = $request->user();
+        $user = $this->authenticatedUser($request);
 
         ExportStockCostsPdfJob::dispatch(
             userId: $user->id,

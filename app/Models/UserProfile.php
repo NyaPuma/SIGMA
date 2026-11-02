@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Models;
 
+use Database\Factories\UserProfileFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\HasMany;
@@ -18,7 +19,9 @@ use Illuminate\Support\Carbon;
  */
 final class UserProfile extends Model
 {
+    /** @use HasFactory<UserProfileFactory> */
     use HasFactory;
+
     use SoftDeletes;
 
     protected $table = 'user_profiles';
@@ -41,6 +44,7 @@ final class UserProfile extends Model
     /**
      * Users associated with this profile.
      */
+    /** @return HasMany<User, $this> */
     public function users(): HasMany
     {
         return $this->hasMany(User::class, 'profile_id');

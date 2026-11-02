@@ -11,6 +11,8 @@ enum TicketPriorityEnum: string
 
     /**
      * Return all raw enum values in a simple array.
+     *
+     * @return array<int, string>
      */
     public static function values(): array
     {
@@ -19,6 +21,8 @@ enum TicketPriorityEnum: string
 
     /**
      * Return all accepted values including unaccented variations.
+     *
+     * @return array<int, string>
      */
     public static function acceptedValues(): array
     {

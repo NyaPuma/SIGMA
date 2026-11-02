@@ -7,6 +7,7 @@ namespace App\Services;
 use App\Enums\StockMovementTypeEnum;
 use App\Models\Part;
 use App\Models\StockMovement;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 
@@ -20,10 +21,12 @@ final class StockDashboardService
      */
     public function totalStockValue(): float
     {
-        return (float) Part::query()
+        $value = Part::query()
             ->active()
             ->selectRaw('COALESCE(SUM(current_stock * cost_price), 0) as total')
             ->value('total');
+
+        return is_numeric($value) ? (float) $value : 0.0;
     }
 
     /**
@@ -68,17 +71,19 @@ final class StockDashboardService
      */
     public function topConsumed(?string $from = null, ?string $to = null, int $limit = 10): Collection
     {
-        return $this->consumptionQuery($from, $to)
+        $rows = $this->consumptionQuery($from, $to)
             ->orderByDesc('total_quantity')
             ->limit($limit)
-            ->get()
-            ->map(fn ($row) => [
-                'part_id' => (int) $row->part_id,
-                'part_name' => (string) $row->part_name,
-                'sku' => (string) $row->sku,
-                'total_quantity' => (int) $row->total_quantity,
-                'total_value' => round((float) $row->total_value, 2),
-            ]);
+            ->get();
+
+        /** @var Collection<int, object> $rows */
+        return $rows->map(fn (object $row) => [
+            'part_id' => is_numeric($row->part_id ?? null) ? (int) $row->part_id : 0,
+            'part_name' => is_string($row->part_name ?? null) ? (string) $row->part_name : '',
+            'sku' => is_string($row->sku ?? null) ? (string) $row->sku : '',
+            'total_quantity' => is_numeric($row->total_quantity ?? null) ? (int) $row->total_quantity : 0,
+            'total_value' => round(is_numeric($row->total_value ?? null) ? (float) $row->total_value : 0.0, 2),
+        ]);
     }
 
     /**
@@ -88,7 +93,7 @@ final class StockDashboardService
      */
     public function costByEquipment(?string $from = null, ?string $to = null, int $limit = 20): Collection
     {
-        return $this->consumptionQuery($from, $to)
+        $rows = $this->consumptionQuery($from, $to)
             ->whereNotNull('stock_movements.equipment_id')
             ->select(
                 'stock_movements.equipment_id',
@@ -99,13 +104,15 @@ final class StockDashboardService
             ->groupBy('stock_movements.equipment_id', 'equipments.name')
             ->orderByDesc('total_value')
             ->limit($limit)
-            ->get()
-            ->map(fn ($row) => [
-                'equipment_id' => $row->equipment_id !== null ? (int) $row->equipment_id : null,
-                'equipment_name' => $row->equipment_name,
-                'total_quantity' => (int) $row->total_quantity,
-                'total_value' => round((float) $row->total_value, 2),
-            ]);
+            ->get();
+
+        /** @var Collection<int, object> $rows */
+        return $rows->map(fn (object $row) => [
+            'equipment_id' => isset($row->equipment_id) && is_numeric($row->equipment_id) ? (int) $row->equipment_id : null,
+            'equipment_name' => isset($row->equipment_name) && is_string($row->equipment_name) ? $row->equipment_name : null,
+            'total_quantity' => is_numeric($row->total_quantity ?? null) ? (int) $row->total_quantity : 0,
+            'total_value' => round(is_numeric($row->total_value ?? null) ? (float) $row->total_value : 0.0, 2),
+        ]);
     }
 
     /**
@@ -115,7 +122,7 @@ final class StockDashboardService
      */
     public function costByTicket(?string $from = null, ?string $to = null, int $limit = 20): Collection
     {
-        return $this->consumptionQuery($from, $to)
+        $rows = $this->consumptionQuery($from, $to)
             ->whereNotNull('stock_movements.ticket_id')
             ->select(
                 'stock_movements.ticket_id',
@@ -126,32 +133,36 @@ final class StockDashboardService
             ->groupBy('stock_movements.ticket_id', 'tickets.reference')
             ->orderByDesc('total_value')
             ->limit($limit)
-            ->get()
-            ->map(fn ($row) => [
-                'ticket_id' => (int) $row->ticket_id,
-                'ticket_reference' => (string) $row->ticket_reference,
-                'total_quantity' => (int) $row->total_quantity,
-                'total_value' => round((float) $row->total_value, 2),
-            ]);
+            ->get();
+
+        /** @var Collection<int, object> $rows */
+        return $rows->map(fn (object $row) => [
+            'ticket_id' => is_numeric($row->ticket_id ?? null) ? (int) $row->ticket_id : 0,
+            'ticket_reference' => is_string($row->ticket_reference ?? null) ? (string) $row->ticket_reference : '',
+            'total_quantity' => is_numeric($row->total_quantity ?? null) ? (int) $row->total_quantity : 0,
+            'total_value' => round(is_numeric($row->total_value ?? null) ? (float) $row->total_value : 0.0, 2),
+        ]);
     }
 
     /**
      * Simple stockout forecast based on average monthly consumption.
      *
-     * @return Collection<int, array{part_id: int, part_name: string, sku: string, current_stock: int, avg_monthly_usage: float, est_months_of_stock: float}>
+     * @return Collection<int, array{part_id: int<0, max>, part_name: string, sku: string, current_stock: int, avg_monthly_usage: float, est_months_of_stock: float}>
      */
     public function stockRunoutForecast(int $months = 3, int $limit = 50): Collection
     {
         $from = now()->subMonths($months)->startOfMonth();
 
-        $usage = $this->consumptionQuery($from->toDateString(), now()->toDateString())
+        $usageRaw = $this->consumptionQuery($from->toDateString(), now()->toDateString())
             ->select(
                 'stock_movements.part_id',
                 DB::raw('SUM(ABS(stock_movements.quantity)) as total_quantity')
             )
             ->groupBy('stock_movements.part_id')
             ->pluck('total_quantity', 'part_id')
-            ->map(fn ($q) => (float) $q);
+            ->map(fn ($q) => is_numeric($q) ? (float) $q : 0.0);
+        /** @var Collection<int, float> $usage */
+        $usage = $usageRaw;
 
         return Part::query()
             ->active()
@@ -163,7 +174,7 @@ final class StockDashboardService
                 $monthsOfStock = $avgMonthly > 0 ? (int) $part->current_stock / $avgMonthly : PHP_FLOAT_MAX;
 
                 return [
-                    'part_id' => $part->id,
+                    'part_id' => (int) $part->id,
                     'part_name' => $part->name,
                     'sku' => $part->sku,
                     'current_stock' => (int) $part->current_stock,
@@ -179,7 +190,10 @@ final class StockDashboardService
     /**
      * Base consumption query: exit movements (and negative adjustments) in a period.
      */
-    private function consumptionQuery(?string $from = null, ?string $to = null)
+    /**
+     * @return Builder<StockMovement>
+     */
+    private function consumptionQuery(?string $from = null, ?string $to = null): Builder
     {
         $query = StockMovement::query()
             ->leftJoin('parts', 'parts.id', '=', 'stock_movements.part_id')

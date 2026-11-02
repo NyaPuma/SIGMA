@@ -71,10 +71,10 @@ final class TaxRateController extends Controller
         $this->authorize('create', TaxRate::class);
 
         $taxRate = $this->taxRateActions->create(
-            name: $request->validated('name'),
-            percent: (float) $request->validated('percent'),
-            isDefault: (bool) ($request->validated('is_default') ?? false),
-            active: (bool) ($request->validated('active') ?? true),
+            name: $request->string('name')->toString(),
+            percent: $request->float('percent'),
+            isDefault: $request->boolean('is_default', false),
+            active: $request->boolean('active', true),
         );
 
         return response()->json([
@@ -117,10 +117,10 @@ final class TaxRateController extends Controller
 
         $taxRate = $this->taxRateActions->update(
             taxRate: $taxRate,
-            name: $request->validated('name'),
-            percent: (float) $request->validated('percent'),
-            isDefault: (bool) ($request->validated('is_default') ?? false),
-            active: (bool) ($request->validated('active') ?? true),
+            name: $request->string('name')->toString(),
+            percent: $request->float('percent'),
+            isDefault: $request->boolean('is_default', false),
+            active: $request->boolean('active', true),
         );
 
         return response()->json([

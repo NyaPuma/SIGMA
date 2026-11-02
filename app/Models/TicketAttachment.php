@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Models;
 
+use Database\Factories\TicketAttachmentFactory;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -20,7 +21,9 @@ use Illuminate\Support\Facades\Storage;
  */
 final class TicketAttachment extends Model
 {
+    /** @use HasFactory<TicketAttachmentFactory> */
     use HasFactory;
+
     use SoftDeletes;
 
     protected $fillable = [
@@ -68,11 +71,13 @@ final class TicketAttachment extends Model
 
     // --- RELATIONSHIPS ---
 
+    /** @return BelongsTo<Ticket, $this> */
     public function ticket(): BelongsTo
     {
         return $this->belongsTo(Ticket::class);
     }
 
+    /** @return BelongsTo<User, $this> */
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
@@ -83,6 +88,7 @@ final class TicketAttachment extends Model
     /**
      * Direct URL for file download or display.
      */
+    /** @return Attribute<string, never> */
     protected function url(): Attribute
     {
         return Attribute::make(
@@ -93,6 +99,7 @@ final class TicketAttachment extends Model
     /**
      * Formatted file size string (KB, MB, GB).
      */
+    /** @return Attribute<string, never> */
     protected function formattedSize(): Attribute
     {
         return Attribute::make(
@@ -125,6 +132,7 @@ final class TicketAttachment extends Model
     /**
      * Check if attachment is an image.
      */
+    /** @return Attribute<bool, never> */
     protected function isImage(): Attribute
     {
         return Attribute::make(

@@ -277,12 +277,14 @@ class ModelLifecycleTest extends TestCase
             'password_confirmation' => 'Password123!',
             'role' => UserRoleEnum::User->value,
             'profile_id' => $profile->id,
+            'api_token' => 'injected-token-value',
         ]);
         $response->assertStatus(201);
         $newUserId = $response->json('user.id');
 
         $user = User::find($newUserId);
-        $this->assertNotEquals('Password123!456', $user->api_token);
+        $this->assertNull($user->api_token, 'api_token must not be mass-assignable via store payload');
+        $this->assertNotEquals('injected-token-value', $user->api_token);
     }
 
     // ==========================================

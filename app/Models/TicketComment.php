@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Models;
 
+use Database\Factories\TicketCommentFactory;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Collection;
@@ -23,7 +24,9 @@ use Illuminate\Support\Carbon;
  */
 final class TicketComment extends Model
 {
+    /** @use HasFactory<TicketCommentFactory> */
     use HasFactory;
+
     use SoftDeletes;
 
     protected $fillable = [
@@ -43,21 +46,25 @@ final class TicketComment extends Model
         ];
     }
 
+    /** @return BelongsTo<Ticket, $this> */
     public function ticket(): BelongsTo
     {
         return $this->belongsTo(Ticket::class);
     }
 
+    /** @return BelongsTo<User, $this> */
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
     }
 
+    /** @return BelongsTo<TicketComment, $this> */
     public function parent(): BelongsTo
     {
         return $this->belongsTo(self::class, 'parent_id');
     }
 
+    /** @return HasMany<TicketComment, $this> */
     public function replies(): HasMany
     {
         return $this->hasMany(self::class, 'parent_id');
@@ -68,6 +75,8 @@ final class TicketComment extends Model
     /**
      * Scope to order comments chronologically.
      */
+    /** @param Builder<TicketComment> $query
+     *  @return Builder<TicketComment> */
     public function scopeChronological(Builder $query): Builder
     {
         return $query->orderBy('created_at', 'asc');
@@ -78,6 +87,7 @@ final class TicketComment extends Model
     /**
      * Relative time string (e.g. "5 minutes ago").
      */
+    /** @return Attribute<string, never> */
     protected function timeAgo(): Attribute
     {
         return Attribute::make(
@@ -88,6 +98,7 @@ final class TicketComment extends Model
     /**
      * Check if the comment was edited after publishing.
      */
+    /** @return Attribute<bool, never> */
     protected function isEdited(): Attribute
     {
         return Attribute::make(

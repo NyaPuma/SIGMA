@@ -21,14 +21,19 @@ final class AuthController extends Controller
      */
     public function login(LoginRequest $request): JsonResponse
     {
-        $email = strtolower($request->input('email'));
+        $email = strtolower($request->string('email')->toString());
+        $password = $request->string('password')->toString();
         $rateLimitKey = "login_attempts:{$email}";
 
-        $maxAttempts = config('services.custom.auth.max_attempts', 5);
-        $lockoutMinutes = config('services.custom.auth.lockout_minutes', 15);
+        $maxAttemptsRaw = config('services.custom.auth.max_attempts', 5);
+        $lockoutMinutesRaw = config('services.custom.auth.lockout_minutes', 15);
+        $maxAttempts = is_numeric($maxAttemptsRaw) ? (int) $maxAttemptsRaw : 5;
+        $lockoutMinutes = is_numeric($lockoutMinutesRaw) ? (int) $lockoutMinutesRaw : 15;
 
         // 1. Check the login attempt rate limit (Rate Limiting via Cache)
-        $attempts = Cache::get($rateLimitKey, 0);
+        $attemptsRaw = Cache::get($rateLimitKey, 0);
+        $attempts = is_numeric($attemptsRaw) ? (int) $attemptsRaw : 0;
+
         if ($attempts >= $maxAttempts) {
             return response()->json([
                 'message' => __('common.Conta temporariamente bloqueada. Tente novamente mais tarde.'),
@@ -41,7 +46,7 @@ final class AuthController extends Controller
             ->first();
 
         // 3. Validate credentials
-        $valid = $user && Hash::check($request->input('password'), $user->password);
+        $valid = $user && Hash::check($password, $user->password);
 
         if (! $valid) {
             // Atomic increment: Cache::add seeds the key with TTL on first failure;
@@ -60,7 +65,7 @@ final class AuthController extends Controller
 
         // 5. Rehash password hash if needed (automatic re-hash)
         if (Hash::needsRehash($user->password)) {
-            $user->password = Hash::make($request->input('password'));
+            $user->password = Hash::make($password);
             $user->save();
         }
 

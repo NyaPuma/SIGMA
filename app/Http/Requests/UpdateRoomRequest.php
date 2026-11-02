@@ -21,18 +21,21 @@ final class UpdateRoomRequest extends FormRequest
     protected function prepareForValidation(): void
     {
         if ($this->has('name')) {
+            $name = $this->input('name');
             $this->merge([
-                'name' => $this->filled('name') ? trim((string) $this->name) : $this->name,
+                'name' => $this->filled('name') && is_scalar($name) ? trim((string) $name) : $name,
             ]);
         }
 
         if ($this->has('location')) {
+            $location = $this->input('location');
             $this->merge([
-                'location' => $this->filled('location') ? trim((string) $this->location) : $this->location,
+                'location' => $this->filled('location') && is_scalar($location) ? trim((string) $location) : $location,
             ]);
         }
     }
 
+    /** @return array<string, mixed> */
     public function rules(): array
     {
         /** @var Room|int|string|null $room */

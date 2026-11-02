@@ -37,9 +37,10 @@ final class TicketBudgetController extends Controller
 
         $data = BudgetSubmissionData::fromSubmitEstimate($request->validated());
 
-        $this->applyBudgetChanges($ticket, $data, $request->user());
+        $this->applyBudgetChanges($ticket, $data, $this->authenticatedUser($request));
 
-        $threshold = (float) config('services.custom.budget.threshold', 0);
+        $thresholdRaw = config('services.custom.budget.threshold', 0);
+        $threshold = is_numeric($thresholdRaw) ? (float) $thresholdRaw : 0.0;
 
         if ($data->estimatedBudget > $threshold) {
             return $this->handleAboveThreshold($ticket, $data->estimatedBudget, $threshold);
@@ -64,9 +65,10 @@ final class TicketBudgetController extends Controller
 
         $data = BudgetSubmissionData::fromDetailedRequest($request->validated());
 
-        $this->applyBudgetChanges($ticket, $data, $request->user());
+        $this->applyBudgetChanges($ticket, $data, $this->authenticatedUser($request));
 
-        $threshold = (float) config('services.custom.budget.threshold', 0);
+        $thresholdRaw = config('services.custom.budget.threshold', 0);
+        $threshold = is_numeric($thresholdRaw) ? (float) $thresholdRaw : 0.0;
 
         if ($data->estimatedBudget > $threshold) {
             return $this->handleAboveThreshold($ticket, $data->estimatedBudget, $threshold);
@@ -103,7 +105,9 @@ final class TicketBudgetController extends Controller
     private function applyBudgetChanges(Ticket $ticket, BudgetSubmissionData $data, User $user): void
     {
         if ($data->budgetDetails !== null) {
-            $ticket->budget_details = $data->budgetDetails;
+            /** @var array<int, array<string, mixed>> $budgetDetails */
+            $budgetDetails = $data->budgetDetails;
+            $ticket->budget_details = $budgetDetails;
         }
 
         if (! $ticket->assigned_to) {
