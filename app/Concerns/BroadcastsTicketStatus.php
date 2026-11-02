@@ -5,6 +5,7 @@ namespace App\Concerns;
 use App\Enums\TicketStatusEnum;
 use App\Events\TicketStatusUpdatedBroadcast;
 use App\Models\Ticket;
+use App\Models\TicketStatus;
 use App\Models\User;
 use App\Notifications\TicketStatusChanged;
 use Illuminate\Support\Facades\Log;
@@ -14,14 +15,17 @@ trait BroadcastsTicketStatus
 {
     /**
      * Broadcast ticket status change via WebSockets and dispatch notification to ticket owner.
+     *
+     * Accepts a status model (callers capture `$ticket->status` before the transition)
+     * or a raw status value.
      */
     protected function broadcastStatusChange(
         Ticket $ticket,
-        TicketStatusEnum|string $oldStatus,
-        TicketStatusEnum|string $newStatus
+        TicketStatusEnum|TicketStatus|string|null $oldStatus,
+        TicketStatusEnum|TicketStatus|string|null $newStatus
     ): void {
-        $oldStatusValue = $oldStatus instanceof TicketStatusEnum ? $oldStatus->value : $oldStatus;
-        $newStatusValue = $newStatus instanceof TicketStatusEnum ? $newStatus->value : $newStatus;
+        $oldStatusValue = $this->normalizeStatusValue($oldStatus);
+        $newStatusValue = $this->normalizeStatusValue($newStatus);
 
         try {
             event(new TicketStatusUpdatedBroadcast($ticket, $oldStatusValue, $newStatusValue));
@@ -40,5 +44,15 @@ trait BroadcastsTicketStatus
                 'error' => $e->getMessage(),
             ]);
         }
+    }
+
+    private function normalizeStatusValue(TicketStatusEnum|TicketStatus|string|null $status): string
+    {
+        return match (true) {
+            $status instanceof TicketStatusEnum => $status->value,
+            $status instanceof TicketStatus => $status->name,
+            is_string($status) && $status !== '' => $status,
+            default => TicketStatusEnum::Open->value,
+        };
     }
 }

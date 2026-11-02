@@ -6,6 +6,7 @@ use App\Concerns\BroadcastsTicketStatus;
 use App\Enums\TicketStatusEnum;
 use App\Events\TicketStatusUpdatedBroadcast;
 use App\Models\Ticket;
+use App\Models\TicketStatus;
 use App\Models\User;
 use App\Notifications\TicketStatusChanged;
 use Illuminate\Support\Facades\Event;
@@ -21,11 +22,36 @@ class BroadcastsTicketStatusTest extends FeatureTestCase
         {
             use BroadcastsTicketStatus;
 
-            public function fire(Ticket $ticket, TicketStatusEnum|string $old, TicketStatusEnum|string $new): void
-            {
+            public function fire(
+                Ticket $ticket,
+                TicketStatusEnum|TicketStatus|string|null $old,
+                TicketStatusEnum|TicketStatus|string|null $new
+            ): void {
                 $this->broadcastStatusChange($ticket, $old, $new);
             }
         };
+    }
+
+    #[Test]
+    public function it_accepts_status_models_captured_before_the_transition(): void
+    {
+        Event::fake([TicketStatusUpdatedBroadcast::class]);
+        Notification::fake();
+
+        $user = User::factory()->create();
+        $ticket = Ticket::factory()->create(['user_id' => $user->id]);
+
+        $oldStatus = TicketStatus::where('name', TicketStatusEnum::Open->value)->firstOrFail();
+        $newStatus = TicketStatus::where('name', TicketStatusEnum::InProgress->value)->firstOrFail();
+
+        $this->makeSubject()->fire($ticket, $oldStatus, $newStatus);
+
+        Event::assertDispatched(TicketStatusUpdatedBroadcast::class, function ($event) {
+            return $event->oldStatus === TicketStatusEnum::Open
+                && $event->newStatus === TicketStatusEnum::InProgress;
+        });
+
+        Notification::assertSentTo($user, TicketStatusChanged::class);
     }
 
     #[Test]
