@@ -190,7 +190,7 @@ final class TicketController extends Controller
             return response()->json(['message' => __('common.Acesso proibido para o seu perfil.')], 403);
         }
 
-        $excludeId = (int) $request->input('exclude', 0);
+        $excludeId = $request->integer('exclude');
         $ticket = $this->technicianService->findMostUrgentOpenTicket($excludeId > 0 ? $excludeId : null);
 
         if (! $ticket) {

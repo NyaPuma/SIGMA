@@ -41,11 +41,13 @@ final class TicketCloseController extends Controller
 
         $oldStatus = $ticket->status;
 
+        $reportRaw = $request->input('technical_report');
+
         // 3. Execute the closing workflow
         $this->workflowService->close(
             ticket: $ticket,
             cost: $request->float('cost'),
-            report: $request->input('technical_report'),
+            report: is_string($reportRaw) ? $reportRaw : null,
             minutesSpent: $request->integer('minutes_spent')
         );
 
@@ -90,7 +92,8 @@ final class TicketCloseController extends Controller
 
         $cost = $request->float('actual_cost');
         // Keep null when absent to avoid overwriting the existing technical report
-        $report = $request->validated('report');
+        $reportRaw = $request->input('report');
+        $report = is_string($reportRaw) ? $reportRaw : null;
 
         // 3. Execute the closing in the workflow service
         $this->workflowService->close(

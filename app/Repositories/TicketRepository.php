@@ -31,9 +31,7 @@ final class TicketRepository implements TicketRepositoryInterface
      */
     public function getAll(array $relations = []): LengthAwarePaginator
     {
-        $perPage = config('services.custom.pagination.default_per_page', 15);
-
-        return Ticket::with($relations)->latest()->paginate($perPage);
+        return Ticket::with($relations)->latest()->paginate($this->perPage());
     }
 
     /**
@@ -65,12 +63,10 @@ final class TicketRepository implements TicketRepositoryInterface
      */
     public function getOpenTickets(): LengthAwarePaginator
     {
-        $perPage = config('services.custom.pagination.default_per_page', 15);
-
         return Ticket::with(['equipment', 'room', 'user', 'status', 'technician'])
             ->open()
             ->latest()
-            ->paginate($perPage);
+            ->paginate($this->perPage());
     }
 
     /**
@@ -78,12 +74,10 @@ final class TicketRepository implements TicketRepositoryInterface
      */
     public function getTicketsByTechnician(int $technicianId): LengthAwarePaginator
     {
-        $perPage = config('services.custom.pagination.default_per_page', 15);
-
         return Ticket::with(['equipment', 'room', 'user', 'status', 'technician'])
             ->forTechnician($technicianId)
             ->latest()
-            ->paginate($perPage);
+            ->paginate($this->perPage());
     }
 
     /**
@@ -91,11 +85,16 @@ final class TicketRepository implements TicketRepositoryInterface
      */
     public function getTicketsByUser(int $userId): LengthAwarePaginator
     {
-        $perPage = config('services.custom.pagination.default_per_page', 15);
-
         return Ticket::with(['equipment', 'room', 'technician', 'status'])
             ->where('user_id', $userId)
             ->latest()
-            ->paginate($perPage);
+            ->paginate($this->perPage());
+    }
+
+    private function perPage(): int
+    {
+        $perPage = config('services.custom.pagination.default_per_page', 15);
+
+        return is_numeric($perPage) ? (int) $perPage : 15;
     }
 }

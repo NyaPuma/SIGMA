@@ -11,6 +11,7 @@ use App\Models\User;
 use Exception;
 use Illuminate\Database\Eloquent\Builder;
 use OpenAI\Laravel\Facades\OpenAI;
+use OpenAI\Responses\Chat\CreateResponse;
 
 final class AIService
 {
@@ -102,7 +103,7 @@ final class AIService
                 ]);
             });
 
-            if ($response === null) {
+            if (! $response instanceof CreateResponse) {
                 throw new Exception('AI dependency circuit is open.');
             }
 
@@ -115,9 +116,12 @@ final class AIService
             $result = json_decode(trim($content), true);
 
             if (is_array($result) && isset($result['technician_id'])) {
+                $technicianId = $result['technician_id'];
+                $justification = $result['justification'] ?? null;
+
                 return [
-                    'technician_id' => is_numeric($result['technician_id'] ?? null) ? (int) $result['technician_id'] : null,
-                    'justification' => is_string($result['justification'] ?? null) ? (string) $result['justification'] : 'Assignment recommended by AI assistant.',
+                    'technician_id' => is_numeric($technicianId) ? (int) $technicianId : null,
+                    'justification' => is_string($justification) ? $justification : 'Assignment recommended by AI assistant.',
                 ];
             }
 

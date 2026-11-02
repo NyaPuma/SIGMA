@@ -42,9 +42,12 @@ final readonly class CreateTicketData
             ? $rawPriority
             : (TicketPriorityEnum::normalize($rawPriority) ?? TicketPriorityEnum::Low);
 
+        $rawTitle = $payload['title'] ?? '';
+        $rawDescription = $payload['description'] ?? '';
+
         return new self(
-            title: trim((string) ($payload['title'] ?? '')),
-            description: trim((string) ($payload['description'] ?? '')),
+            title: trim(is_scalar($rawTitle) ? (string) $rawTitle : ''),
+            description: trim(is_scalar($rawDescription) ? (string) $rawDescription : ''),
             priority: $priority,
             equipmentId: self::parseNullableInt($payload['equipment_id'] ?? null),
             roomId: self::parseNullableInt($payload['room_id'] ?? null),

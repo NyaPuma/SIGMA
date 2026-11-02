@@ -53,23 +53,12 @@ final class SubmitBudgetRequest extends FormRequest
 
                 $calculatedTotal = array_reduce(
                     $details,
-                    function (float $acc, array $item) {
-                        $type = $item['type'] ?? null;
-
-                        if ($type === 'material') {
-                            return $acc + ((float) ($item['quantity'] ?? 0) * (float) ($item['unit_price'] ?? 0));
-                        }
-
-                        if ($type === 'labor') {
-                            return $acc + ((float) ($item['hours'] ?? 0) * (float) ($item['hourly_rate'] ?? 0));
-                        }
-
-                        return $acc;
-                    },
+                    fn (float $acc, mixed $item): float => $acc + self::lineTotal($item),
                     0.0
                 );
 
-                $estimatedBudget = (float) ($this->input('estimated_budget') ?? $this->input('estimatedBudget'));
+                $estimatedBudget = $this->input('estimated_budget') ?? $this->input('estimatedBudget');
+                $estimatedBudget = is_numeric($estimatedBudget) ? (float) $estimatedBudget : 0.0;
 
                 if (abs($calculatedTotal - $estimatedBudget) > 0.01) {
                     $validator->errors()->add(
@@ -79,6 +68,33 @@ final class SubmitBudgetRequest extends FormRequest
                 }
             },
         ];
+    }
+
+    private static function lineTotal(mixed $item): float
+    {
+        if (! is_array($item)) {
+            return 0.0;
+        }
+
+        $type = $item['type'] ?? null;
+
+        if ($type === 'material') {
+            $quantity = $item['quantity'] ?? 0;
+            $unitPrice = $item['unit_price'] ?? 0;
+
+            return (is_numeric($quantity) ? (float) $quantity : 0.0)
+                * (is_numeric($unitPrice) ? (float) $unitPrice : 0.0);
+        }
+
+        if ($type === 'labor') {
+            $hours = $item['hours'] ?? 0;
+            $hourlyRate = $item['hourly_rate'] ?? 0;
+
+            return (is_numeric($hours) ? (float) $hours : 0.0)
+                * (is_numeric($hourlyRate) ? (float) $hourlyRate : 0.0);
+        }
+
+        return 0.0;
     }
 
     /**

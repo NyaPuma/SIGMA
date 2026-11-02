@@ -108,16 +108,28 @@ class PartitionAudits extends Command
 
     /**
      * Fetches active partitions directly from the MySQL information schema.
+     *
+     * @return list<string>
      */
     private function getExistingPartitions(): array
     {
         $databaseName = DB::connection()->getDatabaseName();
 
-        return DB::table('information_schema.partitions')
+        $names = DB::table('information_schema.partitions')
             ->where('table_schema', $databaseName)
             ->where('table_name', 'audits')
             ->whereNotNull('partition_name')
             ->pluck('partition_name')
             ->toArray();
+
+        $partitions = [];
+
+        foreach ($names as $name) {
+            if (is_string($name)) {
+                $partitions[] = $name;
+            }
+        }
+
+        return $partitions;
     }
 }

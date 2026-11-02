@@ -12,6 +12,18 @@ use Illuminate\Support\Facades\Auth;
  *
  * Centralizes access to `config('locales')` — the single source of truth — and
  * provides user preference resolution from the request.
+ *
+ * @phpstan-type LocaleMeta array{
+ *     name: string,
+ *     native: string,
+ *     flag: string,
+ *     rtl: bool,
+ *     default_locale: string,
+ *     continent: string,
+ *     unit_system: string,
+ *     number_format: array{decimal: string, thousand: string},
+ *     currencies: list<string>
+ * }
  */
 final class LocaleService
 {
@@ -79,30 +91,57 @@ final class LocaleService
     /**
      * Lista de idiomas suportados.
      *
-     * @return array<string, array<string, mixed>>
+     * @return array<string, LocaleMeta>
      */
     public static function grouped(): array
     {
-        $locales = config('locales', []);
+        $locales = config('locales');
+        $languages = is_array($locales) ? ($locales['languages'] ?? null) : null;
 
-        $languages = $locales['languages'] ?? [];
+        if (! is_array($languages)) {
+            return [];
+        }
 
-        return is_array($languages)
-            ? array_filter($languages, fn ($v) => is_array($v))
-            : [];
+        $grouped = [];
+
+        foreach ($languages as $code => $meta) {
+            if (is_string($code) && self::isLocaleMeta($meta)) {
+                $grouped[$code] = $meta;
+            }
+        }
+
+        return $grouped;
+    }
+
+    /**
+     * @phpstan-assert-if-true LocaleMeta $meta
+     */
+    private static function isLocaleMeta(mixed $meta): bool
+    {
+        return is_array($meta)
+            && isset($meta['name'], $meta['native'], $meta['flag'], $meta['rtl'], $meta['default_locale'], $meta['continent'], $meta['unit_system'], $meta['number_format'], $meta['currencies'])
+            && is_string($meta['name'])
+            && is_string($meta['native'])
+            && is_string($meta['flag'])
+            && is_bool($meta['rtl'])
+            && is_string($meta['default_locale'])
+            && is_string($meta['continent'])
+            && is_string($meta['unit_system'])
+            && is_array($meta['number_format'])
+            && is_array($meta['currencies']);
     }
 
     /**
      * List of supported languages grouped by continent.
      *
-     * @return array<string, list<array<string, mixed>>>
+     * @return array<string, list<LocaleMeta>>
      */
     public static function groupedByContinent(): array
     {
         $grouped = [];
 
         foreach (self::all() as $code => $meta) {
-            $continent = $meta['continent'] ?? 'other';
+            $continent = $meta['continent'];
             $grouped[$continent][] = [
                 'code' => $code,
                 ...$meta,
@@ -249,7 +288,7 @@ final class LocaleService
     /**
      * Flat list of all languages (code => metadata).
      *
-     * @return array<string, array<string, mixed>>
+     * @return array<string, LocaleMeta>
      */
     public static function all(): array
     {
@@ -267,7 +306,7 @@ final class LocaleService
     /**
      * Sorts alphabetically by name (with accent support if intl is available).
      *
-     * @param  array<string, array<string, mixed>>  $locales
+     * @param  array<string, LocaleMeta>  $locales
      */
     private static function sortByName(array &$locales): void
     {
@@ -275,16 +314,16 @@ final class LocaleService
             $collator = new \Collator('pt_PT');
 
             uasort($locales, static fn (array $a, array $b): int => (int) $collator->compare(
-                (string) ($a['name'] ?? ''),
-                (string) ($b['name'] ?? ''),
+                $a['name'],
+                $b['name'],
             ));
 
             return;
         }
 
         uasort($locales, static fn (array $a, array $b): int => strcasecmp(
-            (string) ($a['name'] ?? ''),
-            (string) ($b['name'] ?? ''),
+            $a['name'],
+            $b['name'],
         ));
     }
 
@@ -313,7 +352,7 @@ final class LocaleService
 
         $meta = self::meta($targetLocale);
 
-        if ($meta && isset($meta['default_locale'])) {
+        if ($meta !== null) {
             return ['code' => $targetLocale, 'locale' => $meta['default_locale']];
         }
 
@@ -326,9 +365,10 @@ final class LocaleService
     public static function default(): string
     {
         $defaultLang = config('locales.default', 'pt');
+        $defaultLang = is_string($defaultLang) && $defaultLang !== '' ? $defaultLang : 'pt';
         $meta = self::meta($defaultLang);
 
-        if ($meta && isset($meta['default_locale'])) {
+        if ($meta !== null) {
             return $meta['default_locale'];
         }
 
@@ -363,14 +403,14 @@ final class LocaleService
     {
         $meta = self::meta($locale);
 
-        if ($meta && isset($meta['default_locale'])) {
+        if ($meta !== null) {
             return ['code' => $locale, 'default_locale' => $meta['default_locale']];
         }
 
         $base = strtolower(explode('-', $locale)[0]);
         foreach (self::all() as $code => $meta) {
             if (strtolower(explode('-', $code)[0]) === $base) {
-                return ['code' => $locale, 'default_locale' => $meta['default_locale'] ?? $code];
+                return ['code' => $locale, 'default_locale' => $meta['default_locale']];
             }
         }
 
@@ -380,7 +420,7 @@ final class LocaleService
     /**
      * Language metadata (null if not supported).
      *
-     * @return array<string, mixed>|null
+     * @return LocaleMeta|null
      */
     public static function meta(string $locale): ?array
     {
@@ -473,7 +513,7 @@ final class LocaleService
         $targetLocale = $locale ?? app()->getLocale();
         $meta = self::meta($targetLocale);
 
-        return (string) ($meta['currencies'][0] ?? 'EUR');
+        return $meta['currencies'][0] ?? 'EUR';
     }
 
     /**
@@ -484,7 +524,7 @@ final class LocaleService
         $targetLocale = $locale ?? app()->getLocale();
         $meta = self::meta($targetLocale);
 
-        return (string) ($meta['unit_system'] ?? 'metric');
+        return $meta['unit_system'] ?? 'metric';
     }
 
     /**
@@ -508,8 +548,8 @@ final class LocaleService
 
         $meta = self::meta($resolved['code']);
         $numberFormat = $meta['number_format'] ?? ['decimal' => '.', 'thousand' => ','];
-        $decPoint = $numberFormat['decimal'] ?? '.';
-        $thousandsSep = $numberFormat['thousand'] ?? ',';
+        $decPoint = $numberFormat['decimal'];
+        $thousandsSep = $numberFormat['thousand'];
 
         return number_format((float) $value, $decimals, $decPoint, $thousandsSep);
     }
@@ -739,6 +779,10 @@ final class LocaleService
             return $value;
         }
 
+        if (! is_string($value) && ! is_int($value) && ! is_float($value)) {
+            return null;
+        }
+
         try {
             return new \DateTimeImmutable((string) $value);
         } catch (\Throwable $e) {
@@ -753,14 +797,14 @@ final class LocaleService
     {
         if (self::isSupported($locale)) {
             $meta = self::meta($locale);
-            if ($meta && isset($meta['default_locale'])) {
+            if ($meta !== null) {
                 return $meta['default_locale'];
             }
 
             $base = strtolower(explode('-', $locale)[0]);
             foreach (self::all() as $code => $meta) {
                 if (strtolower(explode('-', $code)[0]) === $base) {
-                    return $meta['default_locale'] ?? $code;
+                    return $meta['default_locale'];
                 }
             }
 
@@ -770,7 +814,7 @@ final class LocaleService
         $base = strtolower(explode('-', $locale)[0]);
         foreach (self::all() as $code => $meta) {
             if (strtolower(explode('-', $code)[0]) === $base) {
-                return $meta['default_locale'] ?? $code;
+                return $meta['default_locale'];
             }
         }
 
@@ -896,6 +940,10 @@ final class LocaleService
 
         if ($value instanceof \DateTimeInterface) {
             return $value->format($userFormat);
+        }
+
+        if (! is_string($value) && ! is_int($value) && ! is_float($value)) {
+            return '';
         }
 
         try {

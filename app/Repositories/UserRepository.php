@@ -71,10 +71,13 @@ final class UserRepository implements UserRepositoryInterface
      */
     public function getActiveTechnicians(): array
     {
-        return User::whereHas('profile', fn ($q) => $q->where('name', UserRoleEnum::Technician->value))
+        /** @var array<int, array<string, mixed>> $rows */
+        $rows = User::whereHas('profile', fn ($q) => $q->where('name', UserRoleEnum::Technician->value))
             ->where('active', true)
             ->get(['id', 'name'])
             ->toArray();
+
+        return $rows;
     }
 
     /**
@@ -82,9 +85,12 @@ final class UserRepository implements UserRepositoryInterface
      */
     public function getAdmins(): array
     {
-        return User::whereHas('profile', fn ($q) => $q->where('name', UserRoleEnum::Admin->value))
+        /** @var array<int, array<string, mixed>> $rows */
+        $rows = User::whereHas('profile', fn ($q) => $q->where('name', UserRoleEnum::Admin->value))
             ->get(['id', 'name'])
             ->toArray();
+
+        return $rows;
     }
 
     /**

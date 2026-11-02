@@ -50,11 +50,7 @@ final class BudgetCalculatorService
         $details = is_array($ticket->budget_details) ? $ticket->budget_details : [];
 
         foreach ($details as $item) {
-            if (! is_array($item)) {
-                continue;
-            }
-
-            $type = is_string($item['type'] ?? null) ? (string) $item['type'] : 'material';
+            $type = is_string($item['type'] ?? null) ? $item['type'] : 'material';
 
             if ($type === 'labor') {
                 $hours = is_numeric($item['hours'] ?? null) ? (float) $item['hours'] : 0.0;
@@ -69,8 +65,10 @@ final class BudgetCalculatorService
             }
         }
 
-        $materialTotal = (float) collect($materialItems)->sum('subtotal');
-        $laborTotal = (float) collect($laborItems)->sum('subtotal');
+        $materialSum = collect($materialItems)->sum('subtotal');
+        $laborSum = collect($laborItems)->sum('subtotal');
+        $materialTotal = is_numeric($materialSum) ? (float) $materialSum : 0.0;
+        $laborTotal = is_numeric($laborSum) ? (float) $laborSum : 0.0;
 
         return [
             'materials' => $materialItems,
@@ -90,11 +88,7 @@ final class BudgetCalculatorService
         $details = is_array($ticket->budget_details) ? $ticket->budget_details : [];
 
         foreach ($details as $item) {
-            if (! is_array($item)) {
-                continue;
-            }
-
-            $itemType = is_string($item['type'] ?? null) ? (string) $item['type'] : 'material';
+            $itemType = is_string($item['type'] ?? null) ? $item['type'] : 'material';
 
             if ($itemType === $type) {
                 if ($type === 'labor') {

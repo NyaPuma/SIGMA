@@ -17,6 +17,8 @@ final class CsrfMiddleware
 
     /**
      * Handle an incoming request.
+     *
+     * @param  Closure(Request): Response  $next
      */
     public function handle(Request $request, Closure $next): Response
     {
@@ -102,7 +104,7 @@ final class CsrfMiddleware
 
         $inputToken = $request->input('_token');
 
-        if (! empty($inputToken)) {
+        if (is_string($inputToken) && $inputToken !== '') {
             return $inputToken;
         }
 
@@ -121,7 +123,8 @@ final class CsrfMiddleware
             return false;
         }
 
-        $storedToken = (string) $this->session->get('_token');
+        $stored = $this->session->get('_token');
+        $storedToken = is_string($stored) ? $stored : '';
 
         if ($storedToken === '' || ! hash_equals($storedToken, $trimmedToken)) {
             Log::debug('CsrfMiddleware - Token mismatch', [

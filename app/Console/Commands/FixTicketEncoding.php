@@ -89,6 +89,7 @@ class FixTicketEncoding extends Command
      * A simple LIKE with accent-insensitive collation would catch any accented
      * vowel, causing false positives and corruption of clean data.
      */
+    /** @return array<int, int> */
     private function affectedIds(string $column): array
     {
         $candidates = DB::table('tickets')
@@ -119,7 +120,11 @@ class FixTicketEncoding extends Command
                 continue;
             }
 
-            $ids[] = $row->id;
+            $id = $row->id;
+
+            if (is_numeric($id)) {
+                $ids[] = (int) $id;
+            }
         }
 
         return $ids;

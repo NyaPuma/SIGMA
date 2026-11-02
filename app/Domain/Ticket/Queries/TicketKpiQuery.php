@@ -16,7 +16,7 @@ final readonly class TicketKpiQuery
         private int $slaTargetMinutes = 480,
     ) {}
 
-    /** @return array<string, mixed> */
+    /** @return array{open_tickets: int, in_progress_tickets: int, budget_pending_tickets: int, closed_tickets: int, avg_resolution: float, avg_waiting: float, sla_met: int} */
     public function execute(): array
     {
         $baseQuery = Ticket::query()->whereNull('tickets.deleted_at');

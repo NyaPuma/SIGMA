@@ -20,9 +20,12 @@ final class StorePreventiveRequest extends FormRequest
      */
     protected function prepareForValidation(): void
     {
+        $title = $this->input('title');
+        $description = $this->input('description');
+
         $this->merge([
-            'title' => $this->filled('title') ? trim((string) $this->title) : $this->title,
-            'description' => $this->filled('description') ? trim((string) $this->description) : $this->description,
+            'title' => $this->filled('title') && is_scalar($title) ? trim((string) $title) : $title,
+            'description' => $this->filled('description') && is_scalar($description) ? trim((string) $description) : $description,
         ]);
     }
 

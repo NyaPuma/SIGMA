@@ -24,7 +24,7 @@ final readonly class TicketFilters
         }
     }
 
-    /** @param FormRequest|array<string, mixed> $data */
+    /** @param FormRequest|array<array-key, mixed> $data */
     public static function fromRequest(FormRequest|array $data): self
     {
         $payload = $data instanceof FormRequest ? $data->validated() : $data;

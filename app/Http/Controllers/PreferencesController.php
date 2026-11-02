@@ -37,7 +37,7 @@ final class PreferencesController extends Controller
             'currentCurrency' => $prefs['currency'],
             'currentDateFormat' => $prefs['date_format'],
             'currentTimeFormat' => $prefs['time_format'],
-            'currentNumberFormat' => $prefs['number_format'] ?? PreferencesService::getNumberFormat($request),
+            'currentNumberFormat' => $prefs['number_format'],
             'supportedLocales' => LocaleService::all(),
             'supportedCurrencies' => PreferencesService::supportedCurrencies(),
             'supportedDateFormats' => PreferencesService::supportedDateFormats(),
@@ -61,6 +61,8 @@ final class PreferencesController extends Controller
     /**
      * Source preferences (DB user or session), to preserve fields
      * not being updated in this request.
+     *
+     * @return array<string, string>
      */
     private function currentPreferences(Request $request, ?User $user): array
     {
@@ -72,6 +74,8 @@ final class PreferencesController extends Controller
     /**
      * Persists preferences (DB for authenticated users, session otherwise)
      * and syncs locale in the session.
+     *
+     * @param  array<string, mixed>  $preferences
      */
     private function persist(Request $request, ?User $user, array $preferences, string $locale): void
     {
@@ -94,6 +98,7 @@ final class PreferencesController extends Controller
      */
     public function updateLanguage(Request $request): JsonResponse|RedirectResponse
     {
+        /** @var array{language: string} $validated */
         $validated = $request->validate([
             'language' => 'required|string',
         ]);
@@ -129,6 +134,7 @@ final class PreferencesController extends Controller
      */
     public function updateCurrency(Request $request): JsonResponse|RedirectResponse
     {
+        /** @var array{currency: string} $validated */
         $validated = $request->validate([
             'currency' => 'required|string|size:3',
         ]);
@@ -162,6 +168,7 @@ final class PreferencesController extends Controller
      */
     public function updateDateFormat(Request $request): JsonResponse|RedirectResponse
     {
+        /** @var array{date_format: string} $validated */
         $validated = $request->validate([
             'date_format' => 'required|string',
         ]);
@@ -195,6 +202,7 @@ final class PreferencesController extends Controller
      */
     public function updateTimeFormat(Request $request): JsonResponse|RedirectResponse
     {
+        /** @var array{time_format: string} $validated */
         $validated = $request->validate([
             'time_format' => 'required|string',
         ]);
@@ -228,6 +236,7 @@ final class PreferencesController extends Controller
      */
     public function updateNumberFormat(Request $request): JsonResponse|RedirectResponse
     {
+        /** @var array{number_format: string} $validated */
         $validated = $request->validate([
             'number_format' => 'required|string',
         ]);
@@ -261,6 +270,7 @@ final class PreferencesController extends Controller
      */
     public function updateAll(Request $request): JsonResponse|RedirectResponse
     {
+        /** @var array{language: string, currency: string, date_format: string, time_format: string, number_format: string|null} $validated */
         $validated = $request->validate([
             'language' => 'required|string',
             'currency' => 'required|string|size:3',

@@ -7,6 +7,9 @@ use Illuminate\Foundation\Http\FormRequest;
 
 final readonly class BudgetSubmissionData
 {
+    /**
+     * @param  array<array-key, mixed>|null  $budgetDetails
+     */
     public function __construct(
         public float $estimatedBudget,
         public ?array $budgetDetails = null,
@@ -27,7 +30,7 @@ final readonly class BudgetSubmissionData
 
         return new self(
             estimatedBudget: self::parseAmount($payload['estimatedBudget'] ?? $payload['estimated_budget'] ?? 0),
-            budgetDetails: $payload['budget_details'] ?? null,
+            budgetDetails: self::parseBudgetDetails($payload['budget_details'] ?? null),
             isDetailedRequest: false,
         );
     }
@@ -42,9 +45,22 @@ final readonly class BudgetSubmissionData
 
         return new self(
             estimatedBudget: self::parseAmount($payload['budget_amount'] ?? 0),
-            budgetDetails: $payload['budget_details'] ?? null,
+            budgetDetails: self::parseBudgetDetails($payload['budget_details'] ?? null),
             isDetailedRequest: true,
         );
+    }
+
+    /**
+     * @return array<array-key, mixed>|null
+     */
+    private static function parseBudgetDetails(mixed $value): ?array
+    {
+        if (! is_array($value)) {
+            return null;
+        }
+
+        /** @var array<array-key, mixed> $value */
+        return $value;
     }
 
     private static function parseAmount(mixed $value): float

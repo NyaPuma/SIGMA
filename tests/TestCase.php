@@ -5,12 +5,15 @@ namespace Tests;
 use App\Services\TicketStatusService;
 use Illuminate\Foundation\Testing\TestCase as BaseTestCase;
 use Illuminate\Support\Facades\Schema;
+use OpenAI\Laravel\Facades\OpenAI;
 
 abstract class TestCase extends BaseTestCase
 {
     protected function setUp(): void
     {
         parent::setUp();
+
+        OpenAI::fake();
 
         // The state cache (static + Cache) persists across tests within the same process,
         // but RefreshDatabase resets SQLite auto-increments on every rollback.

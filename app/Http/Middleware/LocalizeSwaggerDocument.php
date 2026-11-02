@@ -33,6 +33,9 @@ final class LocalizeSwaggerDocument
         'Gestão administrativa de peças, fornecedores, taxas de IVA, categorias e planos de manutenção' => 'stock',
     ];
 
+    /**
+     * @param  Closure(Request): Response  $next
+     */
     public function handle(Request $request, Closure $next): Response
     {
         $response = $next($request);
@@ -41,11 +44,17 @@ final class LocalizeSwaggerDocument
             return $response;
         }
 
-        $document = json_decode($response->getContent(), true);
+        $content = $response->getContent();
+        $document = $content !== false ? json_decode($content, true) : null;
+
         if (is_array($document)) {
             $this->translateFields($document);
-            $response->setContent(json_encode($document, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES));
-            $response->headers->set('Content-Type', 'application/json');
+            $encoded = json_encode($document, JSON_UNESCAPED_UNICODE | JSON_UNESCAPED_SLASHES);
+
+            if (is_string($encoded)) {
+                $response->setContent($encoded);
+                $response->headers->set('Content-Type', 'application/json');
+            }
         }
 
         return $response;

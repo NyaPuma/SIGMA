@@ -34,6 +34,7 @@ final class SystemSettingsController extends Controller
      */
     public function update(Request $request): JsonResponse
     {
+        /** @var array{updates?: array<array-key, mixed>, reset?: string|null} $data */
         $data = $request->validate([
             'updates' => ['sometimes', 'array'],
             'updates.*' => ['present'],
@@ -50,9 +51,9 @@ final class SystemSettingsController extends Controller
             ]);
         }
 
-        $updates = is_array($request->input('updates'))
-            ? Arr::dot($request->input('updates'))
-            : [];
+        $rawUpdates = $request->input('updates');
+        /** @var array<string, mixed> $updates */
+        $updates = is_array($rawUpdates) ? Arr::dot($rawUpdates) : [];
 
         $saved = $this->settings->update($updates);
 
