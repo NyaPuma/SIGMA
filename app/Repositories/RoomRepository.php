@@ -34,11 +34,14 @@ final class RoomRepository implements RoomRepositoryInterface
      */
     public function getActive(): array
     {
-        return Room::where('active', true)
+        $result = Room::where('active', true)
             ->orderBy('location')
             ->orderBy('name')
             ->get(['id', 'name', 'code', 'location'])
             ->toArray();
+
+        /** @var array<int, array<string, mixed>> $result */
+        return $result;
     }
 
     /**
