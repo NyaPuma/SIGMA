@@ -1261,48 +1261,6 @@ parameters:
 			path: app/Jobs/SendTestEmailJob.php
 
 		-
-			message: '#^Parameter \#1 \$context of method App\\Logging\\RequestContextProcessor\:\:sanitize\(\) expects array\<string, mixed\>, array\<mixed, mixed\> given\.$#'
-			identifier: argument.type
-			count: 1
-			path: app/Logging/RequestContextProcessor.php
-
-		-
-			message: '#^Parameter \#1 \$context of method App\\Logging\\RequestContextProcessor\:\:sanitize\(\) expects array\<string, mixed\>, array\<mixed\> given\.$#'
-			identifier: argument.type
-			count: 1
-			path: app/Logging/RequestContextProcessor.php
-
-		-
-			message: '#^Cannot call method isAdmin\(\) on mixed\.$#'
-			identifier: method.nonObject
-			count: 1
-			path: app/Providers/AppServiceProvider.php
-
-		-
-			message: '#^Cannot cast mixed to float\.$#'
-			identifier: cast.double
-			count: 2
-			path: app/Providers/AppServiceProvider.php
-
-		-
-			message: '#^Parameter \#1 \$extra of method Sentry\\Event\:\:setExtra\(\) expects array\<string, mixed\>, array\<mixed, mixed\> given\.$#'
-			identifier: argument.type
-			count: 1
-			path: app/Providers/AppServiceProvider.php
-
-		-
-			message: '#^Parameter \#1 \$request of method Sentry\\Event\:\:setRequest\(\) expects array\<string, mixed\>, array\<mixed, mixed\> given\.$#'
-			identifier: argument.type
-			count: 1
-			path: app/Providers/AppServiceProvider.php
-
-		-
-			message: '#^Parameter \#2 \$data of method Sentry\\Event\:\:setContext\(\) expects array\<string, mixed\>, array\<mixed, mixed\> given\.$#'
-			identifier: argument.type
-			count: 1
-			path: app/Providers/AppServiceProvider.php
-
-		-
 			message: '#^Method App\\Repositories\\RoomRepository\:\:getActive\(\) should return array\<int, App\\Models\\Room\> but returns array\<mixed\>\.$#'
 			identifier: return.type
 			count: 1
