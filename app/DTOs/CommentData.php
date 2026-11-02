@@ -19,7 +19,7 @@ final readonly class CommentData
     {
         $payload = $data instanceof FormRequest ? $data->validated() : $data;
 
-        $content = isset($payload['content']) ? trim((string) $payload['content']) : '';
+        $content = isset($payload['content']) && is_string($payload['content']) ? trim($payload['content']) : '';
 
         return new self(
             content: $content,

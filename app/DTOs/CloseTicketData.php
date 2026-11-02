@@ -23,7 +23,7 @@ final readonly class CloseTicketData
         $payload = $data instanceof FormRequest ? $data->validated() : $data;
 
         // Sanitize report: trim whitespace and convert empty string to null
-        $rawReport = isset($payload['report']) ? trim((string) $payload['report']) : null;
+        $rawReport = isset($payload['report']) && is_string($payload['report']) ? trim($payload['report']) : null;
         $report = $rawReport !== '' ? $rawReport : null;
 
         // Normalize cost to 2 decimal places

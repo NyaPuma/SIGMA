@@ -101,7 +101,7 @@ final readonly class TicketFilters
         }
 
         try {
-            return CarbonImmutable::parse((string) $value);
+            return CarbonImmutable::parse(is_string($value) ? $value : (string) (is_scalar($value) ? $value : ''));
         } catch (\Throwable) {
             return null;
         }

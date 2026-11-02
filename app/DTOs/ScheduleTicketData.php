@@ -52,7 +52,7 @@ final readonly class ScheduleTicketData
         }
 
         try {
-            return CarbonImmutable::parse((string) $value);
+            return CarbonImmutable::parse(is_string($value) ? $value : (string) (is_scalar($value) ? $value : ''));
         } catch (\Throwable) {
             return null;
         }

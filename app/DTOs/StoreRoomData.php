@@ -32,7 +32,7 @@ final readonly class StoreRoomData
         $payload = $data instanceof FormRequest ? $data->validated() : $data;
 
         return new self(
-            name: trim((string) ($payload['name'] ?? '')),
+            name: trim(is_string($payload['name'] ?? null) ? (string) $payload['name'] : ''),
             code: self::parseCode($payload['code'] ?? null),
             location: self::parseNullableString($payload['location'] ?? null),
             active: self::parseBool($payload['active'] ?? true),
