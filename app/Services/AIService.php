@@ -37,7 +37,7 @@ final class AIService
 
         $technicians = User::whereHas('profile', fn ($q) => $q->where('name', UserRoleEnum::Technician->value))
             ->where('active', true)
-            ->withCount(['assignedTickets as active_tickets' => function ($query) {
+            ->withCount(['assignedTickets as active_tickets' => function (\Illuminate\Database\Eloquent\Builder $query) {
                 $closedStatusId = $this->statusService->getByName(TicketStatusEnum::Closed);
                 $cancelledStatusId = $this->statusService->getByName(TicketStatusEnum::Cancelled);
                 $statusIds = array_filter([$closedStatusId, $cancelledStatusId]);
@@ -97,7 +97,7 @@ final class AIService
                     'messages' => [
                         ['role' => 'user', 'content' => $prompt],
                     ],
-                    'temperature' => (float) config('services.custom.ai.temperature', 0.2),
+                    'temperature' => is_numeric(config('services.custom.ai.temperature', 0.2)) ? (float) config('services.custom.ai.temperature', 0.2) : 0.2,
                 ]);
             });
 
@@ -115,8 +115,8 @@ final class AIService
 
             if (is_array($result) && isset($result['technician_id'])) {
                 return [
-                    'technician_id' => (int) $result['technician_id'],
-                    'justification' => (string) ($result['justification'] ?? 'Assignment recommended by AI assistant.'),
+                    'technician_id' => is_numeric($result['technician_id'] ?? null) ? (int) $result['technician_id'] : null,
+                    'justification' => is_string($result['justification'] ?? null) ? (string) $result['justification'] : 'Assignment recommended by AI assistant.',
                 ];
             }
 

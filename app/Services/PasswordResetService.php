@@ -40,12 +40,12 @@ final class PasswordResetService
             ->latest('created_at')
             ->first();
 
-        if (! $record || ! Hash::check($token, $record->token)) {
+        if (! $record || ! Hash::check($token, is_string($record->token) ? $record->token : '')) {
             return null;
         }
 
         if ($record->created_at) {
-            $createdAt = Carbon::parse($record->created_at);
+            $createdAt = Carbon::parse(is_string($record->created_at) ? $record->created_at : null);
 
             if ($createdAt->diffInMinutes(now()) > 60) {
                 DB::table('password_reset_tokens')->where('email', $normalizedEmail)->delete();
