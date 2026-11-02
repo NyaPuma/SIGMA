@@ -193,7 +193,7 @@ parameters:
 			path: app/Domain/Ticket/Actions/CheckHigherPriorityAction.php
 
 		-
-			message: '#^Method App\\Domain\\Ticket\\Queries\\ScheduledEventsQuery\:\:execute\(\) should return Illuminate\\Support\\Collection\<int, array\<string, mixed\>\> but returns Illuminate\\Support\\Collection\<int, array\{id\: mixed, title\: non\-falsy\-string, start\: string, end\: string\|null\}\>\.$#'
+			message: '#^Method App\\Domain\\Ticket\\Queries\\ScheduledEventsQuery\:\:execute\(\) should return Illuminate\\Support\\Collection\<int, array\{id\: mixed, title\: string, start\: string, end\: string\|null\}\> but returns Illuminate\\Support\\Collection\<int, array\{id\: mixed, title\: non\-falsy\-string, start\: string, end\: string\|null\}\>\.$#'
 			identifier: return.type
 			count: 1
 			path: app/Domain/Ticket/Queries/ScheduledEventsQuery.php
@@ -811,12 +811,6 @@ parameters:
 			path: app/Http/Middleware/RequestContextMiddleware.php
 
 		-
-			message: '#^Method App\\Http\\Requests\\ChangePasswordRequest\:\:rules\(\) return type has no value type specified in iterable type array\.$#'
-			identifier: missingType.iterableValue
-			count: 1
-			path: app/Http/Requests/ChangePasswordRequest.php
-
-		-
 			message: '#^Cannot cast mixed to string\.$#'
 			identifier: cast.string
 			count: 2
@@ -935,12 +929,6 @@ parameters:
 			identifier: argument.type
 			count: 1
 			path: app/Http/Requests/UploadPhotoRequest.php
-
-		-
-			message: '#^Method App\\Repositories\\RoomRepository\:\:getActive\(\) should return array\<int, array\<string, mixed\>\> but returns array\<mixed\>\.$#'
-			identifier: return.type
-			count: 1
-			path: app/Repositories/RoomRepository.php
 
 		-
 			message: '#^Parameter \#1 \$perPage of method Illuminate\\Database\\Eloquent\\Builder\<App\\Models\\Ticket\>\:\:paginate\(\) expects int\|null, mixed given\.$#'
@@ -1103,6 +1091,12 @@ parameters:
 			identifier: cast.double
 			count: 2
 			path: app/Services/BudgetCalculatorService.php
+
+		-
+			message: '#^Method App\\Services\\CalendarService\:\:getScheduledEvents\(\) should return Illuminate\\Support\\Collection\<int, array\<string, mixed\>\> but returns Illuminate\\Support\\Collection\<int, array\{id\: mixed, title\: string, start\: string, end\: string\|null\}\>\.$#'
+			identifier: return.type
+			count: 1
+			path: app/Services/CalendarService.php
 
 		-
 			message: '#^Cannot access offset ''decimal'' on mixed\.$#'
