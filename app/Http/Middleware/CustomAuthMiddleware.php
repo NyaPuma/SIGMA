@@ -43,7 +43,7 @@ final class CustomAuthMiddleware
         Auth::guard('api')->setUser($user);
         Auth::shouldUse('api');
 
-        /** @var \Symfony\Component\HttpFoundation\Response $response */
+        /** @var Response $response */
         $response = $next($request);
 
         return $response;
@@ -75,7 +75,7 @@ final class CustomAuthMiddleware
      * Resolves which tokens to try validating based on request precedence.
      */
     /**
-     * @param array<int, string> $candidates
+     * @param  array<int, string>  $candidates
      * @return array<int, string>
      */
     private function resolveTokensToTry(Request $request, array $candidates): array
@@ -92,7 +92,7 @@ final class CustomAuthMiddleware
      * Finds a valid user through the candidate tokens.
      */
     /**
-     * @param array<int, string> $tokens
+     * @param  array<int, string>  $tokens
      * @return array{0: User|null, 1: string|null}
      */
     private function findUserByTokens(array $tokens): array
