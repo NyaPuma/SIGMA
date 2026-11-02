@@ -1045,12 +1045,6 @@ parameters:
 			path: app/Http/Requests/UploadPhotoRequest.php
 
 		-
-			message: '#^Parameter \#1 \$name of static method Illuminate\\Support\\Facades\\Mail\:\:mailer\(\) expects string\|null, mixed given\.$#'
-			identifier: argument.type
-			count: 1
-			path: app/Jobs/SendTestEmailJob.php
-
-		-
 			message: '#^Method App\\Repositories\\RoomRepository\:\:getActive\(\) should return array\<int, App\\Models\\Room\> but returns array\<mixed\>\.$#'
 			identifier: return.type
 			count: 1
