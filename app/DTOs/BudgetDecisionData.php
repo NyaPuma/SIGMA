@@ -22,15 +22,18 @@ final readonly class BudgetDecisionData
 
         if ($rawDecision === null) {
             $decision = BudgetDecisionEnum::Approve;
+        } elseif ($rawDecision instanceof BudgetDecisionEnum) {
+            $decision = $rawDecision;
+        } elseif (is_int($rawDecision) || is_string($rawDecision)) {
+            $decision = BudgetDecisionEnum::from($rawDecision);
         } else {
-            $decision = $rawDecision instanceof BudgetDecisionEnum
-                ? $rawDecision
-                : BudgetDecisionEnum::from($rawDecision);
+            $decision = BudgetDecisionEnum::Approve;
         }
 
         // Sanitize feedback: trim whitespace and convert empty strings to null
-        $rawFeedback = isset($payload['feedback']) ? trim((string) $payload['feedback']) : null;
-        $feedback = $rawFeedback !== '' ? $rawFeedback : null;
+        $rawFeedbackValue = $payload['feedback'] ?? null;
+        $rawFeedback = is_scalar($rawFeedbackValue) ? trim((string) $rawFeedbackValue) : null;
+        $feedback = $rawFeedback !== null && $rawFeedback !== '' ? $rawFeedback : null;
 
         return new self(
             decision: $decision,

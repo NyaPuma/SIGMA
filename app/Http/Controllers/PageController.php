@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Services\LocaleService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Mail\Message;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\View\View;
 
@@ -68,7 +69,7 @@ final class PageController extends Controller
             abort(404);
         }
 
-        Mail::raw('Teste de comunicação com Mailtrap!', function ($message) {
+        Mail::raw('Teste de comunicação com Mailtrap!', function (Message $message) {
             $message->to('teste@exemplo.com')
                 ->subject('Teste do Sistema de Avarias');
         });

@@ -30,14 +30,17 @@ final readonly class ScheduleMaintenanceData
     {
         $payload = $data instanceof FormRequest ? $data->validated() : $data;
 
+        $rawTitle = $payload['title'] ?? '';
+        $rawScheduledAt = $payload['scheduled_at'] ?? '';
+        $rawDescription = $payload['description'] ?? null;
+        $description = is_scalar($rawDescription) ? trim((string) $rawDescription) : '';
+
         return new self(
-            title: trim((string) ($payload['title'] ?? '')),
+            title: trim(is_scalar($rawTitle) ? (string) $rawTitle : ''),
             equipmentId: self::parseNullableInt($payload['equipment_id'] ?? null),
-            scheduledAt: (string) ($payload['scheduled_at'] ?? ''),
+            scheduledAt: is_scalar($rawScheduledAt) ? (string) $rawScheduledAt : '',
             assignedTo: self::parseNullableInt($payload['assigned_to'] ?? null),
-            description: isset($payload['description']) && trim((string) $payload['description']) !== ''
-                ? trim((string) $payload['description'])
-                : null,
+            description: $description !== '' ? $description : null,
         );
     }
 

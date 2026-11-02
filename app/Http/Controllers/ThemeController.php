@@ -44,6 +44,7 @@ final class ThemeController extends Controller
      */
     public function switchTheme(Request $request): JsonResponse
     {
+        /** @var array{theme: string} $validated */
         $validated = $request->validate([
             'theme' => ['required', 'string', Rule::in(array_keys($this->themePresets->all()))],
         ]);
@@ -91,8 +92,10 @@ final class ThemeController extends Controller
             $candidates[] = $request->cookie('auth_token');
         }
         try {
-            if ($request->session()->get('api_token')) {
-                $candidates[] = (string) $request->session()->get('api_token');
+            $sessionToken = $request->session()->get('api_token');
+
+            if (is_string($sessionToken) && $sessionToken !== '') {
+                $candidates[] = $sessionToken;
             }
         } catch (\Throwable $e) {
             // session unavailable — continue with the other candidates
@@ -141,6 +144,9 @@ final class ThemeController extends Controller
         return substr(sha1($id.$raw), 0, 12);
     }
 
+    /**
+     * @param  array<string, string>  $settings
+     */
     private function buildCss(array $settings): string
     {
         if (isset($settings['--color-primary'])) {
@@ -186,14 +192,17 @@ final class ThemeController extends Controller
         return 0.2126 * $convert($r) + 0.7152 * $convert($g) + 0.0722 * $convert($b);
     }
 
+    /**
+     * @return array{int, int, int}
+     */
     private function hexToRgb(string $hex): array
     {
         $hex = ltrim($hex, '#');
 
         return [
-            hexdec(substr($hex, 0, 2)),
-            hexdec(substr($hex, 2, 2)),
-            hexdec(substr($hex, 4, 2)),
+            (int) hexdec(substr($hex, 0, 2)),
+            (int) hexdec(substr($hex, 2, 2)),
+            (int) hexdec(substr($hex, 4, 2)),
         ];
     }
 

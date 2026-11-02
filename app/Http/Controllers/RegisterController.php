@@ -30,9 +30,9 @@ final class RegisterController extends Controller
 
         // 2. Create the new user record with validated data
         $user = User::create([
-            'name' => $request->validated('name'),
-            'email' => strtolower($request->validated('email')),
-            'password' => Hash::make($request->validated('password')),
+            'name' => $request->string('name')->toString(),
+            'email' => strtolower($request->string('email')->toString()),
+            'password' => Hash::make($request->string('password')->toString()),
             'profile_id' => $profile->id,
             'active' => true,
         ]);

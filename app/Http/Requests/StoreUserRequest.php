@@ -22,9 +22,12 @@ final class StoreUserRequest extends FormRequest
      */
     protected function prepareForValidation(): void
     {
+        $name = $this->input('name');
+        $email = $this->input('email');
+
         $this->merge([
-            'name' => $this->filled('name') ? trim((string) $this->name) : $this->name,
-            'email' => $this->filled('email') ? strtolower(trim((string) $this->email)) : $this->email,
+            'name' => $this->filled('name') && is_scalar($name) ? trim((string) $name) : $name,
+            'email' => $this->filled('email') && is_scalar($email) ? strtolower(trim((string) $email)) : $email,
         ]);
     }
 

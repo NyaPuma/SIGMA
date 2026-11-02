@@ -16,7 +16,7 @@ final readonly class MonthlyTicketsQuery
         private Carbon $now,
     ) {}
 
-    /** @return array<string, mixed> */
+    /** @return array{labels: array<int, string>, open: array<int, int>, in_progress: array<int, int>, closed: array<int, int>, cost_data: array<int, float>} */
     public function execute(): array
     {
         $monthKeys = $this->generateMonthKeys();
@@ -76,7 +76,7 @@ final readonly class MonthlyTicketsQuery
     /**
      * @param  array<int, string>  $monthKeys
      * @param  \Illuminate\Support\Collection<string, Ticket>  $rows
-     * @return array<string, mixed>
+     * @return array{labels: array<int, string>, open: array<int, int>, in_progress: array<int, int>, closed: array<int, int>, cost_data: array<int, float>}
      */
     private function formatResults(array $monthKeys, $rows): array
     {

@@ -54,6 +54,7 @@ final class PublicTicketController extends Controller
      */
     public function store(PublicStoreTicketRequest $request): RedirectResponse
     {
+        /** @var array{equipment_id: int|string, problem_type: string, description: string, reporter_name?: string|null, reporter_contact?: string|null} $validated */
         $validated = $request->validated();
 
         $equipment = Equipment::query()->findOrFail((int) $validated['equipment_id']);
@@ -130,11 +131,13 @@ final class PublicTicketController extends Controller
      */
     private function notifyAdmins(Ticket $ticket): void
     {
+        $equipmentName = $ticket->equipment?->name;
+
         $this->notificationCreatorService->createForAdmins(
             title: __('tickets.Novo Ticket Reportado'),
             message: __('equipment.:reference — :equipment (:priority)', [
                 'reference' => $ticket->reference,
-                'equipment' => optional($ticket->equipment)->name ?? (string) $ticket->equipment_id,
+                'equipment' => is_string($equipmentName) ? $equipmentName : (string) ($ticket->equipment_id ?? ''),
                 'priority' => $ticket->priority,
             ]),
             type: NotificationTypeEnum::TicketCreated->value,

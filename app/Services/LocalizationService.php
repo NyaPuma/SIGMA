@@ -61,7 +61,8 @@ final class LocalizationService
         $prefs = $this->preferences();
         $targetLocale = $locale ?? app()->getLocale();
 
-        $userCurrency = strtoupper((string) ($prefs['currency'] ?? 'EUR'));
+        $prefCurrency = $prefs['currency'] ?? 'EUR';
+        $userCurrency = is_string($prefCurrency) ? strtoupper($prefCurrency) : 'EUR';
         $amount = $value;
 
         if ($userCurrency !== CurrencyRateService::BASE_CURRENCY) {
@@ -99,7 +100,13 @@ final class LocalizationService
             return '';
         }
 
-        $date = $date instanceof Carbon ? $date : Carbon::parse($date);
+        $parsed = $this->parseDate($date);
+
+        if ($parsed === null) {
+            return '';
+        }
+
+        $date = $parsed;
 
         $prefs = $this->preferences();
         $userFormat = $prefs['date_format'] ?? null;
@@ -122,7 +129,11 @@ final class LocalizationService
             return '';
         }
 
-        $date = $date instanceof Carbon ? $date : Carbon::parse($date);
+        $date = $this->parseDate($date);
+
+        if ($date === null) {
+            return '';
+        }
 
         $prefs = $this->preferences();
         $userDate = $prefs['date_format'] ?? null;
@@ -160,6 +171,27 @@ final class LocalizationService
         return LocaleService::convertUnit($value, $type, $fromUnit, $locale);
     }
 
+    private function parseDate(mixed $date): ?Carbon
+    {
+        if ($date instanceof Carbon) {
+            return $date;
+        }
+
+        if ($date instanceof \DateTimeInterface) {
+            return Carbon::instance($date);
+        }
+
+        if (! is_string($date) && ! is_int($date) && ! is_float($date)) {
+            return null;
+        }
+
+        try {
+            return Carbon::parse((string) $date);
+        } catch (\Throwable $e) {
+            return null;
+        }
+    }
+
     /**
      * Resolves the active user preferences without requiring a `$request`
      * argument on every call, falling back to defaults in CLI contexts.
@@ -174,6 +206,7 @@ final class LocalizationService
             $merged = $request->_preferences ?? null;
 
             if (is_array($merged)) {
+                /** @var array<string, mixed> $merged */
                 return $merged;
             }
 
@@ -212,12 +245,13 @@ final class LocalizationService
 
         $decoded = json_decode($raw, true);
 
-        if (! is_array($decoded) || ! isset($decoded['decimal'], $decoded['thousand'])) {
+        if (! is_array($decoded) || ! isset($decoded['decimal'], $decoded['thousand'])
+            || ! is_string($decoded['decimal']) || ! is_string($decoded['thousand'])) {
             return null;
         }
 
-        $decimal = (string) $decoded['decimal'];
-        $thousand = (string) $decoded['thousand'];
+        $decimal = $decoded['decimal'];
+        $thousand = $decoded['thousand'];
 
         if ($decimal === self::DEFAULT_NUMBER_FORMAT['decimal']
             && $thousand === self::DEFAULT_NUMBER_FORMAT['thousand']) {
@@ -227,7 +261,7 @@ final class LocalizationService
         return ['decimal' => $decimal, 'thousand' => $thousand];
     }
 
-    private function formatDateFallback(mixed $date, string $format, ?string $locale): string
+    private function formatDateFallback(Carbon $date, string $format, ?string $locale): string
     {
         $targetLocale = $locale ?? app()->getLocale();
 
@@ -261,10 +295,16 @@ final class LocalizationService
             };
         }
 
-        return $date->locale($targetLocale)->translatedFormat($format === 'long' ? 'j F Y' : 'j M Y');
+        $localized = $date->locale($targetLocale);
+
+        if (! $localized instanceof Carbon) {
+            return $date->format($format === 'long' ? 'j F Y' : 'j M Y');
+        }
+
+        return $localized->translatedFormat($format === 'long' ? 'j F Y' : 'j M Y');
     }
 
-    private function formatDateTimeFallback(mixed $date, ?string $locale): string
+    private function formatDateTimeFallback(Carbon $date, ?string $locale): string
     {
         $targetLocale = $locale ?? app()->getLocale();
 

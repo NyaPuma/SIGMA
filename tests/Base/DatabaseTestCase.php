@@ -7,6 +7,7 @@ use Illuminate\Foundation\Testing\TestCase as BaseTestCase;
 use Illuminate\Foundation\Testing\WithFaker;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
+use OpenAI\Laravel\Facades\OpenAI;
 
 abstract class DatabaseTestCase extends BaseTestCase
 {
@@ -16,6 +17,7 @@ abstract class DatabaseTestCase extends BaseTestCase
     protected function setUp(): void
     {
         parent::setUp();
+        OpenAI::fake();
         $this->createViteManifest();
     }
 

@@ -23,14 +23,16 @@ final class UpdateUserRequest extends FormRequest
     protected function prepareForValidation(): void
     {
         if ($this->has('name')) {
+            $name = $this->input('name');
             $this->merge([
-                'name' => $this->filled('name') ? trim((string) $this->name) : $this->name,
+                'name' => $this->filled('name') && is_scalar($name) ? trim((string) $name) : $name,
             ]);
         }
 
         if ($this->has('email')) {
+            $email = $this->input('email');
             $this->merge([
-                'email' => $this->filled('email') ? strtolower(trim((string) $this->email)) : $this->email,
+                'email' => $this->filled('email') && is_scalar($email) ? strtolower(trim((string) $email)) : $email,
             ]);
         }
     }

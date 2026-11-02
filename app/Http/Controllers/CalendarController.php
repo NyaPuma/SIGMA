@@ -90,11 +90,11 @@ final class CalendarController extends Controller
             ], 422);
         }
 
-        $start = Carbon::parse($request->validated('start'));
+        $start = $request->date('start') ?? Carbon::now();
 
         $ticket->scheduled_at = $start;
         $ticket->scheduled_end = $request->filled('end')
-            ? Carbon::parse($request->validated('end'))
+            ? ($request->date('end') ?? $start->copy()->addHours(2))
             : $start->copy()->addHours(2);
         $ticket->save();
 

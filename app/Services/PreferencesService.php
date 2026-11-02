@@ -13,6 +13,14 @@ use Illuminate\Support\Facades\Auth;
  * Central user preferences service.
  *
  * Manages language, currency, and date format preferences independently.
+ *
+ * @phpstan-type UserPreferences array{
+ *     language: string,
+ *     currency: string,
+ *     date_format: string,
+ *     time_format: string,
+ *     number_format: string
+ * }
  */
 final class PreferencesService
 {
@@ -83,16 +91,18 @@ final class PreferencesService
 
     /**
      * Gets preferences for the authenticated user.
+     *
+     * @return UserPreferences
      */
     public static function forUser(Authenticatable $user): array
     {
-        $prefs = UserPreference::where('user_id', (int) $user->getAuthIdentifier())->first();
+        $prefs = UserPreference::where('user_id', self::userId($user))->first();
 
         if ($prefs) {
             return [
-                'language' => $prefs->language,
-                'currency' => $prefs->currency,
-                'date_format' => $prefs->date_format,
+                'language' => $prefs->language ?? self::DEFAULTS['language'],
+                'currency' => $prefs->currency ?? self::DEFAULTS['currency'],
+                'date_format' => $prefs->date_format ?? self::DEFAULTS['date_format'],
                 'time_format' => $prefs->time_format ?? self::DEFAULTS['time_format'],
                 'number_format' => $prefs->number_format ?? self::DEFAULTS['number_format'],
             ];
@@ -103,6 +113,8 @@ final class PreferencesService
 
     /**
      * Gets preferences from the session (for unauthenticated users).
+     *
+     * @return UserPreferences
      */
     public static function fromSession(Request $request): array
     {
@@ -112,15 +124,32 @@ final class PreferencesService
 
         if (is_array($sessionPrefs)) {
             return [
-                'language' => $sessionPrefs['language'] ?? self::DEFAULTS['language'],
-                'currency' => $sessionPrefs['currency'] ?? self::DEFAULTS['currency'],
-                'date_format' => $sessionPrefs['date_format'] ?? self::DEFAULTS['date_format'],
-                'time_format' => $sessionPrefs['time_format'] ?? self::DEFAULTS['time_format'],
-                'number_format' => $sessionPrefs['number_format'] ?? self::DEFAULTS['number_format'],
+                'language' => self::stringPreference($sessionPrefs, 'language', self::DEFAULTS['language']),
+                'currency' => self::stringPreference($sessionPrefs, 'currency', self::DEFAULTS['currency']),
+                'date_format' => self::stringPreference($sessionPrefs, 'date_format', self::DEFAULTS['date_format']),
+                'time_format' => self::stringPreference($sessionPrefs, 'time_format', self::DEFAULTS['time_format']),
+                'number_format' => self::stringPreference($sessionPrefs, 'number_format', self::DEFAULTS['number_format']),
             ];
         }
 
         return self::DEFAULTS;
+    }
+
+    /**
+     * @param  array<array-key, mixed>  $preferences
+     */
+    private static function stringPreference(array $preferences, string $key, string $default): string
+    {
+        $value = $preferences[$key] ?? null;
+
+        return is_string($value) && $value !== '' ? $value : $default;
+    }
+
+    private static function userId(Authenticatable $user): int
+    {
+        $identifier = $user->getAuthIdentifier();
+
+        return is_numeric($identifier) ? (int) $identifier : 0;
     }
 
     /**
@@ -129,6 +158,8 @@ final class PreferencesService
      * Resolves the user via the web guard first, then falls back to
      * `AuthUserResolver` for api-token-authenticated users on web routes
      * (where `CustomAuthMiddleware` sets the user on the `api` guard only).
+     *
+     * @return UserPreferences
      */
     public static function current(Request $request): array
     {
@@ -145,19 +176,23 @@ final class PreferencesService
 
     /**
      * Saves preferences for the authenticated user.
+     *
+     * @param  array<string, mixed>  $preferences
      */
     public static function saveForUser(Authenticatable $user, array $preferences): UserPreference
     {
         $validated = self::validatePreferences($preferences);
 
         return UserPreference::updateOrCreate(
-            ['user_id' => (int) $user->getAuthIdentifier()],
+            ['user_id' => self::userId($user)],
             $validated
         );
     }
 
     /**
      * Saves preferences to the session (for unauthenticated users).
+     *
+     * @param  array<string, mixed>  $preferences
      */
     public static function saveToSession(Request $request, array $preferences): void
     {
@@ -167,15 +202,18 @@ final class PreferencesService
 
     /**
      * Validates and normalizes preferences.
+     *
+     * @param  array<string, mixed>  $preferences
+     * @return UserPreferences
      */
     public static function validatePreferences(array $preferences): array
     {
         return [
-            'language' => self::validateLanguage($preferences['language'] ?? self::DEFAULTS['language']),
-            'currency' => self::validateCurrency($preferences['currency'] ?? self::DEFAULTS['currency']),
-            'date_format' => self::validateDateFormat($preferences['date_format'] ?? self::DEFAULTS['date_format']),
-            'time_format' => self::validateTimeFormat($preferences['time_format'] ?? self::DEFAULTS['time_format']),
-            'number_format' => self::validateNumberFormat($preferences['number_format'] ?? self::DEFAULTS['number_format']),
+            'language' => self::validateLanguage(self::stringPreference($preferences, 'language', self::DEFAULTS['language'])),
+            'currency' => self::validateCurrency(self::stringPreference($preferences, 'currency', self::DEFAULTS['currency'])),
+            'date_format' => self::validateDateFormat(self::stringPreference($preferences, 'date_format', self::DEFAULTS['date_format'])),
+            'time_format' => self::validateTimeFormat(self::stringPreference($preferences, 'time_format', self::DEFAULTS['time_format'])),
+            'number_format' => self::validateNumberFormat(self::stringPreference($preferences, 'number_format', self::DEFAULTS['number_format'])),
         ];
     }
 
@@ -231,6 +269,8 @@ final class PreferencesService
 
     /**
      * Gets the list of supported time formats.
+     *
+     * @return array<string, array{label: string, example: string}>
      */
     public static function supportedTimeFormats(): array
     {
@@ -250,6 +290,8 @@ final class PreferencesService
 
     /**
      * Gets the list of supported date formats.
+     *
+     * @return list<string>
      */
     public static function supportedDateFormats(): array
     {
@@ -302,7 +344,7 @@ final class PreferencesService
      */
     public static function getTimeFormat(Request $request): string
     {
-        return self::current($request)['time_format'] ?? self::DEFAULTS['time_format'];
+        return self::current($request)['time_format'];
     }
 
     /**
@@ -318,19 +360,25 @@ final class PreferencesService
      */
     public static function getNumberFormat(Request $request): string
     {
-        return self::current($request)['number_format'] ?? self::DEFAULTS['number_format'];
+        return self::current($request)['number_format'];
     }
 
     /**
      * Gets number separators from the stored format.
+     *
+     * @return array{decimal: string, thousand: string}
      */
     public static function getNumberSeparators(Request $request): array
     {
         $format = self::getNumberFormat($request);
         $decoded = json_decode($format, true);
 
-        if (is_array($decoded) && isset($decoded['decimal']) && isset($decoded['thousand'])) {
-            return $decoded;
+        if (is_array($decoded) && isset($decoded['decimal'], $decoded['thousand'])
+            && is_string($decoded['decimal']) && is_string($decoded['thousand'])) {
+            return [
+                'decimal' => $decoded['decimal'],
+                'thousand' => $decoded['thousand'],
+            ];
         }
 
         return [
@@ -341,6 +389,8 @@ final class PreferencesService
 
     /**
      * Gets the list of supported number formats.
+     *
+     * @return array<string, array{decimal: string, thousand: string, example: string}>
      */
     public static function supportedNumberFormats(): array
     {

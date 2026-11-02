@@ -21,7 +21,7 @@ final class PasswordResetController extends Controller
      */
     public function sendResetLink(SendResetLinkRequest $request): JsonResponse
     {
-        $email = $request->input('email');
+        $email = $request->string('email')->toString();
         $token = $this->passwordResetService->createResetToken($email);
 
         // Look the user up with the same normalized email used for the token
@@ -44,8 +44,8 @@ final class PasswordResetController extends Controller
     public function resetPassword(ResetPasswordRequest $request): JsonResponse
     {
         $user = $this->passwordResetService->validateToken(
-            $request->input('email'),
-            $request->input('token')
+            $request->string('email')->toString(),
+            $request->string('token')->toString()
         );
 
         if (! $user) {
@@ -54,7 +54,7 @@ final class PasswordResetController extends Controller
             ], 422);
         }
 
-        $this->passwordResetService->resetPassword($user, $request->input('password'));
+        $this->passwordResetService->resetPassword($user, $request->string('password')->toString());
 
         return response()->json([
             'message' => __('messages.Password reposta com sucesso. Faça login.'),

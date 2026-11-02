@@ -28,9 +28,12 @@ final readonly class PasswordChangeData
     {
         $payload = $data instanceof FormRequest ? $data->validated() : $data;
 
+        $rawCurrent = $payload['current_password'] ?? '';
+        $rawNew = $payload['new_password'] ?? '';
+
         return new self(
-            currentPassword: (string) ($payload['current_password'] ?? ''),
-            newPassword: (string) ($payload['new_password'] ?? ''),
+            currentPassword: is_scalar($rawCurrent) ? (string) $rawCurrent : '',
+            newPassword: is_scalar($rawNew) ? (string) $rawNew : '',
         );
     }
 

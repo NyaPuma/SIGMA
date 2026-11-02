@@ -69,8 +69,8 @@ final class PartCategoryController extends Controller
         $this->authorize('create', PartCategory::class);
 
         $category = $this->partCategoryActions->create(
-            name: $request->validated('name'),
-            active: (bool) ($request->validated('active') ?? true),
+            name: $request->string('name')->toString(),
+            active: $request->boolean('active', true),
         );
 
         return response()->json([
@@ -111,8 +111,8 @@ final class PartCategoryController extends Controller
 
         $category = $this->partCategoryActions->update(
             category: $category,
-            name: $request->validated('name'),
-            active: (bool) ($request->validated('active') ?? true),
+            name: $request->string('name')->toString(),
+            active: $request->boolean('active', true),
         );
 
         return response()->json([

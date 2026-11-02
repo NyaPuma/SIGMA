@@ -54,8 +54,11 @@ final readonly class CheckHigherPriorityAction
             ', [$ticket->assigned_to])
             ->first();
 
-        $total = (int) ($result->total ?? 0);
-        $assignedToUser = $ticket->assigned_to !== null ? (int) ($result->assigned_to_user ?? 0) : 0;
+        $totalRaw = data_get($result, 'total', 0);
+        $assignedRaw = data_get($result, 'assigned_to_user', 0);
+
+        $total = is_numeric($totalRaw) ? (int) $totalRaw : 0;
+        $assignedToUser = $ticket->assigned_to !== null && is_numeric($assignedRaw) ? (int) $assignedRaw : 0;
 
         return [
             'total' => $total,

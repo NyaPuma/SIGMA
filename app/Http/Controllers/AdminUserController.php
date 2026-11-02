@@ -33,9 +33,13 @@ final class AdminUserController extends Controller
         $this->authorize('viewAny', User::class);
 
         // 2. Get filters from request
-        $search = $request->input('q');
-        $role = $request->input('role');
-        $status = $request->input('status');
+        $search = $request->query('q');
+        $role = $request->query('role');
+        $status = $request->query('status');
+
+        $search = is_string($search) ? $search : null;
+        $role = is_string($role) ? $role : null;
+        $status = is_string($status) ? $status : null;
 
         // 3. Search for users with eager loading of profile and applied filters
         $users = $this->userRepository->getAll(['profile'], $search, $role, $status);
