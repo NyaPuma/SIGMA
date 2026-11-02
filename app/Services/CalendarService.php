@@ -23,7 +23,7 @@ final class CalendarService
      * - Technician sees only their assigned tickets;
      * - Regular user sees only their own tickets.
      *
-     * @return Collection<int, array<string, mixed>>
+     * @return Collection<int, array{id: int, title: string, start: string, end: string|null, extendedProps: array{url: string, scheduled: bool, equipment: string|null, technician: string|null, description: string}, editable: bool}>
      */
     public function getScheduledEventsForUser(User $user): Collection
     {

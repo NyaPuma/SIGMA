@@ -19,7 +19,7 @@ final class UpdateSupplierRequest extends FormRequest
     protected function prepareForValidation(): void
     {
         $this->merge([
-            'name' => $this->filled('name') ? trim((string) $this->name) : $this->name,
+            'name' => $this->filled('name') ? trim(is_string($this->name) ? $this->name : '') : $this->name,
         ]);
     }
 

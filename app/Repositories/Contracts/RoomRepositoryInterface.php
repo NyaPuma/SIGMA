@@ -26,7 +26,7 @@ interface RoomRepositoryInterface
     /**
      * Return all active rooms.
      *
-     * @return array<int, Room>
+     * @return array<int, array<string, mixed>>
      */
     public function getActive(): array;
 

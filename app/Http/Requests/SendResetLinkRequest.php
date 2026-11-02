@@ -20,7 +20,7 @@ final class SendResetLinkRequest extends FormRequest
     {
         if ($this->has('email')) {
             $this->merge([
-                'email' => strtolower(trim((string) $this->email)),
+                'email' => strtolower(trim(is_string($this->email) ? $this->email : '')),
             ]);
         }
     }

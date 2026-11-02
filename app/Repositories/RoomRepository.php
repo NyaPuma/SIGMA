@@ -29,6 +29,9 @@ final class RoomRepository implements RoomRepositoryInterface
     /**
      * {@inheritDoc}
      */
+    /**
+     * @return array<int, array<string, mixed>>
+     */
     public function getActive(): array
     {
         return Room::where('active', true)
