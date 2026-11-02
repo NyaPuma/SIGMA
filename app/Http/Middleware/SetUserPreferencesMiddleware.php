@@ -36,7 +36,7 @@ final class SetUserPreferencesMiddleware
             '_preferences' => $prefs,
         ]);
 
-        /** @var \Symfony\Component\HttpFoundation\Response $response */
+        /** @var Response $response */
         $response = $next($request);
 
         return $response;

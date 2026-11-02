@@ -30,7 +30,7 @@ final class SetLocaleMiddleware
     {
         App::setLocale($this->resolveLocale($request));
 
-        /** @var \Symfony\Component\HttpFoundation\Response $response */
+        /** @var Response $response */
         $response = $next($request);
 
         return $response;

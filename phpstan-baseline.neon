@@ -307,12 +307,6 @@ parameters:
 			path: app/Http/Controllers/AdminUserController.php
 
 		-
-			message: '#^Parameter \#1 \$perPage of method Illuminate\\Database\\Eloquent\\Builder\<App\\Models\\Audit\>\:\:paginate\(\) expects int\|null, mixed given\.$#'
-			identifier: argument.type
-			count: 1
-			path: app/Http/Controllers/AuditController.php
-
-		-
 			message: '#^Binary operation "\*" between mixed and 60 results in an error\.$#'
 			identifier: binaryOp.invalid
 			count: 1
@@ -347,12 +341,6 @@ parameters:
 			identifier: argument.type
 			count: 2
 			path: app/Http/Controllers/CalendarController.php
-
-		-
-			message: '#^Cannot cast mixed to string\.$#'
-			identifier: cast.string
-			count: 1
-			path: app/Http/Controllers/LocaleController.php
 
 		-
 			message: '#^Cannot cast mixed to int\.$#'
@@ -697,12 +685,6 @@ parameters:
 			path: app/Http/Controllers/ThemeController.php
 
 		-
-			message: '#^Parameter \#2 \$technicianId of method App\\Services\\TechnicianAssignmentService\:\:assignToTicket\(\) expects int\|null, mixed given\.$#'
-			identifier: argument.type
-			count: 1
-			path: app/Http/Controllers/Ticket/TicketAssignmentController.php
-
-		-
 			message: '#^Parameter \$report of method App\\Services\\TicketWorkflowService\:\:close\(\) expects string\|null, mixed given\.$#'
 			identifier: argument.type
 			count: 2
@@ -857,24 +839,6 @@ parameters:
 			identifier: return.type
 			count: 1
 			path: app/Http/Middleware/RequestContextMiddleware.php
-
-		-
-			message: '#^Method App\\Http\\Middleware\\RoleMiddleware\:\:handle\(\) should return Symfony\\Component\\HttpFoundation\\Response but returns mixed\.$#'
-			identifier: return.type
-			count: 1
-			path: app/Http/Middleware/RoleMiddleware.php
-
-		-
-			message: '#^Method App\\Http\\Middleware\\SetLocaleMiddleware\:\:handle\(\) should return Symfony\\Component\\HttpFoundation\\Response but returns mixed\.$#'
-			identifier: return.type
-			count: 1
-			path: app/Http/Middleware/SetLocaleMiddleware.php
-
-		-
-			message: '#^Method App\\Http\\Middleware\\SetUserPreferencesMiddleware\:\:handle\(\) should return Symfony\\Component\\HttpFoundation\\Response but returns mixed\.$#'
-			identifier: return.type
-			count: 1
-			path: app/Http/Middleware/SetUserPreferencesMiddleware.php
 
 		-
 			message: '#^Method App\\Http\\Requests\\ChangePasswordRequest\:\:rules\(\) return type has no value type specified in iterable type array\.$#'
