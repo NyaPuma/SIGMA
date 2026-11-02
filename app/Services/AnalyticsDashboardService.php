@@ -142,8 +142,12 @@ final class AnalyticsDashboardService
      */
     private function monthlyPerformanceData(array $monthLabels): array
     {
+        if ($monthLabels === []) {
+            return ['sla' => [], 'mttr' => []];
+        }
+
         $start = Carbon::parse($monthLabels[0])->startOfMonth();
-        $end = Carbon::parse(end($monthLabels))->endOfMonth();
+        $end = Carbon::parse($monthLabels[array_key_last($monthLabels)])->endOfMonth();
 
         $driver = DB::connection()->getDriverName();
         $monthExpr = $driver === 'sqlite'
@@ -312,8 +316,12 @@ final class AnalyticsDashboardService
      */
     private function stockMonthlyData(array $monthLabels): array
     {
+        if ($monthLabels === []) {
+            return ['labels' => [], 'in' => [], 'out' => []];
+        }
+
         $start = Carbon::parse($monthLabels[0])->startOfMonth();
-        $end = Carbon::parse(end($monthLabels))->endOfMonth();
+        $end = Carbon::parse($monthLabels[array_key_last($monthLabels)])->endOfMonth();
 
         $driver = DB::connection()->getDriverName();
         $monthExpr = $driver === 'sqlite'
