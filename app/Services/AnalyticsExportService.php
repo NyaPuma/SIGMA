@@ -8,6 +8,7 @@ use App\Enums\BudgetStatusEnum;
 use App\Enums\TicketPriorityEnum;
 use App\Enums\TicketStatusEnum;
 use App\Models\Ticket;
+use App\Support\SpreadsheetCell;
 use Barryvdh\DomPDF\Facade\Pdf;
 use RuntimeException;
 
@@ -182,17 +183,17 @@ final class AnalyticsExportService
     {
         return [
             (string) $ticket->id,
-            $ticket->reference ?? '#'.$ticket->id,
-            $ticket->title,
-            $this->statusLabel($ticket),
-            $this->priorityLabel($ticket->priority),
+            SpreadsheetCell::guard($ticket->reference ?? '#'.$ticket->id),
+            SpreadsheetCell::guard($ticket->title),
+            SpreadsheetCell::guard($this->statusLabel($ticket)),
+            SpreadsheetCell::guard($this->priorityLabel($ticket->priority)),
             $ticket->urgent ? __('exports.yes') : __('exports.no'),
             $this->localization()->formatDateTime($ticket->opened_at),
             $this->localization()->formatDateTime($ticket->in_progress_at),
             $this->localization()->formatDateTime($ticket->closed_at),
             (string) ($ticket->minutes_spent ?? ''),
             $this->localization()->formatDecimal((float) $ticket->actual_cost),
-            $this->budgetLabel($ticket->budget_status),
+            SpreadsheetCell::guard($this->budgetLabel($ticket->budget_status)),
             $ticket->budget_amount !== null ? $this->localization()->formatDecimal((float) $ticket->budget_amount) : '',
         ];
     }

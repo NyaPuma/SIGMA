@@ -4,6 +4,7 @@ namespace App\Exports;
 
 use App\Enums\TicketPriorityEnum;
 use App\Models\Ticket;
+use App\Support\SpreadsheetCell;
 use Illuminate\Database\Eloquent\Builder;
 use Maatwebsite\Excel\Concerns\FromQuery;
 use Maatwebsite\Excel\Concerns\ShouldAutoSize;
@@ -117,17 +118,17 @@ final class TicketsExport implements FromQuery, ShouldAutoSize, WithChunkReading
 
         return [
             $ticket->id,
-            $ticket->reference ?? "#{$ticket->id}",
-            $ticket->title,
-            $statusLabel,
-            $priorityLabel,
+            SpreadsheetCell::guard($ticket->reference ?? "#{$ticket->id}"),
+            SpreadsheetCell::guard($ticket->title),
+            SpreadsheetCell::guard($statusLabel),
+            SpreadsheetCell::guard($priorityLabel),
             $ticket->urgent ? __('exports.yes') : __('exports.no'),
             $ticket->opened_at?->format('d/m/Y H:i') ?? '-',
             $ticket->in_progress_at?->format('d/m/Y H:i') ?? '-',
             $ticket->closed_at?->format('d/m/Y H:i') ?? '-',
             $ticket->minutes_spent ?? 0,
             (float) ($ticket->actual_cost ?? 0),
-            $ticket->budget_status ?? 'N/A',
+            SpreadsheetCell::guard($ticket->budget_status ?? 'N/A'),
             (float) ($ticket->budget_amount ?? 0),
         ];
     }

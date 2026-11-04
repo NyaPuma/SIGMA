@@ -7,6 +7,7 @@ namespace App\Http\Controllers;
 use App\Jobs\ExportStockCostsPdfJob;
 use App\Models\Part;
 use App\Services\LocalizationService;
+use App\Support\SpreadsheetCell;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use OpenApi\Attributes as OA;
@@ -61,13 +62,13 @@ final class StockReportController extends Controller
                 ->lazy()
                 ->each(function (Part $part) use ($handle): void {
                     fputcsv($handle, [
-                        $part->sku,
-                        $part->name,
-                        $part->brand,
-                        $part->category?->name,
+                        SpreadsheetCell::guard($part->sku),
+                        SpreadsheetCell::guard($part->name),
+                        SpreadsheetCell::guard($part->brand),
+                        SpreadsheetCell::guard($part->category?->name),
                         $part->current_stock,
                         $part->min_stock,
-                        $part->location,
+                        SpreadsheetCell::guard($part->location),
                     ], ';');
                 });
 
@@ -119,16 +120,16 @@ final class StockReportController extends Controller
                 ->lazy()
                 ->each(function (Part $part) use ($handle): void {
                     fputcsv($handle, [
-                        $part->sku,
-                        $part->name,
-                        $part->brand,
-                        $part->category?->name,
+                        SpreadsheetCell::guard($part->sku),
+                        SpreadsheetCell::guard($part->name),
+                        SpreadsheetCell::guard($part->brand),
+                        SpreadsheetCell::guard($part->category?->name),
                         $part->current_stock,
                         $this->localization->formatDecimal((float) $part->cost_price),
                         $part->taxRate?->percent.'%',
                         $this->localization->formatDecimal((float) $part->priceWithVat()),
                         $this->localization->formatDecimal((float) $part->stockValue()),
-                        $part->location,
+                        SpreadsheetCell::guard($part->location),
                     ], ';');
                 });
 
