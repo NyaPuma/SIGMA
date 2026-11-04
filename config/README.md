@@ -99,8 +99,8 @@ Each file controls one area of the app. The value of every setting can usually b
 - **How it works:** Provides one location for external-service keys and for app-level tuning like "how many failed logins before lockout", "max photo upload size", and "items per page". Fine-tunes the everyday behaviour of the app.
 
 ### `services.custom.php`
-- **What it controls:** A compact set of custom overrides loaded alongside `services.php` — auth attempts, budget threshold, AI model/temperature, pagination defaults, API token length, and the notification mailer.
-- **How it works:** Provides environment-specific settings on top of the standard services config, so teams can tune authentication (e.g. `ADMIN_PAGINATION_PER_PAGE: 50`) and choose which mailer notifications use (e.g. `mailgun_fallback`).
+- **What it controls:** The single definition of the application tunables read as `services.custom.*` — auth attempts, lockout and token expiry, budget threshold, availability KPI, AI model/temperature, photo upload limits, pagination defaults, API token length, and the notification mailer.
+- **How it works:** It wins over the `services.custom` tree of any other file, because Laravel merges config in name order with `array_set()`; `tests/Unit/Config/ServiceConfigTest.php` keeps the readers and these keys aligned.
 
 ### `session.php`
 - **What it controls:** How the app remembers a logged-in user's browser session — where sessions are stored (default database), how long they last (default 120 minutes), and whether they're encrypted.
@@ -192,37 +192,43 @@ Below is the complete key map for every config file. All values read from `.env`
 | `budget.threshold` | `BUDGET_THRESHOLD` | `50.00` |
 | `analytics.sla_target_minutes` | `SLA_TARGET_MINUTES` | `480` |
 | `analytics.pdf_export_limit` | `ANALYTICS_PDF_EXPORT_LIMIT` | `2000` |
-| `custom.auth.max_attempts` | `AUTH_MAX_ATTEMPTS` | `5` |
-| `custom.auth.lockout_minutes` | `AUTH_LOCKOUT_MINUTES` | `15` |
-| `custom.auth.token_expiry_days` | `AUTH_TOKEN_EXPIRY_DAYS` | `30` |
-| `custom.upload.max_photo_size_kb` | `UPLOAD_MAX_PHOTO_SIZE_KB` | `2048` |
-| `custom.upload.max_photo_width` | `UPLOAD_MAX_PHOTO_WIDTH` | `4096` |
-| `custom.upload.max_photo_height` | `UPLOAD_MAX_PHOTO_HEIGHT` | `4096` |
-| `custom.upload.allowed_photo_mimes` | `UPLOAD_ALLOWED_PHOTO_MIMES` | `jpeg,png,jpg,gif,webp` |
-| `custom.pagination.per_page` | `PAGINATION_PER_PAGE` | `15` |
-| `custom.database.slow_query_log` | `DB_SLOW_QUERY_LOG` | `false` |
-| `custom.database.slow_query_threshold` | `DB_SLOW_QUERY_THRESHOLD` | `2.0` |
+
+Laravel sorts config files by name and merges them with `array_set()`, so
+`services.php` loads first and `services.custom.php` replaces the whole
+`services.custom` tree. Nothing under `custom` may be declared here — the rows this
+table used to list (`custom.auth.token_expiry_days`, `custom.upload.*`) were dead and
+`AUTH_TOKEN_EXPIRY_DAYS`/`UPLOAD_*` silently did nothing. They now live in
+`services.custom.php` below.
 
 ### `services.custom.php` (env-specific overrides)
 | Key | Env var | Default |
 |---|---|---|
 | `auth.max_attempts` | `AUTH_MAX_ATTEMPTS` | `5` |
 | `auth.lockout_minutes` | `AUTH_LOCKOUT_MINUTES` | `15` |
+| `auth.token_expiry_days` | `AUTH_TOKEN_EXPIRY_DAYS` | `30` — read by `CustomAuthMiddleware::isTokenExpired()` |
 | `budget.threshold` | `BUDGET_THRESHOLD` | `50.00` |
 | `analytics.system_availability` | `SYSTEM_AVAILABILITY` | `99.9` — the only availability key; SystemSettingsService saves the Settings field here and AnalyticsDashboardService reads it back |
-| `ai.model` | `AI_MODEL` | `gpt-4o-mini` |
+| `ai.model` | `AI_MODEL` | `gpt-4o-mini` — the default also applies when the variable is present but empty, which is how `.env.example` ships it |
 | `ai.temperature` | `AI_TEMPERATURE` | `0.1` |
+| `upload.max_photo_size_kb` | `UPLOAD_MAX_PHOTO_SIZE_KB` | `2048` |
+| `upload.max_photo_width` | `UPLOAD_MAX_PHOTO_WIDTH` | `4096` |
+| `upload.max_photo_height` | `UPLOAD_MAX_PHOTO_HEIGHT` | `4096` |
+| `upload.allowed_photo_mimes` | `UPLOAD_ALLOWED_PHOTO_MIMES` | `jpeg,png,jpg,gif,webp` |
 | `pagination.default_per_page` | `PAGINATION_PER_PAGE` | `15` |
 | `pagination.admin_per_page` | `ADMIN_PAGINATION_PER_PAGE` | `50` |
 | `tokens.length` | `API_TOKEN_LENGTH` | `60` |
 | `notification.mailer` | `NOTIFICATION_MAILER` | `mailgun_fallback` |
+
+`tests/Unit/Config/ServiceConfigTest.php` locks both invariants: `services.php` must not
+declare a `custom` key, and every key the application reads must resolve with the right
+type.
 
 ## Notes for developers / AI
 
 - `locales.php` contains language display names in their native scripts (user-facing, i18n domain) — these are intentionally in various languages.
 - `l5-swagger.php` title includes the app name `Gestão de Avarias` — user-facing, pending i18n migration.
 - `backup.php` is a custom config file (not Laravel default) for the `DatabaseBackup` artisan command.
-- `services.custom.php` is loaded alongside `services.php` for environment-specific overrides.
+- `services.custom.php` defines `services.custom.*` and replaces any `custom` tree that `services.php` might declare — keep the tunables in one file only.
 - Config values use `env()` helpers with sensible defaults for development.
 
 ## Related Folders

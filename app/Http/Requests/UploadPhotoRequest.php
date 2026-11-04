@@ -18,7 +18,7 @@ final class UploadPhotoRequest extends FormRequest
     /** @return array<string, mixed> */
     public function rules(): array
     {
-        $configuredMimes = config('services.upload.allowed_photo_mimes', ['jpeg', 'jpg', 'png', 'gif', 'webp']);
+        $configuredMimes = config('services.custom.upload.allowed_photo_mimes', []);
         $allowedMimes = is_array($configuredMimes)
             ? array_values(array_filter($configuredMimes, 'is_string'))
             : [];
@@ -27,8 +27,9 @@ final class UploadPhotoRequest extends FormRequest
             $allowedMimes = ['jpeg', 'jpg', 'png', 'gif', 'webp'];
         }
 
-        $configuredMaxSize = config('services.upload.max_photo_size_kb', 2048);
-        $maxPhotoSizeKb = is_numeric($configuredMaxSize) ? (int) $configuredMaxSize : 2048;
+        $maxPhotoSizeKb = $this->positiveIntConfig('services.custom.upload.max_photo_size_kb', 2048);
+        $maxPhotoWidth = $this->positiveIntConfig('services.custom.upload.max_photo_width', 4096);
+        $maxPhotoHeight = $this->positiveIntConfig('services.custom.upload.max_photo_height', 4096);
 
         return [
             'photo' => [
@@ -38,11 +39,21 @@ final class UploadPhotoRequest extends FormRequest
                     ->max($maxPhotoSizeKb)
                     ->dimensions(
                         Rule::dimensions()
-                            ->maxWidth(4096)
-                            ->maxHeight(4096)
+                            ->maxWidth($maxPhotoWidth)
+                            ->maxHeight($maxPhotoHeight)
                     ),
             ],
         ];
+    }
+
+    /**
+     * Reads a size limit that must stay usable when the environment value is empty or bogus.
+     */
+    private function positiveIntConfig(string $key, int $fallback): int
+    {
+        $configured = config($key);
+
+        return is_numeric($configured) && (int) $configured > 0 ? (int) $configured : $fallback;
     }
 
     /**
