@@ -3,11 +3,11 @@
 > **New to programming?** See [NON_TECHNICAL_PROJECT_GUIDE.md](NON_TECHNICAL_PROJECT_GUIDE.md)
 
 ![Status](https://img.shields.io/badge/status-production--ready-brightgreen)
-![Tests](https://img.shields.io/badge/tests-1410%20passed-brightgreen)
-![PHP Version](https://img.shields.io/badge/PHP-8.2%2B-blue)
-![Laravel Version](https://img.shields.io/badge/Laravel-12-red)
+![Tests](https://img.shields.io/badge/tests-1554%20total-brightgreen)
+![PHP Version](https://img.shields.io/badge/PHP-8.3%2B-blue)
+![Laravel Version](https://img.shields.io/badge/Laravel-13-red)
 
-An enterprise-grade web platform built with **Laravel 12** for digitalization, centralization, and optimization of the complete maintenance and fault management lifecycle within an organization's **Maintenance Department**.
+An enterprise-grade web platform built with **Laravel 13** for digitalization, centralization, and optimization of the complete maintenance and fault management lifecycle within an organization's **Maintenance Department**.
 
 The system mitigates communication failures and extended infrastructure downtime by organizing workflows, improving traceability, and distributing operational intelligence across three user roles: **Operator** (Standard User), **Technician**, and **Administrator** (Operations Director).
 
@@ -84,7 +84,7 @@ The project's source code is organized into folders. Here is what each one is fo
 | `resources/views/` | **The design studio.** Where the visual pages are assembled — what users actually see on screen. | Blade templates, CSS styles, JavaScript interactions for every page in the app. |
 | `config/` | **The settings panel.** All the knobs and dials that control how the app behaves. | Configuration files for mail, database, cache, sessions, permissions, and more. |
 | `public/` | **The front door.** The only folder the web server shows to the outside world. | The `index.php` entry point, compiled CSS/JS assets, and uploaded files. |
-| `tests/` | **The quality-control lab.** Every test is a "what if?" scenario — "what if a technician tries to delete another technician's ticket?" | PHPUnit and Vitest test files that verify the app works correctly. |
+| `tests/` | **The quality-control lab.** Every test is a "what if?" scenario — "what if a technician tries to delete another technician's ticket?" | PHPUnit test files that verify the app works correctly. |
 | `lang/` | **The translation room.** All the text the user sees, translated into 50+ languages. | JSON translation files for every supported locale. |
 | `storage/` | **The warehouse.** Uploaded files, logs, cached data — things the app generates while running. | User uploads, application logs, session files, and cached views. |
 | `docs/` | **The instruction manual.** Architecture diagrams, business rules, API specs — everything a new developer or stakeholder needs to understand the project. | Markdown documentation covering strategy, requirements, workflows, and user guides. |
@@ -116,8 +116,8 @@ And just like in a real restaurant, if something goes wrong at any step — wron
 ### Backend
 | Technology | Purpose |
 |---|---|
-| **PHP 8.2+** | Runtime language |
-| **Laravel 12** | Web framework |
+| **PHP 8.3+** | Runtime language |
+| **Laravel 13** | Web framework |
 | **MySQL / SQLite** | Database (SQLite for dev, MySQL for prod) |
 | **Redis** | Caching, sessions, and queue driver |
 | **Octane (FrankenPHP)** | Production app server with worker mode |
@@ -136,9 +136,9 @@ And just like in a real restaurant, if something goes wrong at any step — wron
 ### Quality & DevOps
 | Technology | Purpose |
 |---|---|
-| **PHPUnit** | Testing framework (1410+ tests) |
+| **PHPUnit** | Testing framework (1554 tests) |
 | **Vitest** | JavaScript testing |
-| **PHPStan** | Static analysis (Level 5) |
+| **PHPStan** | Static analysis (Level max) |
 | **Laravel Pint** | Code formatting |
 | **Docker** | Containerization (Multi-stage build) |
 | **OpenAPI/Swagger** | API documentation |
@@ -148,7 +148,7 @@ And just like in a real restaurant, if something goes wrong at any step — wron
 ## 📦 Installation & Setup
 
 ### Prerequisites
-- **PHP 8.2+** with common extensions (PDO, OpenSSL, JSON)
+- **PHP 8.3+** with common extensions (PDO, OpenSSL, JSON)
 - **Composer 2.0+**
 - **Node.js 18+** and npm
 - **MySQL 8.0+** or SQLite (for development)

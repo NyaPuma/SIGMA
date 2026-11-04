@@ -2,7 +2,7 @@
 
 ## Project Overview
 
-SGM is an enterprise-grade Laravel 12 web platform for digitalizing the complete
+SGM is an enterprise-grade Laravel 13 web platform for digitalizing the complete
 maintenance/fault management lifecycle within an organization's Maintenance
 Department. Three roles: Operator (standard user), Technician, Administrator
 (Operations Director).
@@ -12,13 +12,13 @@ Department. Three roles: Operator (standard user), Technician, Administrator
 | Layer | Technology |
 |-------|-----------|
 | Runtime | PHP 8.3+ |
-| Framework | Laravel 12 |
+| Framework | Laravel 13 |
 | Database | SQLite (dev/tests), PostgreSQL/MySQL (prod) |
 | Auth | Laravel Sanctum + session, RBAC via UserProfile |
 | Frontend | Blade + Tailwind CSS + Alpine.js + Vite |
 | Queue | sync (dev), database/redis (prod) |
-| Testing | PHPUnit 11, 8 suites (~1552 tests) |
-| Static | PHPStan level 5 (Larastan), Laravel Pint |
+| Testing | PHPUnit 12, 8 suites (~1554 tests) |
+| Static | PHPStan level max (Larastan), Laravel Pint |
 | AI | OpenAI PHP (ticket categorization/recommendations) |
 | Exports | maatwebsite/excel, barryvdh/laravel-dompdf |
 | Realtime | Pusher (optional) |
@@ -74,7 +74,7 @@ php artisan test            # or vendor/bin/phpunit
 php artisan test --filter=X
 
 # Static analysis
-vendor/bin/phpstan analyse --level=5
+vendor/bin/phpstan analyse   # level max, defined in phpstan.neon
 vendor/bin/pint
 vendor/bin/pint --test
 ```
@@ -94,11 +94,11 @@ vendor/bin/pint --test
 - Policies for authorization; `role:admin` middleware for admin routes.
 - Responses: JSON for API, Blade views for web.
 - i18n: `__('messages....')`, `__('common....')` (pt-PT).
-- Tests: PHPUnit 11, 8 suites, SQLite in-memory.
+- Tests: PHPUnit 12, 8 suites, SQLite in-memory.
 
 ## Testing
 
-- Framework: PHPUnit 11
+- Framework: PHPUnit 12
 - Location: `tests/{Unit,Feature,Performance,Security,Integration,Authentication,Authorization,Database}`
 - Run: `php artisan test` or `vendor/bin/phpunit`
 - Coverage: not enforced globally.
