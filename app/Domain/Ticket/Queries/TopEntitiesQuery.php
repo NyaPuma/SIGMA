@@ -17,11 +17,12 @@ final readonly class TopEntitiesQuery
     ) {}
 
     /**
-     * @return Collection<int, array{name: string, total: int, subtitle: 'interventions'}>
+     * @return Collection<int, array{name: string, total: int, subtitle: string}>
      */
     public function getTopEquipments(): Collection
     {
-        return (clone $this->baseQuery)
+        /** @var Collection<int, array{name: string, total: int, subtitle: string}> $rows */
+        $rows = (clone $this->baseQuery)
             ->join('equipments', 'tickets.equipment_id', '=', 'equipments.id')
             ->select('equipments.id', 'equipments.name', DB::raw('COUNT(*) as total'))
             ->whereNotNull('tickets.equipment_id')
@@ -34,14 +35,17 @@ final readonly class TopEntitiesQuery
                 'total' => is_numeric(data_get($row, 'total')) ? (int) data_get($row, 'total') : 0,
                 'subtitle' => 'interventions',
             ]);
+
+        return $rows;
     }
 
     /**
-     * @return Collection<int, array{name: string, total: int, subtitle: 'tickets'}>
+     * @return Collection<int, array{name: string, total: int, subtitle: string}>
      */
     public function getTopRooms(): Collection
     {
-        return (clone $this->baseQuery)
+        /** @var Collection<int, array{name: string, total: int, subtitle: string}> $rows */
+        $rows = (clone $this->baseQuery)
             ->join('rooms', 'tickets.room_id', '=', 'rooms.id')
             ->select('rooms.id', 'rooms.name', DB::raw('COUNT(*) as total'))
             ->whereNotNull('tickets.room_id')
@@ -54,14 +58,17 @@ final readonly class TopEntitiesQuery
                 'total' => is_numeric(data_get($row, 'total')) ? (int) data_get($row, 'total') : 0,
                 'subtitle' => 'tickets',
             ]);
+
+        return $rows;
     }
 
     /**
-     * @return Collection<int, array{name: string, total: int, subtitle: 'actions'}>
+     * @return Collection<int, array{name: string, total: int, subtitle: string}>
      */
     public function getTopTechnicians(): Collection
     {
-        return (clone $this->baseQuery)
+        /** @var Collection<int, array{name: string, total: int, subtitle: string}> $rows */
+        $rows = (clone $this->baseQuery)
             ->join('users', 'tickets.assigned_to', '=', 'users.id')
             ->select('users.id', 'users.name', DB::raw('COUNT(*) as total'))
             ->whereNotNull('tickets.assigned_to')
@@ -74,5 +81,7 @@ final readonly class TopEntitiesQuery
                 'total' => is_numeric(data_get($row, 'total')) ? (int) data_get($row, 'total') : 0,
                 'subtitle' => 'actions',
             ]);
+
+        return $rows;
     }
 }

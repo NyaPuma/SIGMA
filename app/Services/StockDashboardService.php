@@ -147,7 +147,7 @@ final class StockDashboardService
     /**
      * Simple stockout forecast based on average monthly consumption.
      *
-     * @return Collection<int, array{part_id: int<0, max>, part_name: string, sku: string, current_stock: int, avg_monthly_usage: float, est_months_of_stock: float}>
+     * @return Collection<int, array{part_id: int, part_name: string, sku: string, current_stock: int, avg_monthly_usage: float, est_months_of_stock: float}>
      */
     public function stockRunoutForecast(int $months = 3, int $limit = 50): Collection
     {
@@ -164,7 +164,8 @@ final class StockDashboardService
         /** @var Collection<int, float> $usage */
         $usage = $usageRaw;
 
-        return Part::query()
+        /** @var Collection<int, array{part_id: int, part_name: string, sku: string, current_stock: int, avg_monthly_usage: float, est_months_of_stock: float}> $forecast */
+        $forecast = Part::query()
             ->active()
             ->where('current_stock', '>', 0)
             ->get(['id', 'sku', 'name', 'current_stock'])
@@ -185,6 +186,8 @@ final class StockDashboardService
             ->sortBy('est_months_of_stock')
             ->take($limit)
             ->values();
+
+        return $forecast;
     }
 
     /**
