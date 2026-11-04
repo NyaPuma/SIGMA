@@ -4,7 +4,7 @@ description: Reusable PHP setup with Composer cache and install
 inputs:
   php-version:
     description: PHP version to install
-    default: "8.2"
+    default: "8.3"
   extensions:
     description: PHP extensions to install
     default: "mbstring, pdo, sqlite, pdo_sqlite, bcmath, intl, gd, zip"

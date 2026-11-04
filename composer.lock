@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "a4e61d3cb9563af9730c2e7b1a96fa1f",
+    "content-hash": "92c3addf6d9f50bbe99e9406d7f6849e",
     "packages": [
         {
             "name": "aws/aws-crt-php",
@@ -10650,7 +10650,8 @@
                     "type": "github"
                 }
             ],
-            "time": "2026-09-25T09:31:51+00:00"
+            "time": "2026-09-25T09:31:51+00:00",
+            "published-time": "2026-09-25T09:32:03+00:00"
         },
         {
             "name": "phpunit/php-code-coverage",
@@ -12188,8 +12189,8 @@
     "prefer-stable": true,
     "prefer-lowest": false,
     "platform": {
-        "php": "^8.2"
+        "php": "^8.3"
     },
     "platform-dev": {},
-    "plugin-api-version": "2.9.0"
+    "plugin-api-version": "2.11.0"
 }
