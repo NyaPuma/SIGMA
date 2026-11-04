@@ -14,6 +14,12 @@ updates:
     labels:
       - "dependencies"
       - "composer"
+    ignore:
+      # endroid/qr-code 6.x declara php ^8.4 (6.2.0 já pede ^8.5) e a plataforma
+      # do projeto é php ^8.3, por isso `composer install --locked` falha sempre.
+      - dependency-name: "endroid/qr-code"
+        update-types:
+          - version-update:semver-major
 
   # npm (Vite)
   - package-ecosystem: "npm"
