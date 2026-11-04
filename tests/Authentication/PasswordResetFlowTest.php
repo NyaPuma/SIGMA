@@ -25,7 +25,7 @@ class PasswordResetFlowTest extends FeatureTestCase
     }
 
     #[Test]
-    public function send_reset_link_returns_token_in_non_production_environment(): void
+    public function send_reset_link_returns_token_in_local_and_testing(): void
     {
         Mail::fake();
 
@@ -44,6 +44,26 @@ class PasswordResetFlowTest extends FeatureTestCase
         $record = DB::table('password_reset_tokens')->where('email', $user->email)->first();
         $this->assertNotNull($record);
         $this->assertTrue(Hash::check($token, $record->token));
+
+        Mail::assertQueued(PasswordResetMail::class, fn (PasswordResetMail $mail) => $mail->hasTo($user->email));
+    }
+
+    #[Test]
+    public function send_reset_link_never_returns_the_token_outside_local_and_testing(): void
+    {
+        Mail::fake();
+
+        $user = $this->createUser();
+
+        // Staging and preprod deployments are not `production`, and the previous
+        // condition handed them the plaintext recovery token in the JSON body.
+        $this->app['env'] = 'staging';
+
+        $response = $this->postJson('/api/password/email', [
+            'email' => $user->email,
+        ]);
+
+        $response->assertOk()->assertJson(['token' => null]);
 
         Mail::assertQueued(PasswordResetMail::class, fn (PasswordResetMail $mail) => $mail->hasTo($user->email));
     }

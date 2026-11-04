@@ -34,7 +34,11 @@ final class PasswordResetController extends Controller
 
         return response()->json([
             'message' => __('messages.Email de recuperação enviado com sucesso.'),
-            'token' => app()->environment('production') ? null : $token,
+            // A reset token is a credential: returning it everywhere the app is not the
+            // developer's own machine lets anyone who can reach this endpoint take over
+            // the account, so only `local` and `testing` may see it. Environments such as
+            // staging or qa are not production and would otherwise leak it.
+            'token' => app()->environment(['local', 'testing']) ? $token : null,
         ]);
     }
 
