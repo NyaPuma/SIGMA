@@ -6,6 +6,8 @@ use App\Actions\SubmitBudgetAction;
 use App\DTOs\BudgetSubmissionData;
 use App\Enums\BudgetStatusEnum;
 use App\Enums\TicketStatusEnum;
+use App\Models\Ticket;
+use App\Models\User;
 use App\Services\TicketStatusService;
 use InvalidArgumentException;
 use PHPUnit\Framework\Attributes\Test;
@@ -57,7 +59,13 @@ class SubmitBudgetActionTest extends FeatureTestCase
             new BudgetSubmissionData(estimatedBudget: 200.00, budgetDetails: $details)
         );
 
-        $this->assertEquals(json_encode($details), $result->budget_details);
+        // 50.00 round-trips through JSON as the int 50, so compare loosely.
+        $this->assertEquals($details, $result->budget_details);
+
+        // Ticket::$casts already encodes the array on save. Encoding it here as well would put a
+        // JSON string inside the JSON, and every reader would get text instead of the item list.
+        $raw = Ticket::find($result->id)->getRawOriginal('budget_details');
+        $this->assertEquals($details, json_decode((string) $raw, true));
     }
 
     #[Test]
@@ -128,5 +136,75 @@ class SubmitBudgetActionTest extends FeatureTestCase
         $this->assertTrue($result->relationLoaded('technician'));
         $this->assertTrue($result->relationLoaded('status'));
         $this->assertTrue($result->relationLoaded('user'));
+    }
+
+    #[Test]
+    public function it_refuses_to_submit_over_a_request_committed_after_the_copy_was_loaded(): void
+    {
+        $ticket = $this->createTicket();
+
+        // A colleague's request was committed after this copy was read; submitting from the
+        // stale copy would replace their amount and leave two requests claiming one ticket.
+        $stale = Ticket::findOrFail($ticket->getKey());
+        $ticket->update([
+            'budget_requested' => true,
+            'budget_status' => BudgetStatusEnum::Pending->value,
+            'budget_amount' => 250.00,
+            'budget_requested_at' => now(),
+        ]);
+
+        try {
+            $this->action->execute($stale, new BudgetSubmissionData(estimatedBudget: 400.00));
+            $this->fail('Expected the pending request to be detected.');
+        } catch (InvalidArgumentException $e) {
+            $this->assertEquals('A pending budget request already exists for this ticket.', $e->getMessage());
+        }
+
+        $this->assertEquals(250.00, $ticket->fresh()->budget_amount);
+    }
+
+    #[Test]
+    public function it_refuses_to_submit_for_a_ticket_closed_while_the_copy_was_in_memory(): void
+    {
+        $ticket = $this->createTicket();
+        $stale = Ticket::findOrFail($ticket->getKey());
+
+        $ticket->update([
+            'status_id' => app(TicketStatusService::class)->getByName(TicketStatusEnum::Closed),
+        ]);
+
+        try {
+            $this->action->execute($stale, new BudgetSubmissionData(estimatedBudget: 120.00));
+            $this->fail('Expected the closed ticket to be detected.');
+        } catch (InvalidArgumentException $e) {
+            $this->assertEquals('Cannot submit a budget for a ticket that is already closed.', $e->getMessage());
+        }
+
+        $this->assertNull($ticket->fresh()->budget_status);
+    }
+
+    #[Test]
+    public function it_clears_the_previous_decision_when_a_new_request_is_submitted(): void
+    {
+        $admin = User::factory()->create();
+        $ticket = $this->createTicketWithStatus(
+            TicketStatusEnum::InProgress->value,
+            [
+                'budget_requested' => true,
+                'budget_status' => BudgetStatusEnum::Approved->value,
+                'budget_amount' => 100.00,
+                'budget_requested_at' => now()->subDays(2),
+                'budget_approved_by' => $admin->id,
+                'budget_decided_at' => now()->subDay(),
+            ]
+        );
+
+        $result = $this->action->execute($ticket, new BudgetSubmissionData(estimatedBudget: 300.00));
+
+        $this->assertEquals(BudgetStatusEnum::Pending->value, $result->budget_status);
+        // The stored decision belonged to a request that no longer exists: keeping it would
+        // attribute this pending request to that admin and skew the budget-pause KPI.
+        $this->assertNull($result->budget_approved_by);
+        $this->assertNull($result->budget_decided_at);
     }
 }

@@ -2,6 +2,7 @@
 
 namespace App\Actions;
 
+use App\Domain\Ticket\Concerns\LocksTicketRow;
 use App\DTOs\BudgetDecisionData;
 use App\Enums\BudgetStatusEnum;
 use App\Enums\TicketStatusEnum;
@@ -14,6 +15,8 @@ use Symfony\Component\HttpKernel\Exception\HttpException;
 
 final readonly class ApproveBudgetAction
 {
+    use LocksTicketRow;
+
     public function __construct(
         private NotificationService $notificationService,
         private TicketStatusService $statusService,
@@ -21,16 +24,18 @@ final readonly class ApproveBudgetAction
 
     public function execute(Ticket $ticket, User $admin, BudgetDecisionData $data): Ticket
     {
-        if (! $ticket->budget_requested || $ticket->budget_status !== BudgetStatusEnum::Pending->value) {
-            throw new HttpException(422, 'No pending budget request found for this ticket.');
-        }
-
         $isApproved = $data->isApproved();
 
         $targetTicketStatus = $isApproved ? TicketStatusEnum::InProgress : TicketStatusEnum::Rejected;
         $statusId = $this->statusService->getByName($targetTicketStatus);
 
         $ticket = DB::transaction(function () use ($ticket, $admin, $data, $isApproved, $statusId) {
+            $this->lockTicketRow($ticket);
+
+            if (! $ticket->budget_requested || $ticket->budget_status !== BudgetStatusEnum::Pending->value) {
+                throw new HttpException(422, 'No pending budget request found for this ticket.');
+            }
+
             $ticket->budget_approved_by = $admin->id;
             $ticket->budget_decided_at = now();
             $ticket->status_id = $statusId;

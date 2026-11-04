@@ -164,4 +164,35 @@ class ApproveBudgetActionTest extends DatabaseTestCase
             $this->assertEquals(422, $e->getStatusCode());
         }
     }
+
+    #[Test]
+    public function it_refuses_a_decision_raced_with_another_admins_decision(): void
+    {
+        $admin = User::factory()->create(['profile_id' => UserProfile::where('name', UserRoleEnum::Admin->value)->first()->id]);
+        $otherAdmin = User::factory()->create(['profile_id' => UserProfile::where('name', UserRoleEnum::Admin->value)->first()->id]);
+        $statusId = TicketStatus::where('name', TicketStatusEnum::PendingBudget->value)->first()->id;
+        $ticket = Ticket::factory()->create([
+            'budget_requested' => true,
+            'budget_status' => BudgetStatusEnum::Pending->value,
+            'budget_amount' => 500.00,
+            'status_id' => $statusId,
+        ]);
+
+        // The second admin opened the ticket before the first one ruled and still sees a
+        // pending request; approving from that copy must not overwrite the committed rejection.
+        $stale = Ticket::findOrFail($ticket->getKey());
+        $this->action->execute($ticket, $admin, new BudgetDecisionData(decision: BudgetDecisionEnum::Reject, feedback: 'Demasiado alto'));
+
+        try {
+            $this->action->execute($stale, $otherAdmin, new BudgetDecisionData(decision: BudgetDecisionEnum::Approve));
+            $this->fail('Expected HttpException was not thrown');
+        } catch (HttpException $e) {
+            $this->assertEquals(422, $e->getStatusCode());
+        }
+
+        $fresh = $ticket->fresh();
+        $this->assertEquals(BudgetStatusEnum::Rejected->value, $fresh->budget_status);
+        $this->assertEquals($admin->id, $fresh->budget_approved_by);
+        $this->assertTrue($fresh->hasStatus(TicketStatusEnum::Rejected));
+    }
 }

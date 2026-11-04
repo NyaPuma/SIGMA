@@ -43,11 +43,12 @@ At any point, the system can also check if there are **higher-priority tickets**
 
 ## How the pieces fit together
 
-The Ticket domain is organized into four subdirectories, each with a specific responsibility:
+The Ticket domain is organized into five subdirectories, each with a specific responsibility:
 
 ```
 Ticket/
 ├── Actions/         "The Workers"     -- perform each step of the lifecycle
+├── Concerns/        "The Habits"      -- behaviour shared by more than one Worker
 ├── Queries/         "The Accountants" -- pull numbers and data for dashboards
 ├── Services/        "The Inspectors"  -- verify conditions before actions happen
 └── ValueObjects/    "The Precision Tools" -- encapsulate specific calculations
@@ -56,6 +57,7 @@ Ticket/
 | Folder | Analogy | What it does |
 |--------|---------|-------------|
 | `Actions/` | Workers on the factory line | Each Action is a single, focused job: start a ticket, close it, cancel it, reopen it, or check if there are more urgent jobs waiting. They **change** the ticket's state. |
+| `Concerns/` | The habits every worker shares | A trait mixed into several classes instead of duplicated code. `LocksTicketRow` re-reads the ticket under a write lock before a transition, so two people acting on the same ticket at the same time cannot overwrite each other. |
 | `Queries/` | Accountants pulling reports | Each Query fetches specific data for dashboards: monthly trends, KPIs, priority breakdowns, top entities, and calendar events. They **never modify** data -- they only read it. |
 | `Services/` | Quality inspectors | Services check conditions before other operations proceed. For example, "Is this ticket actually in the right status for what we're about to do?" They are **reusable checks** used by Actions and controllers. |
 | `ValueObjects/` | Precision measurement tools | Value Objects wrap a specific calculation into a self-contained, immutable package. For example, `BudgetPauseMinutes` calculates exactly how long a ticket was paused waiting for budget approval. |
@@ -87,7 +89,9 @@ Here's how these pieces work together when a technician closes a maintenance tic
 | `TicketPriorityQuery` | `AnalyticsDashboardService::buildPayload()` | `app/Services/AnalyticsDashboardService.php:62` |
 | `TopEntitiesQuery` | `AnalyticsDashboardService::buildPayload()` | `app/Services/AnalyticsDashboardService.php:64` |
 | `ScheduledEventsQuery` | `CalendarService::getScheduledEvents()` | `app/Services/CalendarService.php:83` |
-| `BudgetPauseMinutes` | No production caller found | Used in tests only |
+| `BudgetPauseMinutes` | `Ticket::budgetPauseMinutes()` accessor (`budget_pause_minutes` attribute) | `app/Models/Ticket.php:218` |
+| `LocksTicketRow` | `StartTicketAction`, `CloseTicketAction`, `ReopenTicketAction`, `CancelTicketAction` | `app/Domain/Ticket/Actions/*.php` |
+| `LocksTicketRow` | `SubmitBudgetAction`, `ApproveBudgetAction` | `app/Actions/SubmitBudgetAction.php`, `app/Actions/ApproveBudgetAction.php` |
 
 ## Notes for developers / AI
 

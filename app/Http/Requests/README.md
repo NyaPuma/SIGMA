@@ -436,7 +436,7 @@ The 38 request classes belong to these functional areas:
 
 **`attributes()`:** Maps nested field names to English labels.
 
-**WHICH controller uses it:** `TicketBudgetController::requestAuthorization()` at `app/Http/Controllers/TicketBudgetController.php:54`.
+**WHICH controller uses it:** `TicketBudgetController::requestAuthorization()` at `app/Http/Controllers/TicketBudgetController.php:49`.
 
 ---
 
@@ -460,7 +460,7 @@ The 38 request classes belong to these functional areas:
 
 **`attributes()`:** Maps flat + nested fields to English labels (`estimated budget`, `item type`, `quantity`, `hours`, `hourly rate`, ...).
 
-**WHICH controller uses it:** `TicketBudgetController::submitEstimate()` at `app/Http/Controllers/TicketBudgetController.php:27`.
+**WHICH controller uses it:** `TicketBudgetController::submitEstimate()` at `app/Http/Controllers/TicketBudgetController.php:31`.
 
 ---
 

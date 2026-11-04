@@ -2,6 +2,7 @@
 
 namespace App\Domain\Ticket\Actions;
 
+use App\Domain\Ticket\Concerns\LocksTicketRow;
 use App\Enums\TicketStatusEnum;
 use App\Models\Ticket;
 use App\Services\TicketStatusService;
@@ -9,6 +10,8 @@ use Illuminate\Support\Facades\DB;
 
 final readonly class CancelTicketAction
 {
+    use LocksTicketRow;
+
     public function __construct(
         private TicketStatusService $statusService,
     ) {}
@@ -20,11 +23,13 @@ final readonly class CancelTicketAction
     {
         $cancelledStatusId = $this->statusService->getByName(TicketStatusEnum::Cancelled);
 
-        if ($ticket->status_id === $cancelledStatusId) {
-            return true;
-        }
+        return DB::transaction(function () use ($ticket, $cancelledStatusId): bool {
+            $this->lockTicketRow($ticket);
 
-        return DB::transaction(function () use ($ticket, $cancelledStatusId) {
+            if ($ticket->status_id === $cancelledStatusId) {
+                return true;
+            }
+
             $ticket->status_id = $cancelledStatusId;
             $ticket->closed_at = now();
 

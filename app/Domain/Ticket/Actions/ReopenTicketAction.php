@@ -2,6 +2,7 @@
 
 namespace App\Domain\Ticket\Actions;
 
+use App\Domain\Ticket\Concerns\LocksTicketRow;
 use App\Enums\TicketStatusEnum;
 use App\Models\Ticket;
 use App\Services\TicketStatusService;
@@ -9,19 +10,26 @@ use Illuminate\Support\Facades\DB;
 
 final readonly class ReopenTicketAction
 {
+    use LocksTicketRow;
+
     public function __construct(
         private TicketStatusService $statusService,
     ) {}
 
     public function execute(Ticket $ticket): bool
     {
-        if (! $ticket->hasStatus(TicketStatusEnum::Closed) && ! $ticket->hasStatus(TicketStatusEnum::Cancelled)) {
-            return false;
-        }
-
         $openStatusId = $this->statusService->getByName(TicketStatusEnum::Open);
 
-        return DB::transaction(function () use ($ticket, $openStatusId) {
+        return DB::transaction(function () use ($ticket, $openStatusId): bool {
+            // Reopen is the one transition whose guard decides whether the request is valid
+            // at all, so the guard has to read the row as it stands now, not as it looked
+            // when the controller loaded it.
+            $this->lockTicketRow($ticket);
+
+            if (! $ticket->hasStatus(TicketStatusEnum::Closed) && ! $ticket->hasStatus(TicketStatusEnum::Cancelled)) {
+                return false;
+            }
+
             $ticket->status_id = $openStatusId;
             $ticket->reopened_at = now();
             $ticket->closed_at = null;

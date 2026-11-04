@@ -2,6 +2,7 @@
 
 namespace App\Domain\Ticket\Actions;
 
+use App\Domain\Ticket\Concerns\LocksTicketRow;
 use App\Enums\TicketStatusEnum;
 use App\Models\Ticket;
 use App\Models\User;
@@ -10,6 +11,8 @@ use Illuminate\Support\Facades\DB;
 
 final readonly class StartTicketAction
 {
+    use LocksTicketRow;
+
     public function __construct(
         private TicketStatusService $statusService,
     ) {}
@@ -18,11 +21,13 @@ final readonly class StartTicketAction
     {
         $inProgressStatusId = $this->statusService->getByName(TicketStatusEnum::InProgress);
 
-        if ($ticket->status_id === $inProgressStatusId) {
-            return true;
-        }
-
         return DB::transaction(function () use ($ticket, $inProgressStatusId, $user) {
+            $this->lockTicketRow($ticket);
+
+            if ($ticket->status_id === $inProgressStatusId) {
+                return true;
+            }
+
             $ticket->status_id = $inProgressStatusId;
             $ticket->assigned_to = $ticket->assigned_to ?? $user?->id;
 

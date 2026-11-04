@@ -95,8 +95,8 @@ Optional integer IDs (e.g., `room_id`, `equipment_id`) pass through `filter_var(
 Both use `parseAmount()` which handles comma-decimal strings (e.g., `"150,50"` → `150.50`).
 
 **Who creates it / When:**
-- `TicketBudgetController::submitEstimate()` at `app/Http/Controllers/TicketBudgetController.php:38` calls `fromSubmitEstimate()`.
-- `TicketBudgetController::requestAuthorization()` at `app/Http/Controllers/TicketBudgetController.php:65` calls `fromDetailedRequest()`.
+- `TicketBudgetController::submitEstimate()` at `app/Http/Controllers/TicketBudgetController.php:43` calls `fromSubmitEstimate()`.
+- `TicketBudgetController::requestAuthorization()` at `app/Http/Controllers/TicketBudgetController.php:60` calls `fromDetailedRequest()`.
 
 ---
 

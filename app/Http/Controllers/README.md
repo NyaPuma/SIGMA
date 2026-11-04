@@ -568,23 +568,24 @@ Below is every controller grouped by the area it powers, with a plain-English de
 
 | Method | URI | Route name | Middleware | File |
 |---|---|---|---|---|
-| POST | `/tickets/{ticket}/budget` | `tickets.budget` | `custom.auth`, no CSRF | `web.php:246` |
-| PUT | `/technician/tickets/{ticket}/request-budget` | `technician.tickets.request-budget` | `custom.auth` + `role:technician` + `rate.limit:20,1`, no CSRF | `web.php:268` |
+| POST | `/tickets/{ticket}/budget` | `tickets.budget` | `custom.auth`, no CSRF | `web.php:254` |
+| PUT | `/technician/tickets/{ticket}/request-budget` | `technician.tickets.request-budget` | `custom.auth` + `role:technician` + `rate.limit:20,1`, no CSRF | `web.php:276` |
 | PUT | `/api/technician/tickets/{ticket}/request-budget` | `api.technician.tickets.request-budget` | `custom.auth` + `role:technician` + `rate.limit:20,1` | `api.php:112` |
 
-**Dependencies:** `TicketStatusService`, `NotificationService`, `SubmitBudgetRequest`, `RequestBudgetRequest`, `BudgetSubmissionData`, `TicketResource`.
+**Dependencies:** `TicketStatusService`, `NotificationService`, `SubmitBudgetRequest`, `RequestBudgetRequest`, `BudgetSubmissionData`, `TicketResource`. Uses the `LocksTicketRow` concern (`app/Domain/Ticket/Concerns/LocksTicketRow.php`).
 
 - **Method:** `submitEstimate(SubmitBudgetRequest $request, Ticket $ticket): JsonResponse`
   - **What it does:** Submits a quick budget estimate for a ticket.
-  - **When it runs / how it works:** `authorize('submitBudget', $ticket)`; calls `ensureSubmitAllowed($ticket)` (rejects **422** if the ticket is Closed/Cancelled/Rejected or a budget request is already pending); builds `BudgetSubmissionData`, applies common changes via `applyBudgetChanges`; compares `estimatedBudget` against `config('services.custom.budget.threshold')` and routes to `handleAboveThreshold` or `handleBelowThreshold`.
+  - **When it runs / how it works:** `authorize('submitBudget', $ticket)`; calls `ensureSubmitAllowed($ticket)` (rejects **422** if the ticket is Closed/Cancelled/Rejected or a budget request is already pending); builds `BudgetSubmissionData` and hands everything to `processSubmission`.
 
 - **Method:** `requestAuthorization(RequestBudgetRequest $request, Ticket $ticket): JsonResponse`
   - **What it does:** Requests detailed budget authorization for a ticket (technician flow).
-  - **When it runs / how it works:** `authorize('requestBudget', $ticket)` (policy restricts to the ticket's assigned technician); same `ensureSubmitAllowed` guard, same apply logic and threshold routing as `submitEstimate`.
+  - **When it runs / how it works:** `authorize('requestBudget', $ticket)` (policy restricts to the ticket's assigned technician); same `ensureSubmitAllowed` guard, then the same `processSubmission`.
 
 - **Private helpers (referenced for clarity):**
+  - `processSubmission(Ticket, BudgetSubmissionData, User): JsonResponse` — opens `DB::transaction`, calls `lockTicketRow($ticket)` and re-checks `ensureSubmitAllowed` against the committed row, applies the changes and routes on the threshold. The route-bound model was read before authorization and validation ran, so another request may have claimed the ticket or ruled on the previous budget in the meantime; without the re-read the last writer wins and the guard can approve a request the database no longer allows.
   - `ensureSubmitAllowed(Ticket $ticket): ?JsonResponse` — returns a 422 response or null; rejects closed/cancelled/rejected tickets and existing pending requests.
-  - `applyBudgetChanges(Ticket, BudgetSubmissionData, User)` — sets optional `budget_details`, assigns the requesting user as technician if needed, sets `budget_requested = true` and `budget_amount`.
+  - `applyBudgetChanges(Ticket, BudgetSubmissionData, User)` — sets optional `budget_details` (as an array: the column is array-cast, so encoding it first would store JSON inside JSON), assigns the requesting user as technician if needed, sets `budget_requested = true`, `budget_amount`, and clears `budget_approved_by`/`budget_decided_at` from the replaced request.
   - `handleAboveThreshold(...)` — sets `budget_status = Pending`, `budget_requested_at = now()`, moves the ticket to `PendingBudget` status, sends `notifyBudgetSubmitted`, returns `{ message, ticket }`.
   - `handleBelowThreshold(...)` — clears `budget_status`, moves to `InProgress`, sends `notifyBudgetAutoApproved`, returns `{ message, ticket }`.
 

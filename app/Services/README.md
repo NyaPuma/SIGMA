@@ -54,7 +54,7 @@ Services are grouped by functional area. Where a method has no in-production cal
 - **Who calls it / when:** Very widely — indirectly via almost every ticket service/action, and directly by:
   - `app/Actions/ApproveBudgetAction.php:31`, `app/Actions/CreatePreventiveTicketAction.php`, `app/Actions/CreatePublicTicketAction.php`, `app/Actions/CreateTicketAction.php`, `app/Actions/ScheduleMaintenanceAction.php`
   - `app/Domain/Ticket/Actions/*` (StartTicketAction, CloseTicketAction, ReopenTicketAction, CancelTicketAction, CheckHigherPriorityAction)
-  - `app/Domain/Ticket/Services/TicketStatusChecker.php`, `app/Http/Controllers/TicketBudgetController.php:125,155`, `app/Http/Controllers/UiController.php`, `app/Console/Commands/SimulateTelemetry.php`
+  - `app/Domain/Ticket/Services/TicketStatusChecker.php`, `app/Http/Controllers/TicketBudgetController.php:145,175`, `app/Http/Controllers/UiController.php`, `app/Console/Commands/SimulateTelemetry.php`
   - `AIService.php:41-42`, `AnalyticsDashboardService.php:55-57,166`, `TechnicianAssignmentService.php:24,68`, `TicketSearchService.php:43`, `TicketWorkflowService.php:69`, and `app/Models/Ticket.php`.
 
 #### `flush(): void`
@@ -194,12 +194,12 @@ Services are grouped by functional area. Where a method has no in-production cal
 #### `notifyBudgetSubmitted(Ticket $ticket, string $message): void`
 - **What it does:** Notifies admins ("Pending Budget") and the ticket creator ("Budget Submitted"), linked back to the ticket.
 - **How it works / steps:** Calls `createForAdmins(...)` with type `BudgetRequest`, then (if the ticket has a `user_id`) `createForUser(...)` for the creator with type `BudgetSubmitted` — both linking `/ui/tickets/{id}` (`app/Services/BudgetNotificationService.php:19-37`).
-- **Who calls it / when:** Via `NotificationService::notifyBudgetSubmitted` from `app/Http/Controllers/TicketBudgetController.php:133`.
+- **Who calls it / when:** Via `NotificationService::notifyBudgetSubmitted` from `app/Http/Controllers/TicketBudgetController.php:153`.
 
 #### `notifyBudgetAutoApproved(Ticket $ticket, string $message): void`
 - **What it does:** Notifies the assigned technician and creator that a budget was auto-approved.
 - **How it works / steps:** If `assigned_to` set, notifies the technician; if `user_id` set, notifies the creator — both type `BudgetAutoApproved`, linking the ticket (`:42-63`).
-- **Who calls it / when:** Via `NotificationService::notifyBudgetAutoApproved` from `app/Http/Controllers/TicketBudgetController.php:163`.
+- **Who calls it / when:** Via `NotificationService::notifyBudgetAutoApproved` from `app/Http/Controllers/TicketBudgetController.php:183`.
 
 #### `notifyBudgetDecision(Ticket $ticket, string $decision, string $message): void`
 - **What it does:** Notifies the technician and creator that a budget was approved or rejected.
@@ -226,11 +226,11 @@ Services are grouped by functional area. Where a method has no in-production cal
 
 #### `notifyBudgetSubmitted(Ticket $ticket, string $message): void`
 - **What it does:** Forwards to `budgetService->notifyBudgetSubmitted`.
-- **Who calls it / when:** Via `app/Http/Controllers/TicketBudgetController.php:133`.
+- **Who calls it / when:** Via `app/Http/Controllers/TicketBudgetController.php:153`.
 
 #### `notifyBudgetAutoApproved(Ticket $ticket, string $message): void`
 - **What it does:** Forwards to `budgetService->notifyBudgetAutoApproved`.
-- **Who calls it / when:** Via `app/Http/Controllers/TicketBudgetController.php:163`.
+- **Who calls it / when:** Via `app/Http/Controllers/TicketBudgetController.php:183`.
 
 #### `notifyBudgetDecision(Ticket $ticket, string $decision, string $message): void`
 - **What it does:** Forwards to `budgetService->notifyBudgetDecision`.

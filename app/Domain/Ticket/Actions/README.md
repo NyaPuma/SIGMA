@@ -11,8 +11,10 @@ Think of Actions as **workers on a factory assembly line**. Each worker has exac
 Every Action follows the same pattern:
 - It is a small, focused class with a single `execute()` method.
 - It receives its dependencies (like the `TicketStatusService`) through its constructor.
-- It uses **guard clauses** at the top: if the ticket is already in the target state, it returns `true` immediately without changing anything (this is called being **idempotent** -- doing the same thing twice gives the same result as doing it once).
-- It wraps database changes in a **transaction** so that if anything goes wrong, the entire change is rolled back and nothing is left in a half-updated state.
+- It opens a **transaction** first, so that if anything goes wrong the entire change is rolled back and nothing is left in a half-updated state.
+- Inside that transaction it calls `lockTicketRow()` (from `App\Domain\Ticket\Concerns\LocksTicketRow`) to re-read the row under a write lock, then applies its **guard clauses** to the committed values: if the ticket is already in the target state, it returns `true` immediately without changing anything (this is called being **idempotent** -- doing the same thing twice gives the same result as doing it once).
+
+The order matters. A controller hands the Action a ticket it loaded earlier, and two people can act on the same ticket at the same time (an admin closing while a technician starts, or two technicians claiming one ticket). Checking the guard against that stale copy would approve a transition the database no longer supports, and the save would then drop whatever the other request committed.
 
 ## Invocation chain
 
@@ -56,22 +58,25 @@ TicketStartController::__invoke()
 **Dependencies (constructor):**
 - `TicketStatusService $statusService` -- resolves `TicketStatusEnum::Cancelled` to the database status ID
 
+**Traits:** `LocksTicketRow` (`app/Domain/Ticket/Concerns/LocksTicketRow.php`)
+
 **Public methods:**
 
 ### `execute(Ticket $ticket): bool`
 
 1. Resolves `$cancelledStatusId = $this->statusService->getByName(TicketStatusEnum::Cancelled)`.
-2. **Guard clause:** If `$ticket->status_id === $cancelledStatusId`, returns `true` immediately (idempotent -- already cancelled).
-3. Opens `DB::transaction`:
+2. Opens `DB::transaction`:
+   - Calls `lockTicketRow($ticket)` so the guard reads the committed row, not the copy the controller loaded.
+   - **Guard clause:** If `$ticket->status_id === $cancelledStatusId`, returns `true` immediately (idempotent -- already cancelled, and the `closed_at` another request wrote is kept).
    - Sets `$ticket->status_id = $cancelledStatusId`.
    - Sets `$ticket->closed_at = now()`.
    - Calls `$ticket->save()`.
-4. Returns the save result (`bool`).
+3. Returns the save result (`bool`).
 
 **Who calls it and when:**
 - `TicketWorkflowService::cancel()` at `app/Services/TicketWorkflowService.php:49`.
 - Ultimately triggered by `TicketLifecycleController::cancel()` at `app/Http/Controllers/Ticket/TicketLifecycleController.php:71` -- when a user cancels an Open ticket.
-- Tests: `tests/Feature/Domain/TicketLifecycleActionsTest.php:33`, `tests/Feature/Domain/TicketLifecycleActionsTest.php:47`.
+- Tests: `tests/Feature/Domain/TicketLifecycleActionsTest.php:31`, `tests/Feature/Domain/TicketLifecycleActionsTest.php:44`, `tests/Feature/Domain/TicketLifecycleActionsTest.php:189`.
 
 ---
 
@@ -118,24 +123,27 @@ Returns `array{total: int, assigned_to_user: int, has_higher: bool}`.
 **Dependencies (constructor):**
 - `TicketStatusService $statusService` -- resolves `TicketStatusEnum::Closed` to the database status ID
 
+**Traits:** `LocksTicketRow` (`app/Domain/Ticket/Concerns/LocksTicketRow.php`)
+
 **Public methods:**
 
 ### `execute(Ticket $ticket, ?float $cost = null, ?string $report = null, ?int $minutesSpent = null): bool`
 
 1. Resolves `$closedStatusId = $this->statusService->getByName(TicketStatusEnum::Closed)`.
-2. **Guard clause:** If `$ticket->status_id === $closedStatusId`, returns `true` immediately (idempotent -- already closed).
-3. Opens `DB::transaction`:
+2. Opens `DB::transaction`:
+   - Calls `lockTicketRow($ticket)`. `closed_at` is only kept when the **committed** row really has one -- the caller's copy may predate a concurrent reopen that just cleared it.
+   - **Guard clause:** If `$ticket->status_id === $closedStatusId`, returns `true` immediately (idempotent -- already closed).
    - Builds `$attributes` array with: `status_id`, `closed_at` (preserves existing value or `now()`).
    - Conditionally adds: `actual_cost` (if `$cost !== null`), `technical_report` (if `$report !== null`), `minutes_spent` (if `$minutesSpent !== null`).
    - Calls `$ticket->update($attributes)`.
-4. Returns the update result (`bool`).
+3. Returns the update result (`bool`).
 
 **Who calls it and when:**
 - `TicketWorkflowService::close()` at `app/Services/TicketWorkflowService.php:57` -- wrapped in an outer `DB::transaction`.
 - Triggered by:
   - `TicketCloseController::simpleClose()` at `app/Http/Controllers/Ticket/TicketCloseController.php:45` -- quick close of an in-progress ticket.
   - `TicketCloseController::closeFinal()` at `app/Http/Controllers/Ticket/TicketCloseController.php:96` -- final close with cost/report and priority verification.
-- Tests: `tests/Feature/Domain/TicketLifecycleActionsTest.php:59`, `:77`, `:88`.
+- Tests: `tests/Feature/Domain/TicketLifecycleActionsTest.php:57`, `:74`, `:86`, `:224`.
 
 ---
 
@@ -147,23 +155,26 @@ Returns `array{total: int, assigned_to_user: int, has_higher: bool}`.
 **Dependencies (constructor):**
 - `TicketStatusService $statusService` -- resolves `TicketStatusEnum::Open` to the database status ID
 
+**Traits:** `LocksTicketRow` (`app/Domain/Ticket/Concerns/LocksTicketRow.php`)
+
 **Public methods:**
 
 ### `execute(Ticket $ticket): bool`
 
-1. **Guard clause:** If the ticket is NOT Closed AND NOT Cancelled (checked via `$ticket->hasStatus()`), returns `false` -- you can't reopen a ticket that's already open or in progress.
-2. Resolves `$openStatusId = $this->statusService->getByName(TicketStatusEnum::Open)`.
-3. Opens `DB::transaction`:
+1. Resolves `$openStatusId = $this->statusService->getByName(TicketStatusEnum::Open)`.
+2. Opens `DB::transaction`:
+   - Calls `lockTicketRow($ticket)`. Reopen is the transition whose guard decides whether the request is valid at all, so it has to read the row as it stands now.
+   - **Guard clause:** If the ticket is NOT Closed AND NOT Cancelled (checked via `$ticket->hasStatus()`), returns `false` -- you can't reopen a ticket that is already open or in progress, including one another request just started.
    - Sets `$ticket->status_id = $openStatusId`.
    - Sets `$ticket->reopened_at = now()`.
    - Clears `$ticket->closed_at = null`.
    - Calls `$ticket->save()`.
-4. Returns the save result (`bool`).
+3. Returns the save result (`bool`).
 
 **Who calls it and when:**
 - `TicketWorkflowService::reopen()` at `app/Services/TicketWorkflowService.php:41`.
 - Ultimately triggered by `TicketLifecycleController::reopen()` at `app/Http/Controllers/Ticket/TicketLifecycleController.php:33` -- when a user reopens a Closed or Cancelled ticket.
-- Tests: `tests/Feature/Domain/TicketLifecycleActionsTest.php:100`, `:111`.
+- Tests: `tests/Feature/Domain/TicketLifecycleActionsTest.php:98`, `:109`, `:208`.
 
 ---
 
@@ -175,25 +186,43 @@ Returns `array{total: int, assigned_to_user: int, has_higher: bool}`.
 **Dependencies (constructor):**
 - `TicketStatusService $statusService` -- resolves `TicketStatusEnum::InProgress` to the database status ID
 
+**Traits:** `LocksTicketRow` (`app/Domain/Ticket/Concerns/LocksTicketRow.php`)
+
 **Public methods:**
 
 ### `execute(Ticket $ticket, ?User $user = null): bool`
 
 1. Resolves `$inProgressStatusId = $this->statusService->getByName(TicketStatusEnum::InProgress)`.
-2. **Guard clause:** If `$ticket->status_id === $inProgressStatusId`, returns `true` immediately (idempotent -- already in progress).
-3. Opens `DB::transaction`:
+2. Opens `DB::transaction`:
+   - Calls `lockTicketRow($ticket)`, so `$ticket->assigned_to` is the value another request last committed.
+   - **Guard clause:** If `$ticket->status_id === $inProgressStatusId`, returns `true` immediately (idempotent -- already in progress).
    - Sets `$ticket->status_id = $inProgressStatusId`.
    - Sets `$ticket->assigned_to = $ticket->assigned_to ?? $user?->id` -- only assigns if not already assigned (won't overwrite).
    - Sets `$ticket->in_progress_at = $ticket->in_progress_at ?? now()` -- preserves original start time if re-entered.
    - Calls `$ticket->save()`.
-4. Returns the save result (`bool`).
+3. Returns the save result (`bool`).
 
 **Who calls it and when:**
 - `TicketWorkflowService::startRepair()` at `app/Services/TicketWorkflowService.php:33`.
 - Triggered by:
   - `TicketStartController::__invoke()` at `app/Http/Controllers/Ticket/TicketStartController.php:70` -- when a technician starts working on an Open ticket.
   - `TicketAssignmentController::__invoke()` at `app/Http/Controllers/Ticket/TicketAssignmentController.php:56` -- after assigning a technician, starts the repair.
-- Tests: `tests/Feature/Domain/TicketLifecycleActionsTest.php:127`, `:143`, `:159`.
+- Tests: `tests/Feature/Domain/TicketLifecycleActionsTest.php:124`, `:140`, `:153`, `:170`, `:241`.
+
+---
+
+## Concurrency: `LocksTicketRow`
+
+**File:** `app/Domain/Ticket/Concerns/LocksTicketRow.php` (shared with `App\Actions\ApproveBudgetAction` and `App\Actions\SubmitBudgetAction`)
+
+`lockTicketRow(Ticket $ticket)` re-reads the row with `lockForUpdate()->firstOrFail()` inside the caller's transaction and copies the committed column values onto the model the controller passed in. Two consequences worth knowing:
+
+- **Lost updates disappear.** The guards above evaluate the current row, and a write never silently reverts a column another transaction changed.
+- **`status` and `technician` caches are dropped.** Both are belongs-to relations keyed on columns a transition moves, and the resources serialize the cached model, so leaving them would make the response describe the pre-transition status.
+
+`firstOrFail()` respects the `SoftDeletes` trait, so deleting the ticket while a transition is in flight raises `ModelNotFoundException` (a 404) and rolls the transaction back.
+
+`lockForUpdate()` is a no-op on SQLite (the dev and test driver compiles `SELECT ... FOR UPDATE` to nothing) and a real `FOR UPDATE` on MySQL and PostgreSQL. The tests prove the re-read by committing a change between loading the copy and calling the action: those cases fail without `lockTicketRow()` and pass with it.
 
 ---
 
@@ -201,7 +230,8 @@ Returns `array{total: int, assigned_to_user: int, has_higher: bool}`.
 
 - All actions are `final readonly` with a single `execute()` method.
 - Each action depends on `TicketStatusService::getByName()` to resolve enum values to database IDs.
-- Guard clauses at the top of methods handle idempotent cases (e.g., closing an already-closed ticket returns `true` without mutation).
+- The four lifecycle actions use the `LocksTicketRow` concern; guard clauses run **after** the locked re-read, inside the transaction, so they judge the committed row (see "Concurrency: `LocksTicketRow`" above).
+- `CheckHigherPriorityAction` only reads, so it takes no lock.
 - State transitions assume the status enum values exist in the database -- `RuntimeException` is thrown if they don't.
 - These actions are **not** called directly from controllers. They are called from `TicketWorkflowService` (`app/Services/TicketWorkflowService.php`), which is the intermediary that controllers use.
 - The `execute()` return type is `bool` for lifecycle actions (start, close, reopen, cancel) and `array` for `CheckHigherPriorityAction`.

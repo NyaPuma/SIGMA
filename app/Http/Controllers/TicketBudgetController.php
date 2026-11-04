@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Domain\Ticket\Concerns\LocksTicketRow;
 use App\DTOs\BudgetSubmissionData;
 use App\Enums\BudgetStatusEnum;
 use App\Enums\TicketStatusEnum;
@@ -13,9 +14,12 @@ use App\Models\User;
 use App\Services\NotificationService;
 use App\Services\TicketStatusService;
 use Illuminate\Http\JsonResponse;
+use Illuminate\Support\Facades\DB;
 
 final class TicketBudgetController extends Controller
 {
+    use LocksTicketRow;
+
     public function __construct(
         private readonly TicketStatusService $statusService,
         private readonly NotificationService $notificationService,
@@ -35,18 +39,8 @@ final class TicketBudgetController extends Controller
             return $guard;
         }
 
-        $data = BudgetSubmissionData::fromSubmitEstimate($request->validated());
-
-        $this->applyBudgetChanges($ticket, $data, $this->authenticatedUser($request));
-
-        $thresholdRaw = config('services.custom.budget.threshold', 0);
-        $threshold = is_numeric($thresholdRaw) ? (float) $thresholdRaw : 0.0;
-
-        if ($data->estimatedBudget > $threshold) {
-            return $this->handleAboveThreshold($ticket, $data->estimatedBudget, $threshold);
-        }
-
-        return $this->handleBelowThreshold($ticket, $data->estimatedBudget, $threshold);
+        // 3. Persist and answer
+        return $this->processSubmission($ticket, BudgetSubmissionData::fromSubmitEstimate($request->validated()), $this->authenticatedUser($request));
     }
 
     /**
@@ -63,18 +57,34 @@ final class TicketBudgetController extends Controller
             return $guard;
         }
 
-        $data = BudgetSubmissionData::fromDetailedRequest($request->validated());
+        return $this->processSubmission($ticket, BudgetSubmissionData::fromDetailedRequest($request->validated()), $this->authenticatedUser($request));
+    }
 
-        $this->applyBudgetChanges($ticket, $data, $this->authenticatedUser($request));
-
+    /**
+     * Writes the budget request under a row lock, then follows the approval threshold.
+     */
+    private function processSubmission(Ticket $ticket, BudgetSubmissionData $data, User $user): JsonResponse
+    {
         $thresholdRaw = config('services.custom.budget.threshold', 0);
         $threshold = is_numeric($thresholdRaw) ? (float) $thresholdRaw : 0.0;
 
-        if ($data->estimatedBudget > $threshold) {
-            return $this->handleAboveThreshold($ticket, $data->estimatedBudget, $threshold);
-        }
+        return DB::transaction(function () use ($ticket, $data, $user, $threshold): JsonResponse {
+            // The route model was read before authorization and validation ran. Another request
+            // may have claimed the ticket or ruled on the previous budget in the meantime, so the
+            // rules are checked again against the committed row and all writes land as one unit.
+            $this->lockTicketRow($ticket);
 
-        return $this->handleBelowThreshold($ticket, $data->estimatedBudget, $threshold);
+            $guard = $this->ensureSubmitAllowed($ticket);
+            if ($guard !== null) {
+                return $guard;
+            }
+
+            $this->applyBudgetChanges($ticket, $data, $user);
+
+            return $data->estimatedBudget > $threshold
+                ? $this->handleAboveThreshold($ticket, $data->estimatedBudget, $threshold)
+                : $this->handleBelowThreshold($ticket, $data->estimatedBudget, $threshold);
+        });
     }
 
     /**
@@ -116,6 +126,12 @@ final class TicketBudgetController extends Controller
 
         $ticket->budget_requested = true;
         $ticket->budget_amount = $data->estimatedBudget;
+
+        // The stored decision belongs to the request this one replaces. Leaving approver and
+        // decision time behind would attribute this new request to that admin and make the
+        // budget-pause KPI measure a decision taken before the request existed.
+        $ticket->budget_approved_by = null;
+        $ticket->budget_decided_at = null;
     }
 
     /**

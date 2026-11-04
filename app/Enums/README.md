@@ -121,7 +121,7 @@ Represents the operational status of a ticket, mapped to the legacy `ticket_stat
 **Where it's used (real usages — the most widely used enum in the codebase):**
 - `app/Models/Ticket.php:7` — model integration.
 - `app/Http/Resources/TicketResource.php:8` — resolves the `status_label`.
-- `app/Http/Controllers/TicketController.php:8`, `app/Http/Controllers/TicketBudgetController.php:7`.
+- `app/Http/Controllers/TicketController.php:8`, `app/Http/Controllers/TicketBudgetController.php:8`.
 - `app/Http/Controllers/Ticket/TicketStartController.php:6`, `TicketCloseController.php:6`, `TicketLifecycleController.php:6`, `TicketAssignmentController.php:6`.
 - `app/Services/TicketWorkflowService.php:12`, `TicketStatusService.php:7`, `TicketSearchService.php:8`, `TechnicianAssignmentService.php:8`, `AIService.php:7`.
 - `app/Observers/TicketObserver.php:7`, `app/Concerns/BroadcastsTicketStatus.php:5`.
@@ -188,7 +188,7 @@ Represents the lifecycle state of a ticket's repair budget approval.
 **Where it's used (real usages):**
 - `app/Actions/ApproveBudgetAction.php:6`, `app/Actions/SubmitBudgetAction.php:6` — sets `pending`/`approved`/`rejected` on tickets.
 - `app/Http/Controllers/AdminController.php:8` — reads `budget_status` after the action.
-- `app/Http/Controllers/TicketBudgetController.php:6` — budget endpoints.
+- `app/Http/Controllers/TicketBudgetController.php:7` — budget endpoints.
 - `app/Services/AnalyticsDashboardService.php:11`, `app/Services/AnalyticsExportService.php:7` — budget KPIs in dashboards/reports.
 - `app/Domain/Ticket/Queries/TicketKpiQuery.php:5` — KPI aggregation.
 

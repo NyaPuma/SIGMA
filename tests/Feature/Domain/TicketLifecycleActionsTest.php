@@ -7,6 +7,7 @@ use App\Domain\Ticket\Actions\CloseTicketAction;
 use App\Domain\Ticket\Actions\ReopenTicketAction;
 use App\Domain\Ticket\Actions\StartTicketAction;
 use App\Enums\TicketStatusEnum;
+use App\Models\Ticket;
 use App\Models\User;
 use App\Services\TicketStatusService;
 use PHPUnit\Framework\Attributes\Test;
@@ -163,5 +164,96 @@ class TicketLifecycleActionsTest extends DatabaseTestCase
         $fresh = $ticket->fresh();
         $this->assertEquals($assigned->id, $fresh->assigned_to);
         $this->assertNotNull($fresh->in_progress_at);
+    }
+
+    #[Test]
+    public function start_action_keeps_an_assignment_committed_after_the_copy_was_loaded(): void
+    {
+        $assigned = User::factory()->create();
+        $claimer = User::factory()->create();
+        $ticket = $this->createTicket();
+
+        // A second request loaded the ticket before the assignment landed and knows nothing
+        // about it; starting must not silently hand the ticket to whoever clicked last.
+        $stale = Ticket::findOrFail($ticket->getKey());
+        $ticket->update(['assigned_to' => $assigned->id]);
+
+        $this->assertTrue(app(StartTicketAction::class)->execute($stale, $claimer));
+
+        $fresh = $ticket->fresh();
+        $this->assertTrue($fresh->hasStatus(TicketStatusEnum::InProgress));
+        $this->assertEquals($assigned->id, $fresh->assigned_to);
+    }
+
+    #[Test]
+    public function cancel_action_keeps_the_close_date_written_by_another_request(): void
+    {
+        $ticket = $this->createTicket();
+        $stale = Ticket::findOrFail($ticket->getKey());
+
+        $closedAt = now()->subDays(2);
+        $cancelledId = $this->statusService->getByName(TicketStatusEnum::Cancelled);
+        Ticket::whereKey($ticket->getKey())->update(['status_id' => $cancelledId, 'closed_at' => $closedAt]);
+
+        $this->assertTrue(app(CancelTicketAction::class)->execute($stale));
+
+        // Re-cancelling an already cancelled ticket must not move its close date.
+        $this->assertEquals(
+            $closedAt->toDateTimeString(),
+            $ticket->fresh()->closed_at->toDateTimeString(),
+        );
+    }
+
+    #[Test]
+    public function reopen_action_refuses_when_another_request_already_restarted_the_ticket(): void
+    {
+        $ticket = $this->createTicketWithStatus(TicketStatusEnum::Closed->value, ['closed_at' => now()]);
+        $stale = Ticket::findOrFail($ticket->getKey());
+
+        $inProgressId = $this->statusService->getByName(TicketStatusEnum::InProgress);
+        Ticket::whereKey($ticket->getKey())->update(['status_id' => $inProgressId, 'closed_at' => null]);
+
+        $this->assertFalse(app(ReopenTicketAction::class)->execute($stale));
+
+        $fresh = $ticket->fresh();
+        $this->assertTrue($fresh->hasStatus(TicketStatusEnum::InProgress));
+        $this->assertNull($fresh->reopened_at);
+    }
+
+    #[Test]
+    public function close_action_leaves_the_callers_copy_describing_the_committed_row(): void
+    {
+        $ticket = $this->createTicket();
+        $stale = Ticket::findOrFail($ticket->getKey());
+
+        Ticket::whereKey($ticket->getKey())->update(['technical_report' => 'Relatório de outro pedido']);
+
+        $this->assertTrue(app(CloseTicketAction::class)->execute($stale, cost: 50));
+
+        // The controller broadcasts and serializes this same object afterwards, so it must
+        // not keep holding the pre-transition snapshot.
+        $this->assertSame('Relatório de outro pedido', $stale->technical_report);
+        $this->assertTrue($stale->hasStatus(TicketStatusEnum::Closed));
+        $this->assertEquals(50.0, (float) $stale->actual_cost);
+    }
+
+    #[Test]
+    public function transitions_refresh_the_relations_cached_on_the_callers_copy(): void
+    {
+        $ticket = $this->createTicket();
+        $late = User::factory()->create();
+
+        // Controllers read $ticket->status (for the broadcast) and often $ticket->technician
+        // before acting, which caches both relations on the very object they serialize
+        // afterwards. Eloquent does not invalidate them when the keys move.
+        $this->assertSame(TicketStatusEnum::Open->value, $ticket->status->name);
+        $this->assertNull($ticket->technician);
+
+        Ticket::whereKey($ticket->getKey())->update(['assigned_to' => $late->id]);
+
+        $this->assertTrue(app(StartTicketAction::class)->execute($ticket));
+
+        $this->assertSame(TicketStatusEnum::InProgress->value, $ticket->status->name);
+        $this->assertEquals($late->id, $ticket->technician?->id);
     }
 }

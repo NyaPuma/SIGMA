@@ -612,4 +612,78 @@ class BudgetFeatureTest extends TestCase
             ],
         ])->assertOk();
     }
+
+    public function test_new_budget_request_replaces_the_previous_decision(): void
+    {
+        $user = $this->createUserWithToken(UserRoleEnum::User->value);
+        $technician = $this->createUserWithToken(UserRoleEnum::Technician->value);
+        $admin = $this->createUserWithToken(UserRoleEnum::Admin->value);
+        $inProgressId = app(TicketStatusService::class)->getByName(TicketStatusEnum::InProgress);
+
+        $ticket = Ticket::create([
+            'user_id' => $user->id,
+            'title' => 'Resubmission after approval',
+            'description' => 'A new estimate must not inherit the old decision',
+            'priority' => TicketPriorityEnum::Medium->value,
+            'status_id' => $inProgressId,
+            'assigned_to' => $technician->id,
+            'in_progress_at' => now(),
+            'opened_at' => now()->subDays(3),
+            'budget_requested' => true,
+            'budget_status' => BudgetStatusEnum::Approved->value,
+            'budget_amount' => 500.00,
+            'budget_requested_at' => now()->subDays(2),
+            'budget_approved_by' => $admin->id,
+            'budget_decided_at' => now()->subDay(),
+        ]);
+
+        $this->withHeader('X-Auth-Token', $technician->api_token)
+            ->putJson("/api/technician/tickets/{$ticket->id}/request-budget", [
+                'budget_amount' => 800.00,
+                'budget_justification' => 'The part price went up since the approval',
+            ])
+            ->assertOk();
+
+        $ticket->refresh();
+
+        $this->assertEquals(BudgetStatusEnum::Pending->value, $ticket->budget_status);
+        // The approval belongs to a request this one replaced; keeping it would attribute the new
+        // pending request to that admin and skew the budget-pause measurement.
+        $this->assertNull($ticket->budget_approved_by);
+        $this->assertNull($ticket->budget_decided_at);
+    }
+
+    public function test_submit_estimate_stores_line_items_as_one_json_encoding(): void
+    {
+        $user = $this->createUserWithToken(UserRoleEnum::User->value);
+        $technician = $this->createUserWithToken(UserRoleEnum::Technician->value);
+        $inProgressId = app(TicketStatusService::class)->getByName(TicketStatusEnum::InProgress);
+
+        $ticket = Ticket::create([
+            'user_id' => $user->id,
+            'title' => 'Line item encoding',
+            'description' => 'The detail column must read back as a list',
+            'priority' => TicketPriorityEnum::Medium->value,
+            'status_id' => $inProgressId,
+            'assigned_to' => $technician->id,
+            'in_progress_at' => now(),
+            'opened_at' => now(),
+        ]);
+
+        $this->withHeader('X-Auth-Token', $technician->api_token)
+            ->postJson('/tickets/'.$ticket->id.'/budget', [
+                'estimated_budget' => 70.00,
+                'budget_details' => [
+                    ['description' => 'Peça A', 'type' => 'material', 'quantity' => 2, 'unit_price' => 10.00],
+                    ['description' => 'Mão de obra', 'type' => 'labor', 'hours' => 2, 'hourly_rate' => 25.00],
+                ],
+            ])->assertOk();
+
+        $stored = Ticket::find($ticket->id)->getRawOriginal('budget_details');
+
+        // One decode has to yield the item list. A double encoding (json_encode before assigning
+        // to an array-cast column) leaves readers with a string where they expect an array.
+        $this->assertIsArray(json_decode((string) $stored, true));
+        $this->assertCount(2, Ticket::find($ticket->id)->budget_details);
+    }
 }

@@ -15,27 +15,29 @@ Single-responsibility action classes that encapsulate business operations. Each 
 - `NotificationService $notificationService` -- sends in-app notifications about budget decisions
 - `TicketStatusService $statusService` -- resolves `TicketStatusEnum` values to database status IDs
 
+**Traits:** `LocksTicketRow` (`app/Domain/Ticket/Concerns/LocksTicketRow.php`)
+
 **Public methods:**
 
 ### `execute(Ticket $ticket, User $admin, BudgetDecisionData $data): Ticket`
 
-1. **Guard clause:** If `$ticket->budget_requested` is falsy OR `$ticket->budget_status !== BudgetStatusEnum::Pending->value`, throws `HttpException(422, 'No pending budget request found for this ticket.')`.
-2. Determines approval outcome: `$data->isApproved()`.
-3. Resolves the target status: `TicketStatusEnum::InProgress` if approved, `TicketStatusEnum::Rejected` if rejected.
-4. Calls `$this->statusService->getByName($targetTicketStatus)` to get the database status ID.
-5. Opens `DB::transaction`:
+1. Determines approval outcome: `$data->isApproved()`.
+2. Resolves the target status: `TicketStatusEnum::InProgress` if approved, `TicketStatusEnum::Rejected` if rejected.
+3. Calls `$this->statusService->getByName($targetTicketStatus)` to get the database status ID.
+4. Opens `DB::transaction`:
+   - Calls `lockTicketRow($ticket)` and only then applies **the guard**: if `$ticket->budget_requested` is falsy OR `$ticket->budget_status !== BudgetStatusEnum::Pending->value`, throws `HttpException(422, 'No pending budget request found for this ticket.')`. Two admins can both have the request open; without the re-read the second one rules on a request that was already decided and the notifications say "approved" about a rejected budget.
    - Sets `budget_approved_by` to the admin's ID.
    - Sets `budget_decided_at` to `now()`.
    - Sets `status_id` to the resolved status.
    - If approved: sets `budget_status` to `BudgetStatusEnum::Approved->value` and stamps `in_progress_at` with `now()` when it is still null — the ticket moves to In Progress, and `in_progress_at` is what the resolution-time KPIs read. `StartTicketAction` already stamps it on the normal start path; without this the approval path left it null and the ticket looked infinitely fast (or was excluded entirely).
    - If rejected: sets `budget_status` to `BudgetStatusEnum::Rejected->value`; if `$data->feedback` is non-empty, sets `budget_feedback`.
    - Calls `$ticket->save()`.
-6. Calls private `notifyDecision()` which formats a human-readable message and calls `$this->notificationService->notifyBudgetDecision()`.
-7. Returns `$ticket->load(['equipment', 'room', 'technician', 'status'])`.
+5. Calls private `notifyDecision()` which formats a human-readable message and calls `$this->notificationService->notifyBudgetDecision()`. Runs **after** the transaction commits, so a rolled-back decision never notifies.
+6. Returns `$ticket->load(['equipment', 'room', 'technician', 'status'])`.
 
 **Who calls it and when:**
 - `AdminController::approveBudget()` at `app/Http/Controllers/AdminController.php:33` -- when an admin approves or rejects a budget via the admin panel.
-- Tests: `tests/Database/Constraints/WorkflowPersistenceTest.php:135`, `tests/Unit/Actions/ApproveBudgetActionTest.php`, `tests/Unit/Models/TicketWorkflowTest.php:251`.
+- Tests: `tests/Database/Constraints/WorkflowPersistenceTest.php:135`, `tests/Unit/Actions/ApproveBudgetActionTest.php` (including the two-admins race), `tests/Unit/Models/TicketWorkflowTest.php:251`.
 
 ---
 
@@ -357,19 +359,21 @@ Single-responsibility action classes that encapsulate business operations. Each 
 
 **Dependencies (constructor):** None.
 
+**Traits:** `LocksTicketRow` (`app/Domain/Ticket/Concerns/LocksTicketRow.php`)
+
 **Public methods:**
 
 ### `execute(Ticket $ticket, BudgetSubmissionData $data): Ticket`
 
-1. **Guard clause:** If `$ticket->hasStatus(TicketStatusEnum::Closed)`, throws `InvalidArgumentException('Cannot submit a budget for a ticket that is already closed.')`.
-2. **Guard clause:** If `$ticket->budget_status === BudgetStatusEnum::Pending->value`, throws `InvalidArgumentException('A pending budget request already exists for this ticket.')`.
-3. **Guard clause:** If `$data->estimatedBudget <= 0`, throws `InvalidArgumentException('The budget amount must be greater than 0.')`.
-4. Opens `DB::transaction`:
-   - Updates ticket: `budget_requested` (`true`), `budget_status` (`BudgetStatusEnum::Pending->value`), `budget_amount`, `budget_details` (JSON-encoded or null), `budget_requested_at` (`now()`), `budget_feedback` (`null`).
-5. Returns `$ticket->load(['technician', 'status', 'user'])`.
+1. **Guard clause:** If `$data->estimatedBudget <= 0`, throws `InvalidArgumentException('The budget amount must be greater than 0.')`. This one judges the input, so it runs before the transaction.
+2. Opens `DB::transaction`:
+   - Calls `lockTicketRow($ticket)`, then re-checks the two state rules against the committed row: if `$ticket->hasStatus(TicketStatusEnum::Closed)`, throws `InvalidArgumentException('Cannot submit a budget for a ticket that is already closed.')`; if `$ticket->budget_status === BudgetStatusEnum::Pending->value`, throws `InvalidArgumentException('A pending budget request already exists for this ticket.')`.
+   - Updates ticket: `budget_requested` (`true`), `budget_status` (`BudgetStatusEnum::Pending->value`), `budget_amount`, `budget_details` (the array as given -- `Ticket::$casts` encodes it, encoding here too would store JSON inside JSON), `budget_requested_at` (`now()`), `budget_feedback`/`budget_approved_by`/`budget_decided_at` (`null`).
+3. Returns `$ticket->load(['technician', 'status', 'user'])`.
 
 **Who calls it and when:**
-- No production controller caller found. The `TicketBudgetController` handles budget submission directly with inline logic (`app/Http/Controllers/TicketBudgetController.php`). Used in tests only: `tests/Unit/Actions/SubmitBudgetActionTest.php`.
+- No production controller caller found. `TicketBudgetController` owns the live flow because it also has to apply the auto-approval threshold, move the ticket status and notify; it keeps its own `ensureSubmitAllowed()` rules and now shares the same `LocksTicketRow` re-read (`app/Http/Controllers/TicketBudgetController.php:66`). Used in tests only: `tests/Unit/Actions/SubmitBudgetActionTest.php`.
+- Keep the two in step when the budget rules change: the Action holds the plain-domain version, the controller the HTTP version.
 
 ---
 

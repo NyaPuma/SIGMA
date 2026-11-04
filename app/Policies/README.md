@@ -212,10 +212,10 @@ All role checks rely on the `User` model methods (defined in `app/Models/User.ph
 | `close` | `close(User $user, Ticket $ticket): bool` | `$user->isTechnician()` — **technician only** | `TicketCloseController.php:33,69` |
 | `reopen` | `reopen(User $user, Ticket $ticket): bool` | `$user->isTechnician() \|\| $user->isAdmin()` | `TicketLifecycleController.php:28` |
 | `schedule` | `schedule(User $user, Ticket $ticket): bool` | `canAccessTicket()` (admin/tech/creator) — anyone with ticket access may schedule | `TicketScheduleController.php:26` |
-| `submitBudget` | `submitBudget(User $user, Ticket $ticket): bool` | `$user->isTechnician() \|\| $user->isAdmin()` | `TicketBudgetController.php:30` |
+| `submitBudget` | `submitBudget(User $user, Ticket $ticket): bool` | `$user->isTechnician() \|\| $user->isAdmin()` | `TicketBudgetController.php:34` |
 | `approveBudget` | `approveBudget(User $user, Ticket $ticket): bool` | `$user->isAdmin()` — **admin only** | `AdminController.php:28` |
 | `startRepair` | `startRepair(User $user, Ticket $ticket): bool` | `$user->isTechnician()` — **technician only** | — |
-| `requestBudget` | `requestBudget(User $user, Ticket $ticket): bool` | `$user->isTechnician() && (int) $ticket->assigned_to === (int) $user->id` — only the **assigned** technician may request an authorization/budget | `TicketBudgetController.php:57` |
+| `requestBudget` | `requestBudget(User $user, Ticket $ticket): bool` | `$user->isTechnician() && (int) $ticket->assigned_to === (int) $user->id` — only the **assigned** technician may request an authorization/budget | `TicketBudgetController.php:52` |
 | `assign` | `assign(User $user, Ticket $ticket): bool` | `$user->isAdmin()` — **admin only** (admin assigns technicians) | `TicketAssignmentController.php:30` |
 | `viewAnalytics` | `viewAnalytics(User $user): bool` | `$user->isAdmin()` — **admin only** | `AnalyticsController.php:36` |
 | `exportAnalytics` | `exportAnalytics(User $user): bool` | `$user->isAdmin()` — **admin only** | `AnalyticsController.php:58,85,112` |
