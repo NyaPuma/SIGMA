@@ -6,6 +6,7 @@ namespace App\Jobs;
 
 use App\Models\Notification;
 use App\Services\AnalyticsService;
+use App\Support\ExportArtifact;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
@@ -37,22 +38,20 @@ final class ExportCsvJob implements ShouldQueue
 
     public function handle(AnalyticsService $analyticsService): void
     {
-        $filename = 'tickets_report_'.now()->format('Ymd_His').'.csv';
+        $disk = Storage::disk(ExportArtifact::DISK);
+        $relative = ExportArtifact::path($this->userId, 'tickets_report', 'csv');
 
-        // Ensure the destination directory exists on the configured disk
-        Storage::disk('public')->makeDirectory('exports');
+        $disk->makeDirectory('exports/'.$this->userId);
 
-        $path = Storage::disk('public')->path('exports/'.$filename);
-
-        $analyticsService->exportCsvToFile($path);
+        $analyticsService->exportCsvToFile($disk->path($relative));
 
         Notification::create([
             'user_id' => $this->userId,
             'title' => __('exports.csv_completed'),
-            'message' => __('exports.file_ready', ['file' => $filename]),
+            'message' => __('exports.file_ready', ['file' => ExportArtifact::filename($relative)]),
             'type' => 'system',
             'is_read' => false,
-            'link' => '/storage/exports/'.$filename,
+            'link' => ExportArtifact::link($relative),
         ]);
     }
 

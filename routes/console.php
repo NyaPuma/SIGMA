@@ -58,7 +58,22 @@ Schedule::command('backup:run --clean')
 */
 Schedule::command('audit:partition --months=12')
     ->monthly()
+    ->withoutOverlapping()
     ->appendOutputTo(storage_path('logs/audit_partitions.log'));
+
+/*
+|--------------------------------------------------------------------------
+| Export Artifact Retention
+|--------------------------------------------------------------------------
+| Report jobs write one artifact per run under exports/{user} on the private
+| disk. They are regenerated on demand, so `exports:prune` drops anything
+| older than filesystems.exports.retention_days and keeps the volume bounded.
+*/
+Schedule::command('exports:prune')
+    ->daily()
+    ->at('03:00')
+    ->withoutOverlapping()
+    ->appendOutputTo(storage_path('logs/exports_prune.log'));
 
 /*
 |--------------------------------------------------------------------------

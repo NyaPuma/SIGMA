@@ -71,7 +71,7 @@ This folder contains a single export class (`TicketsExport`) used by the backgro
 - Row 1 (header): bold white font, dark-blue fill (`FF1E3A5F`), center-aligned.
 
 **WHO triggers download / WHEN:**
-- **Background job:** `App\Jobs\ExportExcelJob` (at `app/Jobs/ExportExcelJob.php:47`) instantiates `new TicketsExport` and calls `Excel::store(..., 'exports/'.$filename, 'public', Excel::XLSX)` — generating and storing the file asynchronously, then creating a success/failure notification for the requesting user.
+- **Background job:** `App\Jobs\ExportExcelJob` instantiates `new TicketsExport` and calls `Excel::store(..., $relative, ExportArtifact::DISK, Excel::XLSX)` — `$relative` comes from `App\Support\ExportArtifact::path($userId, 'tickets_report', 'xlsx')`, so the workbook lands on the private disk under `exports/{userId}/` with an unguessable name — generating and storing the file asynchronously, then creating a success/failure notification for the requesting user. Downloading it goes through the authorized `exports.download` route, never `/storage/...`.
 - **Controller dispatch:** `AnalyticsController::exportExcel()` at `app/Http/Controllers/AnalyticsController.php:117` dispatches `ExportExcelJob::dispatch($user->id)` (queueable) — triggered when an admin selects "Export Excel" on the analytics/export screen.
 
 **Dependency notes:**

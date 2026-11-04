@@ -158,6 +158,11 @@ They support the same login and role protection, but the "visitor" proves who th
 | PATCH | `/notifications/{id}` | `notifications.mark-read` | No CSRF |
 | POST | `/notifications/test-email` | `notifications.test-email` | No CSRF, rate 5/min |
 
+**Protected — generated export artifacts (`custom.auth`):**
+| Method | URI | Name | Notes |
+|---|---|---|---|
+| GET | `/exports/{userId}/{filename}` | `exports.download` | `{userId}` must be the caller; `{filename}` constrained to `[A-Za-z0-9_-]+\.(csv\|xlsx\|pdf)`. Streams from the private disk, `403` for another user's report |
+
 **Protected — web interface (UI):**
 | Method | URI | Name | Notes |
 |---|---|---|---|

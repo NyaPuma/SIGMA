@@ -6,6 +6,7 @@ namespace App\Jobs;
 
 use App\Exports\TicketsExport;
 use App\Models\Notification;
+use App\Support\ExportArtifact;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
@@ -38,25 +39,24 @@ final class ExportExcelJob implements ShouldQueue
 
     public function handle(): void
     {
-        $filename = 'tickets_report_'.now()->format('Ymd_His').'.xlsx';
+        $relative = ExportArtifact::path($this->userId, 'tickets_report', 'xlsx');
 
-        // Ensure the destination directory exists on the configured disk
-        Storage::disk('public')->makeDirectory('exports');
+        Storage::disk(ExportArtifact::DISK)->makeDirectory('exports/'.$this->userId);
 
         Excel::store(
             new TicketsExport,
-            'exports/'.$filename,
-            'public',
+            $relative,
+            ExportArtifact::DISK,
             \Maatwebsite\Excel\Excel::XLSX,
         );
 
         Notification::create([
             'user_id' => $this->userId,
             'title' => __('exports.excel_completed'),
-            'message' => __('exports.file_ready', ['file' => $filename]),
+            'message' => __('exports.file_ready', ['file' => ExportArtifact::filename($relative)]),
             'type' => 'system',
             'is_read' => false,
-            'link' => '/storage/exports/'.$filename,
+            'link' => ExportArtifact::link($relative),
         ]);
     }
 

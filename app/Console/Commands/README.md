@@ -1,6 +1,6 @@
 # `app/Console/Commands`
 
-Artisan console commands for database maintenance, data repair, feature-flag overrides, currency updates, and telemetry simulation.
+Artisan console commands for database maintenance, data repair, feature-flag overrides, currency updates, export-artifact retention, and telemetry simulation.
 
 > **New to programming?** See [NON_TECHNICAL_PROJECT_GUIDE.md](../../../NON_TECHNICAL_PROJECT_GUIDE.md) -- this folder is explained as "The Night Shift Crew" -- automated tasks that run on schedule without human help.
 
@@ -12,6 +12,7 @@ Artisan console commands for database maintenance, data repair, feature-flag ove
 | `FeatureFlagCommand.php` | ✗ (manual only) | `feature {action} {name}` | Enable/disable/clear a runtime feature-flag cache override |
 | `FixTicketEncoding.php` | ✗ (manual/data-repair) | `tickets:fix-encoding` | Byte-precise repair of Mojibake (double-encoded latin1/utf8mb4) ticket text |
 | `PartitionAudits.php` | ✔ | `audit:partition` | Creates/drops RANGE partitions on the `audits` table |
+| `PruneExports.php` | ✔ | `exports:prune` | Removes generated report artifacts older than the retention window |
 | `SimulateTelemetry.php` | ✔ | `telemetry:simulate` | Simulates equipment telemetry and auto-creates preventive tickets on anomalies |
 | `UpdateCurrencyRates.php` | ✔ | `currency:update-rates` | Fetches ECB-backed exchange rates into the `currency_rates` table |
 
@@ -21,11 +22,12 @@ All commands extend Laravel's `Illuminate\Console\Command` (or final subclasses 
 
 ## Schedule reference — `routes/console.php`
 
-| Schedule | Command & options | Cadence | Notes |
-|---|---|---|---|
+| Command & options | Cadence | Notes |
+|---|---|---|
 | `telemetry:simulate --equipments=5 --probability=25` | hourly | `->withoutOverlapping()->runInBackground()->appendOutputTo(storage_path('logs/telemetry.log'))` |
 | `backup:run --clean` (alias of `db:backup`) | daily at `02:00` | `->withoutOverlapping()`; `onFailure` logs `backup.scheduled_failure` metric and `Sentry\captureMessage('Scheduled backup failed')`; appends to `storage/logs/backup.log` |
-| `audit:partition --months=12` | monthly | appends to `storage/logs/audit_partitions.log` |
+| `exports:prune` | daily at `03:00` | `->withoutOverlapping()`; drops report artifacts older than `filesystems.exports.retention_days`; appends to `storage/logs/exports_prune.log` |
+| `audit:partition --months=12` | monthly | `->withoutOverlapping()`; appends to `storage/logs/audit_partitions.log` |
 | `currency:update-rates` | twice daily | `->withoutOverlapping()`; appends to `storage/logs/currency_rates.log` |
 
 The scheduler itself requires the host cron entry, documented in `routes/console.php`:
@@ -156,6 +158,32 @@ For the three valid actions it prints a completion message and returns `SUCCESS`
 
 ### WHEN it runs
 - **Scheduled monthly** as `audit:partition --months=12` (see schedule table) — keeps 12 months of data, creates ~3 months ahead, prunes older partitions. Also runnable manually with custom `--months` / `--months-ahead`.
+
+---
+
+## `PruneExports.php`
+
+**File:** `app/Console/Commands/PruneExports.php`
+
+- **Signature (real):**
+  ```
+  exports:prune
+    {--days= : Retention window in days (defaults to filesystems.exports.retention_days)}
+    {--dry-run : List the files that would be removed without deleting anything}
+  ```
+- **Description:** "Removes generated export artifacts older than the retention window"
+
+### Why it exists
+`ExportCsvJob`, `ExportPdfJob`, `ExportExcelJob`, `ExportEquipmentQrPdfJob` and `ExportStockCostsPdfJob` each write one file per run under `exports/{userId}` on the private disk (see `App\Support\ExportArtifact`). Nothing ever removed them, so the volume grew without a bound even though a report is regenerated on demand.
+
+### What `handle()` does
+1. Resolves the window: `--days` when numeric, otherwise `filesystems.exports.retention_days` (default `7`, env `EXPORTS_RETENTION_DAYS`). A value below `1` aborts with `FAILURE` — a typo would otherwise delete every pending report.
+2. Lists `allFiles('exports')` (recursive: the artifacts sit one level down, inside the per-user directories) and deletes those whose `lastModified()` predates `now()->subDays($days)`.
+3. A per-file delete failure is reported and counted but does not stop the sweep; the exit code becomes `FAILURE` if any happened.
+4. `--dry-run` prints `[DRY-RUN] Would remove <path>` and deletes nothing.
+5. After a real run, per-user directories left empty are removed.
+
+**Scheduled:** daily at `03:00` with `->withoutOverlapping()`, output appended to `storage/logs/exports_prune.log`.
 
 ---
 

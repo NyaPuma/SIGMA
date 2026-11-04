@@ -18,7 +18,7 @@ class ExportReportPdfJobsTest extends FeatureTestCase
     protected function setUp(): void
     {
         parent::setUp();
-        Storage::fake('public');
+        Storage::fake('local');
     }
 
     #[Test]
@@ -34,7 +34,7 @@ class ExportReportPdfJobsTest extends FeatureTestCase
             'type' => 'system',
         ]);
 
-        $files = Storage::disk('public')->files('exports');
+        $files = Storage::disk('local')->files('exports/'.$admin->id);
         $this->assertNotEmpty($files);
         $this->assertStringEndsWith('.pdf', $files[0]);
     }
@@ -66,7 +66,7 @@ class ExportReportPdfJobsTest extends FeatureTestCase
             'type' => 'system',
         ]);
 
-        $files = Storage::disk('public')->files('exports');
+        $files = Storage::disk('local')->files('exports/'.$admin->id);
         $this->assertNotEmpty($files);
         $this->assertStringEndsWith('.pdf', $files[0]);
     }

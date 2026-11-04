@@ -1458,6 +1458,7 @@ See the [Parts & Stock Management](#4-parts--stock-management) section above.
 | `AuthController` | Login (with rate limiting) + logout | `login`, `logout` |
 | `CalendarController` | Calendar view + schedule/reschedule maintenance | `index`, `events`, `scheduleMaintenance`, `reschedule` |
 | `Controller` | Abstract base (authorization + authenticatedUser helper) | — |
+| `ExportDownloadController` | Streams a generated report (CSV/XLSX/PDF) from the private disk to its owner only | `__invoke` |
 | `LocaleController` | Language preference switching and persistence | `switch` |
 | `MaintenancePlanController` | Preventive maintenance plan CRUD | `index`, `show`, `store`, `update`, `destroy` |
 | `NotificationController` | User notifications (list, mark read, test email) | `index`, `markAsRead`, `sendTestEmail` |

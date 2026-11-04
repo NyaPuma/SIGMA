@@ -66,6 +66,23 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+    | Generated Export Artifacts
+    |--------------------------------------------------------------------------
+    |
+    | Report jobs (CSV, XLSX, PDF) write one file per run under
+    | `exports/{user}` on the private disk. The artifacts are regenerated on
+    | demand and hold whole-report data, so they only have to stay available
+    | long enough to be downloaded; `exports:prune` deletes anything older
+    | than this many days and is scheduled daily.
+    |
+    */
+
+    'exports' => [
+        'retention_days' => (int) env('EXPORTS_RETENTION_DAYS', 7),
+    ],
+
+    /*
+    |--------------------------------------------------------------------------
     | Symbolic Links
     |--------------------------------------------------------------------------
     |

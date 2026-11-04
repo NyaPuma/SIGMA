@@ -7,6 +7,7 @@ use App\Jobs\ExportExcelJob;
 use App\Jobs\ExportPdfJob;
 use App\Jobs\SendTestEmailJob;
 use App\Mail\TestMail;
+use App\Models\Notification;
 use App\Services\AnalyticsService;
 use App\Services\TicketStatusService;
 use Illuminate\Support\Facades\Mail;
@@ -29,7 +30,7 @@ class ExportJobsTest extends FeatureTestCase
     #[Test]
     public function export_csv_job_creates_a_notification_for_the_user(): void
     {
-        Storage::fake('public');
+        Storage::fake('local');
         $user = $this->createAdmin();
         $this->createTicket(['title' => 'Relatório CSV']);
 
@@ -41,13 +42,13 @@ class ExportJobsTest extends FeatureTestCase
             'type' => 'system',
         ]);
 
-        $this->assertNotEmpty(Storage::disk('public')->files('exports'));
+        $this->assertNotEmpty(Storage::disk('local')->files('exports/'.$user->id));
     }
 
     #[Test]
     public function export_pdf_job_creates_a_notification_for_the_user(): void
     {
-        Storage::fake('public');
+        Storage::fake('local');
         $user = $this->createAdmin();
         $this->createTicket(['title' => 'Relatório PDF']);
 
@@ -59,13 +60,13 @@ class ExportJobsTest extends FeatureTestCase
             'type' => 'system',
         ]);
 
-        $this->assertNotEmpty(Storage::disk('public')->files('exports'));
+        $this->assertNotEmpty(Storage::disk('local')->files('exports/'.$user->id));
     }
 
     #[Test]
     public function export_excel_job_creates_a_notification_for_the_user(): void
     {
-        Storage::fake('public');
+        Storage::fake('local');
         $user = $this->createAdmin();
         $this->createTicket(['title' => 'Relatório Excel']);
 
@@ -77,9 +78,26 @@ class ExportJobsTest extends FeatureTestCase
             'type' => 'system',
         ]);
 
-        $files = Storage::disk('public')->files('exports');
+        $files = Storage::disk('local')->files('exports/'.$user->id);
         $this->assertNotEmpty($files);
         $this->assertStringEndsWith('.xlsx', $files[0]);
+    }
+
+    #[Test]
+    public function export_links_point_to_the_authorized_route_and_not_the_public_disk(): void
+    {
+        Storage::fake('local');
+        Storage::fake('public');
+        $user = $this->createAdmin();
+        $this->createTicket(['title' => 'Relatório CSV']);
+
+        (new ExportCsvJob($user->id))->handle(app(AnalyticsService::class));
+
+        $link = Notification::where('user_id', $user->id)->latest('id')->value('link');
+
+        $this->assertStringStartsWith('/exports/'.$user->id.'/', $link);
+        $this->assertStringNotContainsString('/storage/', $link);
+        $this->assertFalse(Storage::disk('public')->exists('exports'));
     }
 
     #[Test]

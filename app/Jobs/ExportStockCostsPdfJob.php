@@ -6,6 +6,7 @@ namespace App\Jobs;
 
 use App\Models\Notification;
 use App\Services\StockDashboardService;
+use App\Support\ExportArtifact;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -47,11 +48,12 @@ final class ExportStockCostsPdfJob implements ShouldQueue
 
         $total = $items->sum('total_value');
 
-        $filename = 'cost-parts-per-equipment_'.now()->format('Ymd_His').'.pdf';
+        $disk = Storage::disk(ExportArtifact::DISK);
+        $relative = ExportArtifact::path($this->userId, 'cost-parts-per-equipment', 'pdf');
 
-        Storage::disk('public')->makeDirectory('exports');
+        $disk->makeDirectory('exports/'.$this->userId);
 
-        $path = Storage::disk('public')->path('exports/'.$filename);
+        $path = $disk->path($relative);
 
         $pdf = Pdf::loadView('reports.stock-costs-by-equipment', [
             'items' => $items,
@@ -65,10 +67,10 @@ final class ExportStockCostsPdfJob implements ShouldQueue
         Notification::create([
             'user_id' => $this->userId,
             'title' => __('exports.pdf_completed'),
-            'message' => __('exports.file_ready', ['file' => $filename]),
+            'message' => __('exports.file_ready', ['file' => ExportArtifact::filename($relative)]),
             'type' => 'system',
             'is_read' => false,
-            'link' => '/storage/exports/'.$filename,
+            'link' => ExportArtifact::link($relative),
         ]);
     }
 
