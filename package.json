@@ -20,7 +20,7 @@
         "@fullcalendar/interaction": "^6.1.22",
         "@fullcalendar/timegrid": "^6.1.22",
         "alpinejs": "^3.17.4",
-        "chart.js": "^4.5.1",
+        "chart.js": "^4.6.1",
         "laravel-echo": "^2.6.3",
         "pusher-js": "^8.6.0"
     }
