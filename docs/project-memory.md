@@ -1,10 +1,10 @@
 # Memória Local do Projeto SGM
 
 ## Visão geral
-SGM = Integrated Maintenance Management System. Laravel 13, PHP 8.3, para digitalizar o ciclo completo de manutenção/avarias. Três papéis: Operador, Técnico, Administrador.
+SGM = Integrated Maintenance Management System. Laravel 13, PHP 8.5, para digitalizar o ciclo completo de manutenção/avarias. Três papéis: Operador, Técnico, Administrador.
 
 ## Stack
-- PHP 8.3+, Laravel 13
+- PHP 8.5+, Laravel 13
 - BD: SQLite (dev/testes), PostgreSQL/MySQL (prod)
 - Frontend: Blade + Tailwind + Alpine.js + Vite
 - Auth: sessão + API token (Sanctum-like), RBAC via UserProfile

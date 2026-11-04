@@ -4,7 +4,7 @@ Documento consolidado das técnicas de performance aplicadas (ou recomendadas) a
 Sistema Integrado de Gestão de Manutenção (Laravel). Complementa o `AGENTS.md` e o
 `ARCHITECTURE.md` focando-se em ganhos de runtime, caching, filas e observabilidade.
 
-O projeto corre em **Laravel 13 / PHP 8.3 / MySQL / FrankenPHP / Redis**, com deploy
+O projeto corre em **Laravel 13 / PHP 8.5 / MySQL / FrankenPHP / Redis**, com deploy
 por **Docker Compose** (`compose.yaml`).
 
 ---

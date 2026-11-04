@@ -19,7 +19,7 @@ RUN npm run build
 # Stage 2 - Composer
 ###############################################
 
-FROM dunglas/frankenphp:1.9.0-php8.3 AS vendor
+FROM dunglas/frankenphp:1.13.4-php8.5 AS vendor
 
 RUN install-php-extensions \
         bcmath \
@@ -57,7 +57,7 @@ RUN composer dump-autoload \
 # Stage 3 - Production (FrankenPHP)
 ###############################################
 
-FROM dunglas/frankenphp:1.9.0-php8.3
+FROM dunglas/frankenphp:1.13.4-php8.5
 
 RUN install-php-extensions \
         bcmath \

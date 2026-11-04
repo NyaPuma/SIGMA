@@ -14,18 +14,8 @@ updates:
     labels:
       - "dependencies"
       - "composer"
-    ignore:
-      # endroid/qr-code 6.x declara php ^8.4 (6.2.0 já pede ^8.5) e a plataforma
-      # do projeto é php ^8.3, por isso `composer install --locked` falha sempre.
-      - dependency-name: "endroid/qr-code"
-        update-types:
-          - version-update:semver-major
-      # phpunit 13 (e php-code-coverage 14, sebastian/* 5-9) exigem php >=8.4.1;
-      # o piso da plataforma é 8.3. A restrição por versão mantém as propostas
-      # da série 12.x (php >=8.3) em aberto para quando houver migração real.
-      - dependency-name: "phpunit/phpunit"
-        versions:
-          - ">= 13"
+    # Sem `ignore:` de majors: a plataforma é php ^8.5, pelo que endroid/qr-code 6.x
+    # e phpunit 13 (php >=8.4.1) são instaláveis e podem ser propostos normalmente.
 
   # npm (Vite)
   - package-ecosystem: "npm"

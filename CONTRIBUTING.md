@@ -28,7 +28,7 @@ This project is committed to providing a welcoming and inspiring community. We r
 
 ### Prerequisites
 
-- **PHP 8.3+** with common extensions (PDO, OpenSSL, JSON, etc.)
+- **PHP 8.5+** with common extensions (PDO, OpenSSL, JSON, etc.)
 - **Composer 2.0+** for dependency management
 - **Node.js 18+** with npm for frontend assets
 - **MySQL 8.0+** or **SQLite** for the database

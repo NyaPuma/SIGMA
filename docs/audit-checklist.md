@@ -1,7 +1,7 @@
 # Checklist de Auditoria SGM
 
 ## Fase 1 — Ambiente
-- [x] PHP 8.3 instalado
+- [x] PHP 8.5 instalado
 - [x] Composer instalado
 - [x] Dependências instaladas (vendor/)
 - [x] .env criado e APP_KEY gerada

@@ -4,7 +4,7 @@
 
 ![Status](https://img.shields.io/badge/status-production--ready-brightgreen)
 ![Tests](https://img.shields.io/badge/tests-1554%20total-brightgreen)
-![PHP Version](https://img.shields.io/badge/PHP-8.3%2B-blue)
+![PHP Version](https://img.shields.io/badge/PHP-8.5%2B-blue)
 ![Laravel Version](https://img.shields.io/badge/Laravel-13-red)
 
 An enterprise-grade web platform built with **Laravel 13** for digitalization, centralization, and optimization of the complete maintenance and fault management lifecycle within an organization's **Maintenance Department**.
@@ -116,7 +116,7 @@ And just like in a real restaurant, if something goes wrong at any step — wron
 ### Backend
 | Technology | Purpose |
 |---|---|
-| **PHP 8.3+** | Runtime language |
+| **PHP 8.5+** | Runtime language |
 | **Laravel 13** | Web framework |
 | **MySQL / SQLite** | Database (SQLite for dev, MySQL for prod) |
 | **Redis** | Caching, sessions, and queue driver |
@@ -148,7 +148,7 @@ And just like in a real restaurant, if something goes wrong at any step — wron
 ## 📦 Installation & Setup
 
 ### Prerequisites
-- **PHP 8.3+** with common extensions (PDO, OpenSSL, JSON)
+- **PHP 8.5+** with common extensions (PDO, OpenSSL, JSON)
 - **Composer 2.0+**
 - **Node.js 18+** and npm
 - **MySQL 8.0+** or SQLite (for development)

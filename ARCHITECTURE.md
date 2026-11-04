@@ -797,7 +797,7 @@ php artisan test --coverage               # Coverage report
 │ Laravel Octane  │
 │ Worker Mode     │
 ├─────────────────┤
-│ PHP 8.3 + ext   │
+│ PHP 8.5 + ext   │
 │ OPcache enabled │
 ├─────────────────┤
 │ MySQL Database  │

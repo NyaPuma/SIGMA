@@ -11,7 +11,7 @@ Department. Three roles: Operator (standard user), Technician, Administrator
 
 | Layer | Technology |
 |-------|-----------|
-| Runtime | PHP 8.3+ |
+| Runtime | PHP 8.5+ |
 | Framework | Laravel 13 |
 | Database | SQLite (dev/tests), PostgreSQL/MySQL (prod) |
 | Auth | Laravel Sanctum + session, RBAC via UserProfile |
@@ -87,7 +87,7 @@ vendor/bin/pint --test
 
 ## Conventions
 
-- PHP 8.3+ strict types, readonly actions, constructor promotion.
+- PHP 8.5+ strict types, readonly actions, constructor promotion.
 - Named exports not applicable (PHP). Classes for controllers/services.
 - Zod not used (PHP); Form Requests + DTOs for validation.
 - Eloquent models with `$fillable`, `$casts()`, scopes.
