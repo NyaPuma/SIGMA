@@ -578,16 +578,16 @@
         },
         {
             "name": "darkaonline/l5-swagger",
-            "version": "11.1.0",
+            "version": "11.2.2",
             "source": {
                 "type": "git",
                 "url": "https://github.com/DarkaOnLine/L5-Swagger.git",
-                "reference": "110b59478c9417c13794cef62a82b019433d642a"
+                "reference": "33c62078515cab530a1e5b3d24c02bcf951742d0"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/DarkaOnLine/L5-Swagger/zipball/110b59478c9417c13794cef62a82b019433d642a",
-                "reference": "110b59478c9417c13794cef62a82b019433d642a",
+                "url": "https://api.github.com/repos/DarkaOnLine/L5-Swagger/zipball/33c62078515cab530a1e5b3d24c02bcf951742d0",
+                "reference": "33c62078515cab530a1e5b3d24c02bcf951742d0",
                 "shasum": ""
             },
             "require": {
@@ -596,7 +596,7 @@
                 "php": "^8.2",
                 "swagger-api/swagger-ui": ">=5.18.3",
                 "symfony/yaml": "^5.0 || ^6.0 || ^7.0 || ^8.0",
-                "zircote/swagger-php": "^6.0"
+                "zircote/swagger-php": "^6.12 || ^7.0"
             },
             "require-dev": {
                 "mockery/mockery": "1.*",
@@ -646,7 +646,7 @@
             ],
             "support": {
                 "issues": "https://github.com/DarkaOnLine/L5-Swagger/issues",
-                "source": "https://github.com/DarkaOnLine/L5-Swagger/tree/11.1.0"
+                "source": "https://github.com/DarkaOnLine/L5-Swagger/tree/11.2.2"
             },
             "funding": [
                 {
@@ -654,7 +654,7 @@
                     "type": "github"
                 }
             ],
-            "time": "2026-06-12T10:04:41+00:00"
+            "time": "2026-10-29T11:53:07+00:00"
         },
         {
             "name": "dasprid/enum",
@@ -2120,16 +2120,16 @@
         },
         {
             "name": "laravel/framework",
-            "version": "v12.70.2",
+            "version": "v12.71.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/laravel/framework.git",
-                "reference": "4dc928b47c05a2a96ba51c39d2bd7749b5ea332e"
+                "reference": "64dc24f5d965add4d402b4b8b64f59b561112af5"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/laravel/framework/zipball/4dc928b47c05a2a96ba51c39d2bd7749b5ea332e",
-                "reference": "4dc928b47c05a2a96ba51c39d2bd7749b5ea332e",
+                "url": "https://api.github.com/repos/laravel/framework/zipball/64dc24f5d965add4d402b4b8b64f59b561112af5",
+                "reference": "64dc24f5d965add4d402b4b8b64f59b561112af5",
                 "shasum": ""
             },
             "require": {
@@ -2338,7 +2338,7 @@
                 "issues": "https://github.com/laravel/framework/issues",
                 "source": "https://github.com/laravel/framework"
             },
-            "time": "2026-10-27T14:07:51+00:00"
+            "time": "2026-11-03T15:08:25+00:00"
         },
         {
             "name": "laravel/octane",
@@ -4286,16 +4286,16 @@
         },
         {
             "name": "nikic/php-parser",
-            "version": "v5.8.0",
+            "version": "v5.9.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/nikic/PHP-Parser.git",
-                "reference": "044a6a392ff8ad0d61f14370a5fbbd0a0107152f"
+                "reference": "9e33da9553fe7786f0962b35f4e4ecf01be89def"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/nikic/PHP-Parser/zipball/044a6a392ff8ad0d61f14370a5fbbd0a0107152f",
-                "reference": "044a6a392ff8ad0d61f14370a5fbbd0a0107152f",
+                "url": "https://api.github.com/repos/nikic/PHP-Parser/zipball/9e33da9553fe7786f0962b35f4e4ecf01be89def",
+                "reference": "9e33da9553fe7786f0962b35f4e4ecf01be89def",
                 "shasum": ""
             },
             "require": {
@@ -4337,9 +4337,9 @@
             ],
             "support": {
                 "issues": "https://github.com/nikic/PHP-Parser/issues",
-                "source": "https://github.com/nikic/PHP-Parser/tree/v5.8.0"
+                "source": "https://github.com/nikic/PHP-Parser/tree/v5.9.0"
             },
-            "time": "2026-07-04T14:30:18+00:00"
+            "time": "2026-09-13T18:51:52+00:00"
         },
         {
             "name": "nunomaduro/termwind",
@@ -4927,8 +4927,7 @@
                 "issues": "https://github.com/PHPOffice/PhpSpreadsheet/issues",
                 "source": "https://github.com/PHPOffice/PhpSpreadsheet/tree/1.30.7"
             },
-            "time": "2026-09-17T03:56:23+00:00",
-            "published-time": "2026-09-17T04:07:00+00:00"
+            "time": "2026-09-17T03:56:23+00:00"
         },
         {
             "name": "phpoption/phpoption",
@@ -5007,16 +5006,16 @@
         },
         {
             "name": "phpstan/phpdoc-parser",
-            "version": "2.3.5",
+            "version": "2.4.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/phpstan/phpdoc-parser.git",
-                "reference": "148cefffaf0233e4c08cc13db8a195a56dd6dfe9"
+                "reference": "af8e840551031d254cfdb3a18a62c3470a309c10"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/phpstan/phpdoc-parser/zipball/148cefffaf0233e4c08cc13db8a195a56dd6dfe9",
-                "reference": "148cefffaf0233e4c08cc13db8a195a56dd6dfe9",
+                "url": "https://api.github.com/repos/phpstan/phpdoc-parser/zipball/af8e840551031d254cfdb3a18a62c3470a309c10",
+                "reference": "af8e840551031d254cfdb3a18a62c3470a309c10",
                 "shasum": ""
             },
             "require": {
@@ -5048,9 +5047,9 @@
             "description": "PHPDoc parser with support for nullable, intersection and generic types",
             "support": {
                 "issues": "https://github.com/phpstan/phpdoc-parser/issues",
-                "source": "https://github.com/phpstan/phpdoc-parser/tree/2.3.5"
+                "source": "https://github.com/phpstan/phpdoc-parser/tree/2.4.1"
             },
-            "time": "2026-08-31T16:05:28+00:00"
+            "time": "2026-10-30T19:36:28+00:00"
         },
         {
             "name": "psr/clock",
@@ -5608,16 +5607,16 @@
         },
         {
             "name": "radebatz/type-info-extras",
-            "version": "1.0.7",
+            "version": "1.0.11",
             "source": {
                 "type": "git",
                 "url": "https://github.com/DerManoMann/type-info-extras.git",
-                "reference": "95a524a74a61648b44e355cb33d38db4b17ef5ce"
+                "reference": "1436aa4c9aec0af093a27c2287900a3008535f32"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/DerManoMann/type-info-extras/zipball/95a524a74a61648b44e355cb33d38db4b17ef5ce",
-                "reference": "95a524a74a61648b44e355cb33d38db4b17ef5ce",
+                "url": "https://api.github.com/repos/DerManoMann/type-info-extras/zipball/1436aa4c9aec0af093a27c2287900a3008535f32",
+                "reference": "1436aa4c9aec0af093a27c2287900a3008535f32",
                 "shasum": ""
             },
             "require": {
@@ -5664,9 +5663,9 @@
             ],
             "support": {
                 "issues": "https://github.com/DerManoMann/type-info-extras/issues",
-                "source": "https://github.com/DerManoMann/type-info-extras/tree/1.0.7"
+                "source": "https://github.com/DerManoMann/type-info-extras/tree/1.0.11"
             },
-            "time": "2026-03-06T22:40:29+00:00"
+            "time": "2026-10-26T22:24:45+00:00"
         },
         {
             "name": "ralouphie/getallheaders",
@@ -6136,16 +6135,16 @@
         },
         {
             "name": "swagger-api/swagger-ui",
-            "version": "v5.32.14",
+            "version": "v5.34.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/swagger-api/swagger-ui.git",
-                "reference": "6e8ce248db64190e4113676aba996943c56f2491"
+                "reference": "d3296954a6b813898d298815ac3e68daa1cf7408"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/swagger-api/swagger-ui/zipball/6e8ce248db64190e4113676aba996943c56f2491",
-                "reference": "6e8ce248db64190e4113676aba996943c56f2491",
+                "url": "https://api.github.com/repos/swagger-api/swagger-ui/zipball/d3296954a6b813898d298815ac3e68daa1cf7408",
+                "reference": "d3296954a6b813898d298815ac3e68daa1cf7408",
                 "shasum": ""
             },
             "type": "library",
@@ -6191,9 +6190,9 @@
             ],
             "support": {
                 "issues": "https://github.com/swagger-api/swagger-ui/issues",
-                "source": "https://github.com/swagger-api/swagger-ui/tree/v5.32.14"
+                "source": "https://github.com/swagger-api/swagger-ui/tree/v5.34.1"
             },
-            "time": "2026-08-18T12:12:25+00:00"
+            "time": "2026-10-30T13:31:19+00:00"
         },
         {
             "name": "symfony/clock",
@@ -6442,7 +6441,7 @@
         },
         {
             "name": "symfony/deprecation-contracts",
-            "version": "v3.7.1",
+            "version": "v3.8.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/deprecation-contracts.git",
@@ -6489,7 +6488,7 @@
             "description": "A generic function and convention to trigger deprecation notices",
             "homepage": "https://symfony.com",
             "support": {
-                "source": "https://github.com/symfony/deprecation-contracts/tree/v3.7.1"
+                "source": "https://github.com/symfony/deprecation-contracts/tree/v3.8.0"
             },
             "funding": [
                 {
@@ -6680,7 +6679,7 @@
         },
         {
             "name": "symfony/event-dispatcher-contracts",
-            "version": "v3.7.1",
+            "version": "v3.8.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/event-dispatcher-contracts.git",
@@ -6736,7 +6735,7 @@
                 "standards"
             ],
             "support": {
-                "source": "https://github.com/symfony/event-dispatcher-contracts/tree/v3.7.1"
+                "source": "https://github.com/symfony/event-dispatcher-contracts/tree/v3.8.0"
             },
             "funding": [
                 {
@@ -8493,7 +8492,7 @@
         },
         {
             "name": "symfony/service-contracts",
-            "version": "v3.7.3",
+            "version": "v3.8.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/service-contracts.git",
@@ -8556,7 +8555,7 @@
                 "standards"
             ],
             "support": {
-                "source": "https://github.com/symfony/service-contracts/tree/v3.7.3"
+                "source": "https://github.com/symfony/service-contracts/tree/v3.8.0"
             },
             "funding": [
                 {
@@ -8771,7 +8770,7 @@
         },
         {
             "name": "symfony/translation-contracts",
-            "version": "v3.7.1",
+            "version": "v3.8.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/translation-contracts.git",
@@ -8829,7 +8828,7 @@
                 "standards"
             ],
             "support": {
-                "source": "https://github.com/symfony/translation-contracts/tree/v3.7.1"
+                "source": "https://github.com/symfony/translation-contracts/tree/v3.8.0"
             },
             "funding": [
                 {
@@ -8853,16 +8852,16 @@
         },
         {
             "name": "symfony/type-info",
-            "version": "v7.4.17",
+            "version": "v7.4.22",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/type-info.git",
-                "reference": "62d0ad6995630a4f7ea8fd270aadb3e2545c8e31"
+                "reference": "f69ab198af73e1aac485c0ff5aa066d20c14adf0"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/type-info/zipball/62d0ad6995630a4f7ea8fd270aadb3e2545c8e31",
-                "reference": "62d0ad6995630a4f7ea8fd270aadb3e2545c8e31",
+                "url": "https://api.github.com/repos/symfony/type-info/zipball/f69ab198af73e1aac485c0ff5aa066d20c14adf0",
+                "reference": "f69ab198af73e1aac485c0ff5aa066d20c14adf0",
                 "shasum": ""
             },
             "require": {
@@ -8912,7 +8911,7 @@
                 "type"
             ],
             "support": {
-                "source": "https://github.com/symfony/type-info/tree/v7.4.17"
+                "source": "https://github.com/symfony/type-info/tree/v7.4.22"
             },
             "funding": [
                 {
@@ -8932,7 +8931,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2026-08-21T15:52:48+00:00"
+            "time": "2026-10-24T08:22:23+00:00"
         },
         {
             "name": "symfony/uid",
@@ -9101,16 +9100,16 @@
         },
         {
             "name": "symfony/yaml",
-            "version": "v7.4.18",
+            "version": "v7.4.22",
             "source": {
                 "type": "git",
                 "url": "https://github.com/symfony/yaml.git",
-                "reference": "4cef939e55b8a21c5780418de0d98ab00d0736e1"
+                "reference": "1ed6afa13d48c579c51cbf32e38f50686313497b"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/symfony/yaml/zipball/4cef939e55b8a21c5780418de0d98ab00d0736e1",
-                "reference": "4cef939e55b8a21c5780418de0d98ab00d0736e1",
+                "url": "https://api.github.com/repos/symfony/yaml/zipball/1ed6afa13d48c579c51cbf32e38f50686313497b",
+                "reference": "1ed6afa13d48c579c51cbf32e38f50686313497b",
                 "shasum": ""
             },
             "require": {
@@ -9153,7 +9152,7 @@
             "description": "Loads and dumps YAML files",
             "homepage": "https://symfony.com",
             "support": {
-                "source": "https://github.com/symfony/yaml/tree/v7.4.18"
+                "source": "https://github.com/symfony/yaml/tree/v7.4.22"
             },
             "funding": [
                 {
@@ -9173,7 +9172,7 @@
                     "type": "tidelift"
                 }
             ],
-            "time": "2026-08-30T00:47:26+00:00"
+            "time": "2026-10-18T14:39:27+00:00"
         },
         {
             "name": "thecodingmachine/safe",
@@ -9533,38 +9532,40 @@
         },
         {
             "name": "zircote/swagger-php",
-            "version": "6.7.1",
+            "version": "7.1.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/zircote/swagger-php.git",
-                "reference": "fc4c4288623406cd1b4679409cd6aefdbd774827"
+                "reference": "34ed0b26454ce32105773671fc42861f5ca50faa"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/zircote/swagger-php/zipball/fc4c4288623406cd1b4679409cd6aefdbd774827",
-                "reference": "fc4c4288623406cd1b4679409cd6aefdbd774827",
+                "url": "https://api.github.com/repos/zircote/swagger-php/zipball/34ed0b26454ce32105773671fc42861f5ca50faa",
+                "reference": "34ed0b26454ce32105773671fc42861f5ca50faa",
                 "shasum": ""
             },
             "require": {
-                "nikic/php-parser": "^4.19 || ^5.0",
+                "nikic/php-parser": "^5.0",
                 "php": ">=8.2",
                 "phpstan/phpdoc-parser": "^2.0",
                 "psr/log": "^1.1 || ^2.0 || ^3.0",
-                "radebatz/type-info-extras": "^1.0.2",
-                "symfony/console": "^7.4 || ^8.0",
+                "radebatz/type-info-extras": "^1.0.11",
+                "symfony/console": "^5.4 || ^6.4 || ^7.0 || ^8.0",
                 "symfony/deprecation-contracts": "^2 || ^3",
-                "symfony/finder": "^5.0 || ^6.0 || ^7.0 || ^8.0",
-                "symfony/yaml": "^5.4 || ^6.0 || ^7.0 || ^8.0"
+                "symfony/finder": "^5.4 || ^6.4 || ^7.0 || ^8.0",
+                "symfony/yaml": "^5.4 || ^6.4 || ^7.0 || ^8.0"
             },
             "conflict": {
-                "symfony/process": ">=6, <6.4.14"
+                "symfony/console": "<5.4.35",
+                "symfony/process": ">=6, <6.4.14",
+                "symfony/string": "<5.4.41"
             },
             "require-dev": {
                 "doctrine/annotations": "^2.0",
-                "friendsofphp/php-cs-fixer": "^3.62",
-                "phpstan/phpstan": "^2.2",
+                "friendsofphp/php-cs-fixer": "3.95.27",
+                "phpstan/phpstan": "2.3.1",
                 "phpunit/phpunit": "^11.5 || >=12.5.22",
-                "rector/rector": "^2.3"
+                "rector/rector": "2.7.0"
             },
             "bin": [
                 "bin/openapi"
@@ -9572,12 +9573,13 @@
             "type": "library",
             "extra": {
                 "branch-alias": {
-                    "dev-master": "6.x-dev"
+                    "dev-master": "7.x-dev"
                 }
             },
             "autoload": {
                 "psr-4": {
-                    "OpenApi\\": "src"
+                    "OpenApi\\": "src",
+                    "OpenApi\\Rector\\": "rector/src"
                 }
             },
             "notification-url": "https://packagist.org/downloads/",
@@ -9610,7 +9612,7 @@
             ],
             "support": {
                 "issues": "https://github.com/zircote/swagger-php/issues",
-                "source": "https://github.com/zircote/swagger-php/tree/6.7.1"
+                "source": "https://github.com/zircote/swagger-php/tree/7.1.0"
             },
             "funding": [
                 {
@@ -9618,7 +9620,7 @@
                     "type": "github"
                 }
             ],
-            "time": "2026-08-30T07:08:23+00:00"
+            "time": "2026-11-02T21:45:35+00:00"
         }
     ],
     "packages-dev": [
@@ -12188,5 +12190,5 @@
         "php": "^8.2"
     },
     "platform-dev": {},
-    "plugin-api-version": "2.11.0"
+    "plugin-api-version": "2.9.0"
 }
