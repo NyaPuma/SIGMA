@@ -51,7 +51,7 @@ This is a final-year project by **Andre Moreira** at **CESAE Digital**, complete
 
 | Component | Technology | Plain English |
 |-----------|-----------|---------------|
-| Server | PHP 8.2+ with Laravel 12 | The main engine that processes requests |
+| Server | PHP 8.3+ with Laravel 13 | The main engine that processes requests |
 | Database | MySQL (production) / SQLite (development) | The filing cabinet where all data is stored |
 | Caching | Redis (optional) | A fast-access memory for frequently needed data |
 | Frontend | Blade templates + Tailwind CSS + Bootstrap + Alpine.js | The visual interface users see |
@@ -67,7 +67,7 @@ This is a final-year project by **Andre Moreira** at **CESAE Digital**, complete
 
 ### Prerequisites (What You Need First)
 
-1. **PHP 8.2 or newer** -- the programming language the server uses
+1. **PHP 8.3 or newer** -- the programming language the server uses
 2. **Composer** -- PHP's package manager (like an app store for code libraries)
 3. **Node.js and npm** -- for building the frontend (the visual parts)
 4. **MySQL 8+ or SQLite** -- the database (where all data lives)
@@ -179,7 +179,7 @@ This is the shopping list for PHP libraries. It tells the computer which pre-bui
 
 **🔄 Step-by-Step Breakdown:**
 1. **Project Identity:** Declares the project name (`sgm/app`), description, and license (MIT)
-2. **PHP Version Requirement:** Requires PHP 8.2 or newer
+2. **PHP Version Requirement:** Requires PHP 8.3 or newer
 3. **Required Libraries (47 packages):** Includes Laravel framework, database tools, authentication, Excel export, PDF generation, email sending, API documentation, AI integration (OpenAI), and more
 4. **Development Libraries (12 packages):** Testing tools, code quality checkers, static analysis
 5. **Auto-Discovery:** Tells Laravel which library features to load automatically
@@ -228,7 +228,7 @@ This is the command-line remote control for the system. It lets developers run t
 This is a recipe for building a self-contained "box" (Docker container) that has everything the system needs to run -- like a pre-built kitchen that can be shipped anywhere and work immediately.
 
 **🔄 Step-by-Step Breakdown:**
-1. **Base Image:** Starts with a PHP 8.2 image with all necessary extensions
+1. **Base Image:** Starts with a PHP 8.3 image with all necessary extensions
 2. **System Dependencies:** Installs libraries for ZIP, GD (image processing), and other needs
 3. **PHP Configuration:** Enables required PHP extensions and adjusts memory/timeout settings
 4. **Application Code:** Copies the project files into the container
