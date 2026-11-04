@@ -2,6 +2,7 @@
 
 namespace App\Console\Commands;
 
+use App\ValueObjects\SqlFragment;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
@@ -95,7 +96,7 @@ class FixTicketEncoding extends Command
         $candidates = DB::table('tickets')
             ->select('id', $column)
             ->whereRaw(
-                "`{$column}` LIKE BINARY CONCAT('%', CONVERT(0xC383 USING utf8mb4), '%') OR `{$column}` LIKE BINARY CONCAT('%', CONVERT(0xC282 USING utf8mb4), '%')"
+                new SqlFragment("`{$column}` LIKE BINARY CONCAT('%', CONVERT(0xC383 USING utf8mb4), '%') OR `{$column}` LIKE BINARY CONCAT('%', CONVERT(0xC282 USING utf8mb4), '%')")
             )
             ->get();
 

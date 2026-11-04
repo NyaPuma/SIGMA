@@ -3,6 +3,7 @@
 namespace App\Domain\Ticket\Queries;
 
 use App\Models\Ticket;
+use App\ValueObjects\SqlFragment;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
@@ -49,17 +50,20 @@ final readonly class MonthlyTicketsQuery
         $monthExpr = $this->monthExpression('opened_at');
 
         return Ticket::query()
-            ->selectRaw("
-                {$monthExpr} as month,
-                SUM(CASE WHEN status_id = ? THEN 1 ELSE 0 END) as open_count,
-                SUM(CASE WHEN status_id = ? THEN 1 ELSE 0 END) as in_progress_count,
-                SUM(CASE WHEN status_id = ? THEN 1 ELSE 0 END) as closed_count,
-                SUM(CASE WHEN status_id = ? AND closed_at IS NOT NULL AND actual_cost IS NOT NULL THEN actual_cost ELSE 0 END) as total_cost
-            ", [$this->openStatusId, $this->inProgressStatusId, $this->closedStatusId, $this->closedStatusId])
+            ->select([
+                new SqlFragment("
+                    {$monthExpr} as month,
+                    SUM(CASE WHEN status_id = ? THEN 1 ELSE 0 END) as open_count,
+                    SUM(CASE WHEN status_id = ? THEN 1 ELSE 0 END) as in_progress_count,
+                    SUM(CASE WHEN status_id = ? THEN 1 ELSE 0 END) as closed_count,
+                    SUM(CASE WHEN status_id = ? AND closed_at IS NOT NULL AND actual_cost IS NOT NULL THEN actual_cost ELSE 0 END) as total_cost
+                "),
+            ])
+            ->addBinding([$this->openStatusId, $this->inProgressStatusId, $this->closedStatusId, $this->closedStatusId], 'select')
             ->whereNull('tickets.deleted_at')
             ->whereNotNull('opened_at')
             ->whereBetween('opened_at', [$startMonth, $endMonth])
-            ->groupByRaw($monthExpr)
+            ->groupBy([new SqlFragment($monthExpr)])
             ->get();
     }
 

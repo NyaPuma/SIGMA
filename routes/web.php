@@ -37,7 +37,7 @@ use App\Http\Controllers\TicketBudgetController;
 use App\Http\Controllers\TicketCommentController;
 use App\Http\Controllers\TicketController;
 use App\Http\Controllers\UiController;
-use Illuminate\Foundation\Http\Middleware\ValidateCsrfToken;
+use Illuminate\Foundation\Http\Middleware\PreventRequestForgery;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -56,7 +56,7 @@ Route::get('/test-email', [PageController::class, 'testEmail'])->name('test.emai
 Route::post('/login', [AuthController::class, 'login'])
     ->name('login')
     ->middleware(['rate.limit:5,1'])
-    ->withoutMiddleware([ValidateCsrfToken::class]);
+    ->withoutMiddleware([PreventRequestForgery::class]);
 
 /*
 |--------------------------------------------------------------------------
@@ -77,22 +77,22 @@ Route::get('/preferences', [PreferencesController::class, 'edit'])
     ->name('preferences.edit');
 Route::post('/preferences/language', [PreferencesController::class, 'updateLanguage'])
     ->name('preferences.update_language')
-    ->withoutMiddleware([ValidateCsrfToken::class]);
+    ->withoutMiddleware([PreventRequestForgery::class]);
 Route::post('/preferences/currency', [PreferencesController::class, 'updateCurrency'])
     ->name('preferences.update_currency')
-    ->withoutMiddleware([ValidateCsrfToken::class]);
+    ->withoutMiddleware([PreventRequestForgery::class]);
 Route::post('/preferences/date-format', [PreferencesController::class, 'updateDateFormat'])
     ->name('preferences.update_date_format')
-    ->withoutMiddleware([ValidateCsrfToken::class]);
+    ->withoutMiddleware([PreventRequestForgery::class]);
 Route::post('/preferences/time-format', [PreferencesController::class, 'updateTimeFormat'])
     ->name('preferences.update_time_format')
-    ->withoutMiddleware([ValidateCsrfToken::class]);
+    ->withoutMiddleware([PreventRequestForgery::class]);
 Route::post('/preferences/number-format', [PreferencesController::class, 'updateNumberFormat'])
     ->name('preferences.update_number_format')
-    ->withoutMiddleware([ValidateCsrfToken::class]);
+    ->withoutMiddleware([PreventRequestForgery::class]);
 Route::post('/preferences', [PreferencesController::class, 'updateAll'])
     ->name('preferences.update_all')
-    ->withoutMiddleware([ValidateCsrfToken::class]);
+    ->withoutMiddleware([PreventRequestForgery::class]);
 
 /*
 |--------------------------------------------------------------------------
@@ -104,7 +104,7 @@ Route::middleware(['custom.auth'])->group(function () {
     // --- Account and Profile ---
     Route::post('/logout', [AuthController::class, 'logout'])
         ->name('auth.logout')
-        ->withoutMiddleware([ValidateCsrfToken::class]);
+        ->withoutMiddleware([PreventRequestForgery::class]);
     Route::post('/password/change', [ProfileController::class, 'changePassword'])
         ->name('auth.password.change')
         ->middleware('rate.limit:10,1');
@@ -116,10 +116,10 @@ Route::middleware(['custom.auth'])->group(function () {
     Route::get('/notifications', [NotificationController::class, 'index'])->name('notifications.index');
     Route::patch('/notifications/{id}', [NotificationController::class, 'markAsRead'])
         ->name('notifications.mark-read')
-        ->withoutMiddleware([ValidateCsrfToken::class]);
+        ->withoutMiddleware([PreventRequestForgery::class]);
     Route::post('/notifications/test-email', [NotificationController::class, 'sendTestEmail'])
         ->name('notifications.test-email')
-        ->withoutMiddleware([ValidateCsrfToken::class])
+        ->withoutMiddleware([PreventRequestForgery::class])
         ->middleware('rate.limit:5,1');
 
     // --- Web Interface (UI) ---
@@ -139,10 +139,10 @@ Route::middleware(['custom.auth'])->group(function () {
     Route::get('/ui/settings/appearance', [UiController::class, 'themeAppearance'])->name('ui.settings.appearance');
     Route::post('/ui/settings/appearance', [UiController::class, 'themeAppearanceUpdate'])
         ->name('ui.settings.appearance.update')
-        ->withoutMiddleware([ValidateCsrfToken::class]);
+        ->withoutMiddleware([PreventRequestForgery::class]);
     Route::post('/theme/switch', [ThemeController::class, 'switchTheme'])
         ->name('theme.switch')
-        ->withoutMiddleware([ValidateCsrfToken::class]);
+        ->withoutMiddleware([PreventRequestForgery::class]);
 
     // --- Equipment: create, detail, and edit pages ---
     Route::get('/ui/equipments/create', [UiController::class, 'equipmentCreate'])
@@ -197,13 +197,13 @@ Route::middleware(['custom.auth'])->group(function () {
     Route::get('/api/rooms', [RoomController::class, 'indexRoom'])->name('rooms.index');
     Route::post('/api/rooms', [RoomController::class, 'storeRoom'])
         ->name('rooms.store')
-        ->withoutMiddleware([ValidateCsrfToken::class]);
+        ->withoutMiddleware([PreventRequestForgery::class]);
     Route::put('/api/rooms/{room}', [RoomController::class, 'updateRoom'])
         ->name('rooms.update')
-        ->withoutMiddleware([ValidateCsrfToken::class]);
+        ->withoutMiddleware([PreventRequestForgery::class]);
     Route::patch('/api/rooms/{room}', [RoomController::class, 'updateRoom'])
         ->name('rooms.update-patch')
-        ->withoutMiddleware([ValidateCsrfToken::class]);
+        ->withoutMiddleware([PreventRequestForgery::class]);
 
     // --- Tickets ---
     Route::get('/tickets/search', [TicketController::class, 'search'])->name('tickets.search');
@@ -212,44 +212,44 @@ Route::middleware(['custom.auth'])->group(function () {
     Route::get('/tickets/{ticket}', [TicketController::class, 'show'])->name('tickets.show');
     Route::post('/tickets', [TicketController::class, 'store'])
         ->name('tickets.store')
-        ->withoutMiddleware([ValidateCsrfToken::class])
+        ->withoutMiddleware([PreventRequestForgery::class])
         ->middleware('rate.limit:30,1');
 
     // --- Tickets: Comments ---
     Route::post('/tickets/{ticket}/comments', [TicketCommentController::class, 'store'])
         ->name('tickets.comments.store')
-        ->withoutMiddleware([ValidateCsrfToken::class])
+        ->withoutMiddleware([PreventRequestForgery::class])
         ->middleware('rate.limit:30,1');
     Route::get('/tickets/{ticket}/comments', [TicketCommentController::class, 'index'])->name('tickets.comments.index');
 
     // --- Tickets: Photos ---
     Route::post('/tickets/{ticket}/photos', [TicketAttachmentController::class, 'store'])
         ->name('tickets.photos.store')
-        ->withoutMiddleware([ValidateCsrfToken::class])
+        ->withoutMiddleware([PreventRequestForgery::class])
         ->middleware('rate.limit:30,1');
     Route::get('/tickets/{ticket}/photos', [TicketAttachmentController::class, 'index'])->name('tickets.photos.index');
     Route::delete('/tickets/{ticket}/photos/{attachment}', [TicketAttachmentController::class, 'destroy'])
         ->name('tickets.photos.destroy')
-        ->withoutMiddleware([ValidateCsrfToken::class]);
+        ->withoutMiddleware([PreventRequestForgery::class]);
 
     // --- Tickets: Status Workflow ---
     Route::post('/tickets/{ticket}/reopen', [TicketLifecycleController::class, 'reopen'])
         ->name('tickets.reopen')
-        ->withoutMiddleware([ValidateCsrfToken::class]);
+        ->withoutMiddleware([PreventRequestForgery::class]);
     Route::post('/tickets/{ticket}/cancel', [TicketLifecycleController::class, 'cancel'])
         ->name('tickets.cancel')
-        ->withoutMiddleware([ValidateCsrfToken::class]);
+        ->withoutMiddleware([PreventRequestForgery::class]);
     Route::post('/tickets/{ticket}/schedule', TicketScheduleController::class)
         ->name('tickets.schedule')
-        ->withoutMiddleware([ValidateCsrfToken::class]);
+        ->withoutMiddleware([PreventRequestForgery::class]);
 
     // --- Tickets: Budget Workflow ---
     Route::post('/tickets/{ticket}/budget', [TicketBudgetController::class, 'submitEstimate'])
         ->name('tickets.budget')
-        ->withoutMiddleware([ValidateCsrfToken::class]);
+        ->withoutMiddleware([PreventRequestForgery::class]);
     Route::post('/tickets/{ticket}/close', [TicketCloseController::class, 'closeFinal'])
         ->name('tickets.close')
-        ->withoutMiddleware([ValidateCsrfToken::class]);
+        ->withoutMiddleware([PreventRequestForgery::class]);
 
     // --- Calendar ---
     Route::get('/calendar/events', [CalendarController::class, 'events'])->name('calendar.events');
@@ -260,15 +260,15 @@ Route::middleware(['custom.auth'])->group(function () {
     Route::middleware(['role:technician'])->group(function () {
         Route::put('/technician/tickets/{ticket}/start', TicketStartController::class)
             ->name('technician.tickets.start')
-            ->withoutMiddleware([ValidateCsrfToken::class])
+            ->withoutMiddleware([PreventRequestForgery::class])
             ->middleware('rate.limit:20,1');
         Route::put('/technician/tickets/{ticket}/close', [TicketCloseController::class, 'simpleClose'])
             ->name('technician.tickets.close')
-            ->withoutMiddleware([ValidateCsrfToken::class])
+            ->withoutMiddleware([PreventRequestForgery::class])
             ->middleware('rate.limit:20,1');
         Route::put('/technician/tickets/{ticket}/request-budget', [TicketBudgetController::class, 'requestAuthorization'])
             ->name('technician.tickets.request-budget')
-            ->withoutMiddleware([ValidateCsrfToken::class])
+            ->withoutMiddleware([PreventRequestForgery::class])
             ->middleware('rate.limit:20,1');
     });
 
@@ -281,7 +281,7 @@ Route::middleware(['custom.auth'])->group(function () {
         Route::get('/stock/movements', [StockMovementController::class, 'index'])->name('stock.movements.index');
         Route::post('/stock/movements', [StockMovementController::class, 'store'])
             ->name('stock.movements.store')
-            ->withoutMiddleware([ValidateCsrfToken::class]);
+            ->withoutMiddleware([PreventRequestForgery::class]);
         Route::get('/stock/dashboard/summary', [StockDashboardController::class, 'summary'])->name('stock.dashboard.summary');
         Route::get('/stock/dashboard/top-consumed', [StockDashboardController::class, 'topConsumed'])->name('stock.dashboard.top-consumed');
         Route::get('/stock/dashboard/slow-moving', [StockDashboardController::class, 'slowMoving'])->name('stock.dashboard.slow-moving');
@@ -310,7 +310,7 @@ Route::middleware(['custom.auth'])->group(function () {
         Route::get('/technician/tickets/open', [TicketController::class, 'openTickets'])->name('technician.tickets.open');
         Route::post('/tickets/{ticket}/assign-technician', [TicketAssignmentController::class, '__invoke'])
             ->name('tickets.assign-technician')
-            ->withoutMiddleware([ValidateCsrfToken::class])
+            ->withoutMiddleware([PreventRequestForgery::class])
             ->middleware('rate.limit:20,1');
 
         // Analytics
@@ -328,7 +328,7 @@ Route::middleware(['custom.auth'])->group(function () {
         Route::get('/admin/tickets/{ticket}', [TicketController::class, 'show'])->name('admin.tickets.show');
         Route::patch('/admin/tickets/{ticket}/assign', [TicketAssignmentController::class, '__invoke'])
             ->name('admin.tickets.assign')
-            ->withoutMiddleware([ValidateCsrfToken::class]);
+            ->withoutMiddleware([PreventRequestForgery::class]);
 
         // Audit
         Route::get('/admin/audits', [AuditController::class, 'index'])->name('admin.audits.index');
@@ -367,7 +367,7 @@ Route::middleware(['custom.auth'])->group(function () {
         Route::post('/admin/preventive', [AdminController::class, 'storePreventive'])->name('admin.preventive.store');
         Route::patch('/admin/tickets/{ticket}/approve-budget', [AdminController::class, 'approveBudget'])
             ->name('admin.tickets.approve-budget')
-            ->withoutMiddleware([ValidateCsrfToken::class]);
+            ->withoutMiddleware([PreventRequestForgery::class]);
 
         // --- Stock: Management (admin) ---
         Route::post('/admin/parts', [PartController::class, 'store'])->name('admin.stock.parts.store');

@@ -165,7 +165,7 @@ final class AppServiceProvider extends ServiceProvider
                     'metric' => 'database.query.duration_ms',
                     'sql' => $query->sql,
                     'bindings' => $query->bindings,
-                    'duration_ms' => round($query->time, 2),
+                    'duration_ms' => round((float) $query->time, 2),
                 ]);
             }
         });
