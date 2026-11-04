@@ -33,6 +33,9 @@ final readonly class ReopenTicketAction
             $ticket->status_id = $openStatusId;
             $ticket->reopened_at = now();
             $ticket->closed_at = null;
+            // The work is unfinished again, so the completion stamp goes with closed_at;
+            // closing later records a fresh one instead of keeping the abandoned date.
+            $ticket->resolved_at = null;
 
             $saved = $ticket->save();
 

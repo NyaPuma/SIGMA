@@ -11,6 +11,7 @@ use App\Models\Ticket;
 use App\Models\User;
 use App\Models\UserProfile;
 use App\Services\TicketStatusService;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Event;
 use LogicException;
@@ -131,6 +132,50 @@ class ObserversTest extends FeatureTestCase
         $ticket->delete();
 
         $this->assertNull(Cache::get($key));
+    }
+
+    #[Test]
+    public function assigning_a_technician_stamps_the_waiting_end_time(): void
+    {
+        $ticket = $this->createTicket();
+        $technician = User::factory()->create();
+
+        $ticket->update(['assigned_to' => $technician->id]);
+
+        $this->assertNotNull($ticket->fresh()->assigned_at);
+    }
+
+    #[Test]
+    public function the_first_assignment_keeps_its_stamp_when_the_technician_changes(): void
+    {
+        $firstTechnician = User::factory()->create();
+        $secondTechnician = User::factory()->create();
+
+        Carbon::setTestNow(now()->subHours(2));
+        $ticket = $this->createTicket(['assigned_to' => $firstTechnician->id]);
+        $stampedAt = $ticket->assigned_at;
+        Carbon::setTestNow();
+
+        $ticket->update(['assigned_to' => $secondTechnician->id]);
+
+        $this->assertEquals(
+            $stampedAt->toDateTimeString(),
+            $ticket->fresh()->assigned_at->toDateTimeString(),
+        );
+    }
+
+    #[Test]
+    public function an_assignment_with_an_explicit_stamp_keeps_that_moment(): void
+    {
+        $seededAt = now()->subDays(5)->startOfMinute();
+        $technician = User::factory()->create();
+
+        $ticket = $this->createTicket([
+            'assigned_to' => $technician->id,
+            'assigned_at' => $seededAt,
+        ]);
+
+        $this->assertEquals($seededAt->toDateTimeString(), $ticket->assigned_at->toDateTimeString());
     }
 
     // --- AuditObserver / Audit model guard ---

@@ -14,6 +14,22 @@ use Illuminate\Support\Facades\Cache;
 final readonly class TicketObserver
 {
     /**
+     * Handle the Ticket "saving" event.
+     */
+    public function saving(Ticket $ticket): void
+    {
+        // assigned_at is the other half of the waiting-time measurement (TicketKpiQuery
+        // averages opened_at to assigned_at) and no path used to write it, so live tickets
+        // waited zero minutes however long they actually sat in the queue. Every assignment
+        // ends in this save, which is why the stamp lives here instead of in each caller.
+        // The first assignment wins: reassigning does not move it, and a value already on the
+        // row (seeded history) is left alone.
+        if ($ticket->assigned_to !== null && $ticket->assigned_at === null) {
+            $ticket->assigned_at = now();
+        }
+    }
+
+    /**
      * Handle the Ticket "created" event.
      */
     public function created(Ticket $ticket): void

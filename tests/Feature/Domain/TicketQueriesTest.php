@@ -127,6 +127,27 @@ class TicketQueriesTest extends DatabaseTestCase
     }
 
     #[Test]
+    public function ticket_kpi_query_measures_waiting_time_from_the_assignment_stamp(): void
+    {
+        $open = $this->statusService->getByName(TicketStatusEnum::Open);
+        $technician = User::factory()->create();
+        $openedAt = now()->subHours(9);
+
+        $this->createTicket([
+            'status_id' => $open,
+            'opened_at' => $openedAt,
+            'assigned_to' => $technician->id,
+            'assigned_at' => $openedAt->copy()->addMinutes(120),
+        ]);
+        // Still queued: no assignment, so it must not drag the average towards zero.
+        $this->createTicket(['status_id' => $open, 'opened_at' => $openedAt]);
+
+        $result = (new TicketKpiQuery($open, $open, $open))->execute();
+
+        $this->assertEqualsWithDelta(120.0, $result['avg_waiting'], 1.0);
+    }
+
+    #[Test]
     public function ticket_priority_query_counts_priorities(): void
     {
         $this->createTicketWithPriority(TicketPriorityEnum::Low->value);

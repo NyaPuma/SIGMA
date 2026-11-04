@@ -256,4 +256,40 @@ class TicketLifecycleActionsTest extends DatabaseTestCase
         $this->assertSame(TicketStatusEnum::InProgress->value, $ticket->status->name);
         $this->assertEquals($late->id, $ticket->technician?->id);
     }
+
+    #[Test]
+    public function close_action_stamps_the_resolution_date_the_calendar_reads(): void
+    {
+        $ticket = $this->createTicket();
+
+        $this->assertTrue(app(CloseTicketAction::class)->execute($ticket));
+
+        $fresh = $ticket->fresh();
+        $this->assertNotNull($fresh->resolved_at);
+        $this->assertNotNull($fresh->closed_at);
+    }
+
+    #[Test]
+    public function close_action_keeps_an_existing_resolution_date(): void
+    {
+        $resolvedAt = now()->subDays(4);
+        $ticket = $this->createTicket(['resolved_at' => $resolvedAt]);
+
+        $this->assertTrue(app(CloseTicketAction::class)->execute($ticket));
+
+        $this->assertEquals($resolvedAt->toDateTimeString(), $ticket->fresh()->resolved_at->toDateTimeString());
+    }
+
+    #[Test]
+    public function reopen_action_clears_the_resolution_date(): void
+    {
+        $ticket = $this->createTicketWithStatus(
+            TicketStatusEnum::Closed->value,
+            ['closed_at' => now()->subDay(), 'resolved_at' => now()->subDay()],
+        );
+
+        $this->assertTrue(app(ReopenTicketAction::class)->execute($ticket));
+
+        $this->assertNull($ticket->fresh()->resolved_at);
+    }
 }

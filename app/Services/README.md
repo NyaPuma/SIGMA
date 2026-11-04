@@ -785,7 +785,7 @@ Services are grouped by functional area. Where a method has no in-production cal
 
 #### `checkAutoClose(Ticket $ticket, float $threshold): bool`
 - **What it does:** Auto-closes a ticket whose estimated cost is at or below the given threshold.
-- **How it works / steps:** Returns `false` if `estimated_cost` is null or above the threshold; otherwise resolves the Closed status ID, sets `status_id` and `closed_at = now()`, and saves (`:63-76`).
+- **How it works / steps:** Returns `false` if `estimated_cost` is null or above the threshold; otherwise resolves the Closed status ID, sets `status_id`, `closed_at = now()` and `resolved_at` (kept if already set, because the calendar ranges read it), and saves (`:63-80`).
 - **Who calls it / when:** **No in-production caller found** (only referenced in tests).
 
 #### `findHigherPriorityTickets(Ticket $ticket): array{total, assigned_to_user, has_higher}`

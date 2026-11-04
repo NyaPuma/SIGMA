@@ -72,6 +72,10 @@ final class TicketWorkflowService
 
         $ticket->closed_at = now();
 
+        // Same completion stamp CloseTicketAction writes, so any ticket that reaches Closed
+        // carries resolved_at and the calendar ranges stay meaningful.
+        $ticket->resolved_at = $ticket->resolved_at ?? now();
+
         return $ticket->save();
     }
 

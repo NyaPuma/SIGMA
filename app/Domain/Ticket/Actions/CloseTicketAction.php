@@ -36,6 +36,10 @@ final readonly class CloseTicketAction
             $attributes = [
                 'status_id' => $closedStatusId,
                 'closed_at' => $ticket->closed_at ?? now(),
+                // resolved_at is the completion stamp the calendar ranges filter on
+                // (ScheduledEventsQuery and CalendarService); closing is when the work ended, so
+                // the two belong together. A row that already has one keeps its own value.
+                'resolved_at' => $ticket->resolved_at ?? now(),
             ];
 
             if ($cost !== null) {

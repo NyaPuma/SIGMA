@@ -56,7 +56,7 @@ Audit::observe(AuditObserver::class);
 
 ### `TicketObserver.php`
 
-**What it is:** The primary observer for `Ticket` model lifecycle events. It fires broadcast events when tickets are created or have their status changed, and invalidates analytics cache on every mutation.
+**What it is:** The primary observer for `Ticket` model lifecycle events. It stamps the waiting-time measurement on every assignment, fires broadcast events when tickets are created or have their status changed, and invalidates analytics cache on every mutation.
 
 **Class:** `App\Observers\TicketObserver`
 
@@ -75,6 +75,12 @@ Ticket::observe(TicketObserver::class);
 - `Illuminate\Support\Facades\Cache` — used to invalidate analytics cache.
 
 **Hooks:**
+
+#### `saving(Ticket $ticket): void`
+- **Fires when:** A `Ticket` is about to be inserted or updated (before the dirty attributes are computed, so the stamp is written by the same statement).
+- **Side effect:** If `assigned_to` is set and `assigned_at` is still `null`, sets `assigned_at = now()`.
+- **Why here:** `assigned_at` is the end of the waiting interval measured by `TicketKpiQuery::avg_waiting` (`opened_at` → `assigned_at`), and no caller used to write it — live tickets always reported a zero wait. Every assignment path ends in this save, and the first assignment wins: reassignment and already-seeded history keep their value.
+- **Note:** Mass updates through `Ticket::whereKey(...)->update([...])` bypass model events, so such writes do not stamp.
 
 #### `created(Ticket $ticket): void`
 - **Fires when:** A new `Ticket` has been created and saved to the database.

@@ -133,7 +133,7 @@ Returns `array{total: int, assigned_to_user: int, has_higher: bool}`.
 2. Opens `DB::transaction`:
    - Calls `lockTicketRow($ticket)`. `closed_at` is only kept when the **committed** row really has one -- the caller's copy may predate a concurrent reopen that just cleared it.
    - **Guard clause:** If `$ticket->status_id === $closedStatusId`, returns `true` immediately (idempotent -- already closed).
-   - Builds `$attributes` array with: `status_id`, `closed_at` (preserves existing value or `now()`).
+   - Builds `$attributes` array with: `status_id`, `closed_at` (preserves existing value or `now()`), `resolved_at` (preserves existing value or `now()`). `CalendarService` and `ScheduledEventsQuery` range finished interventions on `resolved_at`, so a close that left it null disappeared from the calendar.
    - Conditionally adds: `actual_cost` (if `$cost !== null`), `technical_report` (if `$report !== null`), `minutes_spent` (if `$minutesSpent !== null`).
    - Calls `$ticket->update($attributes)`.
 3. Returns the update result (`bool`).
@@ -143,7 +143,7 @@ Returns `array{total: int, assigned_to_user: int, has_higher: bool}`.
 - Triggered by:
   - `TicketCloseController::simpleClose()` at `app/Http/Controllers/Ticket/TicketCloseController.php:45` -- quick close of an in-progress ticket.
   - `TicketCloseController::closeFinal()` at `app/Http/Controllers/Ticket/TicketCloseController.php:96` -- final close with cost/report and priority verification.
-- Tests: `tests/Feature/Domain/TicketLifecycleActionsTest.php:57`, `:74`, `:86`, `:224`.
+- Tests: `tests/Feature/Domain/TicketLifecycleActionsTest.php:57`, `:74`, `:86`, `:224`, `:261`, `:273`.
 
 ---
 
@@ -167,14 +167,14 @@ Returns `array{total: int, assigned_to_user: int, has_higher: bool}`.
    - **Guard clause:** If the ticket is NOT Closed AND NOT Cancelled (checked via `$ticket->hasStatus()`), returns `false` -- you can't reopen a ticket that is already open or in progress, including one another request just started.
    - Sets `$ticket->status_id = $openStatusId`.
    - Sets `$ticket->reopened_at = now()`.
-   - Clears `$ticket->closed_at = null`.
+   - Clears `$ticket->closed_at = null` and `$ticket->resolved_at = null` -- the work is unfinished again, so it must stop counting as a resolved event in the calendar.
    - Calls `$ticket->save()`.
 3. Returns the save result (`bool`).
 
 **Who calls it and when:**
 - `TicketWorkflowService::reopen()` at `app/Services/TicketWorkflowService.php:41`.
 - Ultimately triggered by `TicketLifecycleController::reopen()` at `app/Http/Controllers/Ticket/TicketLifecycleController.php:33` -- when a user reopens a Closed or Cancelled ticket.
-- Tests: `tests/Feature/Domain/TicketLifecycleActionsTest.php:98`, `:109`, `:208`.
+- Tests: `tests/Feature/Domain/TicketLifecycleActionsTest.php:98`, `:109`, `:208`, `:284`.
 
 ---
 
