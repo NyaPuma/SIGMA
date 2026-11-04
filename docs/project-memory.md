@@ -4,7 +4,7 @@
 SGM = Integrated Maintenance Management System. Laravel 12, PHP 8.3, para digitalizar o ciclo completo de manutenção/avarias. Três papéis: Operador, Técnico, Administrador.
 
 ## Stack
-- PHP 8.2+ (8.3 dev), Laravel 12
+- PHP 8.3+, Laravel 12
 - BD: SQLite (dev/testes), PostgreSQL/MySQL (prod)
 - Frontend: Blade + Tailwind + Alpine.js + Vite
 - Auth: sessão + API token (Sanctum-like), RBAC via UserProfile
