@@ -234,7 +234,7 @@ Key differences from `TicketStatusChanged`:
 
 **Who listens (via EventServiceProvider `$listen` mapping):**
 1. `App\Listeners\SendTicketStatusNotification` — sends an email + database `TicketStatusChanged` notification to the ticket owner.
-2. `App\Listeners\LogTicketStatusChange` — logs the status transition to `TicketWorkflowHistory` (optimized single-query lookup for both status IDs).
+
 3. `App\Listeners\NotifyAssignedTechnician` — sends a `NewTicketNotification` to the assigned technician (if one exists).
 
 ---
@@ -249,7 +249,7 @@ Key differences from `TicketStatusChanged`:
 | **Includes `changed_by`?** | Yes | No |
 | **Includes `title`?** | No | Yes |
 | **Payload key for ticket ID** | `ticket_id` | `id` |
-| **Listeners** | `LogTicketWorkflowChange` | `SendTicketStatusNotification`, `LogTicketStatusChange`, `NotifyAssignedTechnician` |
+| **Listeners** | `LogTicketWorkflowChange` | `SendTicketStatusNotification`, `NotifyAssignedTechnician` |
 | **Purpose** | Observer-level: fires on every Eloquent update | Controller-level: fires only on explicit user-initiated status changes |
 
 Both events broadcast to the same 3 private channels, but `TicketStatusUpdatedBroadcast` is the "richer" event used for the full notification pipeline (listeners + email + in-app), while `TicketStatusChanged` is the observer-level event that only triggers workflow logging.

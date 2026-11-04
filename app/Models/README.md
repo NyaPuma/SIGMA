@@ -548,7 +548,7 @@ Eloquent ORM models representing the persistence layer and domain entities of th
 - **Scopes:** None defined in the model.
 - **WHERE/WHEN it's used:**
   - **Created:** `TicketStatusService::getByName()` (creates statuses on-demand if they don't exist yet, using `firstOrCreate`)
-  - **Read:** `TicketStatusService` (caches all status IDs by name), `TicketObserver` (looks up old/new status names when status changes), `LogTicketWorkflowChange` listener, `LogTicketStatusChange` listener, `TicketController` (status listing), `AnalyticsDashboardService`
+  - **Read:** `TicketStatusService` (caches all status IDs by name), `TicketObserver` (looks up old/new status names when status changes), `LogTicketWorkflowChange` listener, `TicketController` (status listing), `AnalyticsDashboardService`
   - **Relationship access:** `Ticket->status`, `TicketType->statuses`, `TicketWorkflowHistory->originStatus`, `TicketWorkflowHistory->destinationStatus`
 
 ---
@@ -662,7 +662,7 @@ Eloquent ORM models representing the persistence layer and domain entities of th
   - `transitionLabel(): Attribute` -- generates a readable string like `"Open -> In Progress"` by joining the origin and destination status names with `" ➔ "`. Falls back to `"N/A"` if a status is missing.
   - `timeAgo(): Attribute` -- returns a relative time string via `$this->created_at->diffForHumans()`.
 - **WHERE/WHEN it's used:**
-  - **Created:** `LogTicketWorkflowChange` listener (listens for `TicketStatusChanged` event) and `LogTicketStatusChange` listener (listens for `TicketStatusUpdatedBroadcast` event) -- both create workflow history records when a ticket's status changes.
+  - **Created:** `LogTicketWorkflowChange` listener (listens for `TicketStatusChanged`, fired by `TicketObserver`) -- the only writer of workflow history records for a ticket's status changes.
   - **Read:** `Ticket->workflowHistory` relationship, ticket detail views (workflow timeline)
   - **Relationship access:** `Ticket->workflowHistory`
 
@@ -997,7 +997,7 @@ All observers are registered in `AppServiceProvider::boot()` via `registerObserv
 Registered in `EventServiceProvider::$listen`:
 - `TicketCreated` -> `SendTicketCreatedNotification` (creates in-app notification for admins)
 - `TicketStatusChanged` -> `LogTicketWorkflowChange` (creates `TicketWorkflowHistory` record)
-- `TicketStatusUpdatedBroadcast` -> `SendTicketStatusNotification`, `LogTicketStatusChange`, `NotifyAssignedTechnician`
+- `TicketStatusUpdatedBroadcast` -> `SendTicketStatusNotification`, `NotifyAssignedTechnician`
 
 ### Policy Authorization
 

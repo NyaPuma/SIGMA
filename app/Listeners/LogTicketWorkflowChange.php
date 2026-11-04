@@ -23,14 +23,23 @@ final class LogTicketWorkflowChange implements ShouldQueue
 
     public function handle(TicketStatusChanged $event): void
     {
-        $originStatusId = TicketStatus::where('name', $event->oldStatus->value)->value('id');
-        $destinationStatusId = TicketStatus::where('name', $event->newStatus->value)->value('id');
+        // One query for both rows: the transition always has an origin and a destination,
+        // and reading them separately doubled the lookups on every status change.
+        $statuses = TicketStatus::whereIn('name', [$event->oldStatus->value, $event->newStatus->value])
+            ->get(['id', 'name'])
+            ->keyBy('name');
+
+        // `changedBy` is captured by the observer while the request still has a user; the
+        // assignment is the last known actor once the job runs on the queue, where this
+        // listener has no authenticated user at all.
+        $technicianId = $event->changedBy?->id;
+        $technicianId ??= auth()->id() ?? $event->ticket->assigned_to;
 
         TicketWorkflowHistory::create([
             'ticket_id' => $event->ticket->id,
-            'origin_status_id' => $originStatusId,
-            'destination_status_id' => $destinationStatusId,
-            'technician_id' => $event->changedBy !== null ? $event->changedBy->id : auth()->id(),
+            'origin_status_id' => $statuses->get($event->oldStatus->value)?->id,
+            'destination_status_id' => $statuses->get($event->newStatus->value)?->id,
+            'technician_id' => $technicianId,
             'comment' => "Status changed from \"{$event->oldStatus->value}\" to \"{$event->newStatus->value}\".",
         ]);
     }

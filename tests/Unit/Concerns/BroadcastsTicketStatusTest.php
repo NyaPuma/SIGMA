@@ -8,7 +8,6 @@ use App\Events\TicketStatusUpdatedBroadcast;
 use App\Models\Ticket;
 use App\Models\TicketStatus;
 use App\Models\User;
-use App\Notifications\TicketStatusChanged;
 use Illuminate\Support\Facades\Event;
 use Illuminate\Support\Facades\Notification;
 use PHPUnit\Framework\Attributes\Test;
@@ -50,12 +49,10 @@ class BroadcastsTicketStatusTest extends FeatureTestCase
             return $event->oldStatus === TicketStatusEnum::Open
                 && $event->newStatus === TicketStatusEnum::InProgress;
         });
-
-        Notification::assertSentTo($user, TicketStatusChanged::class);
     }
 
     #[Test]
-    public function it_dispatches_broadcast_event_and_notifies_ticket_owner(): void
+    public function it_dispatches_the_broadcast_event_for_the_status_transition(): void
     {
         Event::fake([TicketStatusUpdatedBroadcast::class]);
         Notification::fake();
@@ -71,7 +68,9 @@ class BroadcastsTicketStatusTest extends FeatureTestCase
                 && $event->newStatus === TicketStatusEnum::InProgress;
         });
 
-        Notification::assertSentTo($user, TicketStatusChanged::class);
+        // Delivery belongs to SendTicketStatusNotification: notifying from here as well
+        // made every transition reach the owner twice.
+        Notification::assertNothingSent();
     }
 
     #[Test]
@@ -92,7 +91,7 @@ class BroadcastsTicketStatusTest extends FeatureTestCase
     }
 
     #[Test]
-    public function it_skips_notification_when_ticket_has_no_owner(): void
+    public function it_still_broadcasts_when_the_ticket_has_no_owner(): void
     {
         Event::fake([TicketStatusUpdatedBroadcast::class]);
         Notification::fake();
@@ -103,6 +102,5 @@ class BroadcastsTicketStatusTest extends FeatureTestCase
         $this->makeSubject()->fire($ticket, TicketStatusEnum::Open, TicketStatusEnum::Closed);
 
         Event::assertDispatched(TicketStatusUpdatedBroadcast::class);
-        Notification::assertNothingSent();
     }
 }

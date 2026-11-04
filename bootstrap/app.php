@@ -17,6 +17,13 @@ use Illuminate\Foundation\Configuration\Middleware;
 use Illuminate\Http\Request;
 
 return Application::configure(basePath: dirname(__DIR__))
+    // `configure()` already calls `withEvents()`, which registers the framework's own
+    // EventServiceProvider. That provider discovers `app/Listeners` and registers every
+    // listener a second time as `Class@handle`, on top of the explicit `$listen` map in
+    // App\Providers\EventServiceProvider — so each queued listener ran (and each workflow
+    // history row was written) twice. Discovery must be turned off here: the override of
+    // `shouldDiscoverEvents()` in our own provider does not affect the framework one.
+    ->withEvents(discover: false)
     ->withRouting(
         web: __DIR__.'/../routes/web.php',
         api: __DIR__.'/../routes/api.php',

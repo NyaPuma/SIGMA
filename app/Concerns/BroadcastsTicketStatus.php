@@ -6,8 +6,6 @@ use App\Enums\TicketStatusEnum;
 use App\Events\TicketStatusUpdatedBroadcast;
 use App\Models\Ticket;
 use App\Models\TicketStatus;
-use App\Models\User;
-use App\Notifications\TicketStatusChanged;
 use Illuminate\Support\Facades\Log;
 use Throwable;
 
@@ -28,14 +26,9 @@ trait BroadcastsTicketStatus
         $newStatusValue = $this->normalizeStatusValue($newStatus);
 
         try {
+            // SendTicketStatusNotification owns the mail: notifying here as well made every
+            // transition deliver the same "status changed" message to the owner twice.
             event(new TicketStatusUpdatedBroadcast($ticket, $oldStatusValue, $newStatusValue));
-
-            /** @var User|null $user */
-            $user = $ticket->user;
-
-            if ($user?->email) {
-                $user->notify(new TicketStatusChanged($ticket, $oldStatusValue, $newStatusValue));
-            }
         } catch (Throwable $e) {
             Log::warning('Failed to broadcast ticket status change.', [
                 'ticket_id' => $ticket->id,

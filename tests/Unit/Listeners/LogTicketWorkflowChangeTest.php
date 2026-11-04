@@ -58,4 +58,28 @@ class LogTicketWorkflowChangeTest extends TestCase
             'technician_id' => $changedBy->id,
         ]);
     }
+
+    #[Test]
+    public function it_falls_back_to_the_assigned_technician_when_no_actor_is_known(): void
+    {
+        $open = TicketStatus::firstOrCreate(['name' => TicketStatusEnum::Open->value], ['code' => 'ABERTA']);
+        TicketStatus::firstOrCreate(['name' => TicketStatusEnum::InProgress->value], ['code' => 'EM_CURSO']);
+        $technician = User::factory()->create();
+        $ticket = Ticket::factory()->create([
+            'status_id' => $open->id,
+            'assigned_to' => $technician->id,
+        ]);
+
+        $listener = new LogTicketWorkflowChange;
+        $listener->handle(new TicketStatusChanged(
+            $ticket,
+            TicketStatusEnum::Open,
+            TicketStatusEnum::InProgress,
+        ));
+
+        $this->assertDatabaseHas('ticket_workflow_history', [
+            'ticket_id' => $ticket->id,
+            'technician_id' => $technician->id,
+        ]);
+    }
 }

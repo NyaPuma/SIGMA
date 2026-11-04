@@ -38,10 +38,16 @@ final readonly class TicketObserver
                 $oldStatusName = TicketStatus::where('id', $originalStatusId)->value('name');
                 $newStatusName = TicketStatus::where('id', $newStatusId)->value('name');
 
+                $actor = auth()->user();
+
+                // The actor has to be captured here: the history listener is queued and,
+                // once it runs, there is no authenticated user left to attribute the
+                // transition to.
                 event(new TicketStatusChanged(
                     $ticket,
                     is_string($oldStatusName) ? $oldStatusName : TicketStatusEnum::Open->value,
                     is_string($newStatusName) ? $newStatusName : TicketStatusEnum::Open->value,
+                    $actor,
                 ));
             }
         }

@@ -6,7 +6,7 @@ Event listeners that handle side effects when ticket events are dispatched. All 
 
 ## Overview
 
-This folder contains **5 listener classes** that respond to the 3 ticket events (`TicketCreated`, `TicketStatusChanged`, `TicketStatusUpdatedBroadcast`). All listeners implement `ShouldQueue` and use `InteractsWithQueue`, meaning they run asynchronously in the queue worker after the event is dispatched.
+This folder contains **4 listener classes** that respond to the 3 ticket events (`TicketCreated`, `TicketStatusChanged`, `TicketStatusUpdatedBroadcast`). All listeners implement `ShouldQueue` and use `InteractsWithQueue`, meaning they run asynchronously in the queue worker after the event is dispatched.
 
 **Event → Listener mapping** (defined in `app/Providers/EventServiceProvider.php`):
 
@@ -19,59 +19,19 @@ TicketStatusChanged
 
 TicketStatusUpdatedBroadcast
   ├── SendTicketStatusNotification
-  ├── LogTicketStatusChange
   └── NotifyAssignedTechnician
 ```
 
-Event discovery is **disabled** (`shouldDiscoverEvents()` returns `false`) — all mappings are explicit for performance and control.
+Event discovery is **disabled** — all mappings come from the explicit `$listen` array. It has to be switched off in `bootstrap/app.php` with `->withEvents(discover: false)`: `Application::configure()` also registers the framework provider, whose own `shouldDiscoverEvents()` is untouched by the override in `App\Providers\EventServiceProvider`, and it re-registered every listener a second time as `Class@handle`.
 
 ---
 
 ## Files
 
-### `LogTicketStatusChange.php`
-
-**What it is:** Logs a ticket status transition to the `TicketWorkflowHistory` table when the `TicketStatusUpdatedBroadcast` event fires. Uses an optimized single-query lookup to resolve both old and new status IDs.
-
-**Class:** `App\Listeners\LogTicketStatusChange`
-
-**Triggers on:** `App\Events\TicketStatusUpdatedBroadcast`
-
-**Registered in:** `EventServiceProvider.php:32-35`:
-```php
-TicketStatusUpdatedBroadcast::class => [
-    SendTicketStatusNotification::class,
-    LogTicketStatusChange::class,
-    NotifyAssignedTechnician::class,
-],
-```
-
-**Dependencies:**
-- `App\Models\TicketStatus` — queried to resolve status name strings to database IDs.
-- `App\Models\TicketWorkflowHistory` — the model where the log record is created.
-
-**`handle(TicketStatusUpdatedBroadcast $event)` logic:**
-1. Extracts `$oldStatus->value` and `$newStatus->value` from the event (these are the `TicketStatusEnum` string values, e.g. `'aberto'`, `'em_curso'`).
-2. **Single-query optimization:** Fetches both `TicketStatus` records in one query using `TicketStatus::whereIn('name', [$oldStatus, $newStatus])->get()->keyBy('name')`. This avoids the N+1 problem of making two separate queries.
-3. If either status cannot be found, logs a warning and returns early (no crash, no retry).
-4. Creates a `TicketWorkflowHistory` record with:
-   - `ticket_id` — from `$event->ticket->id`
-   - `origin_status_id` — the database ID of the old status
-   - `destination_status_id` — the database ID of the new status
-   - `technician_id` — from `$event->ticket->assigned_to` (the currently assigned technician)
-   - `comment` — `'Status changed from "aberto" to "em_curso".'`
-
-**`failed()` logic:**
-- Logs a warning with the ticket ID and error message via `Log::warning()`.
-
-**Queue configuration:**
-- `$tries = 3`
-
----
 
 ### `LogTicketWorkflowChange.php`
 
-**What it is:** Logs a ticket status transition to the `TicketWorkflowHistory` table when the `TicketStatusChanged` event fires. This is the observer-level counterpart to `LogTicketStatusChange`, handling transitions triggered by Eloquent model updates rather than explicit controller actions.
+**What it is:** The only writer of `TicketWorkflowHistory` for status transitions. It listens to `TicketStatusChanged`, which `TicketObserver` fires whenever `status_id` changes, so it covers model-level writes and controller actions alike.
 
 **Class:** `App\Listeners\LogTicketWorkflowChange`
 
@@ -89,19 +49,16 @@ TicketStatusChanged::class => [
 - `App\Models\TicketWorkflowHistory` — the model where the log record is created.
 
 **`handle(TicketStatusChanged $event)` logic:**
-1. Queries `TicketStatus::where('name', $event->oldStatus->value)->value('id')` to get the origin status ID.
-2. Queries `TicketStatus::where('name', $event->newStatus->value)->value('id')` to get the destination status ID.
-3. Creates a `TicketWorkflowHistory` record with:
+1. Resolves both status IDs in one query: `TicketStatus::whereIn('name', [old, new])->get(['id', 'name'])->keyBy('name')`.
+2. Creates a `TicketWorkflowHistory` record with:
    - `ticket_id` — from `$event->ticket->id`
-   - `origin_status_id` — from step 1
-   - `destination_status_id` — from step 2
-   - `technician_id` — from `$event->changedBy->id` if `$event->changedBy` is not null, otherwise falls back to `auth()->id()` (the currently authenticated user).
+   - `origin_status_id` / `destination_status_id` — from the map above (null when a name is unknown)
+   - `technician_id` — `$event->changedBy?->id ?? auth()->id() ?? $event->ticket->assigned_to`. The observer captures the acting user while the request still has one, because the queued listener has no authenticated user of its own.
    - `comment` — `'Status changed from "aberto" to "em_curso".'`
 
-**Key difference from `LogTicketStatusChange`:**
-- `LogTicketStatusChange` (for `TicketStatusUpdatedBroadcast`) does a single-query lookup with `whereIn`.
-- `LogTicketWorkflowChange` (for `TicketStatusChanged`) does two separate queries (one per status).
-- `LogTicketWorkflowChange` uses `$event->changedBy->id ?? auth()->id()` for the technician, while `LogTicketStatusChange` uses `$event->ticket->assigned_to`.
+`App\Listeners\LogTicketStatusChange` used to write the same transition from
+`TicketStatusUpdatedBroadcast` as well; it was removed, since one transition must
+produce exactly one history row.
 
 **`failed()` logic:**
 - Logs an error with the ticket ID and error message via `Log::error()`.
@@ -123,7 +80,6 @@ TicketStatusChanged::class => [
 ```php
 TicketStatusUpdatedBroadcast::class => [
     SendTicketStatusNotification::class,
-    LogTicketStatusChange::class,
     NotifyAssignedTechnician::class,
 ],
 ```
@@ -202,7 +158,6 @@ public function __construct(
 ```php
 TicketStatusUpdatedBroadcast::class => [
     SendTicketStatusNotification::class,
-    LogTicketStatusChange::class,
     NotifyAssignedTechnician::class,
 ],
 ```
@@ -230,7 +185,7 @@ TicketStatusUpdatedBroadcast::class => [
 
 - All listeners implement `ShouldQueue` and use `InteractsWithQueue`.
 - Common `$tries = 3` and `$backoff = [5, 15, 30]` across notification listeners (`SendTicketStatusNotification`, `NotifyAssignedTechnician`, `SendTicketCreatedNotification`).
-- `LogTicketStatusChange` does a single-query lookup for both origin and destination statuses to avoid N+1.
+- `LogTicketWorkflowChange` looks both statuses up in a single `whereIn` query to avoid N+1.
 - `LogTicketWorkflowChange` does two separate queries (one per status) — a simpler but less optimized approach.
 - `NotifyAssignedTechnician` and `SendTicketStatusNotification` both guard against missing relationships (`assigned_to` being null, `user` not having an email) to avoid exceptions on edge-case tickets.
 - `SendTicketCreatedNotification` is the only listener that receives its dependency via constructor injection (`NotificationService`); the other 4 listeners resolve their dependencies inline from the event or use facade calls.

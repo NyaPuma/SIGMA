@@ -68,7 +68,7 @@ All of this happens in fractions of a second, but every step has a clear owner, 
 | **Exports/** | CSV/PDF/Excel export implementations | TicketsExport, StockCostsExport |
 | **Http/** | Controllers, middleware, requests, resources | Web + API controllers, FormRequests, API Resources |
 | **Jobs/** | Queued jobs for async background processing | ExportCsvJob, SendTestEmailJob, GenerateAiRecommendationJob |
-| **Listeners/** | Event listener classes | LogTicketStatusChange, NotifyAssignedTechnician |
+| **Listeners/** | Event listener classes | LogTicketWorkflowChange, NotifyAssignedTechnician |
 | **Mail/** | Mailable classes for email sending | PasswordResetMail, TicketCreated |
 | **Models/** | Eloquent ORM models (database table mappings) | User, Ticket, Equipment, Room, etc. |
 | **Notifications/** | User notification classes | NewTicketNotification, TicketStatusChanged |

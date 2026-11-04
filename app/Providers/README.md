@@ -66,7 +66,7 @@ On **every application boot** (both HTTP requests via `bootstrap/app.php` and CL
 |---|---|
 | `App\Events\TicketCreated` | `App\Listeners\SendTicketCreatedNotification` |
 | `App\Events\TicketStatusChanged` | `App\Listeners\LogTicketWorkflowChange` |
-| `App\Events\TicketStatusUpdatedBroadcast` | `App\Listeners\SendTicketStatusNotification`<br>`App\Listeners\LogTicketStatusChange`<br>`App\Listeners\NotifyAssignedTechnician` |
+| `App\Events\TicketStatusUpdatedBroadcast` | `App\Listeners\SendTicketStatusNotification`<br>`App\Listeners\NotifyAssignedTechnician` |
 
 ### What it boots — `boot()`
 

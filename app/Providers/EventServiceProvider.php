@@ -7,7 +7,6 @@ namespace App\Providers;
 use App\Events\TicketCreated;
 use App\Events\TicketStatusChanged;
 use App\Events\TicketStatusUpdatedBroadcast;
-use App\Listeners\LogTicketStatusChange;
 use App\Listeners\LogTicketWorkflowChange;
 use App\Listeners\NotifyAssignedTechnician;
 use App\Listeners\SendTicketCreatedNotification;
@@ -30,7 +29,6 @@ final class EventServiceProvider extends ServiceProvider
         ],
         TicketStatusUpdatedBroadcast::class => [
             SendTicketStatusNotification::class,
-            LogTicketStatusChange::class,
             NotifyAssignedTechnician::class,
         ],
     ];
