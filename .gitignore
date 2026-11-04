@@ -25,5 +25,9 @@ Homestead.yaml
 Thumbs.db
 storage/phpstan/
 
+# Created when a command passes an unexpanded %SystemDrive% as a path,
+# duplicating the Windows icon caches inside the repository.
+/%SystemDrive%/
+
 /graphify-out
 /.opencode
