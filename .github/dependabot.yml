@@ -27,6 +27,13 @@ updates:
     labels:
       - "dependencies"
       - "npm"
+    ignore:
+      # @fullcalendar/daygrid, /timegrid and /interaction have no 7.x release
+      # (npm dist-tags "latest" is still 6.1.22), so a core major bump alone
+      # always breaks `npm ci` with ERESOLVE on the ~6.1.x peer ranges.
+      - dependency-name: "@fullcalendar/core"
+        update-types:
+          - version-update:semver-major
     groups:
       # @fullcalendar/* plugins declare peer @fullcalendar/core ~<same minor>.
       # Bumping one package alone makes `npm ci` fail with ERESOLVE, so these

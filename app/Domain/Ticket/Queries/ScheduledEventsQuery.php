@@ -13,7 +13,7 @@ final readonly class ScheduledEventsQuery
         private ?string $to = null,
     ) {}
 
-    /** @return Collection<int, array{id: mixed, title: non-falsy-string, start: string, end: string|null}> */
+    /** @return Collection<int, array{id: int, title: string, start: string, end: string|null}> */
     public function execute(): Collection
     {
         $query = Ticket::query()
@@ -36,7 +36,8 @@ final readonly class ScheduledEventsQuery
             });
         }
 
-        return $query->get()->map(function ($ticket) {
+        /** @var Collection<int, array{id: int, title: string, start: string, end: string|null}> $events */
+        $events = $query->get()->map(function (Ticket $ticket): ?array {
             $start = $ticket->scheduled_at ?? $ticket->opened_at ?? $ticket->resolved_at;
 
             if (! $start) {
@@ -44,11 +45,13 @@ final readonly class ScheduledEventsQuery
             }
 
             return [
-                'id' => $ticket->id,
+                'id' => (int) $ticket->id,
                 'title' => '#'.$ticket->id.' - '.$ticket->title,
                 'start' => Carbon::parse($start)->toIso8601String(),
                 'end' => $ticket->scheduled_end ? Carbon::parse($ticket->scheduled_end)->toIso8601String() : null,
             ];
         })->filter()->values();
+
+        return $events;
     }
 }
