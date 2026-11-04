@@ -164,7 +164,7 @@ class TicketsExportTest extends TestCase
     public function it_returns_styles_array(): void
     {
         $export = new TicketsExport;
-        $styles = $export->styles($this->createMock(Worksheet::class));
+        $styles = $export->styles($this->createStub(Worksheet::class));
 
         $this->assertArrayHasKey(1, $styles);
         $this->assertArrayHasKey('font', $styles[1]);
