@@ -34,6 +34,7 @@
             text-align: right; font-size: 9px; color: #475569; line-height: 1.8;
         }
         .report-meta strong { color: #14213d; }
+        .report-warning { color: #b45309; font-weight: 600; }
 
         /* ---- Summary cards ---- */
         .summary { width: 100%; border-collapse: collapse; margin-bottom: 18px; }
@@ -118,13 +119,16 @@
                 <div class="report-eyebrow">{{ __('common.Relatório Analítico') }}</div>
                 <h1 class="report-title">{{ __('tickets.Relatório Consolidado de Tickets') }}</h1>
                 <div class="report-subtitle">
-                    Analytical analysis of operational statuses, resolution times and costs.
+                    {{ __('tickets.Análise dos estados operacionais, tempos de resolução e custos.') }}
                 </div>
             </td>
             <td class="report-meta">
-                <div><strong>Issued on:</strong> {{ now() }}</div>
-                <div><strong>Records:</strong> {{ $tickets->count() }}</div>
-                <div><strong>Automatically generated</strong></div>
+                <div><strong>{{ __('tickets.Emitido em:') }}</strong> {{ now() }}</div>
+                <div><strong>{{ __('tickets.Registos:') }}</strong> {{ $tickets->count() }}</div>
+                @if ($truncated ?? false)
+                    <div class="report-warning">{{ __('tickets.Relatório limitado aos :total registos mais recentes.', ['total' => $maxRecords]) }}</div>
+                @endif
+                <div><strong>{{ __('tickets.Gerado automaticamente') }}</strong></div>
             </td>
         </tr>
     </table>

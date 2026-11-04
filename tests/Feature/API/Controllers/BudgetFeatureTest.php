@@ -343,6 +343,33 @@ class BudgetFeatureTest extends TestCase
         $this->assertEquals($technician->id, $ticket->assigned_to);
     }
 
+    public function test_technician_cannot_submit_estimate_for_ticket_assigned_to_another_technician(): void
+    {
+        $user = $this->createUserWithToken(UserRoleEnum::User->value);
+        $owner = $this->createUserWithToken(UserRoleEnum::Technician->value);
+        $other = $this->createUserWithToken(UserRoleEnum::Technician->value);
+        $inProgressId = app(TicketStatusService::class)->getByName(TicketStatusEnum::InProgress);
+
+        $ticket = Ticket::create([
+            'user_id' => $user->id,
+            'title' => 'Estimate owned by another technician',
+            'description' => 'A colleague should not be able to quote it.',
+            'priority' => TicketPriorityEnum::High->value,
+            'status_id' => $inProgressId,
+            'assigned_to' => $owner->id,
+            'in_progress_at' => now(),
+            'opened_at' => now()->subDay(),
+        ]);
+
+        $this->withHeader('X-Auth-Token', $other->api_token)
+            ->postJson('/tickets/'.$ticket->id.'/budget', ['estimated_budget' => 500.00])
+            ->assertStatus(403);
+
+        $ticket->refresh();
+        $this->assertEquals($owner->id, $ticket->assigned_to);
+        $this->assertFalse((bool) $ticket->budget_requested);
+    }
+
     public function test_technician_can_submit_estimate_below_threshold_auto_approved(): void
     {
         $user = $this->createUserWithToken(UserRoleEnum::User->value);

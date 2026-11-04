@@ -151,7 +151,8 @@ final class StockDashboardService
      */
     public function stockRunoutForecast(int $months = 3, int $limit = 50): Collection
     {
-        $from = now()->subMonths($months)->startOfMonth();
+        // startOfMonth() first: subMonths() on the 29th-31st overflows into the next month.
+        $from = now()->startOfMonth()->subMonths($months);
 
         $usageRaw = $this->consumptionQuery($from->toDateString(), now()->toDateString())
             ->select(

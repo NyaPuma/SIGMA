@@ -54,7 +54,12 @@ return Application::configure(basePath: dirname(__DIR__))
     })
     ->withExceptions(function (Exceptions $exceptions): void {
         $exceptions->render(function (InvalidArgumentException $e) {
-            return response()->json(['message' => $e->getMessage()], 422);
+            // Domain rules raise these; vendor/framework ones must not leak internals in production.
+            $message = app()->environment('production')
+                ? __('validation.Dados inválidos')
+                : $e->getMessage();
+
+            return response()->json(['message' => $message], 422);
         });
 
         // Ensures the locale (session/cookie/browser) is also set on error pages,

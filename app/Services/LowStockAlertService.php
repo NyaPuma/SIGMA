@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Services;
 
 use App\Enums\NotificationTypeEnum;
+use App\Models\Notification;
 use App\Models\Part;
 
 /**
@@ -37,6 +38,9 @@ final class LowStockAlertService
     /**
      * Creates an in-app notification for each alert part to all admins.
      *
+     * The job runs daily, so an alert already sent for the same part at the same
+     * stock level is skipped: admins are re-notified only when the situation changes.
+     *
      * @return int number of notifications created
      */
     public function notifyAdminsForLowStock(): int
@@ -47,19 +51,40 @@ final class LowStockAlertService
             return 0;
         }
 
+        $configuredCooldown = config('services.stock.low_stock_alert_cooldown_hours', 24);
+        $cooldownHours = max(1, is_numeric($configuredCooldown) ? (int) $configuredCooldown : 24);
+
+        $recentlyNotified = Notification::query()
+            ->where('type', NotificationTypeEnum::LowStock->value)
+            ->where('created_at', '>=', now()->subHours($cooldownHours))
+            ->get(['link', 'message'])
+            ->map(fn (Notification $notification): string => $notification->link.'|'.$notification->message)
+            ->flip();
+
         $entries = [];
 
         foreach ($parts as $part) {
+            $message = __('stock.:part — current stock :current (minimum :min)', [
+                'part' => $part->name,
+                'current' => $part->current_stock,
+                'min' => $part->min_stock,
+            ]);
+            $link = route('ui.stock.parts.show', $part);
+
+            if ($recentlyNotified->has($link.'|'.$message)) {
+                continue;
+            }
+
             $entries[] = [
                 'title' => __('stock.Low Stock'),
-                'message' => __('stock.:part — current stock :current (minimum :min)', [
-                    'part' => $part->name,
-                    'current' => $part->current_stock,
-                    'min' => $part->min_stock,
-                ]),
+                'message' => $message,
                 'type' => NotificationTypeEnum::LowStock->value,
-                'link' => route('ui.stock.parts.show', $part),
+                'link' => $link,
             ];
+        }
+
+        if ($entries === []) {
+            return 0;
         }
 
         return $this->notificationCreatorService->createForAdminsMany($entries);

@@ -79,6 +79,26 @@ class ApproveBudgetActionTest extends DatabaseTestCase
         $this->assertEquals(BudgetStatusEnum::Approved->value, $result->budget_status);
         $this->assertEquals($admin->id, $result->budget_approved_by);
         $this->assertNotNull($result->budget_decided_at);
+        // Approval moves the ticket to In Progress, so resolution-time KPIs need the stamp.
+        $this->assertNotNull($result->in_progress_at);
+    }
+
+    #[Test]
+    public function it_keeps_an_existing_in_progress_timestamp_on_approval(): void
+    {
+        $admin = User::factory()->create(['profile_id' => UserProfile::where('name', UserRoleEnum::Admin->value)->first()->id]);
+        $statusId = TicketStatus::where('name', TicketStatusEnum::PendingBudget->value)->first()->id;
+        $startedAt = now()->subDays(3);
+        $ticket = Ticket::factory()->create([
+            'budget_requested' => true,
+            'budget_status' => BudgetStatusEnum::Pending->value,
+            'status_id' => $statusId,
+            'in_progress_at' => $startedAt,
+        ]);
+
+        $result = $this->action->execute($ticket, $admin, new BudgetDecisionData(decision: BudgetDecisionEnum::Approve));
+
+        $this->assertEquals($startedAt->toDateTimeString(), $result->in_progress_at->toDateTimeString());
     }
 
     #[Test]
@@ -100,6 +120,7 @@ class ApproveBudgetActionTest extends DatabaseTestCase
         $this->assertEquals(BudgetStatusEnum::Rejected->value, $result->budget_status);
         $this->assertEquals('Orçamento demasiado alto', $result->budget_feedback);
         $this->assertEquals($admin->id, $result->budget_approved_by);
+        $this->assertNull($result->in_progress_at);
     }
 
     #[Test]

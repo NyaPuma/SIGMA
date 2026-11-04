@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace Tests\Feature\API\Controllers;
 
+use App\Enums\UserRoleEnum;
 use App\Models\Audit;
 use App\Models\Ticket;
 use Tests\Base\FeatureTestCase;
@@ -40,6 +41,16 @@ final class ActivityFeedFeatureTest extends FeatureTestCase
                     'dot_color',
                 ],
             ]);
+    }
+
+    public function test_technician_cannot_fetch_activity_feed(): void
+    {
+        // The feed exposes other users' names and record titles, so it is admin-only (AuditPolicy).
+        $technician = $this->createUserWithToken(UserRoleEnum::Technician->value);
+
+        $this->withHeader('X-Auth-Token', $technician->api_token)
+            ->getJson('/api/activities')
+            ->assertForbidden();
     }
 
     public function test_unauthenticated_request_is_rejected(): void

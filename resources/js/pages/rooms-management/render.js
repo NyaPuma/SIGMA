@@ -1,5 +1,6 @@
 import { renderResultsCount as renderSharedResultsCount, renderResultsFeedback, renderSimplePagination, renderTableEmptyState, renderTableErrorState } from '../../components/listing/feedback.js';
 import { getPagination, getResultsCount, getRoomsTableBody } from './dom.js';
+import { escapeHtml } from '../../utils/escape.js';
 
 function translations() {
     const data = document.body?.dataset || {};
@@ -8,22 +9,28 @@ function translations() {
         equipmentCount: window.SGM_ROOM_I18N?.equipmentCount || data.roomEquipmentCount || '',
         details: window.SGM_ROOM_I18N?.details || data.roomDetails || '',
         empty: window.SGM_ROOM_I18N?.empty || data.roomEmpty || '',
+        roomName: window.SGM_ROOM_I18N?.roomName || '',
+        location: window.SGM_ROOM_I18N?.location || '',
+        equipment: window.SGM_ROOM_I18N?.equipment || '',
     };
 }
 
 function renderRoomRow(room) {
+    const text = translations();
     const equipmentCount = room.equipments_count ?? room.equipments?.length ?? 0;
+    const code = escapeHtml(room.code) || '—';
+    const location = escapeHtml(room.location) || '—';
 
     return `<tr class="transition-colors duration-150 hover:bg-(--surface-2)/50">
-        <td class="px-5 py-4" data-label="Room Name">
+        <td class="px-5 py-4" data-label="${escapeHtml(text.roomName)}">
             <div class="ui-listing-value">
-                <div class="font-semibold text-(--text)">${room.name}</div>
-                <div class="mt-0.5 font-mono text-xs text-(--text-soft)">${room.code || '—'}</div>
+                <div class="font-semibold text-(--text)">${escapeHtml(room.name)}</div>
+                <div class="mt-0.5 font-mono text-xs text-(--text-soft)">${code}</div>
             </div>
         </td>
-        <td class="px-5 py-4 font-semibold text-(--text-soft)" data-label="Location">${room.location || '—'}</td>
-        <td class="px-5 py-4" data-label="Equipment">
-            <span class="inline-flex items-center gap-1 rounded-lg bg-info/10 px-2.5 py-1 text-xs font-bold uppercase tracking-tight text-info">${equipmentCount} ${translations().equipmentCount || ''}</span>
+        <td class="px-5 py-4 font-semibold text-(--text-soft)" data-label="${escapeHtml(text.location)}">${location}</td>
+        <td class="px-5 py-4" data-label="${escapeHtml(text.equipment)}">
+            <span class="inline-flex items-center gap-1 rounded-lg bg-info/10 px-2.5 py-1 text-xs font-bold uppercase tracking-tight text-info">${equipmentCount} ${text.equipmentCount || ''}</span>
         </td>
         <td class="ui-listing-actions px-5 py-4 text-right">
             <div class="inline-flex items-center justify-end gap-1.5">

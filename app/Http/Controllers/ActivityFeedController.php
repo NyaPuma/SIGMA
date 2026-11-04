@@ -20,6 +20,8 @@ final class ActivityFeedController extends Controller
      */
     public function index(): JsonResponse
     {
+        $this->authorize('viewAny', Audit::class);
+
         $audits = Audit::query()
             ->with('user')
             ->latest()

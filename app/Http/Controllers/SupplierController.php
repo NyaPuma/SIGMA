@@ -12,9 +12,9 @@ use App\Http\Requests\StoreSupplierRequest;
 use App\Http\Requests\UpdateSupplierRequest;
 use App\Http\Resources\SupplierResource;
 use App\Models\Supplier;
+use App\Support\SqlPattern;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
-use Illuminate\Support\Str;
 use OpenApi\Attributes as OA;
 
 final class SupplierController extends Controller
@@ -48,11 +48,7 @@ final class SupplierController extends Controller
         $query = Supplier::query();
 
         if ($request->filled('q')) {
-            $safe = Str::of($request->query('q'))->replace('%', '\\%')->replace('_', '\\_');
-            $query->where(function ($sub) use ($safe): void {
-                $sub->where('name', 'like', "%{$safe}%")
-                    ->orWhere('nif', 'like', "%{$safe}%");
-            });
+            SqlPattern::whereContains($query, ['name', 'nif'], $request->string('q')->toString());
         }
 
         $suppliers = $query->orderBy('name')->paginate(15);

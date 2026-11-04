@@ -113,7 +113,7 @@ Services are grouped by functional area. Where a method has no in-production cal
 *(All other methods below are private helpers of `buildPayload()` and are listed for completeness.)*
 
 - `private buildPayload(): array` — resolves Open/InProgress/Closed IDs, runs the four domain queries, computes `sla_success` from `sla_met / closed_tickets`, then assembles the entire payload: average resolution/waiting minutes, open/in_progress/waiting_budget/closed counts, system availability, SLA %, priority breakdown, status breakdown, monthly tickets/cost/SLA/MTTR, urgency/room/budget-status/source breakdowns, cost by equipment, stock monthly in/out, low-stock parts, notifications by type, users by role, top equipment/rooms/technicians, and recent activity. It delegates to the private helpers:
-  - `monthlyPerformanceData(array $monthLabels): array{sla, mttr}` — runs a driver-aware SQL query (SQLite `strftime` vs MySQL `DATE_FORMAT`/`TIMESTAMPDIFF`) over the last months to compute monthly SLA % and MTTR minutes (`:143-189`).
+  - `monthlyPerformanceData(array $monthLabels): array{sla, mttr}` — runs a driver-aware SQL query built through `App\Support\DateSql` (SQLite `strftime`/`julianday`, PostgreSQL `to_char`/`EXTRACT`, MySQL `DATE_FORMAT`/`TIMESTAMPDIFF`) over the last months to compute monthly SLA % and MTTR minutes (`:143-189`).
   - `urgencyBreakdown(Builder $baseQuery): array` — counts `urgent` true vs false/null tickets (`:196-208`).
   - `roomBreakdown(Builder $baseQuery): array` — counts tickets grouped by room, top 8 by volume (`:215-230`).
   - `budgetBreakdown(Builder $baseQuery): array` — counts by `budget_status` (Pending/Approved/Rejected) (`:237-252`).
@@ -137,17 +137,17 @@ Services are grouped by functional area. Where a method has no in-production cal
 
 #### `exportCsv(): void`
 - **What it does:** Exports ticket data as CSV to `php://output`.
-- **How it works / steps:** Opens `php://output`; writes CSV via `writeCsvRows()`; closes the handle in a `finally` (throws `RuntimeException` if the stream cannot be opened) (`app/Services/AnalyticsExportService.php:68-81`).
+- **How it works / steps:** Opens `php://output`; writes CSV via `writeCsvRows()`; closes the handle in a `finally` (throws `RuntimeException` if the stream cannot be opened) (`app/Services/AnalyticsExportService.php:70-83`).
 - **Who calls it / when:** No direct caller found; the synchronous stdout variant of the export.
 
 #### `exportCsvToFile(string $path): void`
 - **What it does:** Exports ticket data to a CSV file at `$path`.
-- **How it works / steps:** Creates the parent directory if needed (`ensureDirectoryExists`), opens the file, writes UTF-8 BOM + localized headers + data rows via `writeCsvRows()` (`:88-103`).
+- **How it works / steps:** Creates the parent directory if needed (`ensureDirectoryExists`), opens the file, writes UTF-8 BOM + localized headers + data rows via `writeCsvRows()` (`:90-105`).
 - **Who calls it / when:** Via `AnalyticsService::exportCsvToFile` from `app/Jobs/ExportCsvJob.php:47`.
 
 #### `exportPdfToFile(string $path): void`
-- **What it does:** Exports a PDF report of all (non-deleted) tickets to `$path`.
-- **How it works / steps:** Ensures the directory; selects ticket fields + `status`, loads the Blade template `reports.tickets`, and saves the rendered PDF (`:108-120`).
+- **What it does:** Exports a PDF report of the most recent (non-deleted) tickets to `$path`, capped at `config('services.analytics.pdf_export_limit')` (default 2000).
+- **How it works / steps:** Ensures the directory; reads the cap (`PDF_RECORD_LIMIT_DEFAULT` guards a non-numeric config); selects ticket fields + `status` with `limit(cap + 1)` so hitting the cap is detectable without counting every row; when the extra row exists the collection is trimmed and `truncated`/`maxRecords` are passed to the Blade template `reports.tickets`, which prints a warning banner on page 1 (`:110-144`). Rendering an unbounded dataset previously exhausted the worker's memory.
 - **Who calls it / when:** Via `AnalyticsService::exportPdfToFile` from `app/Jobs/ExportPdfJob.php:47`.
 
 *(Private helpers: `csvHeaders()`, `writeCsvRows()` — chunks 500 tickets at a time —, `csvRow()` — formats each field via `LocalizationService`, `statusLabel()`, `priorityLabel()`, `budgetLabel()`, `ensureDirectoryExists()`, `localization()`.)*
@@ -304,12 +304,12 @@ Services are grouped by functional area. Where a method has no in-production cal
 
 #### `partsInAlert(): array<int, Part>`
 - **What it does:** Returns all parts currently in the low-stock alert state, most urgent first.
-- **How it works / steps:** Queries parts via the `lowStock()` scope, eager-loads `category` and `taxRate`, and orders by the `current_stock / min_stock` ratio ascending (min_stock of 0 → ratio 0), i.e. lowest ratio (most urgent) first (`app/Services/LowStockAlertService.php:27-35`).
+- **How it works / steps:** Queries parts via the `lowStock()` scope, eager-loads `category` and `taxRate`, and orders by the `current_stock / min_stock` ratio ascending (min_stock of 0 → ratio 0), i.e. lowest ratio (most urgent) first (`app/Services/LowStockAlertService.php:28-43`).
 - **Who calls it / when:** `app/Http/Controllers/StockDashboardController.php:44` (to render the "parts in alert" block on the stock dashboard).
 
 #### `notifyAdminsForLowStock(): int`
 - **What it does:** Creates one notification per alert part for all admins; returns the number created.
-- **How it works / steps:** Calls `partsInAlert()`; returns 0 if none; builds an entry array (localized title "Low Stock", message with part name/current/min, type `LowStock`, link to part page) and passes all entries in one batch to `createForAdminsMany()` (`:42-66`).
+- **How it works / steps:** Calls `partsInAlert()`; returns 0 if none; loads the `LowStock` notifications created within the last `config('services.stock.low_stock_alert_cooldown_hours')` (default 24 h) keyed by `link|message`, skips parts whose alert text is unchanged, builds the remaining entries (localized title "Low Stock", message with part name/current/min, link to part page) and passes them in one batch to `createForAdminsMany()`; returns 0 when every part was already alerted (`:46-92`). A change in the stock level changes the message, so a still-low part re-alerts only once its situation moves.
 - **Who calls it / when:** `app/Jobs/CheckLowStockJob.php:25` — the queued `handle(LowStockAlertService $alertService)` that runs on a schedule (so low-stock alerts are not recomputed on every page load).
 
 ---
@@ -711,7 +711,7 @@ Services are grouped by functional area. Where a method has no in-production cal
 
 #### `listPaginated(?string $search = null, ?string $status = null): LengthAwarePaginator`
 - **What it does:** Paginated equipment listing (15 per page, by name).
-- **How it works / steps:** Loads `room`; escapes `%`/`_` wildcards in the search; `LIKE` search across `name`, `serial`, `brand`, `model`; optional exact `status` filter; `orderBy('name')->paginate(15)` (`app/Services/EquipmentService.php:17-37`).
+- **How it works / steps:** Loads `room`; wildcard-safe search via `App\Support\SqlPattern::whereContains()` (`LIKE ? ESCAPE '!'`) across `name`, `serial`, `brand`, `model`; optional exact `status` filter; `orderBy('name')->paginate(15)` (`app/Services/EquipmentService.php:17-37`).
 - **Who calls it / when:** `app/Http/Controllers/UiController.php:294`.
 
 ---
@@ -724,7 +724,7 @@ Services are grouped by functional area. Where a method has no in-production cal
 
 #### `listPaginated(?string $search = null, ?string $status = null, ?int $categoryId = null, int $perPage = 15): LengthAwarePaginator`
 - **What it does:** Paginated parts listing with search and filters.
-- **How it works / steps:** Loads `category` and `taxRate`; escaped `LIKE` across `name`, `sku`, `brand`, `manufacturer_ref`; applies `lowStock()` if `status == 'low'`, `outOfStock()` if `'out'`; optional `part_category_id` filter; sorted by name and paginated (`app/Services/PartService.php:19-48`).
+- **How it works / steps:** Loads `category` and `taxRate`; wildcard-safe `LIKE ? ESCAPE '!'` search via `App\Support\SqlPattern` across `name`, `sku`, `brand`, `manufacturer_ref`; applies `lowStock()` if `status == 'low'`, `outOfStock()` if `'out'`; optional `part_category_id` filter; sorted by name and paginated (`app/Services/PartService.php:19-48`).
 - **Who calls it / when:** `app/Http/Controllers/PartController.php:54`.
 
 ---
@@ -808,7 +808,7 @@ Services are grouped by functional area. Where a method has no in-production cal
 - **What it does:** Returns filtered tickets, newest first, paginated.
 - **How it works / steps:**
   1. Loads `equipment`, `room`, `user`, `status`, `technician` (`app/Services/TicketSearchService.php:26`).
-  2. Text search (escaped wildcards) across `title` and `description` (`:28-34`).
+  2. Wildcard-safe text search across `title` and `description` via `App\Support\SqlPattern::whereContains()` (`:28-30`).
   3. Filters by `priority` enum value, `status` (normalized then resolved to a numeric ID via `TicketStatusService`), `userId`, `technicianId`, `equipmentId`, `roomId` (`:36-62`).
   4. Throws `InvalidArgumentException` if the date range start is after the end (`:64-66`).
   5. Applies date filters: `whereBetween('created_at', ...)`, `whereDate >=`, or `whereDate <=` accordingly (`:68-72,83-92`).
@@ -898,7 +898,7 @@ Services are grouped by functional area. Where a method has no in-production cal
 
 #### `getScheduledEvents(?string $from = null, ?string $to = null): Collection`
 - **What it does:** Returns global scheduled events within an optional date range.
-- **How it works:** Delegates to `(new ScheduledEventsQuery($from, $to))->execute()` from `app/Domain/Ticket/Queries/` (`:81-84`).
+- **How it works:** Missing bounds default to `now ± WINDOW_DAYS` (365 days) before delegating to `(new ScheduledEventsQuery($from, $to))->execute()` from `app/Domain/Ticket/Queries/` (`:83-89`). Without that defaulting the query would scan every scheduled ticket ever recorded.
 - **Who calls it / when:** No in-production caller found besides a potential generic calendar endpoint; the user-facing calendar uses `getScheduledEventsForUser`.
 
 ---

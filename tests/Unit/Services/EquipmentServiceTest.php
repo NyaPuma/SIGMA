@@ -67,10 +67,20 @@ class EquipmentServiceTest extends FeatureTestCase
 
         $result = $this->service->listPaginated('AB_CD');
 
-        $this->assertTrue(
-            collect($result->items())->every(fn ($equipment) => $equipment->name !== 'Câmara ABXCD'),
-            'A pesquisa com wildcards não deve devolver correspondências não pretendidas.'
-        );
+        $this->assertCount(1, $result->items());
+        $this->assertEquals('Câmara AB_CD', $result->items()[0]->name);
+    }
+
+    #[Test]
+    public function it_matches_a_literal_percent_when_searching(): void
+    {
+        Equipment::factory()->create(['name' => 'Álcool 70% iso', 'serial' => 'ALC-1']);
+        Equipment::factory()->create(['name' => 'Impressora 3D', 'serial' => 'PRI-1']);
+
+        $result = $this->service->listPaginated('70%');
+
+        $this->assertCount(1, $result->items());
+        $this->assertEquals('Álcool 70% iso', $result->items()[0]->name);
     }
 
     #[Test]

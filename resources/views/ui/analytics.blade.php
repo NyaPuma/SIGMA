@@ -177,10 +177,18 @@
             />
 
             <div class="grid gap-6 md:grid-cols-2 xl:grid-cols-4">
-                <x-ui.analytics.metric-card :eyebrow="__('common.MTTR')" value_id="metricMttr" :description="__('tickets.Tempo médio necessário para resolver uma ocorrência.')" icon_bg_class="bg-success/10" icon_color_class="text-success" :icon="'<svg class=&quot;h-7 w-7 text-success&quot; fill=&quot;none&quot; stroke=&quot;currentColor&quot; stroke-width=&quot;2&quot; viewBox=&quot;0 0 24 24&quot;><path stroke-linecap=&quot;round&quot; stroke-linejoin=&quot;round&quot; d=&quot;M12 8v4l3 3&quot; /><circle cx=&quot;12&quot; cy=&quot;12&quot; r=&quot;9&quot; /></svg>'" />
-                <x-ui.analytics.metric-card :eyebrow="__('common.Espera')" value_id="metricWaiting" :description="__('common.Tempo médio até um técnico assumir a intervenção.')" icon_bg_class="bg-info/10" icon_color_class="text-info" :icon="'<svg class=&quot;h-7 w-7 text-info&quot; fill=&quot;none&quot; stroke=&quot;currentColor&quot; stroke-width=&quot;2&quot; viewBox=&quot;0 0 24 24&quot;><path stroke-linecap=&quot;round&quot; stroke-linejoin=&quot;round&quot; d=&quot;M12 6v6l4 2&quot; /></svg>'" />
-                <x-ui.analytics.metric-card :eyebrow="__('common.Disponibilidade')" value_id="metricAvailability" default_value="99.9%" :description="__('common.Disponibilidade estimada da plataforma.')" icon_bg_class="bg-purple-500/10" icon_color_class="text-purple-500" :icon="'<svg class=&quot;h-7 w-7 text-purple-500&quot; fill=&quot;none&quot; stroke=&quot;currentColor&quot; stroke-width=&quot;2&quot; viewBox=&quot;0 0 24 24&quot;><path stroke-linecap=&quot;round&quot; stroke-linejoin=&quot;round&quot; d=&quot;M5 13l4 4L19 7&quot; /></svg>'" />
-                <x-ui.analytics.metric-card :eyebrow="__('common.SLA')" value_id="metricSla" :description="__('common.Percentagem de intervenções dentro do tempo previsto.')" icon_bg_class="bg-warning/10" icon_color_class="text-warning" :icon="'<svg class=&quot;h-7 w-7 text-warning&quot; fill=&quot;none&quot; stroke=&quot;currentColor&quot; stroke-width=&quot;2&quot; viewBox=&quot;0 0 24 24&quot;><path stroke-linecap=&quot;round&quot; stroke-linejoin=&quot;round&quot; d=&quot;M9 12l2 2 4-4&quot; /></svg>'" />
+                <x-ui.analytics.metric-card :eyebrow="__('common.MTTR')" value_id="metricMttr" :description="__('tickets.Tempo médio necessário para resolver uma ocorrência.')" icon_bg_class="bg-success/10">
+                    <svg class="h-7 w-7 text-success" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 8v4l3 3" /><circle cx="12" cy="12" r="9" /></svg>
+                </x-ui.analytics.metric-card>
+                <x-ui.analytics.metric-card :eyebrow="__('common.Espera')" value_id="metricWaiting" :description="__('common.Tempo médio até um técnico assumir a intervenção.')" icon_bg_class="bg-info/10">
+                    <svg class="h-7 w-7 text-info" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6l4 2" /></svg>
+                </x-ui.analytics.metric-card>
+                <x-ui.analytics.metric-card :eyebrow="__('common.Disponibilidade')" value_id="metricAvailability" default_value="99.9%" :description="__('common.Disponibilidade estimada da plataforma.')" icon_bg_class="bg-purple-500/10">
+                    <svg class="h-7 w-7 text-purple-500" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" /></svg>
+                </x-ui.analytics.metric-card>
+                <x-ui.analytics.metric-card :eyebrow="__('common.SLA')" value_id="metricSla" :description="__('common.Percentagem de intervenções dentro do tempo previsto.')" icon_bg_class="bg-warning/10">
+                    <svg class="h-7 w-7 text-warning" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4" /></svg>
+                </x-ui.analytics.metric-card>
             </div>
         </section>
 

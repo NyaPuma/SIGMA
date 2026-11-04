@@ -37,6 +37,10 @@ final readonly class ApproveBudgetAction
 
             if ($isApproved) {
                 $ticket->budget_status = BudgetStatusEnum::Approved->value;
+                // Approval moves the ticket to In Progress, so it must stamp the start
+                // time exactly like StartTicketAction — otherwise duration metrics and
+                // the analytics export see a work-in-progress ticket with no start.
+                $ticket->in_progress_at = $ticket->in_progress_at ?? now();
             } else {
                 $ticket->budget_status = BudgetStatusEnum::Rejected->value;
                 if (! empty($data->feedback)) {

@@ -1,5 +1,6 @@
 import { getPagination, getResultsCount, getUsersTableBody } from './dom.js';
 import { getPaginationTranslations } from '../../components/listing/feedback.js';
+import { escapeHtml } from '../../utils/escape.js';
 
 function isUserActive(user) {
     return user.active === true || user.active === 1 || user.active === '1' || String(user.active).toLowerCase() === 'true';
@@ -24,15 +25,6 @@ function renderStatusBadge(user) {
     return `<span class="inline-flex items-center gap-1.5 rounded-lg bg-[var(--text-soft)]/10 px-2 py-0.5 text-xs font-bold uppercase tracking-tight text-[var(--text-soft)]"><span class="h-1.5 w-1.5 rounded-full bg-[var(--text-soft)]"></span>${translations.inactive || 'Inactive'}</span>`;
 }
 
-function escapeHtml(value) {
-    return String(value ?? '').replace(/[&<>"']/g, (char) => ({
-        '&': '&amp;',
-        '<': '&lt;',
-        '>': '&gt;',
-        '"': '&quot;',
-        "'": '&#39;',
-    }[char]));
-}
 
 function renderUserRow(user) {
     const translations = window.SGM_USER_MANAGEMENT_I18N || {};

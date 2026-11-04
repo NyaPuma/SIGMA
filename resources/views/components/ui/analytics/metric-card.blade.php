@@ -17,8 +17,6 @@
     'default_value' => '--',
     'description' => null,
     'icon_bg_class' => 'bg-primary/10',
-    'icon_color_class' => null,
-    'icon' => null,
 ])
 
 <article {{ $attributes->class(['rounded-3xl border border-[var(--border)] bg-[var(--surface)] p-7 shadow-xs']) }}>
@@ -36,9 +34,9 @@
             </h3>
         </div>
 
-        @if($icon)
+        @if(! $slot->isEmpty())
             <div class="flex h-14 w-14 shrink-0 items-center justify-center rounded-2xl {{ $icon_bg_class }}" aria-hidden="true">
-                {!! $icon !!}
+                {{ $slot }}
             </div>
         @endif
     </div>

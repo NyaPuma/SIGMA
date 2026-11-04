@@ -4,9 +4,9 @@ namespace App\Domain\Ticket\Queries;
 
 use App\Enums\BudgetStatusEnum;
 use App\Models\Ticket;
+use App\Support\DateSql;
 use App\ValueObjects\SqlFragment;
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Support\Facades\DB;
 
 final readonly class TicketKpiQuery
 {
@@ -78,12 +78,6 @@ final readonly class TicketKpiQuery
 
     private function diffMinutesExpression(string $start, string $end): string
     {
-        $driver = DB::connection()->getDriverName();
-
-        return match ($driver) {
-            'sqlite' => "(julianday({$end}) - julianday({$start})) * 1440",
-            'pgsql' => "EXTRACT(EPOCH FROM {$end} - {$start}) / 60",
-            default => "TIMESTAMPDIFF(MINUTE, {$start}, {$end})",
-        };
+        return DateSql::minutesBetween($start, $end);
     }
 }

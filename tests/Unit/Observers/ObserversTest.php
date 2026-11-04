@@ -84,11 +84,13 @@ class ObserversTest extends FeatureTestCase
     #[Test]
     public function creating_a_ticket_invalidates_the_analytics_cache(): void
     {
-        Cache::put('analytics_dashboard_payload', 'cached-value');
+        // Mirrors AnalyticsDashboardService::getDashboardPayload(), which keys by locale.
+        $key = 'analytics_dashboard_payload:'.app()->getLocale();
+        Cache::put($key, 'cached-value');
 
         $this->createTicket();
 
-        $this->assertNull(Cache::get('analytics_dashboard_payload'));
+        $this->assertNull(Cache::get($key));
     }
 
     #[Test]
@@ -122,12 +124,13 @@ class ObserversTest extends FeatureTestCase
     #[Test]
     public function deleting_a_ticket_invalidates_the_analytics_cache(): void
     {
-        Cache::put('analytics_dashboard_payload', 'cached-value');
+        $key = 'analytics_dashboard_payload:'.app()->getLocale();
+        Cache::put($key, 'cached-value');
 
         $ticket = $this->createTicket();
         $ticket->delete();
 
-        $this->assertNull(Cache::get('analytics_dashboard_payload'));
+        $this->assertNull(Cache::get($key));
     }
 
     // --- AuditObserver / Audit model guard ---

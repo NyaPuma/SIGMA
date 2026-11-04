@@ -1,15 +1,8 @@
 import { renderResultsCount as renderSharedResultsCount, renderResultsFeedback, renderSimplePagination, renderTableEmptyState, renderTableErrorState } from '../../../components/listing/feedback.js';
 import { getMovementTableBody, getPagination, getResultsCount } from './dom.js';
 import { formatDateTime } from '../../../utils/locale.js';
+import { escapeHtml } from '../../../utils/escape.js';
 
-function escapeHtml(value) {
-    return String(value ?? '')
-        .replaceAll('&', '&amp;')
-        .replaceAll('<', '&lt;')
-        .replaceAll('>', '&gt;')
-        .replaceAll('"', '&quot;')
-        .replaceAll("'", '&#39;');
-}
 
 function renderMovementRow(movement) {
     const typeLabels = window.SGM_ENUM_I18N?.movement || {};

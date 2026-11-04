@@ -1,5 +1,10 @@
 import { authHeader } from '../utils/api.js';
 import { formatCurrency } from '../utils/locale.js';
+import { escapeHtml } from '../utils/escape.js';
+
+function uiLabels() {
+    return window.SGM_UI_I18N || {};
+}
 
 let abortController = null;
 
@@ -50,12 +55,12 @@ function renderItemRow(item, itemType) {
         return `
             <div data-is-item="${id}" class="flex items-center gap-3 p-2.5 rounded-xl border ${selectedClass} hover:bg-(--surface-2) transition cursor-pointer">
                 <span class="min-w-0 flex-1">
-                    <span class="block truncate text-xs font-semibold text-(--text)">${item.name || ''}</span>
-                    <span class="block truncate text-[11px] text-(--text-soft)">${item.sku || item.code || ''}</span>
+                    <span class="block truncate text-xs font-semibold text-(--text)">${escapeHtml(item.name)}</span>
+                    <span class="block truncate text-[11px] text-(--text-soft)">${escapeHtml(item.sku || item.code)}</span>
                 </span>
                 <span class="shrink-0 text-right">
                     <span class="block font-mono text-xs font-bold text-(--text)">${price}</span>
-                    <span class="block text-[11px] text-(--text-soft)">${stock} ${unit}</span>
+                    <span class="block text-[11px] text-(--text-soft)">${stock} ${escapeHtml(unit)}</span>
                 </span>
             </div>
         `;
@@ -64,11 +69,11 @@ function renderItemRow(item, itemType) {
         return `
             <div data-is-item="${id}" class="flex items-center gap-3 p-2.5 rounded-xl border ${selectedClass} hover:bg-(--surface-2) transition cursor-pointer">
                 <span class="min-w-0 flex-1">
-                    <span class="block truncate text-xs font-semibold text-(--text)">${item.name || ''}</span>
-                    <span class="block truncate text-[11px] text-(--text-soft)">${item.code || item.serial_number || ''}</span>
+                    <span class="block truncate text-xs font-semibold text-(--text)">${escapeHtml(item.name)}</span>
+                    <span class="block truncate text-[11px] text-(--text-soft)">${escapeHtml(item.code || item.serial_number)}</span>
                 </span>
                 <span class="shrink-0 text-right">
-                    <span class="block text-[11px] text-(--text-soft)">${item.location || item.room?.name || '—'}</span>
+                    <span class="block text-[11px] text-(--text-soft)">${escapeHtml(item.location || item.room?.name) || '—'}</span>
                 </span>
             </div>
         `;
@@ -140,7 +145,7 @@ function updateCount() {
     const el = modal.overlay?.querySelector('[data-is-count]');
     if (!el) return;
     const total = modal.selectedItems.size;
-    el.textContent = total > 0 ? '1 item selected' : 'No item selected';
+    el.textContent = `${total} ${uiLabels().itemsSelected || 'item(s) selected'}`;
 }
 
 function updateInputDisplay() {
@@ -196,9 +201,11 @@ function renderItemSelectorModal() {
         if (e.target === overlay) closeItemSelectorModal();
     });
 
-    const title = modal.itemType === 'part' ? 'Select Materials (Stock)' : 'Select Equipment';
-    const badgeText = modal.itemType === 'part' ? 'Materials (Stock)' : 'Equipment';
-    const placeholder = modal.itemType === 'part' ? 'Search material in stock...' : 'Search equipment...';
+    const labels = uiLabels();
+    const isPart = modal.itemType === 'part';
+    const title = escapeHtml(isPart ? (labels.selectMaterials || 'Select Materials (Stock)') : (labels.selectEquipment || 'Select Equipment'));
+    const badgeText = escapeHtml(isPart ? (labels.materialsBadge || 'Materials (Stock)') : (labels.equipmentBadge || 'Equipment'));
+    const placeholder = escapeHtml(isPart ? (labels.searchMaterial || 'Search material in stock...') : (labels.searchEquipment || 'Search equipment...'));
 
     overlay.innerHTML = `
         <div class="flex max-h-[85vh] w-full max-w-2xl flex-col overflow-hidden rounded-2xl border border-(--border) bg-(--surface) shadow-2xl">
@@ -222,10 +229,10 @@ function renderItemSelectorModal() {
             </div>
 
             <div class="flex items-center justify-between gap-3 border-t border-(--border) px-4 py-3">
-                <span data-is-count class="text-xs text-(--text-soft)">0 items selected</span>
+                <span data-is-count class="text-xs text-(--text-soft)">0 ${escapeHtml(labels.itemsSelected || 'item(s) selected')}</span>
                 <div class="flex items-center gap-2">
-                    <button type="button" data-is-cancel class="px-3 py-2 text-xs font-bold text-(--text-soft) border border-(--border) rounded-lg hover:bg-(--surface-2) transition cursor-pointer">Cancel</button>
-                    <button type="button" data-is-confirm class="px-4 py-2 text-xs font-bold text-[var(--on-primary)] bg-primary hover:bg-primary-hover rounded-lg shadow-sm transition cursor-pointer">Confirm</button>
+                    <button type="button" data-is-cancel class="px-3 py-2 text-xs font-bold text-(--text-soft) border border-(--border) rounded-lg hover:bg-(--surface-2) transition cursor-pointer">${escapeHtml(labels.cancel || 'Cancel')}</button>
+                    <button type="button" data-is-confirm class="px-4 py-2 text-xs font-bold text-[var(--on-primary)] bg-primary hover:bg-primary-hover rounded-lg shadow-sm transition cursor-pointer">${escapeHtml(labels.confirm || 'Confirm')}</button>
                 </div>
             </div>
         </div>

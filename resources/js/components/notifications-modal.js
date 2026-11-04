@@ -5,6 +5,8 @@
  * Follows the same pattern as the localization modal.
  */
 
+import { escapeHtml } from '../utils/escape.js';
+
 let modal, overlay, container;
 let triggerEl = null;
 
@@ -164,12 +166,12 @@ function renderItem(n) {
     const icon = notificationIcon(n.type);
     return `
         <div class="notifications-modal__item ${isUnread ? 'notifications-modal__item--unread' : ''} ${n.link ? 'cursor-pointer' : ''}"
-             ${n.link ? `data-notif-link="${n.link}" data-notif-id="${n.id}"` : ''}>
+             ${n.link ? `data-notif-link="${escapeHtml(n.link)}" data-notif-id="${n.id}"` : ''}>
             <span class="text-base flex-shrink-0 mt-0.5 text-(--text-soft)">${icon}</span>
             <div class="flex-1 min-w-0">
-                <p class="text-xs font-bold text-(--text) leading-tight">${n.title || ''}</p>
-                <p class="text-xs mt-0.5 line-clamp-2 text-soft">${n.message || n.description || ''}</p>
-                <p class="text-xs mt-1 text-muted">${n.created_at || ''}</p>
+                <p class="text-xs font-bold text-(--text) leading-tight">${escapeHtml(n.title)}</p>
+                <p class="text-xs mt-0.5 line-clamp-2 text-soft">${escapeHtml(n.message || n.description)}</p>
+                <p class="text-xs mt-1 text-muted">${escapeHtml(n.created_at)}</p>
             </div>
             ${isUnread ? '<span class="w-2 h-2 rounded-full bg-primary flex-shrink-0 mt-1.5"></span>' : ''}
         </div>

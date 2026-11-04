@@ -82,6 +82,9 @@ final class CalendarService
      */
     public function getScheduledEvents(?string $from = null, ?string $to = null): Collection
     {
-        return (new ScheduledEventsQuery($from, $to))->execute();
+        return (new ScheduledEventsQuery(
+            $from ?? Carbon::now()->subDays(self::WINDOW_DAYS)->toDateTimeString(),
+            $to ?? Carbon::now()->addDays(self::WINDOW_DAYS)->toDateTimeString(),
+        ))->execute();
     }
 }

@@ -19,6 +19,7 @@ return [
     'Categorias de Peças' => 'Part Categories',
     'Catálogo de peças, controlo de stock e localização.' => 'Parts catalogue, stock control and location.',
     'Catálogo de peças, fornecedores, movimentos de stock, dashboard e relatórios' => 'Parts catalogue, suppliers, stock movements, dashboard and reports',
+    'Clique para selecionar peça...' => 'Click to select a part...',
     'Configure as taxas de IVA aplicáveis ao preço das peças.' => 'Configure the VAT rates applicable to the price of the parts.',
     'Cria uma peça e regista o stock inicial como movimento de entrada.' => 'Creates a part and registers the initial stock as an incoming movement.',
     'Criar categoria de peças' => 'Create part category',

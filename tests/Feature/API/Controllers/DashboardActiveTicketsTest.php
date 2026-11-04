@@ -99,4 +99,55 @@ class DashboardActiveTicketsTest extends TestCase
     {
         $this->getJson('/dashboard/tickets-active')->assertStatus(401);
     }
+
+    #[Test]
+    public function dashboard_tickets_active_hides_other_users_tickets_from_an_operator(): void
+    {
+        $operator = $this->createUserWithProfile(UserRoleEnum::User);
+        $colleague = $this->createUserWithProfile(UserRoleEnum::User);
+
+        $mine = $this->createTicket(TicketStatusEnum::Open, ['user_id' => $operator->id]);
+        $theirs = $this->createTicket(TicketStatusEnum::Open, ['user_id' => $colleague->id]);
+
+        $response = $this->withHeader('X-Auth-Token', $operator->api_token)
+            ->getJson('/dashboard/tickets-active');
+
+        $response->assertOk();
+
+        $ids = collect($response->json('tickets'))->pluck('id')->all();
+
+        $this->assertContains($mine->id, $ids);
+        $this->assertNotContains($theirs->id, $ids);
+    }
+
+    #[Test]
+    public function dashboard_tickets_active_limits_a_technician_to_assigned_tickets(): void
+    {
+        $technician = $this->createUserWithProfile(UserRoleEnum::Technician);
+        $otherTechnician = $this->createUserWithProfile(UserRoleEnum::Technician);
+
+        $assigned = $this->createTicket(TicketStatusEnum::InProgress, ['assigned_to' => $technician->id]);
+        $unassigned = $this->createTicket(TicketStatusEnum::InProgress, ['assigned_to' => $otherTechnician->id]);
+
+        $response = $this->withHeader('X-Auth-Token', $technician->api_token)
+            ->getJson('/dashboard/tickets-active');
+
+        $response->assertOk();
+
+        $ids = collect($response->json('tickets'))->pluck('id')->all();
+
+        $this->assertContains($assigned->id, $ids);
+        $this->assertNotContains($unassigned->id, $ids);
+    }
+
+    private function createUserWithProfile(UserRoleEnum $role): User
+    {
+        $profile = UserProfile::firstOrCreate(['name' => $role->value]);
+
+        return User::factory()->create([
+            'profile_id' => $profile->id,
+            'api_token' => Str::random(60),
+            'active' => true,
+        ]);
+    }
 }

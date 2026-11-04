@@ -70,9 +70,9 @@ final readonly class TicketObserver
      */
     private function invalidateAnalyticsCache(): void
     {
-        // Matches the key used by AnalyticsDashboardService (locale-suffixed),
-        // as well as the legacy unsuffixed key.
+        // Only the acting locale is dropped: the payload has a 60 s TTL, so the other locales
+        // self-heal, whereas forgetting all 52 keys on every ticket save would cost 52 queries
+        // per write (CACHE_STORE=database) for a staleness window of at most one minute.
         Cache::forget('analytics_dashboard_payload:'.app()->getLocale());
-        Cache::forget('analytics_dashboard_payload');
     }
 }

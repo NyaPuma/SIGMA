@@ -19,6 +19,8 @@ use App\Models\Part;
 use App\Models\StockMovement;
 use App\Models\Ticket;
 use App\Models\UserProfile;
+use App\Support\DateSql;
+use App\ValueObjects\SqlFragment;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Collection;
@@ -79,7 +81,10 @@ final class AnalyticsDashboardService
             'in_progress_tickets' => $kpiData['in_progress_tickets'],
             'waiting_budget_tickets' => $kpiData['budget_pending_tickets'],
             'closed_tickets' => $kpiData['closed_tickets'],
-            'system_availability' => config('services.analytics.system_availability', 99.9),
+            // Must be the key SystemSettingsService manages: applyOverrides() writes the saved
+            // value to services.custom.analytics.*, so reading services.analytics.* would make
+            // the "Disponibilidade do sistema" field in Settings have no effect here.
+            'system_availability' => config('services.custom.analytics.system_availability', 99.9),
             'sla_success' => $slaSuccess,
             'by_priority' => [
                 'labels' => collect([
@@ -152,18 +157,14 @@ final class AnalyticsDashboardService
         $start = Carbon::parse($monthLabels[0])->startOfMonth();
         $end = Carbon::parse($monthLabels[array_key_last($monthLabels)])->endOfMonth();
 
-        $driver = DB::connection()->getDriverName();
-        $monthExpr = $driver === 'sqlite'
-            ? "strftime('%Y-%m', opened_at)"
-            : "DATE_FORMAT(opened_at, '%Y-%m')";
-        $diffExpr = $driver === 'sqlite'
-            ? '(julianday(closed_at) - julianday(opened_at)) * 1440'
-            : 'TIMESTAMPDIFF(MINUTE, opened_at, closed_at)';
+        $monthExpr = DateSql::month('opened_at');
+        $diffExpr = DateSql::minutesBetween('opened_at', 'closed_at');
         $targetRaw = config('services.analytics.sla_target_minutes', 480);
         $targetMinutes = is_numeric($targetRaw) ? (int) $targetRaw : 480;
+        $closedId = $this->statusService->getByName(TicketStatusEnum::Closed);
 
         $rows = Ticket::query()
-            ->selectRaw("
+            ->select(new SqlFragment("
                 {$monthExpr} as month,
                 AVG(CASE WHEN status_id = ? AND opened_at IS NOT NULL AND closed_at IS NOT NULL
                     THEN {$diffExpr} END) as avg_resolution,
@@ -171,11 +172,12 @@ final class AnalyticsDashboardService
                     AND {$diffExpr} <= ? THEN 1 ELSE 0 END) as sla_met,
                 SUM(CASE WHEN status_id = ? AND opened_at IS NOT NULL AND closed_at IS NOT NULL
                     THEN 1 ELSE 0 END) as closed_count
-            ", [$this->statusService->getByName(TicketStatusEnum::Closed), $this->statusService->getByName(TicketStatusEnum::Closed), $targetMinutes, $this->statusService->getByName(TicketStatusEnum::Closed)])
+            "))
+            ->addBinding([$closedId, $closedId, $targetMinutes, $closedId], 'select')
             ->whereNull('tickets.deleted_at')
             ->whereNotNull('opened_at')
             ->whereBetween('opened_at', [$start, $end])
-            ->groupByRaw($monthExpr)
+            ->groupBy(new SqlFragment($monthExpr))
             ->get()
             ->keyBy('month');
 
@@ -350,19 +352,17 @@ final class AnalyticsDashboardService
         $start = Carbon::parse($monthLabels[0])->startOfMonth();
         $end = Carbon::parse($monthLabels[array_key_last($monthLabels)])->endOfMonth();
 
-        $driver = DB::connection()->getDriverName();
-        $monthExpr = $driver === 'sqlite'
-            ? "strftime('%Y-%m', created_at)"
-            : "DATE_FORMAT(created_at, '%Y-%m')";
+        $monthExpr = DateSql::month('created_at');
 
         $rows = StockMovement::query()
-            ->selectRaw("
+            ->select(new SqlFragment("
                 {$monthExpr} as month,
                 SUM(CASE WHEN movement_type IN (?, ?) THEN ABS(quantity) ELSE 0 END) as total_in,
                 SUM(CASE WHEN movement_type = ? THEN ABS(quantity) ELSE 0 END) as total_out
-            ", [StockMovementTypeEnum::In->value, StockMovementTypeEnum::Return->value, StockMovementTypeEnum::Out->value])
+            "))
+            ->addBinding([StockMovementTypeEnum::In->value, StockMovementTypeEnum::Return->value, StockMovementTypeEnum::Out->value], 'select')
             ->whereBetween('created_at', [$start, $end])
-            ->groupByRaw($monthExpr)
+            ->groupBy(new SqlFragment($monthExpr))
             ->get()
             ->keyBy('month');
 

@@ -470,7 +470,7 @@ Eloquent ORM models representing the persistence layer and domain entities of th
 - **Boot behavior (`booted()`):**
   - On `creating`: if `reference` is null, auto-generates one as `'TKT-' . now()->format('YmdHis') . '-' . strtoupper(substr(uniqid(), -5))`. This produces a reference like `TKT-20260902153000-ABC12`.
 - **Accessors & helper methods:**
-  - `budgetPauseMinutes(): Attribute` (protected) -- computed attribute that calculates the number of minutes the ticket was paused waiting for budget approval (`budget_requested_at` to `budget_decided_at`). Returns `0` if either timestamp is missing.
+  - `budgetPauseMinutes(): Attribute` (protected) -- computed attribute that delegates to the `BudgetPauseMinutes` value object (`App\Domain\Ticket\ValueObjects\BudgetPauseMinutes`) for the minutes between `budget_requested_at` and `budget_decided_at`. Returns `0` if either timestamp is missing **or** the decision predates the request (clock skew / bad backdating), which the raw `diffInMinutes()` would otherwise report as a positive pause.
   - `hasStatus(TicketStatusEnum|string $status): bool` -- checks whether the ticket currently has the given status. Resolves the enum via `TicketStatusService`.
 - **Scopes:**
   - `scopeOpen(Builder $query)` -- filters to only tickets whose `status_id` matches the "Open" status (resolved via `TicketStatusService` and `TicketStatusEnum::Open`)

@@ -1,6 +1,7 @@
 import { renderResultsCount as renderSharedResultsCount, renderResultsFeedback, renderSimplePagination, renderTableEmptyState, renderTableErrorState } from '../../components/listing/feedback.js';
 import { getEquipmentTableBody, getPagination, getResultsCount } from './dom.js';
 import { isTechnician } from '../../core/auth.js';
+import { escapeHtml } from '../../utils/escape.js';
 
 const translations = () => window.SGM_EQUIPMENT_I18N || {};
 
@@ -23,12 +24,16 @@ function renderStatusBadge(equipment) {
     const color = statusColors[status] || 'muted';
     const label = statusLabels[status] || status;
 
-    return `<span class="inline-flex items-center gap-1 rounded-lg bg-${color}/10 px-2.5 py-1 text-xs font-bold uppercase tracking-tight text-${color}">${label}</span>`;
+    return `<span class="inline-flex items-center gap-1 rounded-lg bg-${color}/10 px-2.5 py-1 text-xs font-bold uppercase tracking-tight text-${color}">${escapeHtml(label)}</span>`;
 }
 
 function renderEquipmentRow(equipment) {
-    const serial = equipment.serial ?? `EQ-${String(equipment.id).padStart(3, '0')}`;
-    const location = equipment.room ? `${equipment.room.name} (${equipment.room.location ?? '—'})` : '—';
+    const serial = escapeHtml(equipment.serial ?? `EQ-${String(equipment.id).padStart(3, '0')}`);
+    const name = escapeHtml(equipment.name);
+    const categoryName = escapeHtml(equipment.category?.name ?? translations().generic ?? '');
+    const location = equipment.room
+        ? `${escapeHtml(equipment.room.name)} (${escapeHtml(equipment.room.location ?? '—')})`
+        : '—';
 
     const actions = [
         isTechnician()
@@ -41,8 +46,8 @@ function renderEquipmentRow(equipment) {
         <td class="px-5 py-4 font-mono font-bold text-(--text-soft)" data-label="${translations().code || ''}">${serial}</td>
         <td class="px-5 py-4" data-label="${translations().equipment || ''}">
             <div class="ui-listing-value">
-                <div class="font-semibold text-(--text)">${equipment.name}</div>
-                <div class="mt-0.5 text-xs uppercase tracking-wider text-(--text-soft)">${equipment.category?.name ?? translations().generic ?? ''}</div>
+                <div class="font-semibold text-(--text)">${name}</div>
+                <div class="mt-0.5 text-xs uppercase tracking-wider text-(--text-soft)">${categoryName}</div>
             </div>
         </td>
         <td class="px-5 py-4 font-semibold text-(--text-soft)" data-label="${translations().location || ''}">${location}</td>

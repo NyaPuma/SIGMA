@@ -1,3 +1,5 @@
+import { escapeHtml } from '../../utils/escape.js';
+
 export function renderResultsFeedback(element, message, error = false) {
     if (!element) return;
 
@@ -16,13 +18,13 @@ export function renderResultsCount(element, total) {
 export function renderTableEmptyState({ tbody, colspan, message }) {
     if (!tbody) return;
 
-    tbody.innerHTML = `<tr><td colspan="${colspan}" class="px-5 py-12 text-center text-xs text-(--text-soft)"><div class="mx-auto max-w-sm rounded-2xl border border-dashed border-(--border) bg-(--surface-2) p-5">${message}</div></td></tr>`;
+    tbody.innerHTML = `<tr><td colspan="${colspan}" class="px-5 py-12 text-center text-xs text-(--text-soft)"><div class="mx-auto max-w-sm rounded-2xl border border-dashed border-(--border) bg-(--surface-2) p-5">${escapeHtml(message)}</div></td></tr>`;
 }
 
 export function renderTableErrorState({ tbody, colspan, message }) {
     if (!tbody) return;
 
-    tbody.innerHTML = `<tr><td colspan="${colspan}" class="px-5 py-12 text-center text-xs font-medium text-danger">${message}</td></tr>`;
+    tbody.innerHTML = `<tr><td colspan="${colspan}" class="px-5 py-12 text-center text-xs font-medium text-danger">${escapeHtml(message)}</td></tr>`;
 }
 
 export function getPaginationTranslations() {

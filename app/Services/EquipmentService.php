@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Services;
 
 use App\Models\Equipment;
+use App\Support\SqlPattern;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 
 final class EquipmentService
@@ -19,13 +20,7 @@ final class EquipmentService
         $query = Equipment::with('room');
 
         if ($search !== null && $search !== '') {
-            $safeSearch = str_replace(['%', '_'], ['\%', '\_'], $search);
-            $query->where(function ($sub) use ($safeSearch): void {
-                $sub->where('name', 'like', "%{$safeSearch}%")
-                    ->orWhere('serial', 'like', "%{$safeSearch}%")
-                    ->orWhere('brand', 'like', "%{$safeSearch}%")
-                    ->orWhere('model', 'like', "%{$safeSearch}%");
-            });
+            SqlPattern::whereContains($query, ['name', 'serial', 'brand', 'model'], $search);
         }
 
         if ($status !== null && $status !== '') {

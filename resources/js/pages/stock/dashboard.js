@@ -1,5 +1,6 @@
 import { authHeader } from '../../utils/api.js';
 import { formatCurrency } from '../../utils/locale.js';
+import { escapeHtml } from '../../utils/escape.js';
 
 async function fetchJson(url) {
     const response = await fetch(url, { headers: authHeader() });
@@ -17,14 +18,6 @@ async function fetchJson(url) {
     return response.json().catch(() => ({}));
 }
 
-function escapeHtml(value) {
-    return String(value ?? '')
-        .replaceAll('&', '&amp;')
-        .replaceAll('<', '&lt;')
-        .replaceAll('>', '&gt;')
-        .replaceAll('"', '&quot;')
-        .replaceAll("'", '&#39;');
-}
 
 function formatEur(value) {
     return formatCurrency(value);

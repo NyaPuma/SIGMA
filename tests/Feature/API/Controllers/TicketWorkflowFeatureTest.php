@@ -196,12 +196,49 @@ class TicketWorkflowFeatureTest extends TestCase
     {
         $user = $this->createUserWithToken(UserRoleEnum::User->value);
         $technician = $this->createUserWithToken(UserRoleEnum::Technician->value);
-        $ticket = $this->createTicket($user);
+        $ticket = $this->createTicket($user, ['assigned_to' => $technician->id]);
 
         $response = $this->withHeader('X-Auth-Token', $technician->api_token)
             ->putJson("/api/technician/tickets/{$ticket->id}/close");
 
         $response->assertStatus(422);
+    }
+
+    public function test_technician_cannot_start_a_ticket_assigned_to_another_technician(): void
+    {
+        $user = $this->createUserWithToken(UserRoleEnum::User->value);
+        $owner = $this->createUserWithToken(UserRoleEnum::Technician->value);
+        $other = $this->createUserWithToken(UserRoleEnum::Technician->value);
+        $ticket = $this->createTicket($user, ['assigned_to' => $owner->id]);
+
+        $this->withHeader('X-Auth-Token', $other->api_token)
+            ->putJson("/api/technician/tickets/{$ticket->id}/start")
+            ->assertStatus(403);
+
+        $this->withHeader('X-Auth-Token', $owner->api_token)
+            ->putJson("/api/technician/tickets/{$ticket->id}/start")
+            ->assertOk();
+    }
+
+    public function test_technician_cannot_close_a_ticket_assigned_to_another_technician(): void
+    {
+        $user = $this->createUserWithToken(UserRoleEnum::User->value);
+        $owner = $this->createUserWithToken(UserRoleEnum::Technician->value);
+        $other = $this->createUserWithToken(UserRoleEnum::Technician->value);
+        $inProgressId = TicketStatus::where('name', TicketStatusEnum::InProgress->value)->value('id');
+        $ticket = $this->createTicket($user, [
+            'status_id' => $inProgressId,
+            'assigned_to' => $owner->id,
+            'in_progress_at' => now()->subHour(),
+        ]);
+
+        $this->withHeader('X-Auth-Token', $other->api_token)
+            ->putJson("/api/technician/tickets/{$ticket->id}/close", ['minutes_spent' => 60])
+            ->assertStatus(403);
+
+        $this->withHeader('X-Auth-Token', $owner->api_token)
+            ->putJson("/api/technician/tickets/{$ticket->id}/close", ['minutes_spent' => 60])
+            ->assertOk();
     }
 
     public function test_technician_can_reopen_closed_ticket(): void

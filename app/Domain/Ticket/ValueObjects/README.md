@@ -56,8 +56,8 @@ Returns the string representation of `$this->value()`. Implements `Stringable` s
 Returns `$this->value()`. Implements `JsonSerializable` so the object can be directly passed to `json_encode()` or `response()->json()`.
 
 **Who calls it and when:**
-- No production caller found. This value object is defined and tested but not currently instantiated in any controller, service, or action in `app/`. It is available for use in contexts where budget pause duration needs to be calculated.
-- Used in tests only: `tests/Unit/ValueObjects/BudgetPauseMinutesTest.php`.
+- `Ticket::budgetPauseMinutes()` (`app/Models/Ticket.php:215`) delegates to `BudgetPauseMinutes::make($this->budget_requested_at, $this->budget_decided_at)->value()`, so the `budget_pause_minutes` attribute uses the same negative-duration guard as every other caller instead of duplicating the arithmetic.
+- Used in tests: `tests/Unit/ValueObjects/BudgetPauseMinutesTest.php`.
 
 ---
 

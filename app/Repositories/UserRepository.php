@@ -7,6 +7,7 @@ namespace App\Repositories;
 use App\Enums\UserRoleEnum;
 use App\Models\User;
 use App\Repositories\Contracts\UserRepositoryInterface;
+use App\Support\SqlPattern;
 use Illuminate\Pagination\LengthAwarePaginator;
 
 final class UserRepository implements UserRepositoryInterface
@@ -35,12 +36,8 @@ final class UserRepository implements UserRepositoryInterface
         $query = User::with($relations)->latest();
 
         // Search filter
-        if ($search && ! $this->containsSqlInjectionPattern($search)) {
-            $safeSearch = addcslashes($search, '\\%_');
-            $query->where(function ($q) use ($safeSearch) {
-                $q->where('name', 'like', "%{$safeSearch}%")
-                    ->orWhere('email', 'like', "%{$safeSearch}%");
-            });
+        if ($search) {
+            SqlPattern::whereContains($query, ['name', 'email'], $search);
         }
 
         // Role filter
@@ -56,14 +53,6 @@ final class UserRepository implements UserRepositoryInterface
         }
 
         return $query->paginate(15);
-    }
-
-    private function containsSqlInjectionPattern(string $search): bool
-    {
-        return preg_match(
-            "/(?:['\"]\s*(?:or|and)\b|;|--|\/\\*|\\*\/|\\b(?:union|select|drop|insert|update|delete)\\b)/i",
-            $search,
-        ) === 1;
     }
 
     /**

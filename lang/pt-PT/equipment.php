@@ -83,6 +83,7 @@ return [
     'Ciclo de Vida & Garantia' => 'Ciclo de Vida & Garantia',
     'Classificação & Localização' => 'Classificação & Localização',
     'Código de Inventário' => 'Código de Inventário',
+    'Clique para selecionar equipamento...' => 'Clique para selecionar equipamento...',
     'Disponível para utilização' => 'Disponível para utilização',
     'Estado Operacional' => 'Estado Operacional',
     'Fabricante' => 'Fabricante',

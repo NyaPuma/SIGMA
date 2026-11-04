@@ -54,7 +54,7 @@ Returns `array{labels: string[], open: int[], in_progress: int[], closed: int[],
 1. Calls private `generateMonthKeys()` to produce 6 month keys (e.g., `['2026-04', '2026-05', ..., '2026-09']`). Uses `$this->now->copy()->startOfMonth()->subMonths($offset)->format('Y-m')` for offsets 5 down to 0.
 2. Calls private `buildQuery($monthKeys)`:
    - Computes `$startMonth` (5 months ago, start of month) and `$endMonth` (end of current month).
-   - Calls private `monthExpression('opened_at')` which returns driver-specific SQL: `strftime('%Y-%m', opened_at)` for SQLite, `DATE_FORMAT(opened_at, '%Y-%m')` for MySQL/PostgreSQL.
+   - Calls private `monthExpression('opened_at')`, which delegates to `App\Support\DateSql::month()` and returns driver-specific SQL: `strftime('%Y-%m', col)` for SQLite, `to_char(col, 'YYYY-MM')` for PostgreSQL, `DATE_FORMAT(col, '%Y-%m')` for MySQL.
    - Runs a single SQL query with `SUM(CASE WHEN status_id = ? THEN 1 ELSE 0 END)` for each status and `SUM(CASE WHEN status_id = ? AND closed_at IS NOT NULL AND actual_cost IS NOT NULL THEN actual_cost ELSE 0 END)` for cost.
    - Filters: `whereNull('tickets.deleted_at')`, `whereNotNull('opened_at')`, `whereBetween('opened_at', ...)`.
    - Groups by the month expression.
@@ -122,7 +122,7 @@ Returns `array{open_tickets: int, in_progress_tickets: int, budget_pending_ticke
 
 1. Creates base query: `Ticket::query()->whereNull('tickets.deleted_at')`.
 2. Calls private `buildKpiQuery($baseQuery)`:
-   - Computes `$diffExpr = $this->diffMinutesExpression('opened_at', 'closed_at')` -- driver-specific SQL for minute difference:
+   - Computes `$diffExpr = $this->diffMinutesExpression('opened_at', 'closed_at')`, which delegates to `App\Support\DateSql::minutesBetween()` for driver-specific minute arithmetic:
      - SQLite: `(julianday(closed_at) - julianday(opened_at)) * 1440`
      - PostgreSQL: `EXTRACT(EPOCH FROM closed_at - opened_at) / 60`
      - MySQL: `TIMESTAMPDIFF(MINUTE, opened_at, closed_at)`

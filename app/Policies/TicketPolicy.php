@@ -90,10 +90,13 @@ final class TicketPolicy
 
     /**
      * Determines whether the technician can start working on the ticket.
+     *
+     * An unassigned ticket is claimed by whoever starts it (see StartTicketAction),
+     * so only that technician or the current assignee may start.
      */
     public function start(User $user, Ticket $ticket): bool
     {
-        return $user->isTechnician();
+        return $user->isTechnician() && $this->isAssignedOrFree($user, $ticket);
     }
 
     /**
@@ -101,7 +104,7 @@ final class TicketPolicy
      */
     public function close(User $user, Ticket $ticket): bool
     {
-        return $user->isTechnician();
+        return $user->isTechnician() && $this->isAssignedTo($user, $ticket);
     }
 
     /**
@@ -122,10 +125,13 @@ final class TicketPolicy
 
     /**
      * Determines whether the technician or admin can submit a budget/quote.
+     *
+     * A technician may quote a ticket they own or one nobody claimed yet (submitting
+     * assigns it), but never a ticket already assigned to a colleague.
      */
     public function submitBudget(User $user, Ticket $ticket): bool
     {
-        return $user->isTechnician() || $user->isAdmin();
+        return $user->isAdmin() || ($user->isTechnician() && $this->isAssignedOrFree($user, $ticket));
     }
 
     /**
@@ -149,7 +155,7 @@ final class TicketPolicy
      */
     public function requestBudget(User $user, Ticket $ticket): bool
     {
-        return $user->isTechnician() && (int) $ticket->assigned_to === (int) $user->id;
+        return $user->isTechnician() && $this->isAssignedTo($user, $ticket);
     }
 
     /**
@@ -182,6 +188,22 @@ final class TicketPolicy
     public function createPreventive(User $user): bool
     {
         return $user->isAdmin();
+    }
+
+    /**
+     * Checks whether the ticket is assigned to this exact user.
+     */
+    private function isAssignedTo(User $user, Ticket $ticket): bool
+    {
+        return $ticket->assigned_to !== null && (int) $ticket->assigned_to === (int) $user->id;
+    }
+
+    /**
+     * Checks whether the ticket is assigned to the user or still free to claim.
+     */
+    private function isAssignedOrFree(User $user, Ticket $ticket): bool
+    {
+        return $ticket->assigned_to === null || $this->isAssignedTo($user, $ticket);
     }
 
     /**

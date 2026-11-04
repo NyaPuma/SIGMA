@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Models;
 
+use App\Domain\Ticket\ValueObjects\BudgetPauseMinutes;
 use App\Enums\TicketStatusEnum;
 use App\Services\TicketStatusService;
 use App\Traits\Auditable;
@@ -214,9 +215,7 @@ final class Ticket extends Model
     protected function budgetPauseMinutes(): Attribute
     {
         return Attribute::make(
-            get: fn (): int => ($this->budget_requested_at && $this->budget_decided_at)
-                ? (int) $this->budget_requested_at->diffInMinutes($this->budget_decided_at)
-                : 0
+            get: fn (): int => BudgetPauseMinutes::make($this->budget_requested_at, $this->budget_decided_at)->value()
         );
     }
 

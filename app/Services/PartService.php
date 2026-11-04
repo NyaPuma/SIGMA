@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Services;
 
 use App\Models\Part;
+use App\Support\SqlPattern;
 use Illuminate\Contracts\Pagination\LengthAwarePaginator;
 
 final class PartService
@@ -27,13 +28,7 @@ final class PartService
         $query = Part::query()->with(['category', 'taxRate']);
 
         if ($search !== null && $search !== '') {
-            $safeSearch = str_replace(['%', '_'], ['\%', '\_'], $search);
-            $query->where(function ($sub) use ($safeSearch): void {
-                $sub->where('name', 'like', "%{$safeSearch}%")
-                    ->orWhere('sku', 'like', "%{$safeSearch}%")
-                    ->orWhere('brand', 'like', "%{$safeSearch}%")
-                    ->orWhere('manufacturer_ref', 'like', "%{$safeSearch}%");
-            });
+            SqlPattern::whereContains($query, ['name', 'sku', 'brand', 'manufacturer_ref'], $search);
         }
 
         if ($status === 'low') {

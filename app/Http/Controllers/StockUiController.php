@@ -19,6 +19,8 @@ final class StockUiController extends Controller
      */
     public function dashboard(Request $request): View
     {
+        $this->authorize('viewAny', Part::class);
+
         $user = $request->user();
 
         return view('ui.stock.dashboard', ['user' => $user]);
@@ -29,6 +31,8 @@ final class StockUiController extends Controller
      */
     public function parts(Request $request): View
     {
+        $this->authorize('viewAny', Part::class);
+
         $user = $request->user();
 
         return view('ui.stock.parts', [
@@ -56,6 +60,8 @@ final class StockUiController extends Controller
      */
     public function partShow(Request $request, Part $part): View
     {
+        $this->authorize('view', $part);
+
         $user = $request->user();
 
         return view('ui.stock.parts.show', [
@@ -84,6 +90,8 @@ final class StockUiController extends Controller
      */
     public function suppliers(Request $request): View
     {
+        $this->authorize('viewAny', Supplier::class);
+
         $user = $request->user();
 
         return view('ui.stock.suppliers', ['user' => $user]);
@@ -117,6 +125,8 @@ final class StockUiController extends Controller
      */
     public function movements(Request $request): View
     {
+        $this->authorize('viewAny', Part::class);
+
         $user = $request->user();
 
         return view('ui.stock.movements', [

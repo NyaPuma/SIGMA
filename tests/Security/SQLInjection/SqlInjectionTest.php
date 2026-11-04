@@ -6,7 +6,6 @@ use App\Enums\TicketPriorityEnum;
 use App\Enums\TicketStatusEnum;
 use App\Enums\UserRoleEnum;
 use App\Models\Ticket;
-use App\Models\User;
 use App\Services\TicketStatusService;
 use PHPUnit\Framework\Attributes\Test;
 use Tests\Base\FeatureTestCase;
@@ -26,9 +25,11 @@ class SqlInjectionTest extends FeatureTestCase
             ->getJson('/api/admin/users?q='.urlencode($maliciousQuery));
 
         $response->assertStatus(200);
+        // The payload is bound as a literal `name/email LIKE '%...\' OR \'1\'=\'1%'` term, so it
+        // matches nothing. A non-empty list would mean the injected OR was evaluated by the engine.
         $users = $response->json('users');
         $this->assertIsArray($users);
-        $this->assertCount(min(User::count(), config('services.custom.pagination.default_per_page', 15)), $users['data']);
+        $this->assertEmpty($users['data']);
     }
 
     #[Test]

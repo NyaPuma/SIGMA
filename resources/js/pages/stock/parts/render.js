@@ -2,6 +2,7 @@ import { renderResultsCount as renderSharedResultsCount, renderResultsFeedback, 
 import { getPartTableBody, getPagination, getResultsCount } from './dom.js';
 import { isAdmin } from '../../../utils/api.js';
 import { formatCurrency } from '../../../utils/locale.js';
+import { escapeHtml } from '../../../utils/escape.js';
 
 function translations() {
     const data = document.body?.dataset || {};
@@ -17,14 +18,6 @@ function translations() {
     };
 }
 
-function escapeHtml(value) {
-    return String(value ?? '')
-        .replaceAll('&', '&amp;')
-        .replaceAll('<', '&lt;')
-        .replaceAll('>', '&gt;')
-        .replaceAll('"', '&quot;')
-        .replaceAll("'", '&#39;');
-}
 
 function formatPrice(value) {
     return formatCurrency(value);

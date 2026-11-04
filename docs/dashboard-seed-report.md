@@ -72,8 +72,13 @@ Order in `DatabaseSeeder`:
   `diff(opened_at→NOW)`, skewed by 6 months of data); removed the now-unused
   `nowExpression`.
 - **`app/Services/AnalyticsDashboardService.php`**:
-  - `system_availability` read from `services.analytics.*` (the old key
-    `services.custom.analytics.*` did not exist);
+  - `system_availability` read from `services.custom.analytics.*` — the key
+    `config/services.custom.php` actually defines and the one SystemSettingsService
+    saves when an admin edits "Disponibilidade do sistema". An earlier note here
+    claimed `services.custom.analytics.*` did not exist; that was wrong, and
+    reading `services.analytics.*` instead left the Settings field inert. There is
+    now a single source of truth (the duplicate was dropped from
+    `config/services.php`);
   - `sla_target_minutes` from config passed to `TicketKpiQuery` and used in
     `monthlyPerformanceData`.
 - **`database/seeders/NotificationSeeder.php`**: priority `urgent` →

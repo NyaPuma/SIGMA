@@ -3,6 +3,7 @@
 namespace Tests\Authorization;
 
 use App\Enums\UserRoleEnum;
+use App\Models\Part;
 use App\Models\User;
 use App\Models\UserProfile;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -140,6 +141,33 @@ class UiAuthorizationTest extends TestCase
         $this->withHeader('X-Auth-Token', $user->api_token)
             ->getJson('/ui/analytics')
             ->assertStatus(403);
+    }
+
+    public function test_stock_ui_pages_are_restricted_to_admin_and_technician(): void
+    {
+        $userProfile = UserProfile::where('name', UserRoleEnum::User->value)->firstOrFail();
+        $user = User::factory()->create([
+            'profile_id' => $userProfile->id,
+            'api_token' => Str::random(60),
+        ]);
+
+        $techProfile = UserProfile::where('name', UserRoleEnum::Technician->value)->firstOrFail();
+        $technician = User::factory()->create([
+            'profile_id' => $techProfile->id,
+            'api_token' => Str::random(60),
+        ]);
+
+        $part = Part::factory()->create();
+
+        foreach (['/ui/stock', '/ui/stock/parts', '/ui/stock/suppliers', '/ui/stock/movements', "/ui/stock/parts/{$part->id}"] as $uri) {
+            $this->withHeader('X-Auth-Token', $user->api_token)
+                ->get($uri)
+                ->assertStatus(403);
+
+            $this->withHeader('X-Auth-Token', $technician->api_token)
+                ->get($uri)
+                ->assertOk();
+        }
     }
 
     public function test_admin_can_access_pulse_dashboard(): void

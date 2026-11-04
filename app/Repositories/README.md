@@ -37,7 +37,7 @@ Fetches a paginated, filterable list of all equipment records, ordered newest-fi
 
 - **Query logic:**
   1. Starts with `Equipment::with($relations)->latest()` — eager-loads the requested relations and orders by `created_at DESC`.
-  2. **Search filter** (`$search`): If provided, wraps a `where(function ($q) { ... })` block that applies `LIKE '%{$search}%'` across four columns: `name`, `serial`, `brand`, and `model`. The clauses are joined with `orWhere`, so typing "dell" matches equipment in *any* of those fields.
+  2. **Search filter** (`$search`): If provided, delegates to `App\Support\SqlPattern::whereContains($query, ['name', 'serial', 'brand', 'model'], $search)`, which emits one bracketed group of `LIKE ? ESCAPE '!'` clauses joined with `OR`, so typing "dell" matches equipment in *any* of those fields and a literal `%`/`_` in the search is not treated as a wildcard.
   3. **Status filter** (`$status`): If provided, adds `->where('status', $status)` — an exact-match `WHERE` clause on the `status` column.
   4. **Category filter** (`$category`): If provided, uses `->whereHas('category', fn ($q) => $q->where('name', $category))` — a relational sub-query that checks the related `category` model's `name` column.
   5. All three filters can be combined (they stack with implicit `AND`).
@@ -278,9 +278,8 @@ Fetches a paginated, filterable list of users — the most feature-rich query me
 - **Query logic:**
   1. Starts with `User::with($relations)->latest()` — eager-loads requested relations and orders by `created_at DESC`.
   2. **Search filter** (`$search`):
-     - First checks for SQL injection patterns via the private `containsSqlInjectionPattern()` method. If the search term matches dangerous patterns (e.g. `UNION SELECT`, `DROP TABLE`, comment markers `--` or `/*`), the search is **silently skipped** — the full unfiltered list is returned instead.
-     - If safe, escapes SQL wildcards (`%` and `_`) via `addcslashes($search, '\\%_')` to prevent users from injecting wildcards.
-     - Applies `LIKE '%{$safeSearch}%'` across two columns: `name` and `email`, joined with `orWhere`.
+     - Delegates to `App\Support\SqlPattern::whereContains($query, ['name', 'email'], $search)`, which escapes the value and emits `LIKE ? ESCAPE '!'` so `%` and `_` typed by a user match literally instead of acting as wildcards. Injection safety comes from parameter binding — the value never enters the SQL string.
+     - Applies the escaped contains-match across two columns: `name` and `email`, joined with `OR` inside one bracketed group.
   3. **Role filter** (`$role`): If provided, uses `->whereHas('profile', fn ($q) => $q->where('name', $role))` — a relational sub-query that checks the related `UserProfile` model's `name` column (e.g. "Technician", "Admin").
   4. **Status filter** (`$status`): If `'active'`, adds `->where('active', true)`. If `'inactive'`, adds `->where('active', false)`. Any other value is ignored.
   5. Paginates at **15 items per page**.
@@ -345,15 +344,6 @@ Permanently deletes (hard-deletes) a user from the database. The return value is
 - **Who calls it:**
   - `AdminUserController::destroy()` at `app/Http/Controllers/AdminUserController.php:130` — after authorization and a self-deletion check, calls `$this->userRepository->delete($targetUser)`. Powers `DELETE /admin/users/{targetUser}` and `DELETE /api/admin/users/{targetUser}`.
 
-#### Private methods
-
-##### `containsSqlInjectionPattern(string $search): bool`
-
-Scans the search input for common SQL injection patterns.
-
-- **Logic:** Uses a regex to detect patterns like `' or`, `" or`, `--`, `/*`, `*/`, `UNION`, `SELECT`, `DROP`, `INSERT`, `UPDATE`, `DELETE` (case-insensitive). Returns `true` if any pattern is found.
-- **Used by:** `getAll()` — if this returns `true`, the search filter is silently skipped to prevent injection.
-
 ---
 
 ## Files
@@ -363,7 +353,7 @@ Scans the search input for common SQL injection patterns.
 | `EquipmentRepository.php` | CRUD operations for `Equipment` model with multi-column search (`name`, `serial`, `brand`, `model`), status filter, and category filter via `whereHas`. Implements `EquipmentRepositoryInterface`. |
 | `RoomRepository.php` | CRUD operations for `Room` model, includes `getActive()` for dropdown lists (returns `id`, `name`, `code`, `location` for all active rooms) and `inactivate()` for soft-deactivation. Implements `RoomRepositoryInterface`. |
 | `TicketRepository.php` | CRUD operations for `Ticket` model, plus three specialized paginated queries: `getOpenTickets()` (applies `open()` scope, loads 5 relations), `getTicketsByTechnician()` (applies `forTechnician()` scope), and `getTicketsByUser()` (filters by `user_id`, loads 4 relations). Per-page from `config('services.custom.pagination.default_per_page')`. Implements `TicketRepositoryInterface`. |
-| `UserRepository.php` | CRUD operations for `User` model, plus `getActiveTechnicians()` and `getAdmins()` (lightweight lookups via `whereHas` on `profile`), `findByEmail()` (case-insensitive), `inactivate()`, and SQL injection protection via private `containsSqlInjectionPattern()`. Implements `UserRepositoryInterface`. |
+| `UserRepository.php` | CRUD operations for `User` model, plus `getActiveTechnicians()` and `getAdmins()` (lightweight lookups via `whereHas` on `profile`), `findByEmail()` (case-insensitive), `inactivate()`, and wildcard-safe search through `App\Support\SqlPattern`. Implements `UserRepositoryInterface`. |
 
 ## Notes for developers / AI
 

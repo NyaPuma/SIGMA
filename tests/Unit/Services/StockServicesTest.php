@@ -179,6 +179,20 @@ class StockServicesTest extends FeatureTestCase
     }
 
     #[Test]
+    public function low_stock_notification_is_not_repeated_while_the_level_is_unchanged(): void
+    {
+        $this->createAdmin();
+        $part = Part::factory()->lowStock()->create(['name' => 'Filtro de ar', 'current_stock' => 2, 'min_stock' => 5]);
+
+        $this->assertGreaterThan(0, $this->lowStockAlertService->notifyAdminsForLowStock());
+        $this->assertSame(0, $this->lowStockAlertService->notifyAdminsForLowStock());
+
+        // A change in the stock level is a new situation and must alert again.
+        $part->update(['current_stock' => 1]);
+        $this->assertGreaterThan(0, $this->lowStockAlertService->notifyAdminsForLowStock());
+    }
+
+    #[Test]
     public function low_stock_notification_returns_zero_when_nothing_is_low(): void
     {
         $this->createAdmin();

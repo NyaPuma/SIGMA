@@ -1,5 +1,6 @@
 import { renderResultsCount as renderSharedResultsCount, renderResultsFeedback, renderSimplePagination, renderTableEmptyState, renderTableErrorState } from '../../../components/listing/feedback.js';
 import { getPlanTableBody, getPagination, getResultsCount } from './dom.js';
+import { escapeHtml } from '../../../utils/escape.js';
 
 function translations() {
     const data = document.body?.dataset || {};
@@ -18,14 +19,6 @@ function translations() {
     };
 }
 
-function escapeHtml(value) {
-    return String(value ?? '')
-        .replaceAll('&', '&amp;')
-        .replaceAll('<', '&lt;')
-        .replaceAll('>', '&gt;')
-        .replaceAll('"', '&quot;')
-        .replaceAll("'", '&#39;');
-}
 
 function renderIntervalLabel(plan) {
     const text = translations();

@@ -35,10 +35,12 @@ class SecurityVulnerabilitiesTest extends TestCase
             ->getJson('/api/admin/users?q='.urlencode($maliciousQuery));
 
         $response->assertStatus(200);
-        // Ensure SQL injection didn't crash the database or return extra users
+        // The payload must be bound as a literal search term: matching it against name/email
+        // returns nobody. Returning the user list here would mean the quote closed the string.
         $users = $response->json('users');
         $this->assertIsArray($users);
-        $this->assertCount(min(User::count(), config('services.custom.pagination.default_per_page', 15)), $users['data']);
+        $this->assertEmpty($users['data']);
+        $this->assertNotContains($user->email, array_column($users['data'], 'email'));
     }
 
     public function test_xss_payload_in_ticket_description_does_not_execute_raw_script()

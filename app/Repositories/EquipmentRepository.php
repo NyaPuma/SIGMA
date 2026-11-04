@@ -6,6 +6,7 @@ namespace App\Repositories;
 
 use App\Models\Equipment;
 use App\Repositories\Contracts\EquipmentRepositoryInterface;
+use App\Support\SqlPattern;
 use Illuminate\Pagination\LengthAwarePaginator;
 
 final class EquipmentRepository implements EquipmentRepositoryInterface
@@ -27,12 +28,7 @@ final class EquipmentRepository implements EquipmentRepositoryInterface
 
         // Search filter (name, serial, brand, model)
         if ($search) {
-            $query->where(function ($q) use ($search) {
-                $q->where('name', 'like', "%{$search}%")
-                    ->orWhere('serial', 'like', "%{$search}%")
-                    ->orWhere('brand', 'like', "%{$search}%")
-                    ->orWhere('model', 'like', "%{$search}%");
-            });
+            SqlPattern::whereContains($query, ['name', 'serial', 'brand', 'model'], $search);
         }
 
         // Status filter

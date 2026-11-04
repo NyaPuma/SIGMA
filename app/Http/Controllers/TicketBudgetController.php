@@ -110,7 +110,7 @@ final class TicketBudgetController extends Controller
             $ticket->budget_details = $budgetDetails;
         }
 
-        if (! $ticket->assigned_to) {
+        if ($user->isTechnician() && ! $ticket->assigned_to) {
             $ticket->assigned_to = $user->id;
         }
 

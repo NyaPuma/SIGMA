@@ -1,6 +1,7 @@
 import { renderResultsCount as renderSharedResultsCount, renderResultsFeedback, renderSimplePagination, renderTableEmptyState, renderTableErrorState } from '../../components/listing/feedback.js';
 import { getAuditsTableBody, getEventSelect, getPagination, getResultsCount } from './dom.js';
 import { formatDateTime } from '../../utils/locale.js';
+import { escapeHtml } from '../../utils/escape.js';
 
 function getEventBadge(event) {
     const value = String(event || '').toLowerCase().trim();
@@ -23,7 +24,7 @@ function getEventBadge(event) {
         updated: translations.updated,
         deleted: translations.deleted,
     };
-    return `<span class="inline-flex items-center gap-1 rounded-lg border border-(--border) bg-(--surface-2) px-2.5 py-1 text-xs font-bold uppercase tracking-tight text-(--text-soft)">${eventLabels[value] || event}</span>`;
+    return `<span class="inline-flex items-center gap-1 rounded-lg border border-(--border) bg-(--surface-2) px-2.5 py-1 text-xs font-bold uppercase tracking-tight text-(--text-soft)">${eventLabels[value] || escapeHtml(event)}</span>`;
 }
 
 function getAuditTranslations() {
@@ -45,14 +46,15 @@ function formatStateData(state) {
     if (!state) return '<span class="font-mono text-(--text-soft)">-</span>';
 
     if (typeof state === 'object') {
-        return `<pre class="max-h-40 max-w-xs overflow-auto rounded-xl border border-(--border) bg-(--surface-2) p-2 text-xs leading-relaxed text-(--text-soft)">${JSON.stringify(state, null, 2)}</pre>`;
+        return `<pre class="max-h-40 max-w-xs overflow-auto rounded-xl border border-(--border) bg-(--surface-2) p-2 text-xs leading-relaxed text-(--text-soft)">${escapeHtml(JSON.stringify(state, null, 2))}</pre>`;
     }
 
     try {
         const parsed = JSON.parse(state);
-        return `<pre class="max-h-40 max-w-xs overflow-auto rounded-xl border border-(--border) bg-(--surface-2) p-2 text-xs leading-relaxed text-(--text-soft)">${JSON.stringify(parsed, null, 2)}</pre>`;
+        return `<pre class="max-h-40 max-w-xs overflow-auto rounded-xl border border-(--border) bg-(--surface-2) p-2 text-xs leading-relaxed text-(--text-soft)">${escapeHtml(JSON.stringify(parsed, null, 2))}</pre>`;
     } catch {
-        return `<span class="line-clamp-2 break-all font-mono text-xs text-(--text-soft)" title="${state}">${state}</span>`;
+        const value = escapeHtml(state);
+        return `<span class="line-clamp-2 break-all font-mono text-xs text-(--text-soft)" title="${value}">${value}</span>`;
     }
 }
 
@@ -111,8 +113,8 @@ export function renderAudits(audits) {
 
     tbody.innerHTML = audits.map((audit) => {
         const logId = audit.id ? `#${audit.id}` : '-';
-        const user = audit.user?.name || audit.user || audit.username || audit.operator || 'System / Automatic';
-        const entity = audit.auditable_type || audit.entity || 'General';
+        const user = escapeHtml(audit.user?.name || audit.user || audit.username || audit.operator || 'System / Automatic');
+        const entity = escapeHtml(audit.auditable_type || audit.entity || 'General');
         const referenceValue = audit.auditable_id || audit.reference;
         const reference = referenceValue ? `ID: ${referenceValue}` : '-';
         const dateFormatted = audit.created_at

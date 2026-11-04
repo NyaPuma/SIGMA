@@ -7,6 +7,7 @@ namespace App\Services;
 use App\DTOs\TicketFilters;
 use App\Enums\TicketStatusEnum;
 use App\Models\Ticket;
+use App\Support\SqlPattern;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Pagination\LengthAwarePaginator;
 
@@ -26,11 +27,7 @@ final class TicketSearchService
         $query = Ticket::with(['equipment', 'room', 'user', 'status', 'technician']);
 
         if ($filters->query !== null && $filters->query !== '') {
-            $q = str_replace(['%', '_'], ['\%', '\_'], $filters->query);
-            $query->where(function (Builder $sub) use ($q): void {
-                $sub->where('title', 'like', "%{$q}%")
-                    ->orWhere('description', 'like', "%{$q}%");
-            });
+            SqlPattern::whereContains($query, ['title', 'description'], $filters->query);
         }
 
         if ($filters->priority !== null) {

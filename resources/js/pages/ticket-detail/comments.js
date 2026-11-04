@@ -1,5 +1,6 @@
 import { authHeader } from '../../utils/api.js';
 import { formatDateTime } from '../../utils/locale.js';
+import { escapeHtml } from '../../utils/escape.js';
 import { state } from './state.js';
 import { showMessage } from './ui.js';
 
@@ -34,10 +35,10 @@ export async function fetchComments() {
         section.innerHTML = comments.map((comment) => `
             <div class="space-y-1 border-b border-(--border)/50 py-2">
                 <div class="flex justify-between font-bold text-(--text)">
-                    <span>${comment.user ? comment.user.name : translations().system}</span>
+                    <span>${comment.user ? escapeHtml(comment.user.name) : translations().system}</span>
                     <span class="font-mono text-xs text-(--text-soft)">${comment.created_at ? formatDateTime(comment.created_at) : ''}</span>
                 </div>
-                <p class="text-(--text-soft)">${comment.comment || comment.message || ''}</p>
+                <p class="text-(--text-soft)">${escapeHtml(comment.comment || comment.message || '')}</p>
             </div>
         `).join('');
     } catch {

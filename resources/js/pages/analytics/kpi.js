@@ -4,6 +4,7 @@
  */
 
 import { formatNumber, formatPercent } from '../../utils/locale.js';
+import { formatMinutes as formatMinutesWith } from '../../utils/duration.js';
 
 function getTranslations() {
     const configured = window.SGM_ANALYTICS_I18N || {};
@@ -26,23 +27,7 @@ function getTranslations() {
 }
 
 function formatMinutes(minutes) {
-    const translations = getTranslations();
-    const rounded = Math.round(minutes || 0);
-    if (rounded < 60) return `${rounded} ${translations.minutes || 'min'}`;
-    const hours = rounded / 60;
-    if (hours < 48) {
-        const whole = Math.floor(hours);
-        const rem = Math.round((hours - whole) * 60);
-        return rem
-            ? `${whole}${translations.hours || 'h'} ${rem}${translations.minutes || 'min'}`
-            : `${whole}${translations.hours || 'h'}`;
-    }
-    const days = rounded / 1440;
-    const wholeDays = Math.floor(days);
-    const remHours = Math.round((days - wholeDays) * 24);
-    return remHours
-        ? `${wholeDays}${translations.days || 'd'} ${remHours}${translations.hours || 'h'}`
-        : `${wholeDays}${translations.days || 'd'}`;
+    return formatMinutesWith(minutes, getTranslations());
 }
 
 const KPI_ICON = (path) => `<svg class="h-7 w-7 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="${path}"/></svg>`;

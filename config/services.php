@@ -58,7 +58,11 @@ return [
 
     'analytics' => [
         'sla_target_minutes' => (int) env('SLA_TARGET_MINUTES', 480),
-        'system_availability' => (float) env('SYSTEM_AVAILABILITY', 99.9),
+        'pdf_export_limit' => (int) env('ANALYTICS_PDF_EXPORT_LIMIT', 2000),
+    ],
+
+    'stock' => [
+        'low_stock_alert_cooldown_hours' => (int) env('LOW_STOCK_ALERT_COOLDOWN_HOURS', 24),
     ],
 
     'custom' => [

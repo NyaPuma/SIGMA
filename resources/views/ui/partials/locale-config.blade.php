@@ -10,6 +10,7 @@
     $uiTranslations = [
         'resultsCount' => __('ui.results_count'),
         'noResults' => __('ui.no_results'),
+        'noRoom' => __('ui.Sem sala'),
         'loadError' => __('ui.load_error'),
         'saveError' => __('ui.save_error'),
         'genericError' => __('ui.generic_error'),
@@ -21,6 +22,15 @@
         'saving' => __('ui.saving'),
         'validationNameRequired' => __('ui.validation_name_required'),
         'updateFailed' => __('ui.update_failed'),
+        'selectMaterials' => __('ui.Selecionar Materiais (Stock)'),
+        'selectEquipment' => __('ui.Selecionar Equipamento'),
+        'materialsBadge' => __('ui.Materiais (Stock)'),
+        'equipmentBadge' => __('equipment.Equipamento'),
+        'searchMaterial' => __('ui.Pesquisar material em stock...'),
+        'searchEquipment' => __('ui.Pesquisar equipamento...'),
+        'itemsSelected' => __('ui.item(s) selecionado(s)'),
+        'cancel' => __('ui.Cancelar'),
+        'confirm' => __('ui.Confirmar'),
     ];
     $ticketsTranslations = [
         'priority' => [
@@ -125,6 +135,17 @@
         'budgetDecisionError' => __('ticket_detail.budget_decision_error'),
         'budgetApproved' => __('ticket_detail.budget_approved'),
         'budgetRefused' => __('ticket_detail.budget_refused'),
+        'budgetLabor' => __('ticket_detail.Mão de obra'),
+        'budgetMaterial' => __('ticket_detail.Material'),
+        'budgetPerHour' => __('ticket_detail.€/hora'),
+        'budgetUnitPrice' => __('ticket_detail.Preço unitário'),
+        'budgetHours' => __('ticket_detail.Horas'),
+        'budgetQty' => __('ticket_detail.Qtd.'),
+        'budgetRemoveItem' => __('ticket_detail.Remover item'),
+        'budgetJobDescription' => __('ticket_detail.Descrição da tarefa'),
+        'budgetItem' => __('ticket_detail.Item'),
+        'budgetDescription' => __('common.Descrição'),
+        'budgetAddItems' => __('ticket_detail.Adicionar itens'),
         'incidentId' => __('ticket_detail.incident_id'),
         'description' => __('ticket_detail.description'),
         'priorityLevel' => __('ticket_detail.priority_level'),
@@ -144,6 +165,9 @@
         'edit' => __('room.edit'),
         'details' => __('room.details'),
         'empty' => __('room.empty'),
+        'roomName' => __('common.Nome'),
+        'location' => __('common.Localização'),
+        'equipment' => __('equipment.Equipamento'),
     ];
     $stockPartTranslations = [
         'min' => __('stock_part.min'),

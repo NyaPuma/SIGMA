@@ -21,9 +21,9 @@
                     <svg class="item-selector-modal__title-icon h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" aria-hidden="true">
                         <path stroke-linecap="round" stroke-linejoin="round" d="M5 8h14M5 8a2 2 0 110-4h14a2 2 0 110 4M5 8v10a2 2 0 002 2h10a2 2 0 002-2V8m-9 4h4"/>
                     </svg>
-                    {{ __('common.Adicionar Itens') }}
+                    {{ __('ui.Selecionar Materiais (Stock)') }}
                 </h2>
-                <button type="button" class="item-selector-modal__close-btn" data-item-selector-close" aria-label="{{ __('ui.Fechar') }}">
+                <button type="button" class="item-selector-modal__close-btn" data-item-selector-close aria-label="{{ __('ui.Fechar') }}">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
                         <path d="M18 6 6 18"/><path d="m6 6 12 12"/>
                     </svg>
@@ -38,8 +38,8 @@
                 <input type="search"
                        id="itemSelectorSearchInput"
                        class="item-selector-modal__search-input"
-                       placeholder="{{ __('ui.Pesquisar...') }}"
-                       aria-label="{{ __('ui.Pesquisar itens') }}"
+                       placeholder="{{ __('ui.Pesquisar') }}"
+                       aria-label="{{ __('ui.Pesquisar') }}"
                        autocomplete="off">
             </div>
         </div>
@@ -73,11 +73,11 @@
         {{-- Footer / Summary --}}
         <div class="item-selector-modal__footer">
             <div class="item-selector-modal__summary">
-                <span class="item-selector-modal__summary-label">{{ __('stock.Materiais') }}</span>
-                <span class="item-selector-modal__summary-count" id="itemSelectorSummaryCount">0 {{ __('common.items') }}</span>
+                <span class="item-selector-modal__summary-label">{{ __('ui.Materiais (Stock)') }}</span>
+                <span class="item-selector-modal__summary-count" id="itemSelectorSummaryCount">0 {{ __('ui.item(s) selecionado(s)') }}</span>
             </div>
             <button type="button" class="item-selector-modal__confirm-btn" id="itemSelectorConfirmBtn">
-                {{ __('common.Confirmar') }}
+                {{ __('ui.Confirmar') }}
             </button>
         </div>
 

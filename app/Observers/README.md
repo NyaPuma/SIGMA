@@ -106,13 +106,14 @@ Ticket::observe(TicketObserver::class);
 ```php
 private function invalidateAnalyticsCache(): void
 {
+    // Only the acting locale is dropped: the payload has a 60 s TTL, so the other locales
+    // self-heal, whereas forgetting all 52 keys on every ticket save would cost 52 queries
+    // per write (CACHE_STORE=database) for a staleness window of at most one minute.
     Cache::forget('analytics_dashboard_payload:'.app()->getLocale());
-    Cache::forget('analytics_dashboard_payload');
 }
 ```
-- Clears **two** cache keys:
-  1. `analytics_dashboard_payload:<locale>` — the locale-suffixed key used by `AnalyticsDashboardService`.
-  2. `analytics_dashboard_payload` — the legacy unsuffixed key.
+- Clears **one key**: `analytics_dashboard_payload:<locale>` — the locale-suffixed key written by `AnalyticsDashboardService::getDashboardPayload()` (`app/Services/AnalyticsDashboardService.php:44`). There is no unsuffixed producer, so no unsuffixed key is written or read.
+- Payloads cached under *other* locales are left to expire on their own 60 s TTL. Forgetting every key in `config('locales.languages')` (52 entries) was measured as 52 deletes per ticket write, which is worse than the one-minute staleness it removed.
 - This ensures the dashboard analytics are recalculated on the next request after any ticket change.
 
 **Important design note:** The observer does **not** fire `TicketStatusChanged` when the `status_id` changes if the original status ID was null. This handles edge cases where a ticket is created with a `status_id` that is later set for the first time.
@@ -162,7 +163,7 @@ User::observe(UserObserver::class);
 
 - All observers are `final readonly` classes — they cannot be extended or have their properties modified.
 - `AuditObserver` throws `LogicException` on any mutation attempt — this is intentional to enforce immutability of the audit trail.
-- `TicketObserver::invalidateAnalyticsCache()` clears the `analytics_dashboard_payload` cache key (both locale-suffixed and unsuffixed variants) on every ticket change.
+- `TicketObserver::invalidateAnalyticsCache()` forgets the `analytics_dashboard_payload:<locale>` key for the locale of the request that changed the ticket; payloads of other locales expire with the service's 60 s TTL.
 - `UserObserver` uses `firstOrCreate` to lazily bootstrap the default profile if missing or invalid.
 - Observers are registered in `AppServiceProvider::registerObservers()` — not in `EventServiceProvider`.
 - The `creating` and `updating` hooks fire **before** the database query, while `created`, `updated`, `deleted`, and `restored` fire **after**.

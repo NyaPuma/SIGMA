@@ -3,6 +3,8 @@
  * Renders activity timeline and summary lists
  */
 
+import { escapeHtml } from '../../utils/escape.js';
+
 export function renderActivity(element, data) {
     if (!element) return;
     const activities = data.recent_activity || [];
@@ -19,10 +21,10 @@ export function renderActivity(element, data) {
             </div>
             <div class="flex-1">
                 <div class="flex flex-wrap items-center justify-between gap-3">
-                    <h3 class="font-semibold text-sm text-(--text)">${act.title}</h3>
-                    <span class="text-xs text-(--text-soft)">${act.time}</span>
+                    <h3 class="font-semibold text-sm text-(--text)">${escapeHtml(act.title)}</h3>
+                    <span class="text-xs text-(--text-soft)">${escapeHtml(act.time)}</span>
                 </div>
-                <p class="mt-1 text-xs text-(--text-soft)">${act.description}</p>
+                <p class="mt-1 text-xs text-(--text-soft)">${escapeHtml(act.description)}</p>
             </div>
         </div>
     `).join("");
@@ -38,9 +40,9 @@ export function renderList(element, items) {
         <div class="flex items-center justify-between p-4 hover:bg-(--surface-2)/30 transition-colors duration-150">
             <div class="flex items-center gap-3">
                 <span class="flex h-7 w-7 items-center justify-center rounded-lg bg-(--surface-2) text-xs font-bold text-(--text-soft)">${idx + 1}</span>
-                <span class="text-xs font-semibold text-(--text)">${item.name}</span>
+                <span class="text-xs font-semibold text-(--text)">${escapeHtml(item.name)}</span>
             </div>
-            <span class="text-xs font-bold text-primary">${item.total} <span class="font-medium text-(--text-soft)">${item.subtitle || ''}</span></span>
+            <span class="text-xs font-bold text-primary">${item.total} <span class="font-medium text-(--text-soft)">${escapeHtml(item.subtitle)}</span></span>
         </div>
     `).join("");
 }

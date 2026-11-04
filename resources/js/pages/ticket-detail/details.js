@@ -1,3 +1,5 @@
+import { escapeHtml } from '../../utils/escape.js';
+
 const priorityColors = {
     baixa: 'border border-success/10 bg-success/5 text-success',
     média: 'border border-warning/15 bg-warning/5 text-warning',
@@ -16,7 +18,7 @@ function resolveStatusBadge(statusClean, statusName) {
         return `<span class="inline-block rounded-lg bg-(--text-soft)/10 px-2 py-0.5 text-xs font-bold uppercase tracking-tight text-(--text-soft)">${translations().closed || ''}</span>`;
     }
 
-    return `<span class="inline-block rounded-lg bg-info/10 px-2 py-0.5 text-xs font-bold uppercase tracking-tight text-info">${translations().status?.[statusClean] || statusName || ''}</span>`;
+    return `<span class="inline-block rounded-lg bg-info/10 px-2 py-0.5 text-xs font-bold uppercase tracking-tight text-info">${translations().status?.[statusClean] || escapeHtml(statusName) || ''}</span>`;
 }
 
 export function renderTicketDetails(ticket) {
@@ -29,6 +31,16 @@ export function renderTicketDetails(ticket) {
     const statusClean = (statusName || '').toLowerCase();
     const priorityClass = priorityColors[ticket.priority] ?? 'border border-(--border) bg-(--surface-2) text-(--text-soft)';
     const statusBadge = resolveStatusBadge(statusClean, ticket.status_label);
+    const priorityLabel = escapeHtml(ticket.priority_label) || translations().priority?.[ticket.priority] || '';
+    const dashPlaceholder = '<span class="font-normal text-(--text-soft)">—</span>';
+    const equipmentName = ticket.equipment ? escapeHtml(ticket.equipment.name) : dashPlaceholder;
+    const roomName = ticket.room ? escapeHtml(ticket.room.name) : dashPlaceholder;
+    const technicianName = ticket.technician
+        ? escapeHtml(ticket.technician.name)
+        : `<span class="font-normal italic text-danger">${translations().pendingAssignment || ''}</span>`;
+    const reportedByName = ticket.reporter_name
+        ? escapeHtml(ticket.reporter_name)
+        : (ticket.user ? escapeHtml(ticket.user.name) : '<span class="font-normal italic text-(--text-soft)">—</span>');
 
     details.innerHTML = `
         <div class="mb-5 border-b border-(--border) pb-4">
@@ -36,36 +48,36 @@ export function renderTicketDetails(ticket) {
                 <span class="rounded-lg bg-(--surface-2) px-2 py-0.5 text-xs font-bold uppercase tracking-wider text-(--text-soft) font-mono">${translations().incidentId || ''} #${ticket.id}</span>
                 <div class="flex gap-1.5">${statusBadge}</div>
             </div>
-            <h2 class="mt-3 text-base font-bold text-(--text)">${ticket.title}</h2>
+            <h2 class="mt-3 text-base font-bold text-(--text)">${escapeHtml(ticket.title)}</h2>
         </div>
 
         <div class="space-y-5">
             <div>
                 <span class="mb-1.5 block text-xs font-bold uppercase tracking-wider text-(--text-soft)">${translations().description || ''}</span>
-                <div class="rounded-xl border border-(--border) bg-(--surface-2) p-3.5 text-xs leading-relaxed text-(--text) whitespace-pre-wrap">${ticket.description || translations().noDescription || ''}</div>
+                <div class="rounded-xl border border-(--border) bg-(--surface-2) p-3.5 text-xs leading-relaxed text-(--text) whitespace-pre-wrap">${ticket.description ? escapeHtml(ticket.description) : (translations().noDescription || '')}</div>
             </div>
 
             <div class="grid grid-cols-2 gap-x-4 gap-y-4 pt-2">
                 <div>
                     <span class="block text-xs font-bold uppercase tracking-wider text-(--text-soft)">${translations().priorityLevel || ''}</span>
-                    <span class="mt-1 inline-block rounded-lg px-2 py-0.5 text-xs font-bold uppercase tracking-tight ${priorityClass}">${ticket.priority_label || translations().priority?.[ticket.priority] || ''}</span>
+                    <span class="mt-1 inline-block rounded-lg px-2 py-0.5 text-xs font-bold uppercase tracking-tight ${priorityClass}">${priorityLabel}</span>
                 </div>
                 <div>
                     <span class="block text-xs font-bold uppercase tracking-wider text-(--text-soft)">${translations().equipment || ''}</span>
-                    <p class="mt-1 text-xs font-semibold text-(--text)">${ticket.equipment ? ticket.equipment.name : '<span class="font-normal text-(--text-soft)">—</span>'}</p>
+                    <p class="mt-1 text-xs font-semibold text-(--text)">${equipmentName}</p>
                 </div>
                 <div>
                     <span class="block text-xs font-bold uppercase tracking-wider text-(--text-soft)">${translations().room || ''}</span>
-                    <p class="mt-1 text-xs font-semibold text-(--text)">${ticket.room ? ticket.room.name : '<span class="font-normal text-(--text-soft)">—</span>'}</p>
+                    <p class="mt-1 text-xs font-semibold text-(--text)">${roomName}</p>
                 </div>
                 <div>
                     <span class="block text-xs font-bold uppercase tracking-wider text-(--text-soft)">${translations().technician || ''}</span>
-                    <p class="mt-1 text-xs font-semibold text-(--text)">${ticket.technician ? ticket.technician.name : `<span class="font-normal italic text-danger">${translations().pendingAssignment || ''}</span>`}</p>
+                    <p class="mt-1 text-xs font-semibold text-(--text)">${technicianName}</p>
                 </div>
                 <div>
                     <span class="block text-xs font-bold uppercase tracking-wider text-(--text-soft)">${translations().reportedBy || ''}</span>
-                    <p class="mt-1 text-xs font-semibold text-(--text)">${ticket.reporter_name || (ticket.user ? ticket.user.name : '<span class="font-normal italic text-(--text-soft)">—</span>')}</p>
-                    ${ticket.reporter_contact ? `<p class="mt-0.5 text-xs text-(--text-soft)">${ticket.reporter_contact}</p>` : ''}
+                    <p class="mt-1 text-xs font-semibold text-(--text)">${reportedByName}</p>
+                    ${ticket.reporter_contact ? `<p class="mt-0.5 text-xs text-(--text-soft)">${escapeHtml(ticket.reporter_contact)}</p>` : ''}
                 </div>
                 <div>
                     <span class="block text-xs font-bold uppercase tracking-wider text-(--text-soft)">${translations().source || ''}</span>

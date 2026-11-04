@@ -22,7 +22,7 @@ class AnalyticsDashboardServiceTest extends FeatureTestCase
         parent::setUp();
 
         app(TicketStatusService::class)->flush();
-        Cache::forget('analytics_dashboard_payload');
+        Cache::forget('analytics_dashboard_payload:'.app()->getLocale());
 
         $this->service = app(AnalyticsDashboardService::class);
     }
@@ -114,6 +114,20 @@ class AnalyticsDashboardServiceTest extends FeatureTestCase
     }
 
     #[Test]
+    public function it_reads_system_availability_from_the_key_the_settings_ui_saves(): void
+    {
+        // SystemSettingsService::applyOverrides() writes the admin's value to
+        // services.custom.analytics.system_availability. Reading any other key would leave
+        // the "Disponibilidade do sistema" field inert on the analytics panel.
+        config(['services.custom.analytics.system_availability' => 97.5]);
+        Cache::forget('analytics_dashboard_payload:'.app()->getLocale());
+
+        $payload = $this->service->getDashboardPayload();
+
+        $this->assertSame(97.5, $payload['system_availability']);
+    }
+
+    #[Test]
     public function it_builds_additional_distribution_breakdowns(): void
     {
         $this->createTicket(['urgent' => true, 'source' => 'web', 'budget_status' => 'approved']);
@@ -148,7 +162,7 @@ class AnalyticsDashboardServiceTest extends FeatureTestCase
 
         $this->assertSame($first, $second);
 
-        Cache::forget('analytics_dashboard_payload');
+        Cache::forget('analytics_dashboard_payload:'.app()->getLocale());
         $this->createTicketWithStatus(TicketStatusEnum::Open->value);
 
         $third = $this->service->getDashboardPayload();

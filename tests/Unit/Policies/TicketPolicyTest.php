@@ -149,9 +149,12 @@ class TicketPolicyTest extends DatabaseTestCase
     public function technician_can_close_ticket(): void
     {
         $technician = User::factory()->create(['profile_id' => UserProfile::where('name', UserRoleEnum::Technician->value)->first()->id]);
-        $ticket = Ticket::factory()->create();
+        $otherTechnician = User::factory()->create(['profile_id' => UserProfile::where('name', UserRoleEnum::Technician->value)->first()->id]);
+        $assigned = Ticket::factory()->create(['assigned_to' => $technician->id]);
 
-        $this->assertTrue($this->policy->close($technician, $ticket));
+        $this->assertTrue($this->policy->close($technician, $assigned));
+        $this->assertFalse($this->policy->close($otherTechnician, $assigned));
+        $this->assertFalse($this->policy->close($technician, Ticket::factory()->create()));
     }
 
     #[Test]

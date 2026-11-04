@@ -1,4 +1,6 @@
 import { authHeader } from '../utils/api.js';
+import { formatMinutes } from '../utils/duration.js';
+import { escapeHtml } from '../utils/escape.js';
 
 const i18n = () => window.SGM_DASHBOARD_I18N || {};
 
@@ -46,12 +48,12 @@ async function loadMetrics() {
         panel.innerHTML = `
             <div class="rounded-2xl border border-(--border) bg-(--surface) p-6 shadow-[0_1px_2px_rgba(0,0,0,0.01)] animate-[fadeIn_0.3s_ease-out] flex flex-col justify-between">
                 <p class="text-xs font-bold uppercase tracking-wider text-(--text-soft)">${i18n().resolution || 'Average Resolution Time'}</p>
-                <div class="mt-2 text-2xl font-black text-(--text)">${data.average_resolution_human ?? '0h 0m'}</div>
+                <div class="mt-2 text-2xl font-black text-(--text)">${formatMinutes(data.average_resolution_minutes, i18n())}</div>
                 <p class="mt-0.5 text-xs font-semibold text-(--text-soft)">${data.average_resolution_minutes ?? 0} ${i18n().minutes || 'min'}</p>
             </div>
             <div class="rounded-2xl border border-(--border) bg-(--surface) p-6 shadow-[0_1px_2px_rgba(0,0,0,0.01)] animate-[fadeIn_0.3s_ease-out] flex flex-col justify-between">
                 <p class="text-xs font-bold uppercase tracking-wider text-(--text-soft)">${i18n().waiting || 'Average Waiting Time'}</p>
-                <div class="mt-2 text-2xl font-black text-(--text)">${data.average_waiting_human ?? '0h 0m'}</div>
+                <div class="mt-2 text-2xl font-black text-(--text)">${formatMinutes(data.average_waiting_minutes, i18n())}</div>
                 <p class="mt-0.5 text-xs font-semibold text-(--text-soft)">${data.average_waiting_minutes ?? 0} ${i18n().minutes || 'min'}</p>
             </div>
             <div class="rounded-2xl border border-(--border) bg-(--surface) p-6 shadow-[0_1px_2px_rgba(0,0,0,0.01)] animate-[fadeIn_0.3s_ease-out] flex flex-col justify-between">
@@ -111,12 +113,12 @@ async function loadRecentTickets() {
                 ${tickets.map(t => `
                     <tr>
                         <td class="py-2.5 font-mono text-(--text-soft)">#${t.id}</td>
-                        <td class="py-2.5 font-semibold truncate max-w-[180px]">${t.title}</td>
+                        <td class="py-2.5 font-semibold truncate max-w-[180px]">${escapeHtml(t.title)}</td>
                         <td class="py-2.5">
                             <span class="px-2 py-0.5 rounded text-xs font-bold uppercase ${
                                 t.priority === 'alta' ? 'bg-danger/10 text-danger' :
                                 t.priority === 'média' ? 'bg-warning/10 text-warning' : 'bg-success/10 text-success'
-                            }">${t.priority_label || t.priority || 'média'}</span>
+                            }">${escapeHtml(t.priority_label || t.priority || 'média')}</span>
                         </td>
                         <td class="py-2.5 text-right">
                             <a href="/ui/tickets/${t.id}" class="text-primary hover:underline font-bold">${i18n().view || 'View'}</a>
@@ -172,15 +174,6 @@ async function loadTechnicalPicket() {
     } catch (e) {
         container.innerHTML = `<p class="text-xs text-(--text-soft) py-2">${i18n().loadError || 'Unable to load the technical picket.'}</p>`;
     }
-}
-
-function escapeHtml(value) {
-    return String(value ?? '')
-        .replaceAll('&', '&amp;')
-        .replaceAll('<', '&lt;')
-        .replaceAll('>', '&gt;')
-        .replaceAll('"', '&quot;')
-        .replaceAll("'", '&#39;');
 }
 
 export { init };

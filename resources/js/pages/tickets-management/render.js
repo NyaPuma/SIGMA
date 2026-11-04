@@ -1,5 +1,6 @@
 import { getPagination, getResultsCount, getTicketsBody } from './dom.js';
 import { getPaginationTranslations } from '../../components/listing/feedback.js';
+import { escapeHtml } from '../../utils/escape.js';
 
 const priorityColors = {
     baixa: 'border border-success/20 bg-success/10 text-success',
@@ -25,34 +26,40 @@ export function renderResultsCount(total) {
 
 function renderStatusBadge(statusName, statusLabel = null) {
     const statusKey = (statusName || '').toLowerCase();
+    const label = escapeHtml(statusLabel);
 
     if (statusKey === 'aberta' || statusKey === 'aberto') {
-        return `<span class="inline-flex items-center gap-1 rounded-lg bg-info/10 px-2.5 py-1 text-xs font-bold uppercase tracking-tight text-info">${statusLabel || translations().status?.aberta || ''}</span>`;
+        return `<span class="inline-flex items-center gap-1 rounded-lg bg-info/10 px-2.5 py-1 text-xs font-bold uppercase tracking-tight text-info">${label || translations().status?.aberta || ''}</span>`;
     }
 
     if (statusKey === 'em curso') {
-        return `<span class="inline-flex items-center gap-1 rounded-lg bg-warning/10 px-2.5 py-1 text-xs font-bold uppercase tracking-tight text-warning">${statusLabel || translations().status?.['em curso'] || ''}</span>`;
+        return `<span class="inline-flex items-center gap-1 rounded-lg bg-warning/10 px-2.5 py-1 text-xs font-bold uppercase tracking-tight text-warning">${label || translations().status?.['em curso'] || ''}</span>`;
     }
 
-        return `<span class="inline-flex items-center gap-1 rounded-lg bg-[var(--text-soft)]/10 px-2.5 py-1 text-xs font-bold uppercase tracking-tight text-[var(--text-soft)]">${statusLabel || translations().status?.fechada || ''}</span>`;
+        return `<span class="inline-flex items-center gap-1 rounded-lg bg-[var(--text-soft)]/10 px-2.5 py-1 text-xs font-bold uppercase tracking-tight text-[var(--text-soft)]">${label || translations().status?.fechada || ''}</span>`;
 }
 
 function renderTicketRow(ticket) {
     const priorityKey = (ticket.priority || '').toLowerCase();
     const priorityClass = priorityColors[priorityKey] ?? 'border border-[var(--border)] bg-[var(--surface-2)] text-[var(--text-soft)]';
-    const priorityLabel = ticket.priority_label || translations().priority?.[priorityKey] || '';
+    const priorityLabel = escapeHtml(ticket.priority_label) || translations().priority?.[priorityKey] || '';
     const statusName = ticket.status?.name ?? ticket.status ?? 'N/A';
+    const equipmentName = ticket.equipment ? escapeHtml(ticket.equipment.name) : '—';
+    const roomName = ticket.room ? escapeHtml(ticket.room.name) : '—';
+    const technicianName = ticket.technician
+        ? escapeHtml(ticket.technician.name)
+        : '<span class="font-normal italic text-[var(--text-soft)]">—</span>';
 
     return `<tr class="transition-colors duration-150 hover:bg-[var(--surface-2)]/50">
         <td class="px-5 py-4 font-mono font-bold text-[var(--text-soft)]" data-label="${translations().id || ''}">#${ticket.id}</td>
-        <td class="max-w-xs truncate px-5 py-4 font-semibold text-[var(--text)]" data-label="${translations().title || ''}">${ticket.title}</td>
+        <td class="max-w-xs truncate px-5 py-4 font-semibold text-[var(--text)]" data-label="${translations().title || ''}">${escapeHtml(ticket.title)}</td>
         <td class="px-5 py-4" data-label="${translations().priorityTitle || ''}">
             <span class="inline-block rounded-lg px-2.5 py-1 text-xs font-bold uppercase tracking-tight ${priorityClass}">${priorityLabel}</span>
         </td>
         <td class="px-5 py-4" data-label="${translations().statusTitle || ''}">${renderStatusBadge(statusName, ticket.status_label)}</td>
-        <td class="px-5 py-4 font-semibold text-[var(--text-soft)]" data-label="${translations().equipment || ''}">${ticket.equipment ? ticket.equipment.name : '—'}</td>
-        <td class="px-5 py-4 font-semibold text-[var(--text-soft)]" data-label="${translations().room || ''}">${ticket.room ? ticket.room.name : '—'}</td>
-        <td class="px-5 py-4 text-xs font-semibold text-[var(--text)]" data-label="${translations().technician || ''}">${ticket.technician ? ticket.technician.name : '<span class="font-normal italic text-[var(--text-soft)]">—</span>'}</td>
+        <td class="px-5 py-4 font-semibold text-[var(--text-soft)]" data-label="${translations().equipment || ''}">${equipmentName}</td>
+        <td class="px-5 py-4 font-semibold text-[var(--text-soft)]" data-label="${translations().room || ''}">${roomName}</td>
+        <td class="px-5 py-4 text-xs font-semibold text-[var(--text)]" data-label="${translations().technician || ''}">${technicianName}</td>
         <td class="ui-listing-actions px-5 py-4 text-right">
             <a href="/ui/tickets/${ticket.id}" class="inline-flex min-h-[28px] min-w-[48px] items-center justify-center rounded-lg border border-[var(--border)] bg-[var(--surface)] px-3 py-1.5 text-xs font-semibold text-[var(--text)] shadow-sm transition-all hover:bg-[var(--surface-2)]">${translations().view || ''}</a>
         </td>
@@ -74,7 +81,7 @@ export function renderErrorState(message) {
     const tbody = getTicketsBody();
     if (!tbody) return;
 
-    tbody.innerHTML = `<tr><td colspan="8" class="px-5 py-12 text-center text-xs font-medium text-danger">${message}</td></tr>`;
+    tbody.innerHTML = `<tr><td colspan="8" class="px-5 py-12 text-center text-xs font-medium text-danger">${escapeHtml(message)}</td></tr>`;
 }
 
 export function renderTickets(tickets) {

@@ -106,6 +106,12 @@ final class UiController extends Controller
     {
         $user = $request->user();
 
+        // A página mostra os tickets do equipamento e o trilho de auditoria,
+        // por isso a EquipmentPolicy tem de ser aplicada aqui: as rotas /ui/*
+        // não levam middleware de papel e, sem esta chamada, qualquer
+        // operador percorria os ids para ler dados de outros utilizadores.
+        $this->authorize('view', $equipment);
+
         // 1. Relations loaded eagerly for the detail page
         $equipment->loadMissing([
             'room',
@@ -217,6 +223,9 @@ final class UiController extends Controller
     {
         $user = $request->user();
 
+        // Ver nota em equipmentDetail: a página expõe tickets e auditoria da sala.
+        $this->authorize('view', $room);
+
         // 1. Relations loaded eagerly for the detail page
         $room->loadMissing([
             'equipments.category',
@@ -299,6 +308,27 @@ final class UiController extends Controller
             $request->query('status'),
         );
 
+        // O endpoint serve também o selector de equipamento do reporte de
+        // avaria, que um operador usa; serial, asset_tag e notas são dados de
+        // inventário que a EquipmentPolicy reserva a admin/técnico, por isso
+        // ficam escondidos para os restantes papéis.
+        $user = $request->user();
+
+        if ($user !== null && ! $user->isAdmin() && ! $user->isTechnician()) {
+            foreach ($equipments->items() as $equipment) {
+                $equipment->makeHidden([
+                    'asset_tag',
+                    'serial',
+                    'brand',
+                    'model',
+                    'manufacturer',
+                    'purchase_date',
+                    'warranty_until',
+                    'notes',
+                ]);
+            }
+        }
+
         return response()->json([
             'equipments' => $equipments,
         ]);
@@ -344,13 +374,22 @@ final class UiController extends Controller
             $statusService->getByName(TicketStatusEnum::PendingBudget),
         ];
 
-        $tickets = Ticket::with(['equipment', 'room', 'user', 'status', 'technician'])
-            ->whereIn('status_id', $statusIds)
-            ->latest()
-            ->get();
+        $query = Ticket::with(['equipment', 'room', 'user', 'status', 'technician'])
+            ->whereIn('status_id', $statusIds);
+
+        // Mesmo escopo de TicketController::index: este endpoint alimenta a
+        // tabela "Últimas Ocorrências" do painel e não pode devolver a pool
+        // inteira a quem só tem direitos sobre os próprios tickets.
+        $user = $request->user();
+
+        if ($user !== null && $user->isTechnician()) {
+            $query->where('assigned_to', $user->id);
+        } elseif ($user !== null && ! $user->isAdmin()) {
+            $query->where('user_id', $user->id);
+        }
 
         return response()->json([
-            'tickets' => TicketResource::collection($tickets),
+            'tickets' => TicketResource::collection($query->latest()->get()),
         ]);
     }
 

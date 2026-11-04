@@ -25,7 +25,7 @@ class DatabaseBackup extends Command
                     {--offsite : Upload database and storage artifacts to the configured off-site disk}
                     {--clean : Remove backups older than the retention period}';
 
-    protected $description = 'Creates a database backup using native tools (mysqldump/sqlite3)';
+    protected $description = 'Creates a database backup using native tools (mysqldump/pg_dump/sqlite3)';
 
     public function handle(): int
     {
@@ -58,6 +58,7 @@ class DatabaseBackup extends Command
         try {
             match ($driver) {
                 'mysql' => $this->backupMysql($config, $filepath),
+                'pgsql' => $this->backupPostgres($config, $filepath),
                 'sqlite' => $this->backupSqlite($config, $filepath),
                 default => throw new RuntimeException("Unsupported driver: {$driver}"),
             };
@@ -159,6 +160,53 @@ class DatabaseBackup extends Command
 
         if ($result->failed()) {
             throw new RuntimeException('mysqldump failed: '.$result->errorOutput());
+        }
+    }
+
+    /**
+     * @param  array<string, mixed>  $config
+     */
+    private function backupPostgres(array $config, string $filepath): void
+    {
+        $hostRaw = $config['host'] ?? null;
+        $host = is_string($hostRaw) ? $hostRaw : '127.0.0.1';
+        $portRaw = $config['port'] ?? null;
+        $port = is_numeric($portRaw) ? (int) $portRaw : 5432;
+        $databaseRaw = $config['database'] ?? null;
+        $database = is_string($databaseRaw) ? $databaseRaw : '';
+        $usernameRaw = $config['username'] ?? null;
+        $username = is_string($usernameRaw) ? $usernameRaw : 'postgres';
+        $passwordRaw = $config['password'] ?? null;
+        $password = is_string($passwordRaw) ? $passwordRaw : '';
+
+        $excludeTablesRaw = config('backup.database.exclude_tables', []);
+        /** @var array<int, mixed> $excludeTables */
+        $excludeTables = is_array($excludeTablesRaw) ? $excludeTablesRaw : [];
+
+        // pg_dump treats an unqualified -T pattern as matching that table in any schema.
+        $excludeArgs = implode('', array_map(
+            fn ($table): string => ' --exclude-table='.escapeshellarg(is_scalar($table) ? (string) $table : ''),
+            $excludeTables
+        ));
+
+        // --no-password keeps cron runs from blocking on an interactive prompt;
+        // the secret travels through PGPASSWORD so it never appears in the process table.
+        $cmd = sprintf(
+            'pg_dump --no-locks --format=plain --encoding=UTF8 --host=%s --port=%d --username=%s --no-password --dbname=%s%s --file=%s',
+            escapeshellarg($host),
+            (int) $port,
+            escapeshellarg($username),
+            escapeshellarg($database),
+            $excludeArgs,
+            escapeshellarg($filepath)
+        );
+
+        $result = Process::env(['PGPASSWORD' => $password])
+            ->timeout(600)
+            ->run($cmd);
+
+        if ($result->failed()) {
+            throw new RuntimeException('pg_dump failed: '.$result->errorOutput());
         }
     }
 

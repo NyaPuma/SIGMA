@@ -958,7 +958,7 @@ Below is every controller grouped by the area it powers, with a plain-English de
 
 - **Method:** `index(Request $request): JsonResponse`
   - **What it does:** Paginated listing of suppliers, searchable by name or NIF.
-  - **When it runs / how it works:** `authorize('viewAny', Supplier::class)`; if `q` is present, escapes `%` and `_` (for LIKE-safety) and filters by `name LIKE` or `nif LIKE`; orders by name, paginates 15; returns `{ suppliers, pagination }`.
+  - **When it runs / how it works:** `authorize('viewAny', Supplier::class)`; if `q` is present, filters through `App\Support\SqlPattern::whereContains()` (`LIKE ? ESCAPE '!'` on `name` and `nif`, value bound as a parameter); orders by name, paginates 15; returns `{ suppliers, pagination }`.
 
 - **Method:** `show(Supplier $supplier): JsonResponse`
   - **What it does:** Shows a single supplier with its associated parts (and their tax rates).

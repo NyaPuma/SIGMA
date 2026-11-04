@@ -1,8 +1,29 @@
 import { nextBudgetItemIndex } from './state.js';
 import { formatCurrency } from '../../utils/locale.js';
+import { escapeHtml } from '../../utils/escape.js';
 import { authHeader } from '../../utils/api.js';
 
 let partsAbortController = null;
+
+function budgetLabels() {
+    const i18n = window.SGM_TICKET_DETAIL_I18N || {};
+
+    return {
+        labor: i18n.budgetLabor || 'Labor',
+        material: i18n.budgetMaterial || 'Material',
+        perHour: i18n.budgetPerHour || '€/Hour',
+        unitPrice: i18n.budgetUnitPrice || 'Unit Price',
+        hours: i18n.budgetHours || 'Hours',
+        qty: i18n.budgetQty || 'Qty',
+        removeItem: i18n.budgetRemoveItem || 'Remove item',
+        jobDescription: i18n.budgetJobDescription || 'Job description',
+        item: i18n.budgetItem || 'Item',
+        addItems: i18n.budgetAddItems || 'Add items',
+        materialsBadge: window.SGM_UI_I18N?.materialsBadge || 'Materials (Stock)',
+        description: i18n.budgetDescription || 'Description',
+        searchMaterial: window.SGM_UI_I18N?.searchMaterial || 'Search material in stock...',
+    };
+}
 
 async function fetchParts(query = '', pageSize = 100) {
     if (partsAbortController) partsAbortController.abort();
@@ -43,7 +64,10 @@ export function addBudgetItem(description = '', quantity = 1, price = 0, type = 
     if (!container) return;
 
     const index = nextBudgetItemIndex();
-    const pricePlaceholder = type === 'labor' ? '€/Hour' : 'Unit Price';
+    const labels = budgetLabels();
+    const pricePlaceholder = type === 'labor' ? labels.perHour : labels.unitPrice;
+    const typeBadge = type === 'labor' ? labels.labor : labels.material;
+    const qtyPlaceholder = type === 'labor' ? labels.hours : labels.qty;
     const item = document.createElement('div');
 
     item.className = 'budget-item';
@@ -51,11 +75,11 @@ export function addBudgetItem(description = '', quantity = 1, price = 0, type = 
     item.dataset.type = type;
     item.innerHTML = `
         <div class="flex items-center gap-2">
-            <span class="item-type-badge rounded-md px-1.5 py-1 text-[10px] font-bold uppercase tracking-wider ${type === 'labor' ? 'bg-primary/15 text-primary' : 'bg-(--surface-2) text-(--text-soft)'}">${type === 'labor' ? 'Labor' : 'Material'}</span>
-            <input type="text" class="item-desc flex-1 min-w-0 rounded-lg border border-(--border) bg-(--surface-2) px-2.5 py-1.5 text-xs text-(--text) outline-none transition-all focus:border-(--text)" placeholder="Description" value="${description}">
-            <input type="number" class="item-qty w-16 rounded-lg border border-(--border) bg-(--surface-2) px-2 py-1.5 text-xs font-mono text-(--text) outline-none transition-all focus:border-(--text)" placeholder="${type === 'labor' ? 'Hours' : 'Qty'}" min="1" value="${quantity}">
-            <input type="number" step="0.01" class="item-price w-24 rounded-lg border border-(--border) bg-(--surface-2) px-2 py-1.5 text-xs font-mono text-(--text) outline-none transition-all focus:border-(--text)" placeholder="${pricePlaceholder}" min="0" value="${price}">
-            <button type="button" data-action="remove-budget-item" class="btn-remove-item p-1 text-danger/80 transition-all hover:text-danger cursor-pointer" title="Remove item">
+            <span class="item-type-badge rounded-md px-1.5 py-1 text-[10px] font-bold uppercase tracking-wider ${type === 'labor' ? 'bg-primary/15 text-primary' : 'bg-(--surface-2) text-(--text-soft)'}">${escapeHtml(typeBadge)}</span>
+            <input type="text" class="item-desc flex-1 min-w-0 rounded-lg border border-(--border) bg-(--surface-2) px-2.5 py-1.5 text-xs text-(--text) outline-none transition-all focus:border-(--text)" placeholder="${escapeHtml(labels.description)}" value="${escapeHtml(description)}">
+            <input type="number" class="item-qty w-16 rounded-lg border border-(--border) bg-(--surface-2) px-2 py-1.5 text-xs font-mono text-(--text) outline-none transition-all focus:border-(--text)" placeholder="${escapeHtml(qtyPlaceholder)}" min="1" value="${quantity}">
+            <input type="number" step="0.01" class="item-price w-24 rounded-lg border border-(--border) bg-(--surface-2) px-2 py-1.5 text-xs font-mono text-(--text) outline-none transition-all focus:border-(--text)" placeholder="${escapeHtml(pricePlaceholder)}" min="0" value="${price}">
+            <button type="button" data-action="remove-budget-item" class="btn-remove-item p-1 text-danger/80 transition-all hover:text-danger cursor-pointer" title="${escapeHtml(labels.removeItem)}">
                 <svg class="h-3.5 w-3.5" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"></path></svg>
             </button>
         </div>
@@ -88,6 +112,7 @@ export async function openBudgetItemModal() {
 }
 
 function renderBudgetItemModal() {
+    const labels = budgetLabels();
     const existing = document.getElementById('budgetItemModal');
     if (existing) existing.remove();
 
@@ -101,7 +126,7 @@ function renderBudgetItemModal() {
     overlay.innerHTML = `
         <div class="flex max-h-[85vh] w-full max-w-2xl flex-col overflow-hidden rounded-2xl border border-(--border) bg-(--surface) shadow-2xl">
             <div class="flex items-center justify-between border-b border-(--border) px-4 py-3">
-                <h3 class="text-sm font-bold uppercase tracking-wider text-(--text)">Add Items</h3>
+                <h3 class="text-sm font-bold uppercase tracking-wider text-(--text)">${escapeHtml(labels.addItems)}</h3>
                 <button type="button" data-bm-close class="p-1 text-(--text-soft) transition-all hover:text-danger cursor-pointer">
                     <svg class="h-5 w-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"></path></svg>
                 </button>
@@ -110,9 +135,9 @@ function renderBudgetItemModal() {
             <div class="flex-1 min-h-0 overflow-y-auto px-4 py-3 space-y-4">
                 <div>
                     <div class="mb-2 flex items-center gap-2">
-                        <span class="rounded-md bg-(--surface-2) px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider text-(--text-soft)">Materials (Stock)</span>
+                        <span class="rounded-md bg-(--surface-2) px-2 py-0.5 text-[10px] font-bold uppercase tracking-wider text-(--text-soft)">${escapeHtml(labels.materialsBadge)}</span>
                     </div>
-                    <input type="text" data-bm-search class="w-full rounded-lg border border-(--border) bg-(--surface-2) px-3 py-2 text-xs text-(--text) outline-none transition-all focus:border-primary" placeholder="Search material in stock...">
+                    <input type="text" data-bm-search class="w-full rounded-lg border border-(--border) bg-(--surface-2) px-3 py-2 text-xs text-(--text) outline-none transition-all focus:border-primary" placeholder="${escapeHtml(labels.searchMaterial)}">
                     <div data-bm-list class="mt-2 space-y-1 max-h-64 overflow-y-auto">
                         ${renderPartsList(modal.parts)}
                     </div>
@@ -175,12 +200,12 @@ function renderPartsList(parts) {
             <label class="flex items-center gap-3 p-2.5 rounded-xl border border-(--border) bg-(--surface-2)/60 hover:bg-(--surface-2) transition cursor-pointer">
                 <input type="checkbox" data-bm-part="${id}" ${checked} class="h-4 w-4 accent-primary shrink-0 cursor-pointer">
                 <span class="min-w-0 flex-1">
-                    <span class="block truncate text-xs font-semibold text-(--text)">${part.name || ''}</span>
-                    <span class="block truncate text-[11px] text-(--text-soft)">${part.sku || ''}</span>
+                    <span class="block truncate text-xs font-semibold text-(--text)">${escapeHtml(part.name)}</span>
+                    <span class="block truncate text-[11px] text-(--text-soft)">${escapeHtml(part.sku)}</span>
                 </span>
                 <span class="shrink-0 text-right">
                     <span class="block font-mono text-xs font-bold text-(--text)">${price}</span>
-                    <span class="block text-[11px] text-(--text-soft)">${stock} ${unit}</span>
+                    <span class="block text-[11px] text-(--text-soft)">${stock} ${escapeHtml(unit)}</span>
                 </span>
             </label>
         `;
@@ -238,6 +263,7 @@ function updateCount() {
 }
 
 function addLaborRow() {
+    const labels = budgetLabels();
     const container = modal.overlay?.querySelector('[data-bm-labor]');
     if (!container) return;
 
@@ -246,9 +272,9 @@ function addLaborRow() {
     row.dataset.laborRow = '';
 
     row.innerHTML = `
-        <input type="text" data-labor-desc class="flex-1 min-w-0 rounded-lg border border-(--border) bg-(--surface-2) px-2.5 py-1.5 text-xs text-(--text) outline-none focus:border-primary" placeholder="Job description">
-        <input type="number" data-labor-hours class="w-16 rounded-lg border border-(--border) bg-(--surface-2) px-2 py-1.5 text-xs font-mono text-(--text) outline-none focus:border-primary" placeholder="Hours" min="0.5" step="0.5" value="1">
-        <input type="number" step="0.01" data-labor-rate class="w-24 rounded-lg border border-(--border) bg-(--surface-2) px-2 py-1.5 text-xs font-mono text-(--text) outline-none focus:border-primary" placeholder="€/hour" min="0" value="0">
+        <input type="text" data-labor-desc class="flex-1 min-w-0 rounded-lg border border-(--border) bg-(--surface-2) px-2.5 py-1.5 text-xs text-(--text) outline-none focus:border-primary" placeholder="${escapeHtml(labels.jobDescription)}">
+        <input type="number" data-labor-hours class="w-16 rounded-lg border border-(--border) bg-(--surface-2) px-2 py-1.5 text-xs font-mono text-(--text) outline-none focus:border-primary" placeholder="${escapeHtml(labels.hours)}" min="0.5" step="0.5" value="1">
+        <input type="number" step="0.01" data-labor-rate class="w-24 rounded-lg border border-(--border) bg-(--surface-2) px-2 py-1.5 text-xs font-mono text-(--text) outline-none focus:border-primary" placeholder="${escapeHtml(labels.perHour)}" min="0" value="0">
         <button type="button" data-labor-remove class="p-1 text-danger/80 hover:text-danger transition cursor-pointer">
             <svg class="h-4 w-4" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"></path></svg>
         </button>
@@ -364,6 +390,8 @@ export function renderBudgetDetailsForAdmin(details) {
 
     container.classList.remove('hidden');
 
+    const labels = budgetLabels();
+
     let totalAmount = 0;
     let materialTotal = 0;
     let laborTotal = 0;
@@ -395,7 +423,7 @@ export function renderBudgetDetailsForAdmin(details) {
 
         return `
             <div class="flex items-center justify-between py-1 text-xs ${index > 0 ? 'border-t border-(--border)/50' : ''}">
-                <span class="mr-2 flex-1 truncate text-(--text)">${icon} ${item.description || 'Item'}</span>
+                <span class="mr-2 flex-1 truncate text-(--text)">${icon} ${escapeHtml(item.description) || escapeHtml(labels.item)}</span>
                 <span class="mx-2 whitespace-nowrap text-xs text-(--text-soft)">${detail}</span>
                 <span class="whitespace-nowrap font-bold font-mono text-(--text)">${formatCurrency(subtotal)}</span>
             </div>

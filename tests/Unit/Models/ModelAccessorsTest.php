@@ -49,6 +49,17 @@ class ModelAccessorsTest extends FeatureTestCase
     }
 
     #[Test]
+    public function ticket_budget_pause_minutes_is_zero_when_decided_before_requested(): void
+    {
+        $ticket = $this->createTicket([
+            'budget_requested_at' => now(),
+            'budget_decided_at' => now()->subMinutes(45),
+        ]);
+
+        $this->assertSame(0, $ticket->budget_pause_minutes);
+    }
+
+    #[Test]
     public function ticket_open_scope_filters_only_open_tickets(): void
     {
         $open = $this->createTicket();

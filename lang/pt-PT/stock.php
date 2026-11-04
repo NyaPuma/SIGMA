@@ -19,6 +19,7 @@ return [
     'Categorias de Peças' => 'Categorias de Peças',
     'Catálogo de peças, controlo de stock e localização.' => 'Catálogo de peças, controlo de stock e localização.',
     'Catálogo de peças, fornecedores, movimentos de stock, dashboard e relatórios' => 'Catálogo de peças, fornecedores, movimentos de stock, dashboard e relatórios',
+    'Clique para selecionar peça...' => 'Clique para selecionar peça...',
     'Configure as taxas de IVA aplicáveis ao preço das peças.' => 'Configure as taxas de IVA aplicáveis ao preço das peças.',
     'Cria uma peça e regista o stock inicial como movimento de entrada.' => 'Cria uma peça e regista o stock inicial como movimento de entrada.',
     'Criar categoria de peças' => 'Criar categoria de peças',

@@ -3,10 +3,10 @@
 namespace App\Domain\Ticket\Queries;
 
 use App\Models\Ticket;
+use App\Support\DateSql;
 use App\ValueObjects\SqlFragment;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Carbon;
-use Illuminate\Support\Facades\DB;
 
 final readonly class MonthlyTicketsQuery
 {
@@ -44,7 +44,8 @@ final readonly class MonthlyTicketsQuery
      */
     private function buildQuery(array $monthKeys): Collection
     {
-        $startMonth = $this->now->copy()->subMonths(5)->startOfMonth()->toDateTimeString();
+        // Same order as generateMonthKeys(): startOfMonth() before subMonths() avoids day overflow.
+        $startMonth = $this->now->copy()->startOfMonth()->subMonths(5)->toDateTimeString();
         $endMonth = $this->now->copy()->endOfMonth()->toDateTimeString();
 
         $monthExpr = $this->monthExpression('opened_at');
@@ -69,12 +70,7 @@ final readonly class MonthlyTicketsQuery
 
     private function monthExpression(string $column): string
     {
-        $driver = DB::connection()->getDriverName();
-
-        return match ($driver) {
-            'sqlite' => "strftime('%Y-%m', {$column})",
-            default => "DATE_FORMAT({$column}, '%Y-%m')",
-        };
+        return DateSql::month($column);
     }
 
     /**

@@ -9,7 +9,7 @@ return [
     | Backup Configuration
     |--------------------------------------------------------------------------
     |
-| Database backup configuration. Uses mysqldump (MySQL)
+| Database backup configuration. Uses mysqldump (MySQL), pg_dump (PostgreSQL)
 | or sqlite3 (SQLite) directly, without external package dependencies.
     |
     */

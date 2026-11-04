@@ -131,14 +131,25 @@
             ],
             ['href' => 'ui/rooms', 'active' => 'ui/rooms*', 'label' => __('room.Salas'), 'icon' => $icon['door'], 'exact' => false],
             ['href' => 'calendar', 'active' => 'calendar*', 'label' => __('common.Agenda'), 'icon' => $icon['calendar'], 'exact' => false],
-            ['href' => 'ui/stock', 'active' => 'ui/stock*', 'label' => __('stock.Stock'), 'icon' => $icon['box'], 'exact' => false],
-            [
-                'href' => 'ui/settings/appearance',
-                'active' => 'ui/settings/appearance*',
-                'label' => __('ui.Tema'),
-                'icon' => $icon['swatch'],
+        ];
+
+        // Stock pages are gated by PartPolicy/SupplierPolicy (admin + technician).
+        if ($userRole === 'admin' || $userRole === 'technician') {
+            $navItems[] = [
+                'href' => 'ui/stock',
+                'active' => 'ui/stock*',
+                'label' => __('stock.Stock'),
+                'icon' => $icon['box'],
                 'exact' => false,
-            ],
+            ];
+        }
+
+        $navItems[] = [
+            'href' => 'ui/settings/appearance',
+            'active' => 'ui/settings/appearance*',
+            'label' => __('ui.Tema'),
+            'icon' => $icon['swatch'],
+            'exact' => false,
         ];
 
         if ($userRole === 'admin') {

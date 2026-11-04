@@ -27,7 +27,7 @@ Single-responsibility action classes that encapsulate business operations. Each 
    - Sets `budget_approved_by` to the admin's ID.
    - Sets `budget_decided_at` to `now()`.
    - Sets `status_id` to the resolved status.
-   - If approved: sets `budget_status` to `BudgetStatusEnum::Approved->value`.
+   - If approved: sets `budget_status` to `BudgetStatusEnum::Approved->value` and stamps `in_progress_at` with `now()` when it is still null — the ticket moves to In Progress, and `in_progress_at` is what the resolution-time KPIs read. `StartTicketAction` already stamps it on the normal start path; without this the approval path left it null and the ticket looked infinitely fast (or was excluded entirely).
    - If rejected: sets `budget_status` to `BudgetStatusEnum::Rejected->value`; if `$data->feedback` is non-empty, sets `budget_feedback`.
    - Calls `$ticket->save()`.
 6. Calls private `notifyDecision()` which formats a human-readable message and calls `$this->notificationService->notifyBudgetDecision()`.

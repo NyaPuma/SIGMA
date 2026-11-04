@@ -191,7 +191,7 @@ Below is the complete key map for every config file. All values read from `.env`
 | `slack.notifications.channel` | `SLACK_BOT_USER_DEFAULT_CHANNEL` | — |
 | `budget.threshold` | `BUDGET_THRESHOLD` | `50.00` |
 | `analytics.sla_target_minutes` | `SLA_TARGET_MINUTES` | `480` |
-| `analytics.system_availability` | `SYSTEM_AVAILABILITY` | `99.9` |
+| `analytics.pdf_export_limit` | `ANALYTICS_PDF_EXPORT_LIMIT` | `2000` |
 | `custom.auth.max_attempts` | `AUTH_MAX_ATTEMPTS` | `5` |
 | `custom.auth.lockout_minutes` | `AUTH_LOCKOUT_MINUTES` | `15` |
 | `custom.auth.token_expiry_days` | `AUTH_TOKEN_EXPIRY_DAYS` | `30` |
@@ -209,7 +209,7 @@ Below is the complete key map for every config file. All values read from `.env`
 | `auth.max_attempts` | `AUTH_MAX_ATTEMPTS` | `5` |
 | `auth.lockout_minutes` | `AUTH_LOCKOUT_MINUTES` | `15` |
 | `budget.threshold` | `BUDGET_THRESHOLD` | `50.00` |
-| `analytics.system_availability` | `SYSTEM_AVAILABILITY` | `99.9` |
+| `analytics.system_availability` | `SYSTEM_AVAILABILITY` | `99.9` — the only availability key; SystemSettingsService saves the Settings field here and AnalyticsDashboardService reads it back |
 | `ai.model` | `AI_MODEL` | `gpt-4o-mini` |
 | `ai.temperature` | `AI_TEMPERATURE` | `0.1` |
 | `pagination.default_per_page` | `PAGINATION_PER_PAGE` | `15` |

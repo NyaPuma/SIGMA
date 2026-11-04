@@ -88,6 +88,72 @@ class AnalyticsExportServiceTest extends FeatureTestCase
     }
 
     #[Test]
+    public function it_caps_the_pdf_report_to_the_configured_record_limit(): void
+    {
+        config(['services.analytics.pdf_export_limit' => 2]);
+
+        $this->createTicket(['title' => 'Ticket um']);
+        $this->createTicket(['title' => 'Ticket dois']);
+        $this->createTicket(['title' => 'Ticket três']);
+
+        $captured = new \ArrayObject;
+        $this->app->instance('dompdf.wrapper', new class($captured)
+        {
+            public function __construct(private readonly \ArrayObject $captured) {}
+
+            /**
+             * @param  array<string, mixed>  $data
+             */
+            public function loadView(string $view, array $data = []): static
+            {
+                $this->captured['view'] = $view;
+                $this->captured['data'] = $data;
+
+                return $this;
+            }
+
+            public function save(string $path): void {}
+        });
+
+        $this->service->exportPdfToFile(storage_path('framework/testing/exports/capped.pdf'));
+
+        $this->assertSame('reports.tickets', $captured['view']);
+        $this->assertCount(2, $captured['data']['tickets']);
+        $this->assertTrue($captured['data']['truncated']);
+        $this->assertSame(2, $captured['data']['maxRecords']);
+    }
+
+    #[Test]
+    public function it_marks_the_pdf_report_as_complete_below_the_limit(): void
+    {
+        config(['services.analytics.pdf_export_limit' => 5]);
+        $this->createTicket(['title' => 'Ticket único']);
+
+        $captured = new \ArrayObject;
+        $this->app->instance('dompdf.wrapper', new class($captured)
+        {
+            public function __construct(private readonly \ArrayObject $captured) {}
+
+            /**
+             * @param  array<string, mixed>  $data
+             */
+            public function loadView(string $view, array $data = []): static
+            {
+                $this->captured['data'] = $data;
+
+                return $this;
+            }
+
+            public function save(string $path): void {}
+        });
+
+        $this->service->exportPdfToFile(storage_path('framework/testing/exports/complete.pdf'));
+
+        $this->assertCount(1, $captured['data']['tickets']);
+        $this->assertFalse($captured['data']['truncated']);
+    }
+
+    #[Test]
     public function it_exports_an_empty_csv_when_there_are_no_tickets(): void
     {
         $path = storage_path('framework/testing/exports/empty.csv');

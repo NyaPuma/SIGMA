@@ -19,6 +19,8 @@ final class AnalyticsExportService
 
     private const CSV_DELIMITER = ';';
 
+    private const PDF_RECORD_LIMIT_DEFAULT = 2000;
+
     /**
      * Localized header labels for the ticket analytics CSV.
      *
@@ -109,13 +111,30 @@ final class AnalyticsExportService
     {
         $this->ensureDirectoryExists($path);
 
+        $configuredLimit = config('services.analytics.pdf_export_limit', self::PDF_RECORD_LIMIT_DEFAULT);
+        $maxRecords = max(1, is_numeric($configuredLimit) ? (int) $configuredLimit : self::PDF_RECORD_LIMIT_DEFAULT);
+
+        // Rendering every ticket into one DomPDF document exhausts the worker's memory on
+        // large datasets, so the report is capped and the truncation is printed on page 1.
+        // Fetching one extra row reveals the cap was hit without counting every ticket.
         $tickets = Ticket::select(self::PDF_SELECT)
             ->with('status')
             ->whereNull('tickets.deleted_at')
             ->latest()
+            ->limit($maxRecords + 1)
             ->get();
 
-        $pdf = Pdf::loadView('reports.tickets', ['tickets' => $tickets]);
+        $truncated = $tickets->count() > $maxRecords;
+
+        if ($truncated) {
+            $tickets = $tickets->take($maxRecords);
+        }
+
+        $pdf = Pdf::loadView('reports.tickets', [
+            'tickets' => $tickets,
+            'truncated' => $truncated,
+            'maxRecords' => $maxRecords,
+        ]);
         $pdf->save($path);
     }
 
