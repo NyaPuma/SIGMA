@@ -245,12 +245,13 @@ Below is every controller grouped by the area it powers, with a plain-English de
 
 **Dependencies:** `ChangePasswordRequest`, `UpdateProfileRequest`, `UserResource`.
 
-- **Method:** `changePassword(ChangePasswordRequest $request): JsonResponse`
-  - **What it does:** Verifies the current password and saves a new one.
-  - **When it runs / how it works:** Uses `$request->user()`; if `Hash::check(current_password, user.password)` fails, returns **403** "incorrect current password"; otherwise hashes and saves `new_password` and returns a success message.
+- **Method:** `changePassword(ChangePasswordRequest $request, UserService $userService): JsonResponse`
+  - **What it does:** Verifies the current password, saves a new one and rotates the API token.
+  - **When it runs / how it works:** Uses `$request->user()`; if `Hash::check(current_password, user.password)` fails, returns **403** "incorrect current password"; otherwise hashes and saves `new_password`, then issues a fresh token through `UserService::createToken(..., withSession: false)` and returns a success message with `re_authentication_required: true`.
+  - **Why the token rotates:** a leaked token stayed usable after the owner changed their password, which made the change useless as a remediation. Every previously issued token, including the caller's own, now has to authenticate again.
   - **Authorization:** `custom.auth`.
 
-- **Method:** `updateProfile(UpdateProfileRequest $request): JsonResponse`
+- **Method:** `updateProfile(UpdateProfileRequest $request, UserService $userService): JsonResponse`
   - **What it does:** Updates the user's `name` and/or `password`.
   - **When it runs / how it works:** Reads `password` (optional) and `name` (optional); hashes the password if provided, sets the name if provided, saves, `loadMissing('profile')`, and returns `{ message, user: UserResource }`.
   - **Authorization:** `custom.auth`.

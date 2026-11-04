@@ -8,8 +8,8 @@ The complete interactive documentation (where you can test parameters and view J
 | :--- | :--- | :--- | :--- |
 | **POST** | `/api/login` | `guest` | Validates credentials and injects the Authentication Cookie/Token. |
 | **POST** | `/api/logout` | `auth` | Destroys the session, invalidates the token, and securely clears cookies. |
-| **POST** | `/api/password/change` | `auth` | Autonomously changes the authenticated user's password. |
-| **POST** | `/api/profile/update` | `auth` | Updates the authenticated user's profile registration data. |
+| **POST** | `/api/password/change` | `auth` | Changes the authenticated user's password and rotates the API token, so every previously issued token (this device included) must authenticate again. |
+| **POST** | `/api/profile/update` | `auth` | Updates the authenticated user's profile registration data; rotating the token as well when the password is part of the change. |
 
 ### 2. Ticket, Photo, and Comment Workflow (Operational)
 All listing endpoints (`GET`) support **search and advanced filter parameters** (e.g., `?search=motor&status=em_curso&sala_id=5`).

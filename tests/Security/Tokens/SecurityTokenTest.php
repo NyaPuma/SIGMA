@@ -48,7 +48,7 @@ class SecurityTokenTest extends TestCase
         $this->assertDatabaseHas('users', ['api_token' => $token2]);
     }
 
-    public function test_token_survives_password_change(): void
+    public function test_password_change_rotates_the_api_token(): void
     {
         $profileId = UserProfile::where('name', UserRoleEnum::User->value)->value('id');
         $oldToken = Str::random(60);
@@ -56,7 +56,7 @@ class SecurityTokenTest extends TestCase
         $user = User::factory()->create([
             'profile_id' => $profileId,
             'password' => Hash::make('current-password'),
-            'api_token' => $oldToken,
+            'api_token' => User::hashToken($oldToken),
         ]);
 
         $response = $this->withHeader('X-Auth-Token', $oldToken)
@@ -65,14 +65,13 @@ class SecurityTokenTest extends TestCase
                 'new_password' => 'Password123!',
             ]);
 
-        $response->assertOk();
+        $response->assertOk()->assertJson(['re_authentication_required' => true]);
 
         $user->refresh();
-        $this->assertNotNull($user->api_token);
-        $this->assertEquals(60, strlen($user->api_token));
+        $this->assertNotSame(User::hashToken($oldToken), $user->api_token);
     }
 
-    public function test_old_token_still_works_after_password_change(): void
+    public function test_old_token_is_rejected_after_password_change(): void
     {
         $profileId = UserProfile::where('name', UserRoleEnum::User->value)->value('id');
         $oldToken = Str::random(60);
@@ -80,7 +79,7 @@ class SecurityTokenTest extends TestCase
         $user = User::factory()->create([
             'profile_id' => $profileId,
             'password' => Hash::make('current-password'),
-            'api_token' => $oldToken,
+            'api_token' => User::hashToken($oldToken),
         ]);
 
         $this->withHeader('X-Auth-Token', $oldToken)
@@ -89,11 +88,11 @@ class SecurityTokenTest extends TestCase
                 'new_password' => 'Password123!',
             ]);
 
-        // After password change, old token should still work for API access
-        $response = $this->withHeader('X-Auth-Token', $oldToken)
-            ->getJson('/ui/tickets');
-
-        $this->assertContains($response->status(), [200, 302]);
+        // Rotating the token is what makes a password change a real remediation: a token
+        // that leaked before the change must stop working with it.
+        $this->withHeader('X-Auth-Token', $oldToken)
+            ->getJson('/ui/tickets')
+            ->assertStatus(401);
     }
 
     public function test_blank_token_rejected_for_auth_routes(): void

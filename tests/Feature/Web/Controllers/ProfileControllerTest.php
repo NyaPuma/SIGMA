@@ -72,11 +72,37 @@ class ProfileControllerTest extends FeatureTestCase
             ]);
 
         $response->assertOk()
-            ->assertJson(['message' => __('messages.Perfil atualizado com sucesso.')])
+            ->assertJson([
+                'message' => __('messages.Perfil atualizado com sucesso.'),
+                're_authentication_required' => false,
+            ])
             ->assertJsonStructure(['user' => ['id', 'name', 'email']]);
 
         $this->assertEquals('Novo Nome', $user->fresh()->name);
         $this->assertTrue(Hash::check('Password123!', $user->fresh()->password));
+        // A profile edit that leaves the password alone must not invalidate the token.
+        $this->assertSame($user->api_token, $user->fresh()->api_token);
+    }
+
+    #[Test]
+    public function update_profile_rotates_the_api_token_when_the_password_changes(): void
+    {
+        $user = $this->createProfileUser();
+        $tokenBefore = $user->api_token;
+
+        $response = $this->withHeader('X-Auth-Token', $tokenBefore)
+            ->postJson('/profile/update', [
+                'current_password' => 'Password123!',
+                'password' => 'Nova-password-1',
+                'password_confirmation' => 'Nova-password-1',
+            ]);
+
+        $response->assertOk()->assertJson(['re_authentication_required' => true]);
+
+        $this->assertNotSame($tokenBefore, $user->fresh()->api_token);
+        $this->withHeader('X-Auth-Token', $tokenBefore)
+            ->getJson('/ui/tickets')
+            ->assertStatus(401);
     }
 
     #[Test]

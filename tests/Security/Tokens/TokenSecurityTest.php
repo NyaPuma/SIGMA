@@ -48,7 +48,7 @@ class TokenSecurityTest extends FeatureTestCase
         $user = User::factory()->create([
             'profile_id' => $profileId,
             'password' => Hash::make('current-password'),
-            'api_token' => $oldToken,
+            'api_token' => User::hashToken($oldToken),
         ]);
 
         $response = $this->withHeader('X-Auth-Token', $oldToken)
@@ -61,10 +61,11 @@ class TokenSecurityTest extends FeatureTestCase
 
         $user->refresh();
         $this->assertNotNull($user->api_token);
+        $this->assertNotSame(User::hashToken($oldToken), $user->api_token);
     }
 
     #[Test]
-    public function it_allows_api_access_after_password_change(): void
+    public function it_revokes_the_previous_token_on_password_change(): void
     {
         $profileId = UserProfile::where('name', UserRoleEnum::User->value)->value('id');
         $oldToken = Str::random(60);
@@ -72,7 +73,7 @@ class TokenSecurityTest extends FeatureTestCase
         $user = User::factory()->create([
             'profile_id' => $profileId,
             'password' => Hash::make('current-password'),
-            'api_token' => $oldToken,
+            'api_token' => User::hashToken($oldToken),
         ]);
 
         $this->withHeader('X-Auth-Token', $oldToken)
@@ -81,10 +82,9 @@ class TokenSecurityTest extends FeatureTestCase
                 'new_password' => 'Password123!',
             ]);
 
-        $response = $this->withHeader('X-Auth-Token', $oldToken)
-            ->getJson('/ui/tickets');
-
-        $this->assertContains($response->status(), [200, 302]);
+        $this->withHeader('X-Auth-Token', $oldToken)
+            ->getJson('/ui/tickets')
+            ->assertStatus(401);
     }
 
     #[Test]
