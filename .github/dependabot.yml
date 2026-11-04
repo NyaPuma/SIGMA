@@ -27,6 +27,13 @@ updates:
     labels:
       - "dependencies"
       - "npm"
+    groups:
+      # @fullcalendar/* plugins declare peer @fullcalendar/core ~<same minor>.
+      # Bumping one package alone makes `npm ci` fail with ERESOLVE, so these
+      # versions must always change together in a single PR.
+      fullcalendar:
+        patterns:
+          - "@fullcalendar/*"
 
   # GitHub Actions
   - package-ecosystem: "github-actions"
