@@ -123,7 +123,7 @@
                 </div>
             </td>
             <td class="report-meta">
-                <div><strong>{{ __('tickets.Emitido em:') }}</strong> {{ now() }}</div>
+                <div><strong>{{ __('tickets.Emitido em:') }}</strong> {{ app(\App\Services\LocalizationService::class)->formatDateTime(now()) }}</div>
                 <div><strong>{{ __('tickets.Registos:') }}</strong> {{ $tickets->count() }}</div>
                 @if ($truncated ?? false)
                     <div class="report-warning">{{ __('tickets.Relatório limitado aos :total registos mais recentes.', ['total' => $maxRecords]) }}</div>
@@ -145,15 +145,15 @@
             </td>
             <td>
                 <div class="label">{{ __('common.Custo Total') }}</div>
-                <div class="value">{{ $tickets->sum('actual_cost') }}</div>
+                <div class="value">{{ app(\App\Services\LocalizationService::class)->formatCurrency((float) $tickets->sum('actual_cost')) }}</div>
             </td>
             <td>
                 <div class="label">{{ __('common.Orçamento Total') }}</div>
-                <div class="value">{{ $tickets->sum('budget_amount') }}</div>
+                <div class="value">{{ app(\App\Services\LocalizationService::class)->formatCurrency((float) $tickets->sum('budget_amount')) }}</div>
             </td>
             <td>
                 <div class="label">{{ __('common.Fechados') }}</div>
-                <div class="value">{{ $tickets->where('status.name', 'fechada')->count() }}</div>
+                <div class="value">{{ $tickets->where('status.name', \App\Enums\TicketStatusEnum::Closed->value)->count() }}</div>
             </td>
         </tr>
     </table>
@@ -208,7 +208,7 @@
                         @endif
                     </td>
                     <td class="text-right font-mono">
-                        {{ (float) $t->actual_cost }}
+                        {{ app(\App\Services\LocalizationService::class)->formatCurrency((float) $t->actual_cost) }}
                     </td>
                     <td>
                         <span class="badge badge-{{ (string) ($t->budget_status ?? 'default') }}">
@@ -217,7 +217,7 @@
                     </td>
                     <td class="text-right font-mono">
                         @if($t->budget_amount !== null)
-                            {{ (float) $t->budget_amount }}
+                            {{ app(\App\Services\LocalizationService::class)->formatCurrency((float) $t->budget_amount) }}
                         @else
                             <span class="text-muted">—</span>
                         @endif
@@ -226,7 +226,7 @@
             @empty
                 <tr>
                     <td colspan="12" class="text-center text-muted empty-row">
-                        No ticket records found for the selected parameters.
+                        {{ __('tickets.Sem registos de tickets para os parâmetros selecionados.') }}
                     </td>
                 </tr>
             @endforelse
@@ -237,9 +237,9 @@
                 <tr>
                     <td colspan="8">{{ __('common.Total Consolidado') }}</td>
                     <td class="text-right">{{ $tickets->sum('minutes_spent') }} m</td>
-                    <td class="text-right">{{ $tickets->sum('actual_cost') }}</td>
+                    <td class="text-right">{{ app(\App\Services\LocalizationService::class)->formatCurrency((float) $tickets->sum('actual_cost')) }}</td>
                     <td></td>
-                    <td class="text-right">{{ $tickets->sum('budget_amount') }}</td>
+                    <td class="text-right">{{ app(\App\Services\LocalizationService::class)->formatCurrency((float) $tickets->sum('budget_amount')) }}</td>
                 </tr>
             </tfoot>
         @endif
@@ -249,7 +249,7 @@
         <table>
             <tr>
                 <td class="brand">{{ config('app.name') }}</td>
-                <td class="page-num-cell">Page <span class="page-num"></span></td>
+                <td class="page-num-cell">{{ __('common.Página') }} <span class="page-num"></span></td>
             </tr>
         </table>
     </div>

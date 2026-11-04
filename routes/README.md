@@ -129,9 +129,9 @@ They support the same login and role protection, but the "visitor" proves who th
 **Public ticket reporting (QR code):**
 | Method | URI | Name | Notes |
 |---|---|---|---|
-| GET | `/ticket/new` | `ticket.public.create` | Public fault form |
+| GET | `/ticket/new` | `ticket.public.create` | Public fault form (rate 20/min) |
 | POST | `/ticket/store` | `ticket.public.store` | Save report (rate 5/min) |
-| GET | `/ticket/success/{ticket}` | `ticket.public.success` | Confirmation (`{ticket}` numeric) |
+| GET | `/ticket/success/{ticket}` | `ticket.public.success` | Confirmation (`{ticket}` numeric, rate 20/min) — **signed**: the page prints reference, equipment and priority, and ticket ids are sequential, so an unsigned URL would let any anonymous visitor walk the range. `url()->temporarySignedRoute()` is used when redirecting after the report is created. |
 
 **Preferences (public):**
 | Method | URI | Name | Notes |

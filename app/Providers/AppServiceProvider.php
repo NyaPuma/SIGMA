@@ -48,6 +48,7 @@ use Illuminate\Database\Events\QueryExecuted;
 use Illuminate\Queue\Events\JobFailed;
 use Illuminate\Queue\Events\JobProcessed;
 use Illuminate\Queue\Events\JobProcessing;
+use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Blade;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Gate;
@@ -92,6 +93,10 @@ final class AppServiceProvider extends ServiceProvider
 
         // Apply overrides saved in the Settings → Configuration page
         $this->app->make(SystemSettingsService::class)->applyOverrides();
+
+        // Captured after the overrides so the default is the configured one, not a
+        // locale a previous job happened to leave behind.
+        $this->resetLocaleForQueuedJobs();
     }
 
     /**
@@ -168,6 +173,22 @@ final class AppServiceProvider extends ServiceProvider
                     'duration_ms' => round((float) $query->time, 2),
                 ]);
             }
+        });
+    }
+
+    /**
+     * A worker keeps one application instance for every job it runs, so the
+     * requester's locale an export job applied would leak into the next job and
+     * its notifications. Each job starts from the configured default again.
+     */
+    private function resetLocaleForQueuedJobs(): void
+    {
+        // `App::setLocale()` rewrites `config('app.locale')` too, so the baseline is
+        // read once here instead of inside the listener.
+        $default = App::getLocale();
+
+        Queue::before(function () use ($default): void {
+            App::setLocale($default);
         });
     }
 

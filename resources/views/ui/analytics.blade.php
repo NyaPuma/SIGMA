@@ -220,7 +220,7 @@
             </div>
         </section>
 
-        <div id="analyticsMessage" class="hidden rounded-2xl border border-[var(--border)] px-5 py-4 text-sm font-medium text-muted"></div>
+        <div id="analyticsMessage" class="hidden rounded-2xl border border-[var(--border)] px-5 py-4 text-sm font-medium text-(--text-muted)"></div>
     </div>
 </x-ui.partials.page-header>
 @endsection

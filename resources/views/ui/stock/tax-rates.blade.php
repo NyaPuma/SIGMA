@@ -87,7 +87,7 @@
                             @if($taxRate->active)
                                 <span class="inline-block rounded-lg bg-success/10 px-2 py-0.5 text-xs font-bold uppercase tracking-wider text-success">{{ __('common.Ativa') }}</span>
                             @else
-                                <span class="inline-block rounded-lg bg-(--surface-2) px-2 py-0.5 text-xs font-bold uppercase tracking-wider text-muted">{{ __('common.Inativa') }}</span>
+                                <span class="inline-block rounded-lg bg-(--surface-2) px-2 py-0.5 text-xs font-bold uppercase tracking-wider text-(--text-muted)">{{ __('common.Inativa') }}</span>
                             @endif
                         </td>
             <td class="ui-listing-actions px-5 py-4 text-right">

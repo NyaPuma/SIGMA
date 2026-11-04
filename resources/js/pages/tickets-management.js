@@ -1,5 +1,5 @@
 import { fetchTickets } from './tickets-management/api.js';
-import { bindPagination, clearTicketFilters, renderLoadingState } from './tickets-management/dom.js';
+import { applyFiltersFromUrl, bindPagination, clearTicketFilters, renderLoadingState } from './tickets-management/dom.js';
 import { renderEmptyState, renderErrorState, renderPagination, renderResultsCount, renderTickets, showFeedback } from './tickets-management/render.js';
 import { setCurrentPage, ticketsState } from './tickets-management/state.js';
 
@@ -48,6 +48,7 @@ function bindFilters() {
 }
 
 function init() {
+    applyFiltersFromUrl();
     bindFilters();
     bindPagination(loadTickets);
     loadTickets(ticketsState.currentPage);

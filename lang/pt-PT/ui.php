@@ -123,4 +123,8 @@ return [
     'mês' => 'mês',
     'mín.' => 'mín.',
     'resultado(s) encontrado(s)' => 'resultado(s) encontrado(s)',
+    'não lidas' => 'não lidas',
+    'mais' => 'mais',
+    'Sem notificações' => 'Sem notificações',
+    'Erro ao carregar' => 'Erro ao carregar',
 ];

@@ -24,4 +24,4 @@
 @if($themeRole)
     <meta name="user-role" content="{{ $themeRole }}">
 @endif
-<script id="themePresetsData" type="application/json">{!! json_encode($themePresets->all()) !!}</script>
+<script id="themePresetsData" type="application/json">@json($themePresets->all())</script>

@@ -6,6 +6,7 @@
         'signin' => __('auth_box.signin'),
         'loginRegister' => __('auth_box.login_register'),
         'connectionError' => __('auth_box.connection_error'),
+        'authRequired' => __('auth.Autenticação necessária.'),
     ];
     $uiTranslations = [
         'resultsCount' => __('ui.results_count'),
@@ -31,6 +32,13 @@
         'itemsSelected' => __('ui.item(s) selecionado(s)'),
         'cancel' => __('ui.Cancelar'),
         'confirm' => __('ui.Confirmar'),
+        'unreadLabel' => __('ui.não lidas'),
+        'moreLabel' => __('ui.mais'),
+        'noNotifications' => __('ui.Sem notificações'),
+        'loadListError' => __('ui.Erro ao carregar'),
+        'passwordWeak' => __('common.Fraca'),
+        'passwordMedium' => __('common.Média'),
+        'passwordStrong' => __('common.Forte'),
     ];
     $ticketsTranslations = [
         'priority' => [
@@ -56,6 +64,7 @@
         'technician' => __('common.Técnico'),
         'view' => __('common.Ver'),
         'empty' => __('common.Nenhum ticket encontrado com os filtros aplicados.'),
+        'loading' => __('ui.A carregar...'),
         'previous' => __('ui.Anterior'),
         'next' => __('ui.Próxima'),
         'page' => __('ui.Página'),
@@ -68,6 +77,9 @@
         'status' => __('common.Estado'),
         'operational' => __('equipment.operational'),
         'inactive' => __('equipment.inactive'),
+        'maintenance' => __('equipment.Em Manutenção'),
+        'broken' => __('equipment.Avariado'),
+        'withdrawn' => __('equipment.Abatido'),
         'openTicket' => __('equipment.open_ticket'),
         'edit' => __('equipment.edit'),
         'details' => __('equipment.details'),
@@ -119,6 +131,11 @@
         'connectionError' => __('ticket_detail.connection_error'),
         'repairStarted' => __('ticket_detail.repair_started'),
         'higherPriorityWaiting' => __('ticket_detail.higher_priority_waiting'),
+        'higherPriorityCountWaiting' => __('ticket_detail.higher_priority_count_waiting'),
+        'ofThemAssignedToYou' => __('ticket_detail.of_them_assigned_to_you'),
+        'currentTicketPriority' => __('ticket_detail.current_ticket_priority'),
+        'aboutToCloseIgnoring' => __('ticket_detail.about_to_close_ignoring'),
+        'aboutToStartIgnoring' => __('ticket_detail.about_to_start_ignoring'),
         'startError' => __('ticket_detail.start_error'),
         'startConnectionError' => __('ticket_detail.start_connection_error'),
         'forceStartError' => __('ticket_detail.force_start_error'),
@@ -248,6 +265,8 @@
         'exportProcessing' => __('analytics.export_processing'),
         'exportStartError' => __('analytics.export_start_error'),
         'exportNetworkError' => __('analytics.export_network_error'),
+        'noActivity' => __('dashboard.Nenhuma atividade recente encontrada.'),
+        'noData' => __('common.Sem dados disponíveis.'),
     ];
     $enumTranslations = [
         'movement' => [

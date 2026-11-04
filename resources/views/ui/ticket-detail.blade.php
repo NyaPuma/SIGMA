@@ -214,7 +214,7 @@
 
     <div id="ticketMessage" class="mt-4 min-h-6 px-1 text-xs font-medium transition-all duration-300"></div>
 
-    <div id="priorityWarningModal" class="hidden fixed inset-0 z-[9999] items-center justify-center bg-black/60 backdrop-blur-sm p-4">
+    <div id="priorityWarningModal" role="dialog" aria-modal="true" aria-labelledby="priorityWarningTitle" class="hidden fixed inset-0 z-[9999] items-center justify-center bg-black/60 backdrop-blur-sm p-4">
         <div class="relative w-full max-w-md rounded-2xl border border-(--border) bg-(--surface) p-6 shadow-2xl space-y-4">
             <div class="flex items-center justify-between">
                 <span class="text-xs font-bold uppercase tracking-wider text-warning bg-warning/10 px-2 py-0.5 rounded-lg">{{ __('common.Prioridades') }}</span>
@@ -223,7 +223,7 @@
                 </span>
             </div>
             <div>
-                <h2 class="text-sm font-black text-(--text)">{{ __('tickets.Atenção: Tickets Prioritários') }}</h2>
+                <h2 id="priorityWarningTitle" class="text-sm font-black text-(--text)">{{ __('tickets.Atenção: Tickets Prioritários') }}</h2>
                 <p id="priorityWarningCount" class="mt-1 text-xs text-(--text-soft) leading-relaxed"></p>
                 <p id="priorityWarningCurrent" class="mt-1 text-xs text-(--text-soft)"></p>
                 <p id="priorityWarningAction" class="mt-1 text-xs text-(--text-soft)"></p>

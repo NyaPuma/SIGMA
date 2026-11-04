@@ -21,7 +21,7 @@
             'operacional' => 'border border-success/25 bg-success/10 text-success',
             'manutenção' => 'border border-warning/25 bg-warning/10 text-warning',
             'avariado' => 'border border-danger/25 bg-danger/10 text-danger',
-            'abatido' => 'border border-[var(--border)] bg-[var(--surface-2)] text-muted',
+            'abatido' => 'border border-[var(--border)] bg-[var(--surface-2)] text-(--text-muted)',
         ],
         'ticketStatus' => [
             'aberta' => 'border border-info/25 bg-info/10 text-info',

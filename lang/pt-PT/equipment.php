@@ -94,4 +94,5 @@ return [
     'Ex: Lenovo' => 'Ex: Lenovo',
     'Ex: ThinkPad X1 Carbon' => 'Ex: ThinkPad X1 Carbon',
     'Ex: Lenovo Group' => 'Ex: Lenovo Group',
+    'Códigos para reportar avarias — afixar junto de cada equipamento.' => 'Códigos para reportar avarias — afixar junto de cada equipamento.',
 ];

@@ -6,11 +6,13 @@ import { escapeHtml } from '../../utils/escape.js';
 const translations = () => window.SGM_EQUIPMENT_I18N || {};
 
 function renderStatusBadge(equipment) {
-    const statusColors = {
-        'operacional': 'success',
-        'manutenção': 'warning',
-        'avariado': 'danger',
-        'abatido': 'muted'
+    // Literal class strings, not `bg-${color}/10`: the Tailwind scanner only sees
+    // classes it can read whole, and the palette lives in components/ui/text/badge.
+    const statusTones = {
+        'operacional': 'border-success/25 bg-success/10 text-success',
+        'manutenção': 'border-warning/25 bg-warning/10 text-warning',
+        'avariado': 'border-danger/25 bg-danger/10 text-danger',
+        'abatido': 'border-[var(--border)] bg-[var(--surface-2)] text-(--text-muted)',
     };
 
     const statusLabels = {
@@ -21,10 +23,10 @@ function renderStatusBadge(equipment) {
     };
 
     const status = equipment.status || 'operacional';
-    const color = statusColors[status] || 'muted';
+    const tone = statusTones[status] ?? 'border-[var(--border)] bg-[var(--surface-2)] text-[var(--text-soft)]';
     const label = statusLabels[status] || status;
 
-    return `<span class="inline-flex items-center gap-1 rounded-lg bg-${color}/10 px-2.5 py-1 text-xs font-bold uppercase tracking-tight text-${color}">${escapeHtml(label)}</span>`;
+    return `<span class="inline-flex items-center gap-1 rounded-lg border px-2.5 py-1 text-xs font-bold uppercase tracking-tight ${tone}">${escapeHtml(label)}</span>`;
 }
 
 function renderEquipmentRow(equipment) {

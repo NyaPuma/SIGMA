@@ -3,6 +3,9 @@
 return [
     'operational' => 'Operational',
     'inactive' => 'Out of Service',
+    'Em Manutenção' => 'In Maintenance',
+    'Avariado' => 'Faulty',
+    'Abatido' => 'Retired',
     'open_ticket' => 'Open Ticket',
     'edit' => 'Edit',
     'details' => 'View details',
@@ -89,4 +92,5 @@ return [
     'Ex: Lenovo' => 'Ex: Lenovo',
     'Ex: ThinkPad X1 Carbon' => 'Ex: ThinkPad X1 Carbon',
     'Ex: Lenovo Group' => 'Ex: Lenovo Group',
+    'Códigos para reportar avarias — afixar junto de cada equipamento.' => 'Codes for reporting faults — post next to each piece of equipment.',
 ];

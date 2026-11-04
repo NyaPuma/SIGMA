@@ -29,7 +29,10 @@ final readonly class ScheduleMaintenanceAction
 
         return DB::transaction(function () use ($creator, $data, $openStatusId, $scheduledAt): Ticket {
             $ticket = Ticket::create([
-                'reference' => 'MNT-'.now()->format('YmdHis').'-'.strtoupper(uniqid()),
+                // Only 30 characters fit tickets.reference, and uniqid() is 13 long: the full
+                // value overflowed the column on MySQL/PostgreSQL (SQLite silently ignores the
+                // limit). The microsecond tail is unique inside its second, so it stays collision-free.
+                'reference' => 'MNT-'.now()->format('YmdHis').'-'.strtoupper(substr(uniqid(), -5)),
                 'title' => trim($data->title),
                 'description' => trim($data->description ?? __('maintenance_plan.Manutenção preventiva agendada.')),
                 'priority' => 'média',

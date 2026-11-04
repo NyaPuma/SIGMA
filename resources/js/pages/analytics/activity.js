@@ -5,12 +5,14 @@
 
 import { escapeHtml } from '../../utils/escape.js';
 
+const translations = () => window.SGM_ANALYTICS_I18N || {};
+
 export function renderActivity(element, data) {
     if (!element) return;
     const activities = data.recent_activity || [];
     if (activities.length === 0) {
         element.innerHTML = `
-            <div class="p-6 text-center text-xs text-soft">No recent activity.</div>
+            <div class="p-6 text-center text-xs text-(--text-soft)">${escapeHtml(translations().noActivity || '')}</div>
         `;
         return;
     }
@@ -33,7 +35,7 @@ export function renderActivity(element, data) {
 export function renderList(element, items) {
     if (!element) return;
     if (!items || items.length === 0) {
-        element.innerHTML = `<div class="p-5 text-center text-xs text-(--text-soft)">No data available</div>`;
+        element.innerHTML = `<div class="p-5 text-center text-xs text-(--text-soft)">${escapeHtml(translations().noData || '')}</div>`;
         return;
     }
     element.innerHTML = items.map((item, idx) => `

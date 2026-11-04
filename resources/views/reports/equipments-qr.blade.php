@@ -78,12 +78,12 @@
                 <div class="report-eyebrow">{{ __('equipment.Etiquetas de Equipamento') }}</div>
                 <h1 class="report-title">{{ __('equipment.QR Codes de Equipamentos') }}</h1>
                 <div class="report-subtitle">
-                    Codes for reporting faults — post next to each piece of equipment.
+                    {{ __('equipment.Códigos para reportar avarias — afixar junto de cada equipamento.') }}
                 </div>
             </td>
             <td class="report-meta">
-                <div><strong>Issued on:</strong> {{ now() }}</div>
-                <div><strong>Equipment:</strong> {{ $items->count() }}</div>
+                <div><strong>{{ __('common.Emitido em:') }}</strong> {{ app(\App\Services\LocalizationService::class)->formatDateTime(now()) }}</div>
+                <div><strong>{{ __('common.Equipamentos:') }}</strong> {{ $items->count() }}</div>
             </td>
         </tr>
     </table>
@@ -97,7 +97,7 @@
                     @foreach($chunk as $item)
                         <td>
                             <div class="qr-card">
-                                <img class="qr-image" src="{{ $item['qrDataUri'] }}" alt="QR">
+                                <img class="qr-image" src="{{ $item['qrDataUri'] }}" alt="QR {{ $item['equipment']->name }}">
                                 <div class="qr-name">{{ $item['equipment']->name }}</div>
                                 <div class="qr-meta">{{ $item['equipment']->asset_tag ?? '#' . $item['equipment']->id }}</div>
                                 <div class="qr-meta">{{ $item['equipment']->room?->name ?? '—' }}</div>
@@ -114,7 +114,7 @@
         <table>
             <tr>
                 <td class="brand">{{ config('app.name') }}</td>
-                <td class="page-num-cell">Page <span class="page-num"></span></td>
+                <td class="page-num-cell">{{ __('common.Página') }} <span class="page-num"></span></td>
             </tr>
         </table>
     </div>

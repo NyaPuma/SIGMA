@@ -166,15 +166,15 @@
                         />
 
                         <ul class="mt-3 space-y-1.5" aria-label="{{ __('auth.Requisitos da palavra-passe') }}">
-                            <li :class="lengthOk ? 'text-success' : 'text-muted'" class="flex items-center gap-2 text-xs">
+                            <li :class="lengthOk ? 'text-success' : 'text-(--text-muted)'" class="flex items-center gap-2 text-xs">
                                 <svg class="h-3.5 w-3.5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" /></svg>
                                 {{ __('stock.Mínimo de 8 caracteres') }}
                             </li>
-                            <li :class="caseOk ? 'text-success' : 'text-muted'" class="flex items-center gap-2 text-xs">
+                            <li :class="caseOk ? 'text-success' : 'text-(--text-muted)'" class="flex items-center gap-2 text-xs">
                                 <svg class="h-3.5 w-3.5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" /></svg>
                                 {{ __('common.Pelo menos 1 letra maiúscula e 1 letra minúscula') }}
                             </li>
-                            <li :class="symbolNumberOk ? 'text-success' : 'text-muted'" class="flex items-center gap-2 text-xs">
+                            <li :class="symbolNumberOk ? 'text-success' : 'text-(--text-muted)'" class="flex items-center gap-2 text-xs">
                                 <svg class="h-3.5 w-3.5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" /></svg>
                                 {{ __('common.Pelo menos 1 símbolo ou número') }}
                             </li>
@@ -187,7 +187,7 @@
                                     <span :class="[score >= 2 ? barColor : 'bg-[var(--border)]', 'h-1.5 flex-1 rounded-full transition-colors']" aria-hidden="true"></span>
                                     <span :class="[score >= 3 ? barColor : 'bg-[var(--border)]', 'h-1.5 flex-1 rounded-full transition-colors']" aria-hidden="true"></span>
                                 </div>
-                                <span x-show="score > 0" x-cloak x-text="levelLabel" :class="[score > 0 ? levelClass : '', 'min-w-12 text-right text-xs font-medium text-muted']"></span>
+                                <span x-show="score > 0" x-cloak x-text="levelLabel" :class="[score > 0 ? levelClass : 'text-(--text-muted)', 'min-w-12 text-right text-xs font-medium']"></span>
                             </div>
                         </div>
                     </x-ui.form.field>

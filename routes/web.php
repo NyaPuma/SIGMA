@@ -66,13 +66,18 @@ Route::post('/login', [AuthController::class, 'login'])
 |--------------------------------------------------------------------------
 */
 Route::get('/ticket/new', [PublicTicketController::class, 'create'])
-    ->name('ticket.public.create');
+    ->name('ticket.public.create')
+    ->middleware(['rate.limit:20,1']);
 Route::post('/ticket/store', [PublicTicketController::class, 'store'])
     ->name('ticket.public.store')
     ->middleware(['rate.limit:5,1']);
+// Signed, not just numeric: the confirmation page prints the reference, the equipment and the
+// priority of the ticket, and ticket ids are sequential. Without a signature any anonymous
+// visitor could walk the range and read reports created by internal users.
 Route::get('/ticket/success/{ticket}', [PublicTicketController::class, 'success'])
     ->name('ticket.public.success')
-    ->where('ticket', '[0-9]+');
+    ->where('ticket', '[0-9]+')
+    ->middleware(['signed', 'rate.limit:20,1']);
 
 // --- User Preferences (Language, Currency, Date Format) ---
 Route::get('/preferences', [PreferencesController::class, 'edit'])
@@ -322,9 +327,11 @@ Route::middleware(['custom.auth'])->group(function () {
 
         // Analytics
         Route::get('/analytics', [AnalyticsController::class, 'stats'])->name('analytics.stats');
-        Route::get('/analytics/export/csv', [AnalyticsController::class, 'exportCsv'])->name('analytics.export.csv');
-        Route::get('/analytics/export/pdf', [AnalyticsController::class, 'exportPdf'])->name('analytics.export.pdf');
-        Route::get('/analytics/export/excel', [AnalyticsController::class, 'exportExcel'])->name('analytics.export.excel');
+        // Each export renders the whole dataset into a spreadsheet/PDF, so they are capped
+        // separately from the cheap stats endpoint.
+        Route::get('/analytics/export/csv', [AnalyticsController::class, 'exportCsv'])->name('analytics.export.csv')->middleware('rate.limit:10,1');
+        Route::get('/analytics/export/pdf', [AnalyticsController::class, 'exportPdf'])->name('analytics.export.pdf')->middleware('rate.limit:10,1');
+        Route::get('/analytics/export/excel', [AnalyticsController::class, 'exportExcel'])->name('analytics.export.excel')->middleware('rate.limit:10,1');
 
         // User registration
         Route::post('/admin/users/register', [RegisterController::class, '__invoke'])
@@ -362,7 +369,8 @@ Route::middleware(['custom.auth'])->group(function () {
             ->name('ui.equipments.qr.download')
             ->where('equipment', '[0-9]+');
         Route::get('/ui/equipments/qr/export', [QrCodeController::class, 'exportPdf'])
-            ->name('ui.equipments.qr.export');
+            ->name('ui.equipments.qr.export')
+            ->middleware('rate.limit:10,1');
 
         // Room Management
         Route::get('/admin/rooms', [RoomController::class, 'indexRoom'])->name('admin.rooms.index');

@@ -59,4 +59,9 @@ return [
     'Descrição da tarefa' => 'Descrição da tarefa',
     'Item' => 'Item',
     'Adicionar itens' => 'Adicionar itens',
+    'higher_priority_count_waiting' => 'Existem :count tickets de prioridade superior por atender.',
+    'of_them_assigned_to_you' => ':count delas estão atribuídas a si.',
+    'current_ticket_priority' => 'Ticket atual: :priority',
+    'about_to_close_ignoring' => 'Está prestes a encerrar este ticket ignorando os mais urgentes.',
+    'about_to_start_ignoring' => 'Está prestes a iniciar este ticket ignorando os mais urgentes.',
 ];

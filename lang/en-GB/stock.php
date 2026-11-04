@@ -113,4 +113,6 @@ return [
     'consumo' => 'consumption',
     'em stock' => 'in stock',
     'peças' => 'parts',
+    'Consumo de peças e respetivo valor nas intervenções de cada equipamento.' => "Parts consumption and associated value for each piece of equipment's interventions.",
+    'Não existem saídas de peças associadas a equipamentos no período selecionado.' => 'There are no outgoing part movements associated with equipment in the selected period.',
 ];

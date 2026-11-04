@@ -52,10 +52,11 @@ export default function passwordStrengthComponent() {
         },
 
         get levelLabel() {
+            const translations = window.SGM_UI_I18N || {};
             const labels = {
-                weak: 'Weak',
-                medium: 'Medium',
-                strong: 'Strong',
+                weak: translations.passwordWeak || 'Fraca',
+                medium: translations.passwordMedium || 'Média',
+                strong: translations.passwordStrong || 'Forte',
             };
 
             return labels[this.level];

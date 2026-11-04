@@ -10,6 +10,7 @@ use App\Mail\TestMail;
 use App\Models\Notification;
 use App\Services\AnalyticsService;
 use App\Services\TicketStatusService;
+use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Storage;
 use PHPUnit\Framework\Attributes\Test;
@@ -98,6 +99,38 @@ class ExportJobsTest extends FeatureTestCase
         $this->assertStringStartsWith('/exports/'.$user->id.'/', $link);
         $this->assertStringNotContainsString('/storage/', $link);
         $this->assertFalse(Storage::disk('public')->exists('exports'));
+    }
+
+    #[Test]
+    public function export_job_notifies_the_user_in_their_own_locale(): void
+    {
+        Storage::fake('local');
+        $user = $this->createAdmin(['locale' => 'en-GB']);
+        $this->createTicket(['title' => 'Relatório Excel']);
+
+        (new ExportExcelJob($user->id))->handle();
+
+        $this->assertDatabaseHas('notifications', [
+            'user_id' => $user->id,
+            'title' => 'Excel export completed',
+        ]);
+    }
+
+    #[Test]
+    public function the_locale_an_export_job_applies_does_not_leak_into_the_next_job(): void
+    {
+        Storage::fake('local');
+        $default = config('app.locale');
+        $user = $this->createAdmin(['locale' => 'en-GB']);
+        $this->createTicket(['title' => 'Relatório Excel']);
+
+        ExportExcelJob::dispatchSync($user->id);
+        $this->assertSame('en-GB', App::getLocale());
+
+        Mail::fake();
+        SendTestEmailJob::dispatchSync('test@example.com', 'Teste');
+
+        $this->assertSame($default, App::getLocale());
     }
 
     #[Test]

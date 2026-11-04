@@ -7,6 +7,8 @@
 
 import { escapeHtml } from '../utils/escape.js';
 
+const translations = () => window.SGM_UI_I18N || {};
+
 let modal, overlay, container;
 let triggerEl = null;
 
@@ -102,13 +104,13 @@ async function fetchNotifications() {
             }
         }
         if (countLabel) {
-            countLabel.innerText = unreadCount + ' ' + (countLabel.dataset.unreadLabel || 'unread');
+            countLabel.innerText = unreadCount + ' ' + (translations().unreadLabel || 'não lidas');
         }
 
         const items = notifications.slice(0, 30);
         list.innerHTML = items.map(renderItem).join('') + (notifications.length > 30 ? `
             <div class="text-center pt-2">
-                <span class="text-xs font-medium text-muted">+${notifications.length - 30} more</span>
+                <span class="text-xs font-medium text-(--text-muted)">+${notifications.length - 30} ${escapeHtml(translations().moreLabel || 'mais')}</span>
             </div>
         ` : '');
 
@@ -127,7 +129,7 @@ async function fetchNotifications() {
         console.warn('Error loading notifications:', e);
         if (list) {
             list.innerHTML = `
-                <p class="text-xs text-center py-6 italic text-muted">Error loading</p>
+                <p class="text-xs text-center py-6 italic text-(--text-muted)">${escapeHtml(translations().loadListError || 'Erro ao carregar')}</p>
             `;
         }
     }
@@ -142,8 +144,8 @@ function toArray(value) {
 
 function renderEmpty(list, badge, countLabel) {
     list.innerHTML = `
-        <p class="text-xs text-center py-6 italic text-muted">
-            No notifications
+        <p class="text-xs text-center py-6 italic text-(--text-muted)">
+            ${escapeHtml(translations().noNotifications || 'Sem notificações')}
         </p>
     `;
     if (badge) badge.classList.add('hidden');
@@ -170,8 +172,8 @@ function renderItem(n) {
             <span class="text-base flex-shrink-0 mt-0.5 text-(--text-soft)">${icon}</span>
             <div class="flex-1 min-w-0">
                 <p class="text-xs font-bold text-(--text) leading-tight">${escapeHtml(n.title)}</p>
-                <p class="text-xs mt-0.5 line-clamp-2 text-soft">${escapeHtml(n.message || n.description)}</p>
-                <p class="text-xs mt-1 text-muted">${escapeHtml(n.created_at)}</p>
+                <p class="text-xs mt-0.5 line-clamp-2 text-(--text-soft)">${escapeHtml(n.message || n.description)}</p>
+                <p class="text-xs mt-1 text-(--text-muted)">${escapeHtml(n.created_at)}</p>
             </div>
             ${isUnread ? '<span class="w-2 h-2 rounded-full bg-primary flex-shrink-0 mt-1.5"></span>' : ''}
         </div>

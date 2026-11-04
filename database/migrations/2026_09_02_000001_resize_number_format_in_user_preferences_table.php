@@ -20,11 +20,8 @@ return new class extends Migration
 
     public function down(): void
     {
-        Schema::table('user_preferences', function (Blueprint $table) {
-            $table->string('number_format', 50)
-                ->nullable()
-                ->default('{"decimal":".","thousand":","}')
-                ->change();
-        });
+        // Deliberately keeps the 191-character column. Narrowing back to 50 would
+        // truncate the JSON values this migration exists to store (the "example"
+        // field pushes them past 50) — silently on SQLite, error 1406 on MySQL.
     }
 };

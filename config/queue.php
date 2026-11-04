@@ -70,9 +70,15 @@ return [
             'driver' => 'redis',
             'connection' => env('REDIS_QUEUE_CONNECTION', 'default'),
             'queue' => env('REDIS_QUEUE', 'default'),
-            'retry_after' => (int) env('REDIS_QUEUE_RETRY_AFTER', 90),
+            // The reserved window must outlast the slowest job, otherwise a second worker
+            // re-picks a still-running export (they declare up to 300s timeouts) and the same
+            // file and notifications are produced twice. Kept above the worker --timeout=300.
+            'retry_after' => (int) env('REDIS_QUEUE_RETRY_AFTER', 360),
             'block_for' => null,
-            'after_commit' => false,
+            // The export jobs read rows created in the request that queued them; pushing to
+            // redis before the transaction commits lets a worker reserve the job while those
+            // rows are still invisible, and the export then writes an empty file.
+            'after_commit' => true,
         ],
 
         'deferred' => [

@@ -46,7 +46,7 @@ Profile Security Form Card Component
 
             <ul class="mt-3 space-y-1.5" aria-label="{{ __('auth.Requisitos da palavra-passe') }}">
                 <li
-                    :class="lengthOk ? 'text-success' : 'text-muted'"
+                    :class="lengthOk ? 'text-success' : 'text-(--text-muted)'"
                     class="flex items-center gap-2 text-xs"
                 >
                     <svg class="h-3.5 w-3.5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" aria-hidden="true">
@@ -56,7 +56,7 @@ Profile Security Form Card Component
                 </li>
 
                 <li
-                    :class="caseOk ? 'text-success' : 'text-muted'"
+                    :class="caseOk ? 'text-success' : 'text-(--text-muted)'"
                     class="flex items-center gap-2 text-xs"
                 >
                     <svg class="h-3.5 w-3.5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" aria-hidden="true">
@@ -66,7 +66,7 @@ Profile Security Form Card Component
                 </li>
 
                 <li
-                    :class="symbolNumberOk ? 'text-success' : 'text-muted'"
+                    :class="symbolNumberOk ? 'text-success' : 'text-(--text-muted)'"
                     class="flex items-center gap-2 text-xs"
                 >
                     <svg class="h-3.5 w-3.5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" aria-hidden="true">
@@ -103,7 +103,7 @@ Profile Security Form Card Component
                         x-show="score > 0"
                         x-cloak
                         x-text="levelLabel"
-                        :class="[score > 0 ? levelClass : '', 'min-w-12 text-right text-xs font-medium text-muted']"
+                        :class="[score > 0 ? levelClass : 'text-(--text-muted)', 'min-w-12 text-right text-xs font-medium']"
                     ></span>
                 </div>
             </div>

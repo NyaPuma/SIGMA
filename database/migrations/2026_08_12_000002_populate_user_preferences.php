@@ -35,14 +35,15 @@ return new class extends Migration
     }
 
     /**
-     * Removes the preferences created by this migration (reversible).
+     * Intentionally does nothing.
+     *
+     * The rows this migration created are indistinguishable from preferences a user
+     * later chose by hand — pt/EUR/d/m/Y are the values the preferences screen also
+     * saves — so the previous match-on-defaults delete dropped live user settings on
+     * every rollback. A column-only rollback is safe; deleting data is not.
      */
     public function down(): void
     {
-        // Remove only the preferences created with this migration's default values
-        UserPreference::where('language', 'pt')
-            ->where('currency', 'EUR')
-            ->where('date_format', 'd/m/Y')
-            ->delete();
+        //
     }
 };

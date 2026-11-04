@@ -14,17 +14,32 @@ export function showPriorityWarning(urgentCount, currentPriority, ticketId, acti
     if (!modal) return;
 
     if (countElement) {
-        let countText = `${urgentCount} higher-priority ticket(s) waiting`;
+        const t = translations();
+
+        countElement.textContent = (t.higherPriorityCountWaiting || 'Existem :count tickets de prioridade superior por atender.')
+            .replace(':count', urgentCount);
+
         if (myUrgentCount > 0) {
-            countText += `<br><span class="font-bold text-warning">${myUrgentCount} of them are assigned to you</span>`;
+            countElement.append(document.createElement('br'));
+
+            const assigned = document.createElement('span');
+            assigned.className = 'font-bold text-warning';
+            assigned.textContent = (t.ofThemAssignedToYou || ':count delas estão atribuídas a si.')
+                .replace(':count', myUrgentCount);
+
+            countElement.append(assigned);
         }
-        countElement.innerHTML = countText;
     }
 
-    if (currentElement) currentElement.textContent = `Current ticket: ${currentPriority}`;
-    if (actionElement) actionElement.textContent = actionType === 'close'
-        ? 'You are about to close this ticket ignoring the more urgent ones.'
-        : 'You are about to start this ticket ignoring the more urgent ones.';
+    if (currentElement) {
+        currentElement.textContent = (translations().currentTicketPriority || 'Ticket atual: :priority')
+            .replace(':priority', currentPriority);
+    }
+    if (actionElement) {
+        actionElement.textContent = actionType === 'close'
+            ? (translations().aboutToCloseIgnoring || 'Está prestes a encerrar este ticket ignorando os mais urgentes.')
+            : (translations().aboutToStartIgnoring || 'Está prestes a iniciar este ticket ignorando os mais urgentes.');
+    }
 
     setPendingAction({ ticketId, actionType });
     modal.classList.remove('hidden');

@@ -109,4 +109,9 @@ return [
     'Tem a certeza que pretende remover esta fotografia?' => 'Are you sure you want to remove this photo?',
     'Ticket atribuído' => 'Ticket assigned',
     'Ticket atualizado' => 'Ticket updated',
+    'Sem registos de tickets para os parâmetros selecionados.' => 'No ticket records found for the selected parameters.',
+    'Emitido em:' => 'Issued on:',
+    'Registos:' => 'Records:',
+    'Gerado automaticamente' => 'Automatically generated',
+    'Análise dos estados operacionais, tempos de resolução e custos.' => 'Analysis of operational states, resolution times and costs.',
 ];

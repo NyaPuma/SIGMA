@@ -57,7 +57,9 @@ return Application::configure(basePath: dirname(__DIR__))
         ]);
     })
     ->withSchedule(function (Schedule $schedule): void {
-        $schedule->job(new CheckLowStockJob)->dailyAt('06:00');
+        // withoutOverlapping matches the guard the console.php schedules already use: a run
+        // that outlives its slot (large stock tables) would otherwise stack on the next one.
+        $schedule->job(new CheckLowStockJob)->dailyAt('06:00')->withoutOverlapping();
     })
     ->withExceptions(function (Exceptions $exceptions): void {
         $exceptions->render(function (InvalidArgumentException $e) {

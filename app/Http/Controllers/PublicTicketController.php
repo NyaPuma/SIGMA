@@ -13,6 +13,7 @@ use App\Models\TicketAttachment;
 use App\Services\NotificationCreatorService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\URL;
 use Illuminate\Support\Str;
 use Illuminate\View\View;
 
@@ -79,7 +80,9 @@ final class PublicTicketController extends Controller
 
         $this->notifyAdmins($ticket);
 
-        return redirect()->route('ticket.public.success', ['ticket' => $ticket->id]);
+        return redirect()->to(
+            URL::temporarySignedRoute('ticket.public.success', now()->addDay(), ['ticket' => $ticket->id])
+        );
     }
 
     /**

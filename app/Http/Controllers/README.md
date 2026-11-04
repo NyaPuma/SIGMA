@@ -1413,9 +1413,9 @@ Below is every controller grouped by the area it powers, with a plain-English de
 
 | Method | URI | Route name | Middleware | File |
 |---|---|---|---|---|
-| GET | `/ticket/new` | `ticket.public.create` | public | `web.php:66` |
-| POST | `/ticket/store` | `ticket.public.store` | public + `rate.limit:5,1` | `web.php:68` |
-| GET | `/ticket/success/{ticket}` | `ticket.public.success` | public, `{ticket}` must be numeric | `web.php:71` |
+| GET | `/ticket/new` | `ticket.public.create` | public + `rate.limit:20,1` | `web.php:68` |
+| POST | `/ticket/store` | `ticket.public.store` | public + `rate.limit:5,1` | `web.php:71` |
+| GET | `/ticket/success/{ticket}` | `ticket.public.success` | `signed` + `rate.limit:20,1`, `{ticket}` must be numeric | `web.php:77` |
 
 (Only in `web.php`.)
 
@@ -1427,12 +1427,12 @@ Below is every controller grouped by the area it powers, with a plain-English de
 
 - **Method:** `store(PublicStoreTicketRequest $request): RedirectResponse`
   - **What it does:** Registers the public ticket and notifies administrators.
-  - **When it runs / how it works:** finds the equipment by validated `equipment_id`; normalises `problem_type` via `PublicTicketProblemTypeEnum::normalize` (default `Other`); executes `CreatePublicTicketAction::execute(...)` with equipment, problem type, description, and optional reporter name/contact; if a `photo` was uploaded, `storePhoto` saves it (silently skipping disallowed MIMEs) as a UUID filename under `ticket_photos/` with `user_id = null`; dispatches `GenerateAiRecommendationJob` after commit; notifies all admins via `NotificationCreatorService::createForAdmins` (title "New Ticket Reported", link to the UI ticket page); redirects to `ticket.public.success`.
+  - **When it runs / how it works:** finds the equipment by validated `equipment_id`; normalises `problem_type` via `PublicTicketProblemTypeEnum::normalize` (default `Other`); executes `CreatePublicTicketAction::execute(...)` with equipment, problem type, description, and optional reporter name/contact; if a `photo` was uploaded, `storePhoto` saves it (silently skipping disallowed MIMEs) as a UUID filename under `ticket_photos/` with `user_id = null`; dispatches `GenerateAiRecommendationJob` after commit; notifies all admins via `NotificationCreatorService::createForAdmins` (title `__('tickets.Novo Ticket Reportado')`, link to the UI ticket page); redirects to a **temporary signed** `ticket.public.success` URL (1 day validity).
 
 - **Method:** `success(Ticket $ticket): View`
   - **What it does:** Renders the confirmation page with the created ticket reference.
   - **When it runs / how it works:** returns `ui.tickets.public.success` with the ticket and its `equipment` and `status` relations loaded.
-  - **Authorization:** none (public — anyone can view a ticket's success page by id).
+  - **Authorization:** unauthenticated visitors may open it, but only with a valid signature (`signed` middleware). Ticket ids are sequential and the page prints the reference, the equipment and the priority, so the previous public-by-id behaviour let anyone enumerate other people's reports.
 
 ---
 

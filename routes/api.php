@@ -195,9 +195,9 @@ Route::middleware(['custom.auth'])->group(function () {
     // Analytics
     Route::middleware(['role:admin'])->group(function () {
         Route::get('/analytics/stats', [AnalyticsController::class, 'stats'])->name('api.analytics.stats');
-        Route::get('/analytics/export/csv', [AnalyticsController::class, 'exportCsv'])->name('api.analytics.export.csv');
-        Route::get('/analytics/export/pdf', [AnalyticsController::class, 'exportPdf'])->name('api.analytics.export.pdf');
-        Route::get('/analytics/export/excel', [AnalyticsController::class, 'exportExcel'])->name('api.analytics.export.excel');
+        Route::get('/analytics/export/csv', [AnalyticsController::class, 'exportCsv'])->name('api.analytics.export.csv')->middleware('rate.limit:10,1');
+        Route::get('/analytics/export/pdf', [AnalyticsController::class, 'exportPdf'])->name('api.analytics.export.pdf')->middleware('rate.limit:10,1');
+        Route::get('/analytics/export/excel', [AnalyticsController::class, 'exportExcel'])->name('api.analytics.export.excel')->middleware('rate.limit:10,1');
     });
 
     // Notifications

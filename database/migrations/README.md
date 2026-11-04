@@ -8,7 +8,7 @@ A **migration** is a **versioned change to the database structure** — a small,
 
 Think of the database tables like a set of filing cabinets you build up over time. A migration is the instruction sheet for assembling one cabinet (or adding one drawer). Because every change is saved in its own file with a date in the name, the whole history of how the database grew is preserved. If we ever need to rebuild the database from scratch, the app simply replays all the migrations **in order** from the beginning.
 
-Each migration has an `up()` (applies the change) and a `down()` (undoes the change), so changes are reversible.
+Each migration has an `up()` (applies the change) and a `down()` (undoes the change). Schema changes roll back; a few data migrations deliberately do **not** — see the note at the bottom of the alteration table.
 
 ## The Main Tables These Migrations Create
 
@@ -37,19 +37,20 @@ There are also several **alteration** migrations that adjust existing tables ove
 
 | Migration file | What it changes |
 |---|---|
-| `2026_07_24_152504_create_audits_append_only_trigger.php` | Adds an **append-only trigger** to `audits` (entries can't be updated/deleted) — MySQL and SQLite variants. |
+| `2026_07_24_152504_create_audits_append_only_trigger.php` | Adds an **append-only trigger** to `audits` (entries can't be updated/deleted) — MySQL, PostgreSQL and SQLite variants. Each `DB::unprepared()` block is a nowdoc (`<<< 'SQL'`) with single-quoted SQL literals: PHP single-quoted strings have no `''` escape, and MySQL under `sql_mode=ANSI_QUOTES` would read `"45000"` as an identifier. `down()` drops the triggers (and the plpgsql function on PostgreSQL). |
 | `2026_07_31_000001_convert_ticket_tables_to_utf8mb4.php` | Converts the tickets module tables to `utf8mb4`/`utf8mb4_unicode_ci` (MySQL only; no-op elsewhere). |
 | `2026_08_03_000001_add_ai_recommendation_columns_to_tickets_table.php` | Adds AI-recommendation columns to `tickets`: `recommended_technician_id`, `ai_recommendation_reason`, `ai_processed_at`. |
 | `2026_08_07_000001_add_reporter_fields_to_tickets_table.php` | Adds `reporter_name`, `reporter_contact`, `source` to `tickets`; makes `tickets.user_id` and `ticket_attachments.user_id` nullable. |
 | `2026_08_10_000001_add_locale_to_users_table.php` | Adds `locale` (default `pt-PT`) to `users`. |
 | `2026_08_29_000001_add_theme_to_users_table.php` | Adds `theme` (nullable) to `users`. |
-| `2026_08_12_000002_populate_user_preferences.php` | Back-fills default `user_preferences` rows for existing users (reversible data migration). |
+| `2026_08_12_000002_populate_user_preferences.php` | Back-fills default `user_preferences` rows for existing users. `down()` is intentionally empty: the `pt`/`EUR`/`d/m/Y` rows it created are indistinguishable from preferences a user saved by hand, so deleting on rollback would destroy real user data. |
 | `2026_08_12_000003_add_number_format_to_user_preferences.php` | Adds `number_format` JSON column (default `{"decimal":".","thousand":","}`) to `user_preferences`. |
 | `2026_08_12_000004_add_time_format_to_user_preferences.php` | Adds `time_format` (default `H:i`) to `user_preferences`. |
-| `2026_09_02_000001_resize_number_format_in_user_preferences_table.php` | Resizes `number_format` from VARCHAR(50) to VARCHAR(191) (previously caused MySQL error 1406 on insert). |
-| `2026_08_08_000004_add_low_stock_notification_type.php` | Adds the `low_stock` option to the `notifications.type` enum. |
+| `2026_09_02_000001_resize_number_format_in_user_preferences_table.php` | Resizes `number_format` from VARCHAR(50) to VARCHAR(191) (previously caused MySQL error 1406 on insert). `down()` deliberately keeps the 191-character column: shrinking it would truncate stored formats and raise error 1406 on MySQL. |
+| `2026_08_08_000004_add_low_stock_notification_type.php` | Adds the `low_stock` option to the `notifications.type` enum. `down()` deliberately keeps `low_stock` — removing an enum value is a data migration (existing rows would become invalid), not a schema rollback. |
 | `2026_08_28_000001_add_indexes_to_tickets_and_user_profiles_table.php` | Adds indexes on `tickets.recommended_technician_id` and `user_profiles.deleted_at`. |
 | `2026_09_02_000003_add_performance_indexes_table.php` | Adds performance indexes on `stock_movements`, `tickets`, `ticket_workflow_history`, and `notifications`. |
+| `2026_11_04_000001_index_ticket_dates_without_status_prefix.php` | Adds `(deleted_at, opened_at)` and `(deleted_at, resolved_at)` to `tickets`. Every other `tickets` index is led by `status_id`, so a month/KPI/calendar filter on a date range alone could not use any of them; `deleted_at` leads because Eloquent soft deletes append `deleted_at IS NULL` (equality) before the date range. |
 
 **Note on the `user_preferences` migrations:** the `2026_08_12_000003` (number format) and `2026_08_12_000004` (time format) migrations are both present in this directory and both live on their dated filenames (do **not** rename them). The later `2026_09_02_000001` migration simply widens the `number_format` column that `000003` created.
 

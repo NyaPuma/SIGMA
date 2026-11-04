@@ -29,7 +29,6 @@ final readonly class CreatePublicTicketAction
 
         return DB::transaction(function () use ($equipment, $problemType, $description, $reporterName, $reporterContact, $openStatusId) {
             $ticket = Ticket::create([
-                'reference' => 'TKT-'.now()->format('YmdHis').'-'.strtoupper(uniqid()),
                 'title' => trim($problemType->label().' — '.$equipment->name),
                 'description' => trim($description),
                 'priority' => $problemType->priority()->value,

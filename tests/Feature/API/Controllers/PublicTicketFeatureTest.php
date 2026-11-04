@@ -6,6 +6,7 @@ namespace Tests\Feature\API\Controllers;
 
 use App\Jobs\GenerateAiRecommendationJob;
 use App\Models\Equipment;
+use App\Models\Ticket;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Queue;
 use Illuminate\Support\Facades\Storage;
@@ -70,5 +71,30 @@ final class PublicTicketFeatureTest extends FeatureTestCase
         // Assert
         $response->assertRedirect('/ticket/new');
         $response->assertSessionHasErrors(['equipment_id', 'description']);
+    }
+
+    public function test_confirmation_page_is_only_reachable_through_the_signed_redirect(): void
+    {
+        // Arrange
+        Queue::fake();
+        $equipment = Equipment::factory()->create();
+
+        // Act
+        $response = $this->post('/ticket/store', [
+            'equipment_id' => $equipment->id,
+            'problem_type' => 'avaria',
+            'description' => 'Perde pressão durante a operação e desliga-se sozinha.',
+        ]);
+
+        $ticket = Ticket::query()->latest('id')->firstOrFail();
+
+        // Assert: the redirect the reporter follows still works...
+        $signed = (string) $response->headers->get('Location');
+        $this->assertStringContainsString('/ticket/success/'.$ticket->id, $signed);
+        $this->assertStringContainsString('signature=', $signed);
+        $this->get($signed)->assertStatus(200);
+
+        // ...but the same page is unreadable by anyone who only guesses the identifier.
+        $this->get("/ticket/success/{$ticket->id}")->assertForbidden();
     }
 }

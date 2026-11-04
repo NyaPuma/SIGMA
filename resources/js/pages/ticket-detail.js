@@ -19,7 +19,7 @@ async function fetchTicket() {
 
     const response = await fetch(`/tickets/${state.ticketId}`, { headers: authHeader() });
     if (response.status === 401) {
-        alert('Authentication required. Please log in.');
+        alert(window.SGM_AUTH_I18N?.authRequired || 'Authentication required.');
         window.location = '/ui/login';
         return;
     }

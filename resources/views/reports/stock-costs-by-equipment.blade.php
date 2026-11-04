@@ -91,26 +91,26 @@
                 <div class="report-eyebrow">{{ __('stock.Relatório de Stock') }}</div>
                 <h1 class="report-title">{{ __('equipment.Custo de Peças por Equipamento') }}</h1>
                 <div class="report-subtitle">
-                    Parts consumption and associated value for each piece of equipment's interventions.
+                    {{ __('stock.Consumo de peças e respetivo valor nas intervenções de cada equipamento.') }}
                 </div>
             </td>
             <td class="report-meta">
-                <div><strong>Period:</strong>
+                <div><strong>{{ __('common.Período:') }}</strong>
                     @if($from)
-                        {{ $from }} to {{ $to ?? now()->toDateString() }}
+                        {{ app(\App\Services\LocalizationService::class)->formatDate($from) }} {{ __('common.até') }} {{ $to ? app(\App\Services\LocalizationService::class)->formatDate($to) : app(\App\Services\LocalizationService::class)->formatDate(now()) }}
                     @else
-                        Entire history
+                        {{ __('common.Histórico completo') }}
                     @endif
                 </div>
-                <div><strong>Issued on:</strong> {{ now() }}</div>
-                <div><strong>Equipment:</strong> {{ $items->count() }}</div>
+                <div><strong>{{ __('common.Emitido em:') }}</strong> {{ app(\App\Services\LocalizationService::class)->formatDateTime(now()) }}</div>
+                <div><strong>{{ __('common.Equipamentos:') }}</strong> {{ $items->count() }}</div>
             </td>
         </tr>
     </table>
 
     @if($items->isEmpty())
         <div class="empty-state">
-            There are no outgoing part movements associated with equipment in the selected period.
+            {{ __('stock.Não existem saídas de peças associadas a equipamentos no período selecionado.') }}
         </div>
     @else
         <table class="data-table">
@@ -128,12 +128,12 @@
                         <td>
                             <span class="rank rank-{{ $i < 3 ? $i + 1 : 'rest' }}">{{ $i + 1 }}</span>
                         </td>
-                        <td class="equipment-name">{{ $item['equipment_name'] ?? 'Sem equipamento' }}</td>
+                        <td class="equipment-name">{{ $item['equipment_name'] ?? __('common.Sem equipamento') }}</td>
                         <td class="right font-mono">
                             {{ (int) $item['total_quantity'] }}
                         </td>
                         <td class="right font-mono">
-                            {{ (float) $item['total_value'] }}
+                            {{ app(\App\Services\LocalizationService::class)->formatCurrency((float) $item['total_value']) }}
                         </td>
                     </tr>
                 @endforeach
@@ -143,7 +143,7 @@
         <table class="footer-total">
             <tr>
                 <td><span class="label">{{ __('stock.Total de custos em peças') }}</span></td>
-                <td><span class="value">{{ (float) $total }}</span></td>
+                <td><span class="value">{{ app(\App\Services\LocalizationService::class)->formatCurrency((float) $total) }}</span></td>
             </tr>
         </table>
     @endif
@@ -152,7 +152,7 @@
         <table>
             <tr>
                 <td class="brand">{{ config('app.name') }}</td>
-                <td class="page-num-cell">Page <span class="page-num"></span></td>
+                <td class="page-num-cell">{{ __('common.Página') }} <span class="page-num"></span></td>
             </tr>
         </table>
     </div>

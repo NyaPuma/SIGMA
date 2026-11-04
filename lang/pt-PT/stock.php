@@ -114,4 +114,6 @@ return [
     'consumo' => 'consumo',
     'em stock' => 'em stock',
     'peças' => 'peças',
+    'Consumo de peças e respetivo valor nas intervenções de cada equipamento.' => 'Consumo de peças e respetivo valor nas intervenções de cada equipamento.',
+    'Não existem saídas de peças associadas a equipamentos no período selecionado.' => 'Não existem saídas de peças associadas a equipamentos no período selecionado.',
 ];

@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Jobs;
 
 use App\Exports\TicketsExport;
+use App\Jobs\Concerns\SetsRequesterLocale;
 use App\Models\Notification;
 use App\Support\ExportArtifact;
 use Illuminate\Bus\Queueable;
@@ -22,6 +23,7 @@ final class ExportExcelJob implements ShouldQueue
     use InteractsWithQueue;
     use Queueable;
     use SerializesModels;
+    use SetsRequesterLocale;
 
     /**
      * The maximum number of attempts before the job fails.
@@ -39,6 +41,8 @@ final class ExportExcelJob implements ShouldQueue
 
     public function handle(): void
     {
+        $this->applyRequesterLocale($this->userId);
+
         $relative = ExportArtifact::path($this->userId, 'tickets_report', 'xlsx');
 
         Storage::disk(ExportArtifact::DISK)->makeDirectory('exports/'.$this->userId);
@@ -65,6 +69,8 @@ final class ExportExcelJob implements ShouldQueue
      */
     public function failed(?Throwable $exception): void
     {
+        $this->applyRequesterLocale($this->userId);
+
         Notification::create([
             'user_id' => $this->userId,
             'title' => __('exports.excel_failed'),

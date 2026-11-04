@@ -6,12 +6,13 @@ Queued jobs for background processing of exports, alerts, AI recommendations, an
 
 ## Overview
 
-This folder contains **8 job classes** that implement `ShouldQueue`, meaning they are pushed onto a Laravel queue worker instead of running synchronously in the HTTP request. This keeps the user-facing API fast by offloading heavy work (PDF generation, AI calls, email sending) to background processes.
+This folder contains **8 job classes** that implement `ShouldQueue`, meaning they are pushed onto a Laravel queue worker instead of running synchronously in the HTTP request. This keeps the user-facing API fast by offloading heavy work (PDF generation, AI calls, email sending) to background processes. `Concerns/` holds the shared trait the export jobs use.
 
 All export jobs follow the same pattern:
-1. Generate a file through `App\Support\ExportArtifact`, which names it `<slug>-<Ymd_His>-<24 random chars>.<ext>` under `exports/{userId}/` on the **private** (`local`) disk — `storage/app/private/exports/`.
-2. Create an `App\Models\Notification` record to tell the user the file is ready, with `link` pointing at the authorized route `/exports/{userId}/{filename}` (`GET /exports/{userId}/{filename}`, name `exports.download`).
-3. If the job fails after all retries, create a failure notification instead.
+1. Restore the requester's language with `$this->applyRequesterLocale($this->userId)` (see `Concerns/SetsRequesterLocale.php`) — a worker has no request, session or authenticated user, so nothing else would.
+2. Generate a file through `App\Support\ExportArtifact`, which names it `<slug>-<Ymd_His>-<24 random chars>.<ext>` under `exports/{userId}/` on the **private** (`local`) disk — `storage/app/private/exports/`.
+3. Create an `App\Models\Notification` record to tell the user the file is ready, with `link` pointing at the authorized route `/exports/{userId}/{filename}` (`GET /exports/{userId}/{filename}`, name `exports.download`).
+4. If the job fails after all retries, create a failure notification instead.
 
 Files are never written to the `public` disk: `Dockerfile` runs `storage:link`, so anything under `storage/app/public` is served by nginx with no authentication, and a clock-only name such as `tickets_report_20260902_143000.csv` was guessable to the minute. The download route aborts `403` unless `{userId}` matches the authenticated user, and `php artisan exports:prune` (scheduled daily at 03:00) enforces `filesystems.exports.retention_days`.
 
@@ -63,9 +64,10 @@ Files are never written to the `public` disk: `Dockerfile` runs `storage:link`, 
 - `public readonly int $userId` — the ID of the user who requested the export.
 
 **`handle()` logic:**
-1. Builds the artifact path with `ExportArtifact::path($userId, 'tickets_report', 'csv')`, e.g. `exports/12/tickets_report-20260902_143000-Kx9fTb7QpZ2mNrW4dVsLpQ8c.csv`, and ensures `exports/{userId}/` exists on the private disk.
-2. Calls `$analyticsService->exportCsvToFile($disk->path($relative))` to write the CSV data to disk.
-3. Creates an `App\Models\Notification` record for the user with:
+1. Applies the requester's locale (see `Concerns/SetsRequesterLocale.php`).
+2. Builds the artifact path with `ExportArtifact::path($userId, 'tickets_report', 'csv')`, e.g. `exports/12/tickets_report-20260902_143000-Kx9fTb7QpZ2mNrW4dVsLpQ8c.csv`, and ensures `exports/{userId}/` exists on the private disk.
+3. Calls `$analyticsService->exportCsvToFile($disk->path($relative))` to write the CSV data to disk.
+4. Creates an `App\Models\Notification` record for the user with:
    - `title`: `__('exports.csv_completed')` (Portuguese: "Exportação CSV concluída")
    - `message`: `__('exports.file_ready', ['file' => $filename])` (Portuguese: "Ficheiro pronto para download")
    - `type`: `'system'`
@@ -105,14 +107,15 @@ Files are never written to the `public` disk: `Dockerfile` runs `storage:link`, 
 - `public readonly int $userId` — the ID of the user who requested the export.
 
 **`handle()` logic:**
-1. Builds the artifact path with `ExportArtifact::path($userId, 'tickets_report', 'xlsx')`.
-2. Ensures `exports/{userId}/` exists on the private disk.
-3. Calls `Excel::store(new TicketsExport, $relative, ExportArtifact::DISK, Excel::XLSX)` which:
+1. Applies the requester's locale (see `Concerns/SetsRequesterLocale.php`).
+2. Builds the artifact path with `ExportArtifact::path($userId, 'tickets_report', 'xlsx')`.
+3. Ensures `exports/{userId}/` exists on the private disk.
+4. Calls `Excel::store(new TicketsExport, $relative, ExportArtifact::DISK, Excel::XLSX)` which:
    - Runs `TicketsExport::query()` (all tickets ordered by `created_at DESC`).
-   - Maps each ticket to 13 columns (ID, reference, title, status, priority, urgent, opened/in-progress/closed dates, minutes, cost, budget status, budget amount).
+   - Maps each ticket to 13 columns (ID, reference, title, status, priority, urgent, opened/in-progress/closed dates, minutes, cost, budget status, budget amount). Dates and the two money columns go through `App\Services\LocalizationService`, so the sheet shows the requester's date format and currency rather than hardcoded pt-PT output.
    - Applies header styling (bold white on dark blue), zebra striping, auto-filter, and frozen header row.
    - Reads in chunks of 1000 rows for memory efficiency.
-4. Creates a success `Notification` record for the user with `type: 'system'` and the download link.
+5. Creates a success `Notification` record for the user with `type: 'system'` and the download link.
 
 **WHO dispatches it and WHEN:**
 - `app/Http/Controllers/AnalyticsController.php:117` — `exportExcel()` method:
@@ -143,10 +146,11 @@ Files are never written to the `public` disk: `Dockerfile` runs `storage:link`, 
 - `public readonly int $userId`
 
 **`handle()` logic:**
-1. Builds the artifact path: `exports/{userId}/tickets_report-20260902_143000-<24 random chars>.pdf`.
-2. Ensures `exports/{userId}/` exists on the private disk.
-3. Calls `$analyticsService->exportPdfToFile($path)` to generate the PDF.
-4. Creates a success `Notification` record with the download link.
+1. Applies the requester's locale (see `Concerns/SetsRequesterLocale.php`).
+2. Builds the artifact path: `exports/{userId}/tickets_report-20260902_143000-<24 random chars>.pdf`.
+3. Ensures `exports/{userId}/` exists on the private disk.
+4. Calls `$analyticsService->exportPdfToFile($path)` to generate the PDF.
+5. Creates a success `Notification` record with the download link.
 
 **WHO dispatches it and WHEN:**
 - `app/Http/Controllers/AnalyticsController.php:90` — `exportPdf()` method:
@@ -179,13 +183,14 @@ Files are never written to the `public` disk: `Dockerfile` runs `storage:link`, 
 - `public readonly int $userId`
 
 **`handle()` logic:**
-1. Queries all equipment where `active = true`, ordered by name.
-2. For each equipment record, generates a PNG data-URI QR code via `$qrCodeService->pngDataUri($equipment)`.
-3. Builds the artifact path: `exports/{userId}/qrcodes-equipment-20260902_143000-<24 random chars>.pdf`.
-4. Ensures `exports/{userId}/` exists on the private disk.
-5. Renders the Blade view `reports.equipments-qr` with the `$items` collection (each item contains `equipment` + `qrDataUri`).
-6. Saves the rendered PDF to disk.
-7. Creates a success `Notification` record with the download link.
+1. Applies the requester's locale (see `Concerns/SetsRequesterLocale.php`).
+2. Queries all equipment where `active = true`, ordered by name.
+3. For each equipment record, generates a PNG data-URI QR code via `$qrCodeService->pngDataUri($equipment)`.
+4. Builds the artifact path: `exports/{userId}/qrcodes-equipment-20260902_143000-<24 random chars>.pdf`.
+5. Ensures `exports/{userId}/` exists on the private disk.
+6. Renders the Blade view `reports.equipments-qr` with the `$items` collection (each item contains `equipment` + `qrDataUri`).
+7. Saves the rendered PDF to disk.
+8. Creates a success `Notification` record with the download link.
 
 **WHO dispatches it and WHEN:**
 - `app/Http/Controllers/QrCodeController.php:52` — `exportPdf()` method:
@@ -219,13 +224,14 @@ Files are never written to the `public` disk: `Dockerfile` runs `storage:link`, 
 - `public readonly ?string $to = null` — optional end date (e.g. `'2026-12-31'`).
 
 **`handle()` logic:**
-1. Calls `$dashboardService->costByEquipment(from: $this->from, to: $this->to)` to get aggregated cost data per equipment.
-2. Computes `$total = $items->sum('total_value')`.
-3. Builds the artifact path: `exports/{userId}/cost-parts-per-equipment-20260902_143000-<24 random chars>.pdf`.
-4. Ensures `exports/{userId}/` exists on the private disk.
-5. Renders the Blade view `reports.stock-costs-by-equipment` with `$items`, `$total`, `$from`, and `$to`.
-6. Saves the rendered PDF to disk.
-7. Creates a success `Notification` record with the download link.
+1. Applies the requester's locale (see `Concerns/SetsRequesterLocale.php`).
+2. Calls `$dashboardService->costByEquipment(from: $this->from, to: $this->to)` to get aggregated cost data per equipment.
+3. Computes `$total = $items->sum('total_value')`.
+4. Builds the artifact path: `exports/{userId}/cost-parts-per-equipment-20260902_143000-<24 random chars>.pdf`.
+5. Ensures `exports/{userId}/` exists on the private disk.
+6. Renders the Blade view `reports.stock-costs-by-equipment` with `$items`, `$total`, `$from`, and `$to`.
+7. Saves the rendered PDF to disk.
+8. Creates a success `Notification` record with the download link.
 
 **WHO dispatches it and WHEN:**
 - `app/Http/Controllers/StockReportController.php:150` — `costsByEquipmentPdf()` method:
@@ -337,10 +343,25 @@ Files are never written to the `public` disk: `Dockerfile` runs `storage:link`, 
 
 ---
 
+## `Concerns/SetsRequesterLocale.php`
+
+**What it is:** A trait used by the five export jobs. A queue worker runs with no HTTP request, session or authenticated user, so `SetLocaleMiddleware` never runs and `__()` would use the process default — an English-speaking user would get a Portuguese notification and a pt-PT-formatted PDF.
+
+**`applyRequesterLocale(int $userId)`:**
+1. Reads only the `locale` column (`User::query()->whereKey($userId)->value('locale')`) — no model hydration.
+2. Ignores an empty, non-string or unsupported value, using the same `LocaleService::isSupported()` check `SetLocaleMiddleware` applies, so a stale value cannot switch the worker to a locale with no translation files.
+3. Calls `App::setLocale(LocaleService::sanitize($locale))`.
+
+**Why the worker does not stay switched:** `App::setLocale()` also rewrites `config('app.locale')`, and one worker instance serves every job it picks up. `AppServiceProvider::resetLocaleForQueuedJobs()` registers a `Queue::before` listener that restores the baseline captured at boot (after `SystemSettingsService::applyOverrides()`, which can itself set `app.locale`). Covered by `tests/Unit/Jobs/ExportJobsTest.php::the_locale_an_export_job_applies_does_not_leak_into_the_next_job`.
+
+**Known gap (deliberate):** `LocalizationService::preferences()` still falls back to hardcoded `pt-PT`/`EUR`/`d/m/Y` when no request is bound, because the requester's own preference row is only loaded through the request-scoped path. Fixing it would need static override state that survives between jobs.
+
+---
+
 ## Notes for developers / AI
 
 - All export jobs create an `App\Models\Notification` record for the user upon completion/failure. These are **not** Laravel Notification-channel notifications — they are direct `Notification::create()` calls to the custom `notifications` table used by the in-app notification panel.
-- User-facing notification strings (title/message) are in Portuguese — managed by the i18n project, not this refactor.
+- User-facing notification strings go through `__('exports.*')`, and the export jobs set the locale of the user who asked for the file first, so an `en-GB` user receives "Excel export completed" rather than the pt-PT default.
 - `GenerateAiRecommendationJob` implements `ShouldBeUnique` with a 2-minute uniqueness window (`uniqueFor() = 120`) and uses `->afterCommit()` to avoid dispatching before the database transaction is committed.
 - `CheckLowStockJob` uses `Queueable` only (no `Dispatchable`) as it is scheduler-dispatched via `new CheckLowStockJob` in `bootstrap/app.php`.
 - All jobs that generate files write under `exports/{userId}` on the private (`local`) disk through `App\Support\ExportArtifact`, which also guarantees unique names (`makeDirectory` is called before writing). `php artisan exports:prune` (daily, `filesystems.exports.retention_days`) keeps that tree bounded.

@@ -60,7 +60,7 @@
             <div class="preferences-modal__info">
                 <p>{{ __('ui.Formato atual') }}: <strong>{{ $currentDateFormat }}</strong></p>
                 <p>{{ __('preferences.Língua atual') }}: <strong>{{ $preferences['language'] }}</strong> | {{ __('preferences.Moeda atual') }}: <strong>{{ $preferences['currency'] }}</strong></p>
-                <p class="mt-2 text-sm text-muted">{{ __('ui.Exemplo com data de hoje') }}: <strong>{{ now()->format($currentDateFormat) }}</strong></p>
+                <p class="mt-2 text-sm text-(--text-muted)">{{ __('ui.Exemplo com data de hoje') }}: <strong>{{ now()->format($currentDateFormat) }}</strong></p>
             </div>
         </div>
 

@@ -82,7 +82,7 @@
                 <p class="mb-4 text-xs leading-5 text-[var(--text-soft)]">
                     {{ __('equipment.Gere um PDF com os QR Codes de todos os equipamentos ativos para impressão e afixação.') }}
                 </p>
-                <div data-async-message class="mb-4 hidden rounded-xl border border-[var(--border)] px-4 py-3 text-xs font-medium text-muted"></div>
+                <div data-async-message class="mb-4 hidden rounded-xl border border-[var(--border)] px-4 py-3 text-xs font-medium text-(--text-muted)"></div>
                 <a href="{{ route('ui.equipments.qr.export') }}"
                     data-async-export="pdf"
                     data-processing-label="A gerar PDF..."

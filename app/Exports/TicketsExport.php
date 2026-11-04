@@ -1,9 +1,12 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Exports;
 
 use App\Enums\TicketPriorityEnum;
 use App\Models\Ticket;
+use App\Services\LocalizationService;
 use App\Support\SpreadsheetCell;
 use Illuminate\Database\Eloquent\Builder;
 use Maatwebsite\Excel\Concerns\FromQuery;
@@ -38,7 +41,8 @@ final class TicketsExport implements FromQuery, ShouldAutoSize, WithChunkReading
      * @param  Builder<Ticket>|null  $customQuery
      */
     public function __construct(
-        private readonly ?Builder $customQuery = null
+        private readonly ?Builder $customQuery = null,
+        private readonly ?LocalizationService $localization = null,
     ) {}
 
     /**
@@ -102,6 +106,15 @@ final class TicketsExport implements FromQuery, ShouldAutoSize, WithChunkReading
     }
 
     /**
+     * Resolves the locale-aware formatter lazily so the export can still be
+     * constructed with `new TicketsExport` from the queue job.
+     */
+    private function localization(): LocalizationService
+    {
+        return $this->localization ?? app(LocalizationService::class);
+    }
+
+    /**
      * Maps each Eloquent record to an Excel row.
      *
      * @param  Ticket  $ticket
@@ -123,9 +136,9 @@ final class TicketsExport implements FromQuery, ShouldAutoSize, WithChunkReading
             SpreadsheetCell::guard($statusLabel),
             SpreadsheetCell::guard($priorityLabel),
             $ticket->urgent ? __('exports.yes') : __('exports.no'),
-            $ticket->opened_at?->format('d/m/Y H:i') ?? '-',
-            $ticket->in_progress_at?->format('d/m/Y H:i') ?? '-',
-            $ticket->closed_at?->format('d/m/Y H:i') ?? '-',
+            $this->localization()->formatDateTime($ticket->opened_at) ?: '-',
+            $this->localization()->formatDateTime($ticket->in_progress_at) ?: '-',
+            $this->localization()->formatDateTime($ticket->closed_at) ?: '-',
             $ticket->minutes_spent ?? 0,
             (float) ($ticket->actual_cost ?? 0),
             SpreadsheetCell::guard($ticket->budget_status ?? 'N/A'),
