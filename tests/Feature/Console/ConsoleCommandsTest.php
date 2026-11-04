@@ -66,8 +66,20 @@ class ConsoleCommandsTest extends DatabaseTestCase
 
             $pgDumpCommand = $command;
 
-            if (preg_match('/--file=(?:"([^"]+)"|(\S+))/', $command, $matches) === 1) {
-                $target = trim(($matches[1] ?? '') !== '' ? $matches[1] : ($matches[2] ?? ''), '"');
+            // escapeshellarg() wraps the path in double quotes on Windows but single quotes on
+            // Linux, so both forms must be unwrapped — otherwise the captured target keeps its
+            // quote characters and the write lands on a path that does not exist.
+            if (preg_match('/--file=(?:"([^"]+)"|\'([^\']+)\'|(\S+))/', $command, $matches) === 1) {
+                $target = '';
+
+                foreach ([1, 2, 3] as $group) {
+                    if (($matches[$group] ?? '') !== '') {
+                        $target = $matches[$group];
+
+                        break;
+                    }
+                }
+
                 if ($target !== '') {
                     file_put_contents($target, "-- pg_dump export\n");
                 }
