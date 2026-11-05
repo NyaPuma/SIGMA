@@ -149,7 +149,7 @@ Services are grouped by functional area. Where a method has no in-production cal
 
 #### `exportPdfToFile(string $path): void`
 - **What it does:** Exports a PDF report of the most recent (non-deleted) tickets to `$path`, capped at `config('services.analytics.pdf_export_limit')` (default 2000).
-- **How it works / steps:** Ensures the directory; reads the cap (`PDF_RECORD_LIMIT_DEFAULT` guards a non-numeric config); selects ticket fields + `status` with `limit(cap + 1)` so hitting the cap is detectable without counting every row; when the extra row exists the collection is trimmed and `truncated`/`maxRecords` are passed to the Blade template `reports.tickets`, which prints a warning banner on page 1 (`:110-144`). Rendering an unbounded dataset previously exhausted the worker's memory.
+- **How it works / steps:** Ensures the directory; reads the cap (`PDF_RECORD_LIMIT_DEFAULT` guards a non-numeric config); selects ticket fields + `status` with `limit(cap + 1)` so hitting the cap is detectable without counting every row; when the extra row exists the collection is trimmed and `truncated`/`maxRecords` are passed to the Blade template `reports.tickets`, which prints a warning banner on page 1 (`:111-140`). Rendering an unbounded dataset previously exhausted the worker's memory.
 - **Who calls it / when:** Via `AnalyticsService::exportPdfToFile` from `app/Jobs/ExportPdfJob.php:47`.
 
 *(Private helpers: `csvHeaders()`, `writeCsvRows()` — chunks 500 tickets at a time —, `csvRow()` — formats each field via `LocalizationService`, `statusLabel()`, `priorityLabel()`, `budgetLabel()`, `ensureDirectoryExists()`, `localization()`.)*
@@ -306,7 +306,7 @@ Services are grouped by functional area. Where a method has no in-production cal
 
 #### `partsInAlert(): array<int, Part>`
 - **What it does:** Returns all parts currently in the low-stock alert state, most urgent first.
-- **How it works / steps:** Queries parts via the `lowStock()` scope, eager-loads `category` and `taxRate`, and orders by the `current_stock / min_stock` ratio ascending (min_stock of 0 → ratio 0), i.e. lowest ratio (most urgent) first (`app/Services/LowStockAlertService.php:28-43`).
+- **How it works / steps:** Queries parts via the `lowStock()` scope, eager-loads `category` and `taxRate`, and orders by the `current_stock / min_stock` ratio ascending (min_stock of 0 → ratio 0), i.e. lowest ratio (most urgent) first (`app/Services/LowStockAlertService.php:28-36`).
 - **Who calls it / when:** `app/Http/Controllers/StockDashboardController.php:44` (to render the "parts in alert" block on the stock dashboard).
 
 #### `notifyAdminsForLowStock(): int`
@@ -336,7 +336,7 @@ Services are grouped by functional area. Where a method has no in-production cal
 
 #### `hashToken(string $token): string`
 - **What it does:** Returns the HMAC-SHA256 hash of a token using the app key.
-- **How it works:** `hash_hmac('sha256', $token, config('app.key'))` (`:43-49`).
+- **How it works:** `hash_hmac('sha256', $token, config('app.key'))` (`:43-46`).
 - **Who calls it / when:** Internally by `createToken()`. (The same utility is replicated as `User::hashToken()`, used by `app/Http/Middleware/CustomAuthMiddleware.php:88`, `app/Services/AuthUserResolver.php:43`, `app/Http/Controllers/ThemeController.php:107`, `app/Traits/Auditable.php:136`.)
 
 #### `createToken(User $user, Request $request, bool $withSession = true): string`
@@ -518,10 +518,10 @@ Services are grouped by functional area. Where a method has no in-production cal
 - Converts the stored EUR value to the user's preferred currency via `CurrencyRateService::convert` when they differ, then formats with the user's separators (or locale), using `LocaleService::currencySymbol`; en-US/en-GB get symbol-prefixed output (`:59-90`).
 
 #### `formatDate(mixed $date, string $format = 'short', ?string $locale = null): string`
-- Honors the user's exact `date_format` string when set (e.g. `d-m-Y` stays `dd-mm-yyyy`), else `formatDateFallback` (`:96-114`).
+- Honors the user's exact `date_format` string when set (e.g. `d-m-Y` stays `dd-mm-yyyy`), else `formatDateFallback()` (`:97-121`).
 
 #### `formatDateTime(mixed $date, ?string $locale = null): string`
-- Combines the user's `date_format` + `time_format` (default `H:i`) into one format, else `formatDateTimeFallback` (`:119-141`).
+- Combines the user's `date_format` + `time_format` (default `H:i`) into one format, else `formatDateTimeFallback()` (`:126-152`).
 
 #### `formatPercent(float $value, ?string $locale = null): string`
 - Formats with user separators + `%`, or `LocaleService::formatPercent` (`:143-153`).
@@ -555,79 +555,79 @@ Services are grouped by functional area. Where a method has no in-production cal
 - **Supported whitelists:** 33 currencies, 7 date formats, 4 time formats, 8 number formats.
 
 #### `static forUser(Authenticatable $user): array`
-- Returns a user's stored preferences, or the defaults if no row, with `users.locale` preferred for `language` (`app/Services/PreferencesService.php:98-101`). The column is read from the loaded model, so no extra query.
+- Returns a user's stored preferences, or the defaults if no row, with `users.locale` preferred for `language` (`app/Services/PreferencesService.php:98-104`). The column is read from the loaded model, so no extra query.
 
 #### `static forUserId(int $userId): array`
-- Same result for a user id only — the path a queued job uses, where there is no authenticated model, request or guard (`:113-116`). Reads `user_preferences` and `users.locale` (`storedForUserId()` `:121-140`, `withColumnLocale()` `:146-155`).
+- Same result for a user id only — the path a queued job uses, where there is no authenticated model, request or guard (`:113-116`). Reads `user_preferences` and `users.locale` (`storedForUserId()` `:121-136`, `withColumnLocale()` `:146-153`).
 
 #### `static fromSession(Request $request): array`
 - Returns session-stored preferences (guests), or defaults (`:160-177`).
 
 #### `static current(Request $request): array`
-- Resolves the user via `$request->user()` → `Auth::guard('api')->user()` → `AuthUserResolver::fromRequest`; if found uses `forUser`, else `fromSession` (`:133-144`).
+- Resolves the user via `$request->user()` → `Auth::guard('api')->user()` → `AuthUserResolver::fromRequest`; if found uses `forUser`, else `fromSession` (`:205-216`).
 
 #### `static saveForUser(Authenticatable $user, array $preferences): UserPreference`
-- Validates then `updateOrCreate`s a `user_preferences` row for the user (`:149-157`).
+- Validates then `updateOrCreate`s a `user_preferences` row for the user (`:223-231`).
 
 #### `static saveToSession(Request $request, array $preferences): void`
-- Validates then stores preferences in the session (`:162-166`).
+- Validates then stores preferences in the session (`:238-242`).
 
 #### `static validatePreferences(array $preferences): array`
-- Returns a normalized array after validating language, currency, date_format, time_format, number_format (`:171-180`).
+- Returns a normalized array after validating language, currency, date_format, time_format, number_format (`:250-259`).
 
 #### `static validateLanguage(string $language): string`
-- Keeps the language if `LocaleService::isSupported`, else default (`:185-192`).
+- Keeps the language if `LocaleService::isSupported`, else default (`:264-271`).
 
 #### `static validateCurrency(string $currency): string`
-- Keeps uppercase currency if in the supported list, else default (`:197-206`).
+- Keeps uppercase currency if in the supported list, else default (`:276-285`).
 
 #### `static validateDateFormat(string $format): string`
-- Keeps it if in `SUPPORTED_DATE_FORMATS`, else default (`:211-218`).
+- Keeps it if in `SUPPORTED_DATE_FORMATS`, else default (`:290-297`).
 
 #### `static validateTimeFormat(string $format): string`
-- Keeps it if in `SUPPORTED_TIME_FORMATS`, else default (`:223-230`).
+- Keeps it if in `SUPPORTED_TIME_FORMATS`, else default (`:302-309`).
 
 #### `static supportedTimeFormats(): array`
-- Returns the supported time formats map (`:235-238`).
+- Returns the supported time formats map (`:316-319`).
 
 #### `static supportedCurrencies(): list<string>`
-- Returns the supported currency list (`:243-246`).
+- Returns the supported currency list (`:327-330`).
 
 #### `static supportedDateFormats(): array`
-- Returns the supported date formats (`:251-254`).
+- Returns the supported date formats (`:337-340`).
 
 #### `static groupedDateFormats(): array<string, list<string>>`
-- Groups date formats by separator symbol (`/`, `-`, `.`, `other`) (`:261-279`).
+- Groups date formats by separator symbol (`/`, `-`, `.`, `other`) (`:347-365`).
 
 #### `static getCurrency(Request $request): string`
-- Returns `current($request)['currency']` (`:284-287`).
+- Returns `current($request)['currency']` (`:370-373`).
 
 #### `static getDateFormat(Request $request): string`
-- Returns `current($request)['date_format']` (`:292-295`).
+- Returns `current($request)['date_format']` (`:378-381`).
 
 #### `static getTimeFormat(Request $request): string`
-- Returns `current($request)['time_format']` or default (`:300-303`).
+- Returns `current($request)['time_format']` or default (`:386-389`).
 
 #### `static getLanguage(Request $request): string`
-- Returns `current($request)['language']` (`:308-311`).
+- Returns `current($request)['language']` (`:394-397`).
 
 #### `static getNumberFormat(Request $request): string`
-- Returns `current($request)['number_format']` or default (`:316-319`).
+- Returns `current($request)['number_format']` or default (`:402-405`).
 
 #### `static getNumberSeparators(Request $request): array`
-- JSON-decodes the number format and returns `{decimal, thousand}`, else `{. ,}` (`:324-337`).
+- JSON-decodes the number format and returns `{decimal, thousand}`, else `{. ,}` (`:412-429`).
 
 #### `static supportedNumberFormats(): array`
-- Returns the supported number formats map (`:342-345`).
+- Returns the supported number formats map (`:436-439`).
 
 #### `static groupedNumberFormats(): array`
-- Groups numeric formats by decimal separator (`:352-362`).
+- Groups numeric formats by decimal separator (`:446-456`).
 
 #### `static formatNumber(Request $request, float $number): string`
-- Formats a number with the user's separators, 2 decimals (`:367-377`).
+- Formats a number with the user's separators, 2 decimals (`:461-471`).
 
 #### `static validateNumberFormat(string $format): string`
-- Keeps the format if it decodes to `{decimal, thousand}`, else default (`:382-391`).
+- Keeps the format if it decodes to `{decimal, thousand}`, else default (`:476-485`).
 
 - **Who calls it / when:**
   - `app/Http/Controllers/LocaleController.php:41-46` (`saveForUser`, `getCurrency`, `getDateFormat`, `getTimeFormat`, `getNumberFormat`),
@@ -646,40 +646,40 @@ Services are grouped by functional area. Where a method has no in-production cal
 - **Dependencies (constructor):** None.
 
 #### `totalStockValue(): float`
-- **What it does:** Sum of `current_stock * cost_price` for active parts (`app/Services/StockDashboardService.php:21-27`).
+- **What it does:** Sum of `current_stock * cost_price` for active parts (`app/Services/StockDashboardService.php:22-30`).
 - **Who calls it / when:** `app/Http/Controllers/StockDashboardController.php:41`.
 
 #### `totalParts(): int`
-- **What it does:** Count of active parts (`:32-35`).
+- **What it does:** Count of active parts (`:35-38`).
 - **Who calls it / when:** `StockDashboardController.php:42`.
 
 #### `lowStockCount(): int`
-- **What it does:** Count of parts in the `lowStock()` scope (`:40-43`).
+- **What it does:** Count of parts in the `lowStock()` scope (`:43-46`).
 - **Who calls it / when:** `StockDashboardController.php:43`.
 
 #### `slowMovingParts(int $inactiveDays = 90, int $limit = 20): Collection`
 - **What it does:** Parts with positive stock and no movement for N days (tied-up capital).
-- **How it works / steps:** Active parts, `current_stock > 0`, no movement since the cutoff, eager-loaded `category`, ordered by stock desc, limited (`:50-62`).
+- **How it works / steps:** Active parts, `current_stock > 0`, no movement since the cutoff, eager-loaded `category`, ordered by stock desc, limited (`:53-65`).
 - **Who calls it / when:** `StockDashboardController.php:101`.
 
 #### `topConsumed(?string $from = null, ?string $to = null, int $limit = 10): Collection`
 - **What it does:** Top parts consumed (outbound) in a period by quantity.
-- **How it works / steps:** Uses `consumptionQuery()` ordered by `total_quantity` desc, limited, mapped to `{part_id, part_name, sku, total_quantity, total_value}` (`:69-82`).
+- **How it works / steps:** Uses `consumptionQuery()` ordered by `total_quantity` desc, limited, mapped to `{part_id, part_name, sku, total_quantity, total_value}` (`:72-87`).
 - **Who calls it / when:** `StockDashboardController.php:71`.
 
 #### `costByEquipment(?string $from = null, ?string $to = null, int $limit = 20): Collection`
 - **What it does:** Cost of consumed parts grouped by equipment.
-- **How it works / steps:** `consumptionQuery()` filtered to rows with an `equipment_id`, grouped by equipment, ordered by value desc, mapped to `{equipment_id, equipment_name, total_quantity, total_value}` (`:89-109`).
+- **How it works / steps:** `consumptionQuery()` filtered to rows with an `equipment_id`, grouped by equipment, ordered by value desc, mapped to `{equipment_id, equipment_name, total_quantity, total_value}` (`:94-116`).
 - **Who calls it / when:** `StockDashboardController.php:129`.
 
 #### `costByTicket(?string $from = null, ?string $to = null, int $limit = 20): Collection`
 - **What it does:** Cost of consumed parts grouped by ticket/intervention.
-- **How it works / steps:** Same pattern but grouped by ticket (`:116-136`).
+- **How it works / steps:** Same pattern but grouped by ticket (`:123-145`).
 - **Who calls it / when:** `StockDashboardController.php:157`.
 
 #### `stockRunoutForecast(int $months = 3, int $limit = 50): Collection`
 - **What it does:** Predicts months of stock remaining based on average monthly consumption.
-- **How it works / steps:** Computes total outbound quantity per part over the last N months, divides by N for average monthly usage; for each active part with stock and usage, `monthsOfStock = current_stock / avgMonthly`; sorts ascending and limits (`:143-177`).
+- **How it works / steps:** Computes total outbound quantity per part over the last N months, divides by N for average monthly usage; for each active part with stock and usage, `monthsOfStock = current_stock / avgMonthly`; sorts ascending and limits (`:152-192`).
 - **Who calls it / when:** `StockDashboardController.php:188`.
 
 *(Private helper: `consumptionQuery()` — joins parts/equipments/tickets, filters to `Out` and negative-`Adjust` movements with negative quantity, within date range, selects part info and sums `total_quantity` (ABS) and `total_value` (ABS × unit price snapshot), grouped by part.)*
@@ -715,7 +715,7 @@ Services are grouped by functional area. Where a method has no in-production cal
 
 #### `listPaginated(?string $search = null, ?string $status = null): LengthAwarePaginator`
 - **What it does:** Paginated equipment listing (15 per page, by name).
-- **How it works / steps:** Loads `room`; wildcard-safe search via `App\Support\SqlPattern::whereContains()` (`LIKE ? ESCAPE '!'`) across `name`, `serial`, `brand`, `model`; optional exact `status` filter; `orderBy('name')->paginate(15)` (`app/Services/EquipmentService.php:17-37`).
+- **How it works / steps:** Loads `room`; wildcard-safe search via `App\Support\SqlPattern::whereContains()` (`LIKE ? ESCAPE '!'`) across `name`, `serial`, `brand`, `model`; optional exact `status` filter; `orderBy('name')->paginate(15)` (`app/Services/EquipmentService.php:18-32`).
 - **Who calls it / when:** `app/Http/Controllers/UiController.php:294`.
 
 ---
@@ -728,7 +728,7 @@ Services are grouped by functional area. Where a method has no in-production cal
 
 #### `listPaginated(?string $search = null, ?string $status = null, ?int $categoryId = null, int $perPage = 15): LengthAwarePaginator`
 - **What it does:** Paginated parts listing with search and filters.
-- **How it works / steps:** Loads `category` and `taxRate`; wildcard-safe `LIKE ? ESCAPE '!'` search via `App\Support\SqlPattern` across `name`, `sku`, `brand`, `manufacturer_ref`; applies `lowStock()` if `status == 'low'`, `outOfStock()` if `'out'`; optional `part_category_id` filter; sorted by name and paginated (`app/Services/PartService.php:19-48`).
+- **How it works / steps:** Loads `category` and `taxRate`; wildcard-safe `LIKE ? ESCAPE '!'` search via `App\Support\SqlPattern` across `name`, `sku`, `brand`, `manufacturer_ref`; applies `lowStock()` if `status == 'low'`, `outOfStock()` if `'out'`; optional `part_category_id` filter; sorted by name and paginated (`app/Services/PartService.php:22-45`).
 - **Who calls it / when:** `app/Http/Controllers/PartController.php:54`.
 
 ---
@@ -901,27 +901,27 @@ Services are grouped by functional area. Where a method has no in-production cal
 - **Note:** Registered as a **singleton** in `app/Providers/AppServiceProvider.php:80`.
 
 #### `groups(): array`
-- **What it does:** Returns the ordered configuration groups (app, auth, budget, ai, analytics, pagination, tokens, notification, backup) with their fields (`label`, `type` = text/number/float/select/bool, min/max/step/unit/default/help). Only curated, non-secret keys are exposed (`app/Services/SystemSettingsService.php:22-206`).
+- **What it does:** Returns the ordered configuration groups (app, auth, budget, ai, analytics, pagination, tokens, notification, backup) with their fields (`label`, `type` = text/number/float/select/bool, min/max/step/unit/default/help). Only curated, non-secret keys are exposed (`app/Services/SystemSettingsService.php:41-225`).
 - **Who calls it / when:** `app/Http/Controllers/SystemSettingsController.php:26` (render the settings form).
 
 #### `values(): array`
 - **What it does:** Returns each setting's effective value.
-- **How it works / steps:** Loads DB overrides (`SystemSetting::pluck('value','key')`); for each field uses the override (cast) if present, else the current `config()` value, else the field default (`:212-232`).
+- **How it works / steps:** Loads DB overrides (`SystemSetting::pluck('value','key')`); for each field uses the override (cast) if present, else the current `config()` value, else the field default (`:236-241`, through `resolveValues()` `:309-319`).
 - **Who calls it / when:** `app/Http/Controllers/SystemSettingsController.php:27` (and internally by `reset`).
 
 #### `update(array $updates): array`
 - **What it does:** Saves one or more settings (validated/normalized) and applies them to the running config immediately.
-- **How it works / steps:** For each key: finds the field (skipping unknown keys); normalizes the value (clamping number/float, casting bool, validating select, trimming text); `updateOrCreate`s a `system_settings` row; calls `config([$key => $value])`; and collects the saved values (`:241-261`).
-- **Who calls it / when:** `app/Http/Controllers/SystemSettingsController.php:57` (settings save endpoint).
+- **How it works / steps:** For each key: finds the field (skipping unknown keys); normalizes the value (clamping number/float, casting bool, validating select, trimming text); `updateOrCreate`s a `system_settings` row; calls `config([$key => $value])`; and collects the saved values (`:258-271`).
+- **Who calls it / when:** `app/Http/Controllers/SystemSettingsController.php:58` (settings save endpoint).
 
 #### `reset(string $groupId): array`
 - **What it does:** Deletes saved overrides for a whole group, restoring config-file values.
-- **How it works / steps:** Finds the group (empty if unknown); deletes each stored key for that group; recomputes effective values for the group and returns them (`:269-297`).
-- **Who calls it / when:** `app/Http/Controllers/SystemSettingsController.php:44` (reset endpoint).
+- **How it works / steps:** Finds the group (empty if unknown); deletes each stored key for that group; recomputes effective values for the group and returns them (`:284-297`).
+- **Who calls it / when:** `app/Http/Controllers/SystemSettingsController.php:45` (reset endpoint).
 
 #### `applyOverrides(): void`
 - **What it does:** At application boot, loads all saved settings into `config()` so they take effect.
-- **How it works / steps:** Guarded by `Schema::hasTable('system_settings')` (returns silently during install/maintenance); loads all overrides, applies each known field to `config()` (cast), then sets the PHP timezone if `app.timezone` is valid (`:303-334`).
+- **How it works / steps:** Guarded by `Schema::hasTable('system_settings')` (returns silently during install/maintenance); loads all overrides, applies each known field to `config()` (cast), then sets the PHP timezone if `app.timezone` is valid (`:331-356`).
 - **Who calls it / when:** `app/Providers/AppServiceProvider.php:97` — `$this->app->make(SystemSettingsService::class)->applyOverrides()` in `boot()`.
 
 *(Private helpers: `findGroup`, `findField`, `cast`, `normalize`, `normalizeSelect`, `localeOptions` (via `LocaleService::all()`), `mailers` (from `config('mail.mailers')`), `timezones` (curated list with UTC first).)*
@@ -969,7 +969,7 @@ Services are grouped by functional area. Where a method has no in-production cal
   2. If `open_until > now`, logs a notice and returns the fallback (`:22-30`).
   3. Otherwise runs `$operation()`; on success resets (forgets) the state and returns the result (`:32-36`).
   4. On failure, increments the failure count; if it reaches `config('observability.circuit_breaker.failure_threshold', 3)`, sets `open_until` to now + `cooldown_seconds` (default 60); saves state; logs a warning; returns the fallback (`:37-58`).
-  - Fallback resolution: if `$fallback` is a `Closure` it is invoked with the exception, else returned as-is (`:117-120`).
+  - Fallback resolution: if `$fallback` is a `Closure` it is invoked with the exception, else returned as-is by `resolveFallback()` (`:118-121`).
 - **Who calls it / when:** `AIService.php:100` (`run('openai', ...)`) and `CurrencyRateService.php:211` (`run('frankfurter', ...)`).
 
 ---
@@ -989,7 +989,7 @@ Services are grouped by functional area. Where a method has no in-production cal
 
 #### `storedRate(string $from, string $to): ?float`
 - **What it does:** Returns the stored rate for one pair, or `null` when nothing is stored for it.
-- **How it works / steps:** Upper-cases both codes; returns `1.0` for same-currency (`:111-113`); reads `currency_rate:{FROM}:{TO}` through `Cache::remember()` with the `RATE_CACHE_TTL` of 6 hours (`:50`) and caches a pair that is not stored as the `NO_RATE_CACHE_VALUE` sentinel (`:57`), because `Cache::remember()` treats a stored `null` as a miss and would otherwise re-query the table on every conversion; a non-positive stored rate is also reported as a miss (`queryStoredRate`, `:127-142`).
+- **How it works / steps:** Upper-cases both codes; returns `1.0` for same-currency (`:111-113`); reads `currency_rate:{FROM}:{TO}` through `Cache::remember()` with the `RATE_CACHE_TTL` of 6 hours (`:50`) and caches a pair that is not stored as the `NO_RATE_CACHE_VALUE` sentinel (`:57`), because `Cache::remember()` treats a stored `null` as a miss and would otherwise re-query the table on every conversion; a non-positive stored rate is also reported as a miss (`queryStoredRate()`, `:127-142`).
 - **Who calls it / when:** Internal to the class — `getRate()` (`:157`, `:192`) is the only caller; it is public because it is the read API for a single pair.
 
 #### `getRate(string $from, string $to): float`
