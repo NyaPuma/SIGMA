@@ -50,6 +50,13 @@ final class CurrencyRateService
     private const RATE_CACHE_TTL = 360;
 
     /**
+     * Sentinel cached for a pair that has no stored rate. `Cache::remember()` cannot
+     * store "there is no value" as null — a null read is treated as a miss again — so
+     * without it every conversion of an unknown pair would hit the database.
+     */
+    private const NO_RATE_CACHE_VALUE = '__no_rate__';
+
+    /**
      * Fetches the latest rates from the provider and persists each pair.
      *
      * @return int Number of rate pairs stored/updated.
@@ -84,6 +91,7 @@ final class CurrencyRateService
             );
 
             Cache::forget('currency_rate:'.self::BASE_CURRENCY.':'.$target);
+            Cache::forget('currency_rate:'.$target.':'.self::BASE_CURRENCY);
 
             $stored++;
         }
@@ -104,11 +112,13 @@ final class CurrencyRateService
             return 1.0;
         }
 
-        return Cache::remember(
+        $cached = Cache::remember(
             "currency_rate:{$from}:{$to}",
             now()->addMinutes(self::RATE_CACHE_TTL),
-            fn (): ?float => $this->queryStoredRate($from, $to),
+            fn (): float|string => $this->queryStoredRate($from, $to) ?? self::NO_RATE_CACHE_VALUE,
         );
+
+        return is_numeric($cached) ? (float) $cached : null;
     }
 
     /**
@@ -120,15 +130,15 @@ final class CurrencyRateService
             ->where('target_currency', $to)
             ->first();
 
-        if ($row) {
-            $rate = (float) $row->rate;
-
-            return $rate > 0.0 ? $rate : null;
+        if (! $row) {
+            return null;
         }
 
-        // Conversions are stored relative to the provider base. When neither
-        // the exact pair nor the base pair exists, fall back gracefully.
-        return null;
+        // `updateRates()` only stores positive rates, so a non-positive row can only
+        // come from a manual insert. Dividing by it would turn every conversion negative.
+        $rate = (float) $row->rate;
+
+        return $rate > 0.0 ? $rate : null;
     }
 
     /**

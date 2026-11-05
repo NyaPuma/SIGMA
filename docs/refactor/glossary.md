@@ -39,8 +39,8 @@ This glossary serves as the single canonical source of truth for all Portuguese 
 | Anexo / Anexos | Attachment / Attachments | domain | `TicketAttachment` model, file uploads. |
 | Comentário / Comentários | Comment / Comments | domain | `TicketComment` model. |
 | Histórico | History | domain | `TicketWorkflowHistory` model. |
-| Estado / Estados | Status / Statuses | domain | `TicketStatus`, `TicketStatusEnum`, `TicketWorkflowStatusEnum`. |
-| Prioridade | Priority | domain | `TicketPriorityEnum` (`low`, `medium`, `high`, `urgent`). |
+| Estado / Estados | Status / Statuses | domain | `TicketStatus` (DB lookup rows), `TicketStatusEnum` (Portuguese backing values). |
+| Prioridade | Priority | domain | `TicketPriorityEnum` (`baixa`, `média`, `alta`, `crítica`). |
 | Causa | Cause | domain | Incident cause analysis. |
 | Solução | Solution | domain | Resolution notes on ticket closing. |
 | Custo Real | Actual Cost | domain | Final cost of repair. |

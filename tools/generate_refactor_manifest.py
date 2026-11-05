@@ -13,7 +13,7 @@ excluded_dirs = {'vendor', 'node_modules', 'storage', 'bootstrap/cache', 'public
 excluded_files = {
     '.env', '.env.example', 'composer.json', 'composer.lock', 'package.json', 'package-lock.json',
     'artisan', 'vite.config.js', 'phpunit.xml', '.gitignore', '.gitattributes', '.editorconfig',
-    '.dockerignore', 'Dockerfile', 'docker-compose.yml', 'compose.yaml', 'Caddyfile', 'LICENSE',
+    '.dockerignore', 'Dockerfile', 'compose.yaml', 'Caddyfile', 'LICENSE',
     'SECURITY.md', 'CODE_OF_CONDUCT.md', 'CONTRIBUTING.md', 'phpstan.neon', 'blackbox_mcp_settings.json',
     '.phpunit.result.cache', 'database.sqlite'
 }

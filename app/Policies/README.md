@@ -55,7 +55,7 @@ All role checks rely on the `User` model methods (defined in `app/Models/User.ph
 
 **File:** `app/Policies/EquipmentPolicy.php`
 **Governs:** `App\Models\Equipment`
-**Registered:** `Gate::policy(Equipment::class, EquipmentPolicy::class)` (`AppServiceProvider.php:108`)
+**Registered:** `Gate::policy(Equipment::class, EquipmentPolicy::class)` (`AppServiceProvider.php:115`)
 
 | Ability | Signature | Authorization logic | Called from |
 |---|---|---|---|
@@ -75,7 +75,7 @@ All role checks rely on the `User` model methods (defined in `app/Models/User.ph
 
 **File:** `app/Policies/MaintenancePlanPolicy.php`
 **Governs:** `App\Models\MaintenancePlan`
-**Registered:** `Gate::policy(MaintenancePlan::class, MaintenancePlanPolicy::class)` (`AppServiceProvider.php:116`)
+**Registered:** `Gate::policy(MaintenancePlan::class, MaintenancePlanPolicy::class)` (`AppServiceProvider.php:123`)
 
 | Ability | Signature | Authorization logic | Called from |
 |---|---|---|---|
@@ -91,7 +91,7 @@ All role checks rely on the `User` model methods (defined in `app/Models/User.ph
 
 **File:** `app/Policies/PartCategoryPolicy.php`
 **Governs:** `App\Models\PartCategory`
-**Registered:** `Gate::policy(PartCategory::class, PartCategoryPolicy::class)` (`AppServiceProvider.php:115`)
+**Registered:** `Gate::policy(PartCategory::class, PartCategoryPolicy::class)` (`AppServiceProvider.php:122`)
 
 | Ability | Signature | Authorization logic | Called from |
 |---|---|---|---|
@@ -107,7 +107,7 @@ All role checks rely on the `User` model methods (defined in `app/Models/User.ph
 
 **File:** `app/Policies/PartPolicy.php`
 **Governs:** `App\Models\Part` (spare parts in the inventory / stock)
-**Registered:** `Gate::policy(Part::class, PartPolicy::class)` (`AppServiceProvider.php:111`)
+**Registered:** `Gate::policy(Part::class, PartPolicy::class)` (`AppServiceProvider.php:118`)
 
 | Ability | Signature | Authorization logic | Called from |
 |---|---|---|---|
@@ -125,7 +125,7 @@ All role checks rely on the `User` model methods (defined in `app/Models/User.ph
 
 **File:** `app/Policies/RoomPolicy.php`
 **Governs:** `App\Models\Room`
-**Registered:** `Gate::policy(Room::class, RoomPolicy::class)` (`AppServiceProvider.php:109`)
+**Registered:** `Gate::policy(Room::class, RoomPolicy::class)` (`AppServiceProvider.php:116`)
 
 | Ability | Signature | Authorization logic | Called from |
 |---|---|---|---|
@@ -145,7 +145,7 @@ All role checks rely on the `User` model methods (defined in `app/Models/User.ph
 
 **File:** `app/Policies/StockMovementPolicy.php`
 **Governs:** `App\Models\StockMovement` (stock in/out/transfer/return movements)
-**Registered:** `Gate::policy(StockMovement::class, StockMovementPolicy::class)` (`AppServiceProvider.php:113`)
+**Registered:** `Gate::policy(StockMovement::class, StockMovementPolicy::class)` (`AppServiceProvider.php:120`)
 
 | Ability | Signature | Authorization logic | Called from |
 |---|---|---|---|
@@ -162,7 +162,7 @@ All role checks rely on the `User` model methods (defined in `app/Models/User.ph
 
 **File:** `app/Policies/SupplierPolicy.php`
 **Governs:** `App\Models\Supplier`
-**Registered:** `Gate::policy(Supplier::class, SupplierPolicy::class)` (`AppServiceProvider.php:112`)
+**Registered:** `Gate::policy(Supplier::class, SupplierPolicy::class)` (`AppServiceProvider.php:119`)
 
 | Ability | Signature | Authorization logic | Called from |
 |---|---|---|---|
@@ -178,7 +178,7 @@ All role checks rely on the `User` model methods (defined in `app/Models/User.ph
 
 **File:** `app/Policies/TaxRatePolicy.php`
 **Governs:** `App\Models\TaxRate`
-**Registered:** `Gate::policy(TaxRate::class, TaxRatePolicy::class)` (`AppServiceProvider.php:114`)
+**Registered:** `Gate::policy(TaxRate::class, TaxRatePolicy::class)` (`AppServiceProvider.php:121`)
 
 | Ability | Signature | Authorization logic | Called from |
 |---|---|---|---|
@@ -194,7 +194,7 @@ All role checks rely on the `User` model methods (defined in `app/Models/User.ph
 
 **File:** `app/Policies/TicketPolicy.php`
 **Governs:** `App\Models\Ticket`
-**Registered:** `Gate::policy(Ticket::class, TicketPolicy::class)` (`AppServiceProvider.php:106`)
+**Registered:** `Gate::policy(Ticket::class, TicketPolicy::class)` (`AppServiceProvider.php:113`)
 **Private helper:** `private function canAccessTicket(User $user, Ticket $ticket): bool` returns `true` for any admin/technician, otherwise `true` only if `(int) $ticket->user_id === (int) $user->id` (ticket creator). This is reused by `view`, `comment`, `attachPhoto`, `deletePhoto`, and `schedule`.
 
 | Ability | Signature | Authorization logic | Called from |
@@ -234,7 +234,7 @@ All role checks rely on the `User` model methods (defined in `app/Models/User.ph
 
 **File:** `app/Policies/UserPolicy.php`
 **Governs:** `App\Models\User`
-**Registered:** `Gate::policy(User::class, UserPolicy::class)` (`AppServiceProvider.php:107`)
+**Registered:** `Gate::policy(User::class, UserPolicy::class)` (`AppServiceProvider.php:114`)
 
 | Ability | Signature | Authorization logic | Called from |
 |---|---|---|---|
@@ -254,7 +254,7 @@ All role checks rely on the `User` model methods (defined in `app/Models/User.ph
 
 **File:** `app/Policies/UserProfilePolicy.php`
 **Governs:** `App\Models\UserProfile` (the role profile a user belongs to)
-**Registered:** `Gate::policy(UserProfile::class, UserProfilePolicy::class)` (`AppServiceProvider.php:110`)
+**Registered:** `Gate::policy(UserProfile::class, UserProfilePolicy::class)` (`AppServiceProvider.php:117`)
 
 | Ability | Signature | Authorization logic | Called from |
 |---|---|---|---|

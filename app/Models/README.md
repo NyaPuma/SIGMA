@@ -240,7 +240,6 @@ Eloquent ORM models representing the persistence layer and domain entities of th
   - `priceWithVat(): float` -- returns `cost_price * (1 + taxRate.percent / 100)`, rounded to 2 decimals. Returns 0 if no tax rate is assigned.
   - `stockValue(): float` -- returns `current_stock * cost_price`, rounded to 2 decimals. Used to calculate total inventory value.
   - `isLowStock(): bool` -- returns `true` when `current_stock <= min_stock`. Used by `LowStockAlertService`.
-  - `validateUnitOfMeasure(string $unit): void` -- throws `InvalidArgumentException` if the unit is not a valid `PartUnitOfMeasureEnum` case.
 - **Scopes:**
   - `scopeActive(Builder $query)` -- filters to only records where `active = true`
   - `scopeLowStock(Builder $query)` -- filters to active parts where `current_stock <= min_stock` (via `whereColumn`)
@@ -433,7 +432,7 @@ Eloquent ORM models representing the persistence layer and domain entities of th
   - `budget_approved_at` (timestamp, nullable) -- when the budget was approved/decided
   - `budget_decided_at` (timestamp, nullable) -- when the budget decision was made
   - `budget_approved_by` (FK -> `users.id`, nullable) -- who approved the budget
-  - `recommended_technician_id` (FK -> `users.id`, nullable) -- AI-recommended technician (added by `2026_08_03_000001` migration)
+  - `recommended_technician_id` (FK -> `users.id`, nullable) -- AI-recommended technician (added without a constraint by `2026_08_03_000001`, constrained by `2026_11_05_000001`; see that migration for why SQLite has no such constraint and `AIService::recommendTechnician()` enforces it instead)
   - `ai_recommendation_reason` (text, nullable) -- explanation of the AI recommendation (added by `2026_08_03_000001` migration)
   - `ai_processed_at` (timestamp, nullable) -- when the AI recommendation was generated (added by `2026_08_03_000001` migration)
   - `created_at` / `updated_at` -- timestamps
@@ -475,13 +474,14 @@ Eloquent ORM models representing the persistence layer and domain entities of th
 - **Scopes:**
   - `scopeOpen(Builder $query)` -- filters to only tickets whose `status_id` matches the "Open" status (resolved via `TicketStatusService` and `TicketStatusEnum::Open`)
   - `scopeForTechnician(Builder $query, int $technicianId)` -- filters to only tickets assigned to the given technician
-- **Observer:** `TicketObserver` (registered in `AppServiceProvider::boot()` at line 145):
-  - `created` -- fires `TicketCreated` event (broadcasts to the creator's private channel and `tickets.admin`); invalidates analytics cache.
-  - `updated` -- if `status_id` changed, fires `TicketStatusChanged` event (broadcasts to ticket channel, creator's channel, and `tickets.admin`); invalidates analytics cache.
+- **Observer:** `TicketObserver` (registered by `Ticket::observe()` in `app/Providers/AppServiceProvider.php:152`):
+  - `created` -- fires `TicketCreated` event (admins get the new-ticket notification); invalidates analytics cache.
+  - `updated` -- if `status_id` changed, fires `TicketStatusChanged` event (workflow history row); invalidates analytics cache.
   - `deleted` / `restored` -- invalidates analytics cache.
 - **Events fired (via Observer):**
-  - `App\Events\TicketCreated` -- broadcasts `ticket.created` on channels `users.{creator_id}` and `tickets.admin`
-  - `App\Events\TicketStatusChanged` -- broadcasts `ticket.status_changed` on channels `tickets.{ticket_id}`, `users.{user_id}`, and `tickets.admin`
+  - `App\Events\TicketCreated` -- consumed by `SendTicketCreatedNotification`
+  - `App\Events\TicketStatusChanged` -- consumed by `LogTicketWorkflowChange`
+  Both are plain in-process events; nothing is broadcast over WebSockets.
 - **WHERE/WHEN it's used:**
   - **Created:** `CreateTicketAction`, `CreatePublicTicketAction`, `CreatePreventiveTicketAction`, `ScheduleMaintenanceAction`, `SimulateTelemetry` (console command), `TicketController`
   - **Read:** `TicketRepository` (CRUD + search), `TicketSearchService`, `CalendarService` (calendar view), `AnalyticsDashboardService` (KPI calculations), `AnalyticsController` (exports), `TicketKpiQuery`, `MonthlyTicketsQuery`, `ScheduledEventsQuery`, `TechnicianAssignmentService`
@@ -733,9 +733,7 @@ Eloquent ORM models representing the persistence layer and domain entities of th
   - `email_verified_at` (timestamp, nullable) -- when the email was verified
   - `password_changed_at` (timestamp, nullable) -- when the password was last changed
   - `last_login_at` (timestamp, nullable) -- when the user last logged in
-  - `last_login_ip` (string, max 45, nullable) -- IP address of the last login
-  - `login_attempts` (unsigned integer, default `0`) -- count of failed login attempts
-  - `locked_until` (timestamp, nullable) -- when the account lock expires
+  - `last_login_ip` (string, max 45, nullable) -- IP address of the last login (stamped by `UserService::createToken()`)
   - `created_at` / `updated_at` -- timestamps
   - `deleted_at` -- soft delete timestamp
 - **Hidden fields:**
@@ -755,10 +753,9 @@ Eloquent ORM models representing the persistence layer and domain entities of th
   - `token_created_at` -> `datetime`
   - `password_changed_at` -> `datetime`
   - `last_login_at` -> `datetime`
-  - `locked_until` -> `datetime`
   - `active` -> `boolean`
-  - `login_attempts` -> `integer`
   - `password` -> `hashed` (automatic hashing on set)
+- **No lockout columns:** failed-login counting lives in the cache (`AuthController::login()` keys `login_attempts:sha1(ip|email)` with the lockout TTL). The `users` table used to carry `login_attempts`/`locked_until` that nothing ever wrote while `UserResource` published them; `2026_11_05_000002_drop_lockout_columns_from_users_table` removed them.
 - **Observer:** `UserObserver` (registered in `AppServiceProvider::boot()` at line 146):
   - `creating` / `updating` -- calls `ensureValidProfile()`: validates that the assigned `profile_id` maps to a valid `UserRoleEnum` case (Admin, Technician, User). If the profile is missing or invalid, it ensures the default "User" profile exists via `UserProfile::firstOrCreate()` and assigns it.
 - **Static helper methods:**
@@ -997,7 +994,7 @@ All observers are registered in `AppServiceProvider::boot()` via `registerObserv
 Registered in `EventServiceProvider::$listen`:
 - `TicketCreated` -> `SendTicketCreatedNotification` (creates in-app notification for admins)
 - `TicketStatusChanged` -> `LogTicketWorkflowChange` (creates `TicketWorkflowHistory` record)
-- `TicketStatusUpdatedBroadcast` -> `SendTicketStatusNotification`, `NotifyAssignedTechnician`
+- `TicketStatusUpdated` -> `SendTicketStatusNotification`, `NotifyAssignedTechnician`
 
 ### Policy Authorization
 

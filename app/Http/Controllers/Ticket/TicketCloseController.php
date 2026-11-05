@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers\Ticket;
 
-use App\Concerns\BroadcastsTicketStatus;
+use App\Concerns\NotifiesTicketStatusChange;
 use App\Enums\TicketStatusEnum;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\CloseTicketRequest;
@@ -16,7 +16,7 @@ use Illuminate\Http\JsonResponse;
 
 final class TicketCloseController extends Controller
 {
-    use BroadcastsTicketStatus;
+    use NotifiesTicketStatusChange;
 
     public function __construct(
         private readonly TicketWorkflowService $workflowService,
@@ -51,8 +51,8 @@ final class TicketCloseController extends Controller
             minutesSpent: $request->integer('minutes_spent')
         );
 
-        // 4. Emit real-time event
-        $this->broadcastStatusChange($ticket, $oldStatus, TicketStatusEnum::Closed);
+        // 4. Notify the owner and the technician about the status change
+        $this->notifyStatusChange($ticket, $oldStatus, TicketStatusEnum::Closed);
 
         $ticket->loadMissing(['equipment', 'room', 'technician', 'status']);
 
@@ -111,8 +111,8 @@ final class TicketCloseController extends Controller
             }
         }
 
-        // 5. Broadcast real-time via WebSockets
-        $this->broadcastStatusChange($ticket, $oldStatus, TicketStatusEnum::Closed);
+        // 5. Notify the owner and the technician about the status change
+        $this->notifyStatusChange($ticket, $oldStatus, TicketStatusEnum::Closed);
 
         // 6. Dispatch global closing notification
         $formattedCost = $this->localization->formatDecimal($cost);

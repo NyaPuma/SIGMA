@@ -478,10 +478,6 @@ final class SystemSettingsService
             $options[$key] = $labels[$key] ?? $key;
         }
 
-        if (! array_key_exists('mailgun_fallback', $options)) {
-            $options['mailgun_fallback'] = __('ui.Mailgun → SendGrid (fallback)');
-        }
-
         return $options;
     }
 

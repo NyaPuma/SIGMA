@@ -31,13 +31,19 @@ This file is the heart of the boot process. When the app starts it runs `Applica
 - For **web** requests it adds: `SetLocaleMiddleware` (picks the right language for the visitor), `SetUserPreferencesMiddleware` (applies each user's saved preferences), and `SecurityHeaders` (adds protective headers).
 - For **API** requests it adds the locale and security-headers middleware too.
 - It also registers three **named aliases** used in the route files to keep them tidy:
-  - `custom.auth` → login/authentication check (JWT + session).
+  - `custom.auth` → login/authentication check (opaque API token + session).
   - `role` → role-based access (admin/technician/user).
   - `rate.limit` → throttling (stops bots flooding the app).
 - It also **excludes** `api_token` and `auth_token` cookies from encryption so they work as expected.
 
 **3. Scheduling — automatic background jobs:**
-- A **`CheckLowStockJob`** runs **every day at 06:00** — it checks the spare-parts inventory and flags anything that has dropped below its minimum stock level.
+- A **`CheckLowStockJob`** runs **every day at 06:00** (and never overlaps itself) — it checks the spare-parts inventory and flags anything that has dropped below its minimum stock level.
+- The rest of the automatic tasks are declared in `routes/console.php`:
+  - **`telemetry:simulate`** runs **every hour** — it looks for equipment anomalies and opens preventive maintenance tickets.
+  - **`backup:run --clean`** runs **every day at 02:00** — it makes a database backup and removes ones older than the retention period.
+  - **`audit:partition --months=12`** runs **once a month** — it creates the monthly partitions for the audit trail table.
+  - **`exports:prune`** runs **every day at 03:00** — it deletes generated report files past their retention window.
+  - **`currency:update-rates`** runs **twice a day** — it refreshes the stored exchange rates used for per-user currency preferences.
 
 **4. Exception handling — what happens when things go wrong:**
 - Invalid-argument errors are turned into a clean 422 JSON response.
@@ -68,7 +74,7 @@ When the app boots, `app.php`:
 ## Notes for developers / AI
 
 - `app.php` is the Laravel 11+ application bootstrap file — it configures routing, middleware, scheduling, and exception handling in a fluent API.
-- Middleware aliases: `custom.auth` (JWT + session), `role` (role-based access), `rate.limit` (throttling).
+- Middleware aliases: `custom.auth` (opaque API token + session), `role` (role-based access), `rate.limit` (throttling). The API token is a random opaque string hashed with HMAC-SHA256 before being stored in `users.api_token` — it is not a JWT.
 - The `CheckLowStockJob` runs daily at 06:00 to check for low stock levels.
 - Error pages resolve locale from the request to ensure proper language display.
 

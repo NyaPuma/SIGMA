@@ -6,7 +6,7 @@ Authentication-related UI scripts.
 
 | File | Purpose |
 |------|---------|
-| `login.js` | Login form handler (credentials + MFA) |
+| `login.js` | Login form handler (credentials) |
 | `utils.js` | Auth UI helpers (OTP inputs, select/radio enhancements, password toggle, fetch wrappers) |
 
 ## Recent Refactorings

@@ -68,9 +68,12 @@ final class AnalyticsDashboardService
         $monthlyData = (new MonthlyTicketsQuery($openStatusId, $inProgressStatusId, $closedStatusId, now()))->execute();
         $topEntities = new TopEntitiesQuery($baseQuery);
 
+        // A month (or a fresh deployment) with nothing closed has no SLA evidence at all.
+        // Reporting 100 would show a perfect score precisely when nobody can be measured,
+        // so the figure is null and the dashboard renders it as "sem dados".
         $slaSuccess = $kpiData['closed_tickets'] > 0
             ? round(($kpiData['sla_met'] / $kpiData['closed_tickets']) * 100, 1)
-            : 100;
+            : null;
 
         $monthlyPerformance = $this->monthlyPerformanceData($monthlyData['labels']);
 

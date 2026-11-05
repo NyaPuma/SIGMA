@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Jobs;
 
-use App\Jobs\Concerns\SetsRequesterLocale;
+use App\Jobs\Concerns\SetsRequesterContext;
 use App\Models\Notification;
 use App\Services\StockDashboardService;
 use App\Support\ExportArtifact;
@@ -23,7 +23,7 @@ final class ExportStockCostsPdfJob implements ShouldQueue
     use InteractsWithQueue;
     use Queueable;
     use SerializesModels;
-    use SetsRequesterLocale;
+    use SetsRequesterContext;
 
     /**
      * The maximum number of attempts before the job fails.
@@ -43,7 +43,7 @@ final class ExportStockCostsPdfJob implements ShouldQueue
 
     public function handle(StockDashboardService $dashboardService): void
     {
-        $this->applyRequesterLocale($this->userId);
+        $this->applyRequesterContext($this->userId);
 
         $items = $dashboardService->costByEquipment(
             from: $this->from,
@@ -83,7 +83,7 @@ final class ExportStockCostsPdfJob implements ShouldQueue
      */
     public function failed(?Throwable $exception): void
     {
-        $this->applyRequesterLocale($this->userId);
+        $this->applyRequesterContext($this->userId);
 
         Notification::create([
             'user_id' => $this->userId,

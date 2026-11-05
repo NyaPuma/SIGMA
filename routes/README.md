@@ -277,8 +277,8 @@ They support the same login and role protection, but the "visitor" proves who th
 
 ## Notes for developers / AI
 
-- **Middleware**: `custom.auth` handles both JWT token and session-based authentication. `role:admin`, `role:technician`, `role:admin,technician` are role-based access guards.
-- **CSRF**: Many API-like web routes disable CSRF validation via `withoutMiddleware([ValidateCsrfToken::class])` — these are consumed by JavaScript fetch calls.
+- **Middleware**: `custom.auth` handles both opaque API-token and session-based authentication. `role:admin`, `role:technician`, `role:admin,technician` are role-based access guards.
+- **CSRF**: Many API-like web routes disable CSRF validation via `withoutMiddleware([PreventRequestForgery::class])` — these are consumed by JavaScript fetch calls.
 - **Rate limiting**: Applied to login, password reset, and test email routes (limits attempts per minute to prevent brute-force attacks).
 - **Route names**: Prefixed by transport layer (`api.*` for API, no prefix for web). Route names are English throughout.
 - **Route parameters**: Use English names (`{ticket}`, `{equipment}`, `{room}`, `{part}`, `{supplier}`, `{plan}`, `{taxRate}`, `{category}`). The `{...}` curly braces mean "any number goes here".

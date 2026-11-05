@@ -18,12 +18,15 @@ Client-side JavaScript modules for the application frontend.
 
 ## Root Files
 
+Only `app.js` and `early-theme.js` are Vite inputs (see `vite.config.js`); the other root modules are imported by `app.js`.
+
 | File | Purpose |
 |------|---------|
-| `analytics.js` | Global analytics initialization |
-| `api-client.js` | Centralized fetch wrapper with auth, interceptors, and error handling |
-| `early-theme.js` | Preloads theme to prevent flash of unstyled content (FOUC) |
+| `app.js` | Entry point — pulls in the API client, Alpine, the localization modal, layout and auth login, then boots the page modules registered for the current page |
+| `alpine.js` | Registers the Alpine.js data components (OTP, combobox, autocomplete, password strength) and exposes `window.Alpine` |
+| `api-client.js` | Centralized axios wrapper with auth, interceptors, and error handling |
+| `early-theme.js` | Preloads the saved theme to prevent flash of unstyled content (FOUC) |
 
 ## Recent Refactorings
 
-- Root files (`alpine.js`, `analytics.js`, `api-client.js`, `app.js`, `early-theme.js`): No changes needed — all are plain infrastructure/bootstrap modules with no inline styles, no hardcoded design classes, and no typography or button markup concerns.
+- Root files (`alpine.js`, `api-client.js`, `app.js`, `early-theme.js`): No changes needed — all are plain infrastructure/bootstrap modules with no inline styles, no hardcoded design classes, and no typography or button markup concerns.

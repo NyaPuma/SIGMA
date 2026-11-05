@@ -26,7 +26,7 @@ Below is what each guard in this folder does and how it actually works.
 
 **File:** `app/Http/Middleware/RequestContextMiddleware.php`
 **What it does:** The **Envelope Stamper** — gives every request a unique tracking ID (UUID), measures how long the request takes, and watches for requests that are too slow or use too much memory.
-**When it runs:** This is the **very first guard in the whole application** — added globally via `$middleware->append(RequestContextMiddleware::class)` in `bootstrap/app.php:27`. It runs on **every single request** regardless of whether the route is `web`, `api`, public, or protected. No other middleware runs before it.
+**When it runs:** This is the **very first guard in the whole application** — added globally via `$middleware->append(RequestContextMiddleware::class)` in `bootstrap/app.php:34`. It runs on **every single request** regardless of whether the route is `web`, `api`, public, or protected. No other middleware runs before it.
 **Constructor dependencies:** None.
 
 #### `handle(Request $request, Closure $next): Response`
@@ -58,8 +58,8 @@ The step-by-step logic:
 **File:** `app/Http/Middleware/SecurityHeaders.php`
 **What it does:** The **Safety Label Paster** — adds a set of protective HTTP security headers to the response that tell the browser how to behave safely.
 **When it runs:** Added to **both** the `web` and `api` middleware groups in `bootstrap/app.php`:
-- `$middleware->web(append: [..., SecurityHeaders::class])` (line 32)
-- `$middleware->api(append: [..., SecurityHeaders::class])` (line 38)
+- `$middleware->web(append: [..., SecurityHeaders::class])` (line 39)
+- `$middleware->api(append: [..., SecurityHeaders::class])` (line 44)
 
 This means it runs on every `web` and `api` route, but **after** the session, locale, and preferences middleware in the `web` group. Since it attaches headers to the response *after* calling `$next()`, it is a "post-processing" guard — it lets the request through first, then decorates the response on the way back.
 
@@ -91,7 +91,7 @@ Sets the following headers on the response:
 Returns a Content Security Policy string appropriate for the environment:
 
 - **Development** (`app()->environment('local')` or `config('app.debug')`): A relaxed CSP that allows `localhost:5173` and `127.0.0.1:5173` (Vite dev server), `unsafe-inline` and `unsafe-eval` scripts, WebSocket connections for hot-reload (`ws://localhost:5173`), and CDN resources from `cdn.jsdelivr.net` and `fonts.bunny.net`.
-- **Production**: A strict CSP with only `'self'`, specific `sha256` hashes for inline scripts, and `cdn.jsdelivr.net` for external scripts/styles. No `unsafe-inline` or `unsafe-eval`.
+- **Production**: A strict CSP. `script-src` allows `'self'`, two specific `sha256` hashes for inline scripts and `cdn.jsdelivr.net` for external scripts — no `unsafe-inline` or `unsafe-eval` there. `style-src` still allows `'unsafe-inline'` alongside `'self'` and `cdn.jsdelivr.net`.
 
 Both environments set `frame-ancestors 'none'` as an additional clickjacking defense.
 
@@ -104,8 +104,8 @@ Both environments set `frame-ancestors 'none'` as an additional clickjacking def
 **File:** `app/Http/Middleware/SetLocaleMiddleware.php`
 **What it does:** The **Language Picker** — decides which language the site should display in for this request (default is `pt-PT`).
 **When it runs:** Added to **both** the `web` and `api` middleware groups in `bootstrap/app.php`:
-- `$middleware->web(append: [SetLocaleMiddleware::class, ...])` (line 30)
-- `$middleware->api(append: [SetLocaleMiddleware::class, ...])` (line 36)
+- `$middleware->web(append: [SetLocaleMiddleware::class, ...])` (line 37)
+- `$middleware->api(append: [SetLocaleMiddleware::class, ...])` (line 43)
 
 This means it runs early for nearly every request — it is the **first** custom middleware in both groups (right after Laravel's built-in session and cookie middleware).
 **Constructor dependencies:** None (injects `AuthUserResolver` and `LocaleService` via static calls).
@@ -128,7 +128,7 @@ Resolves the locale by checking sources in this **priority order** (first match 
 
 #### `resolveFromRequest(Request $request): string` (static, public)
 
-A **static helper** used outside the middleware chain — specifically in `bootstrap/app.php:63` to set the locale on **error pages** where the `web` group middleware no longer runs. It checks session → cookie → browser header (skipping the user DB lookup since the user may not be authenticated during error handling).
+A **static helper** used outside the middleware chain — specifically in `bootstrap/app.php:77` to set the locale on **error pages** where the `web` group middleware no longer runs. It checks session → cookie → browser header (skipping the user DB lookup since the user may not be authenticated during error handling).
 
 **Constants:** `DEFAULT_LOCALE = 'pt-PT'` — the fallback locale, matching the database-level default for the application.
 
@@ -140,7 +140,7 @@ A **static helper** used outside the middleware chain — specifically in `boots
 
 **File:** `app/Http/Middleware/SetUserPreferencesMiddleware.php`
 **What it does:** The **Preference Card Slipper** — loads the user's full preferences (currency, date format, number format) and makes them available to controllers and views for the duration of the request.
-**When it runs:** Added to the **`web`** middleware group only in `bootstrap/app.php:31`:
+**When it runs:** Added to the **`web`** middleware group only in `bootstrap/app.php:38`:
 ```php
 $middleware->web(append: [
     SetLocaleMiddleware::class,
@@ -166,8 +166,8 @@ It does **not** run on `api` routes. It runs **after** `SetLocaleMiddleware` (wh
 ### CustomAuthMiddleware
 
 **File:** `app/Http/Middleware/CustomAuthMiddleware.php`
-**What it does:** The **Bouncer** — blocks requests that come without a valid login token, and identifies who the logged-in user is.
-**When it runs:** Registered as the alias `custom.auth` in `bootstrap/app.php:42`:
+**What it does:** The **Bouncer** — blocks requests that come without a valid login token, and identifies who the logged-in user is. The token is an opaque string (accepted via `X-Auth-Token`, `Authorization: Bearer`, the `api_token`/`auth_token` cookies or the session), hashed with `User::hashToken` (HMAC-SHA256) and looked up in `users.api_token` — it is **not** a JWT.
+**When it runs:** Registered as the alias `custom.auth` in `bootstrap/app.php:49`:
 ```php
 $middleware->alias([
     'custom.auth' => CustomAuthMiddleware::class,
@@ -177,7 +177,7 @@ $middleware->alias([
 
 Applied at the **route level** (not global). It is used in:
 
-- **`routes/web.php:102`** — wraps the entire protected web routes group:
+- **`routes/web.php:109`** — wraps the entire protected web routes group:
   ```php
   Route::middleware(['custom.auth'])->group(function () { ... });
   ```
@@ -243,7 +243,7 @@ Applied at the **route level** (not global). It is used in:
 
 **File:** `app/Http/Middleware/RoleMiddleware.php`
 **What it does:** The **Badge Checker** — checks that the logged-in user has the right role (profile) to access a particular area.
-**When it runs:** Registered as the alias `role` in `bootstrap/app.php:43`:
+**When it runs:** Registered as the alias `role` in `bootstrap/app.php:50`:
 ```php
 $middleware->alias([
     ...
@@ -255,11 +255,11 @@ $middleware->alias([
 Applied at the **route level** wherever `role:...` appears. It is used in many places across both `routes/web.php` and `routes/api.php`:
 
 **In `routes/web.php`:**
-- `role:admin,user` — `GET /ui/tickets/create` (line 131)
-- `role:admin` — `GET /ui/equipments/create` (line 149), `GET /ui/equipments/{equipment}/edit` (line 155), `GET /ui/stock/parts/create` (line 168), `GET /ui/stock/parts/{part}/edit` (line 174), `GET /ui/stock/suppliers/create` (line 179), `GET /ui/stock/suppliers/{supplier}/edit` (line 183), `GET /ui/stock/tax-rates` (line 187), `GET /ui/stock/categories` (line 190), `GET /ui/stock/plans` (line 193)
-- `role:technician` — entire technician area group (lines 259-272): `PUT /technician/tickets/{ticket}/start`, `PUT /technician/tickets/{ticket}/close`, `PUT /technician/tickets/{ticket}/request-budget`
-- `role:admin,technician` — stock read/movement group (lines 275-290): `GET /stock/parts`, `GET /stock/suppliers`, `GET /stock/movements`, `POST /stock/movements`, stock dashboard routes
-- `role:admin` — entire admin group (lines 293-398): users, rooms, analytics, tickets, stock management, audit, equipment, budgets, reports, maintenance plans, QR codes
+- `role:admin,user` — `GET /ui/tickets/create` (line 143)
+- `role:admin` — `GET /ui/equipments/create` (line 162), `GET /ui/equipments/{equipment}/edit` (line 168), `GET /ui/stock/parts/create` (line 181), `GET /ui/stock/parts/{part}/edit` (line 187), `GET /ui/stock/suppliers/create` (line 192), `GET /ui/stock/suppliers/{supplier}/edit` (line 195), `GET /ui/stock/tax-rates` (line 200), `GET /ui/stock/categories` (line 203), `GET /ui/stock/plans` (line 206)
+- `role:technician` — entire technician area group (lines 272-285): `PUT /technician/tickets/{ticket}/start`, `PUT /technician/tickets/{ticket}/close`, `PUT /technician/tickets/{ticket}/request-budget`
+- `role:admin,technician` — stock read/movement group (lines 288-303): `GET /stock/parts`, `GET /stock/suppliers`, `GET /stock/movements`, `POST /stock/movements`, stock dashboard routes
+- `role:admin` — entire admin group (lines 306-414): users, rooms, analytics, tickets, stock management, audit, equipment, budgets, reports, maintenance plans, QR codes
 
 **In `routes/api.php`:**
 - `role:technician` — technician area group (lines 102-115)
@@ -303,7 +303,7 @@ The `$roles` parameter is a **variadic string** — it receives all comma-separa
 
 **File:** `app/Http/Middleware/RateLimitMiddleware.php`
 **What it does:** The **Traffic Cop** — limits how many requests a single user or IP address can make in a short time, to stop abuse and brute-force attacks.
-**When it runs:** Registered as the alias `rate.limit` in `bootstrap/app.php:44`:
+**When it runs:** Registered as the alias `rate.limit` in `bootstrap/app.php:51`:
 ```php
 $middleware->alias([
     ...
@@ -315,16 +315,17 @@ Applied at the **route level** with custom parameters. Notable usages across `ro
 
 | Route | Limit | Where |
 |---|---|---|
-| `POST /login` | `rate.limit:5,1` (5/min) | `web.php:58` |
-| `POST /ticket/store` | `rate.limit:5,1` | `web.php:70` |
-| `POST /password/change` | `rate.limit:10,1` | `web.php:110` |
-| `POST /profile/update` | `rate.limit:10,1` | `web.php:113` |
-| `POST /tickets` | `rate.limit:30,1` | `web.php:215` |
-| `POST /tickets/{ticket}/comments` | `rate.limit:30,1` | `web.php:221` |
-| `POST /tickets/{ticket}/photos` | `rate.limit:30,1` | `web.php:228` |
-| Technician actions | `rate.limit:20,1` | `web.php:263,267,271` |
-| `POST /tickets/{ticket}/assign-technician` | `rate.limit:20,1` | `web.php:313` |
-| `POST /admin/users/register` | `rate.limit:5,1` | `web.php:324` |
+| `POST /login` | `rate.limit:5,1` (5/min) | `web.php:60` |
+| `POST /ticket/store` | `rate.limit:5,1` | `web.php:73` |
+| `GET /ticket/success/{ticket}` | `signed` + `rate.limit:20,1` | `web.php:80` |
+| `POST /password/change` | `rate.limit:10,1` | `web.php:117` |
+| `POST /profile/update` | `rate.limit:10,1` | `web.php:120` |
+| `POST /tickets` | `rate.limit:30,1` | `web.php:228` |
+| `POST /tickets/{ticket}/comments` | `rate.limit:30,1` | `web.php:234` |
+| `POST /tickets/{ticket}/photos` | `rate.limit:30,1` | `web.php:241` |
+| Technician actions | `rate.limit:20,1` | `web.php:276,280,284` |
+| `POST /tickets/{ticket}/assign-technician` | `rate.limit:20,1` | `web.php:326` |
+| `POST /admin/users/register` | `rate.limit:5,1` | `web.php:339` |
 | `POST /api/login` | `rate.limit:5,1` | `api.php:47` |
 | `POST /api/password/email` | `rate.limit:3,1` | `api.php:51` |
 | `POST /api/password/reset` | `rate.limit:5,1` | `api.php:58` |
@@ -369,56 +370,6 @@ Determines if the request targets login, registration, or password recovery — 
 - Route name is `api.login` or starts with `api.password.`.
 
 **Order:** Route-level middleware. Typically applied as the last or near-last middleware before the controller on specific routes. Runs after `CustomAuthMiddleware` and `RoleMiddleware` where those are also present.
-
----
-
-### CsrfMiddleware
-
-**File:** `app/Http/Middleware/CsrfMiddleware.php`
-**What it does:** The **Seal Inspector** — protects the app from Cross-Site Request Forgery (CSRF) by checking that state-changing requests carry a valid security token that was previously issued by the server.
-**When it runs:** This is a **custom** CSRF middleware. Note: the application also uses Laravel's built-in `Illuminate\Foundation\Http\Middleware\ValidateCsrfToken` (referenced in `routes/web.php` via `->withoutMiddleware([ValidateCsrfToken::class])` on several routes). The `CsrfMiddleware` class is defined but is **not registered globally** in `bootstrap/app.php` — it is used in tests (`tests/Feature/Middleware/CsrfMiddlewareTest.php`) and can be applied to specific routes as needed. Routes that need CSRF protection use Laravel's default `ValidateCsrfToken` from the `web` middleware group, and some routes opt out of it with `withoutMiddleware([ValidateCsrfToken::class])`.
-
-**Constructor dependencies:** `Illuminate\Contracts\Session\Session $session` — the session contract, injected by Laravel's service container.
-
-#### `handle(Request $request, Closure $next): Response`
-
-1. **Checks if CSRF should be skipped** via `shouldSkipCsrfValidation($request)`:
-   - **GET requests** are always skipped (they are safe/read-only).
-   - **URLs** `/login` and `/register` are skipped (handled by other token mechanisms).
-   - **Specific route names** that use header-based auth tokens (`api.auth.login`, `api.auth.logout`, `api.user.profile.update`, `api.ticket.create`, `api.equipment.create`, `api.notification.create`): Skipped only if the request **also** carries an `X-Auth-Token` header or Bearer token AND the session has a `_token` value.
-   - **Admin/analytics routes** (route names starting with `api.admin` or `api.analytics`): Skipped if an `X-Admin-Token` header or Bearer token is present.
-   - **Health/status routes** (route names starting with `api.health` or `api.status`): Always skipped (read-only monitoring endpoints).
-
-2. **Extracts CSRF token** via `getCsrfTokenFromRequest($request)`:
-   - Checks `X-CSRF-Token` header first.
-   - Falls back to `_token` form field.
-   - Returns `null` if neither is present (never returns the session token itself as "provided" — that would defeat the purpose).
-
-3. **Validates token** via `validateCsrfToken($token)`:
-   - Trims whitespace from the provided token.
-   - If empty, returns `false`.
-   - Retrieves the stored token from `$this->session->get('_token')`.
-   - Compares using `hash_equals()` — a **timing-resistant** comparison that prevents timing attacks.
-   - On mismatch, logs a debug message with the first 8 characters of the provided token (for debugging, not security).
-   - Returns `true` only if tokens match.
-
-4. **If validation fails:** Returns a JSON response:
-   ```json
-   {
-     "message": "CSRF Token inválido ou expirado.",
-     "error_code": 419,
-     "errors": { "_token": ["The CSRF token is invalid or has expired."] }
-   }
-   ```
-   Status code: **419** (Laravel's convention for CSRF failures).
-
-5. **If validation passes** via `regenerateSessionId()`:
-   - If the session has a `_token` and a valid session ID, calls `$this->session->regenerate()` to issue a **new session ID**. This prevents session fixation attacks.
-   - If regeneration fails (exception), logs the error but does not block the request.
-
-6. **Calls `$next($request)`** — the request continues.
-
-**Order:** When applied, it runs at the route level. Typically would run after `CustomAuthMiddleware` (which also reads tokens) but before the controller.
 
 ---
 
@@ -489,6 +440,5 @@ Middleware order is defined in two places: `bootstrap/app.php` (global and per-g
 - `__()` translation keys are part of the i18n domain — not normalized in this refactor
 - `LocalizeSwaggerDocument::SOURCE_DOMAINS` maps source strings to translation domains — i18n domain
 - `SetLocaleMiddleware::DEFAULT_LOCALE` is `'pt-PT'` — DB-level default, reported separately
-- The `CsrfMiddleware` is a custom implementation; the app also uses Laravel's built-in `ValidateCsrfToken` in the `web` group
 - `CustomAuthMiddleware` sets the user on the `api` guard only — this is why `SetLocaleMiddleware` also checks `Auth::guard('api')->user()` and falls back to `AuthUserResolver::fromRequest()` for the user's locale
 - All middleware classes are `final` — they cannot be extended or overridden

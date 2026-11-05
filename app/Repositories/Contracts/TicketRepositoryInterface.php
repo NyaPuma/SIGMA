@@ -15,13 +15,6 @@ interface TicketRepositoryInterface
     public function findById(int $id): ?Ticket;
 
     /**
-     * Find a ticket by its ID, loading specific relationships.
-     *
-     * @param  array<int, string>  $relations
-     */
-    public function findWithRelations(int $id, array $relations = []): ?Ticket;
-
-    /**
      * Return a paginated list of tickets.
      *
      * @param  array<int, string>  $relations

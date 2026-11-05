@@ -42,6 +42,7 @@ use App\Services\AIService;
 use App\Services\AnalyticsService;
 use App\Services\LocalizationService;
 use App\Services\NotificationService;
+use App\Services\PreferenceContext;
 use App\Services\SystemSettingsService;
 use App\Services\TicketStatusService;
 use Illuminate\Database\Events\QueryExecuted;
@@ -77,6 +78,7 @@ final class AppServiceProvider extends ServiceProvider
         $this->app->singleton(NotificationService::class);
         $this->app->singleton(AIService::class);
         $this->app->singleton(SystemSettingsService::class);
+        $this->app->singleton(PreferenceContext::class);
     }
 
     /**
@@ -96,7 +98,7 @@ final class AppServiceProvider extends ServiceProvider
 
         // Captured after the overrides so the default is the configured one, not a
         // locale a previous job happened to leave behind.
-        $this->resetLocaleForQueuedJobs();
+        $this->resetRequesterContextForQueuedJobs();
     }
 
     /**
@@ -178,17 +180,20 @@ final class AppServiceProvider extends ServiceProvider
 
     /**
      * A worker keeps one application instance for every job it runs, so the
-     * requester's locale an export job applied would leak into the next job and
-     * its notifications. Each job starts from the configured default again.
+     * requester's locale and formatting preferences an export job applied would
+     * leak into the next job and its notifications. Each job starts again from the
+     * configured default with no requester context at all.
      */
-    private function resetLocaleForQueuedJobs(): void
+    private function resetRequesterContextForQueuedJobs(): void
     {
         // `App::setLocale()` rewrites `config('app.locale')` too, so the baseline is
         // read once here instead of inside the listener.
         $default = App::getLocale();
+        $preferences = $this->app->make(PreferenceContext::class);
 
-        Queue::before(function () use ($default): void {
+        Queue::before(function () use ($default, $preferences): void {
             App::setLocale($default);
+            $preferences->clear();
         });
     }
 

@@ -51,7 +51,6 @@
         <env name="BCRYPT_ROUNDS" value="4"/>
         <env name="ARGON_MEMORY" value="2048"/>
         <env name="ARGON_TIME" value="2"/>
-        <env name="BROADCAST_CONNECTION" value="null"/>
         <env name="CACHE_STORE" value="array"/>
         <env name="DB_CONNECTION" value="sqlite"/>
         <env name="DB_DATABASE" value=":memory:"/>

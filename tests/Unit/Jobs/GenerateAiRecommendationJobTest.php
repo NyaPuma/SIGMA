@@ -2,6 +2,7 @@
 
 namespace Tests\Unit\Jobs;
 
+use App\Enums\UserRoleEnum;
 use App\Jobs\GenerateAiRecommendationJob;
 use App\Services\AIService;
 use App\Services\TicketStatusService;
@@ -96,6 +97,40 @@ class GenerateAiRecommendationJobTest extends FeatureTestCase
         $this->assertNull($ticket->fresh()->recommended_technician_id);
         $this->assertStringContainsString(
             'AI assistant unavailable',
+            (string) $ticket->fresh()->ai_recommendation_reason,
+        );
+        $this->assertNotNull($ticket->fresh()->ai_processed_at);
+    }
+
+    #[Test]
+    public function it_discards_an_ai_recommendation_for_a_technician_it_never_offered(): void
+    {
+        $this->createTechnician();
+        $outside = $this->createInactiveUser(UserRoleEnum::Technician->value);
+        $ticket = $this->createTicket(['description' => 'Compressor com ruído anormal']);
+
+        OpenAI::fake([
+            CreateResponse::fake([
+                'choices' => [[
+                    'index' => 0,
+                    'message' => [
+                        'role' => 'assistant',
+                        'content' => json_encode([
+                            'technician_id' => $outside->id,
+                            'justification' => 'Perfil mais adequado ao tipo de avaria.',
+                        ]),
+                    ],
+                    'finish_reason' => 'stop',
+                ]],
+            ]),
+        ]);
+
+        (new GenerateAiRecommendationJob($ticket))->handle(app(AIService::class));
+
+        // The row exists, so only the set offered to the model proves it was a hallucination.
+        $this->assertNull($ticket->fresh()->recommended_technician_id);
+        $this->assertStringContainsString(
+            'outside the active team',
             (string) $ticket->fresh()->ai_recommendation_reason,
         );
         $this->assertNotNull($ticket->fresh()->ai_processed_at);

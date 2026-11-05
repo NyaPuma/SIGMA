@@ -200,6 +200,13 @@ final class LocalizationService
      */
     private function preferences(): array
     {
+        // A queued job stores the requester's row here, since no request exists.
+        $context = app(PreferenceContext::class)->get();
+
+        if (is_array($context)) {
+            return $context;
+        }
+
         $request = app()->bound('request') ? app('request') : null;
 
         if ($request) {

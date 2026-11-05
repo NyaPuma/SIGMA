@@ -1,12 +1,12 @@
 # app/Notifications
 
-Notification classes for delivering ticket-related alerts via mail, database, and broadcast channels.
+Notification classes for delivering ticket-related alerts by mail and in the database.
 
 > **New to programming?** See [NON_TECHNICAL_PROJECT_GUIDE.md](../../NON_TECHNICAL_PROJECT_GUIDE.md) -- this folder is explained as "The Alert System" that pushes notifications to users via email, browser pop-ups, or the app.
 
 ## Overview
 
-This folder contains **3 notification classes** that implement Laravel's `Notification` contract. Each notification defines which channels it supports via `via()`, and provides content for each channel via `toMail()`, `toArray()`, or `toBroadcast()`.
+This folder contains **2 notification classes** that implement Laravel's `Notification` contract. Each one declares the channels it supports with `via()` — both return `['mail', 'database']` — and provides the content for each channel with `toMail()` and `toArray()`. There is no broadcast channel: neither class defines `toBroadcast()` and the application has no WebSocket driver configured.
 
 All notifications in this project implement `ShouldQueue`, meaning they are dispatched asynchronously to the queue worker rather than being sent synchronously during the HTTP request.
 
@@ -15,7 +15,6 @@ All notifications in this project implement `ShouldQueue`, meaning they are disp
 | Notification | Channels | Purpose |
 |---|---|---|
 | `NewTicketNotification` | `mail`, `database` | Email + in-app alert for new tickets |
-| `TicketNotification` | `broadcast`, `database` | Real-time WebSocket + in-app alert |
 | `TicketStatusChanged` | `mail`, `database` | Email + in-app alert for status changes |
 
 ---
@@ -67,57 +66,9 @@ All notifications in this project implement `ShouldQueue`, meaning they are disp
   ```php
   $technician->notify(new NewTicketNotification($ticket));
   ```
-  Sent to the **assigned technician** when the `TicketStatusUpdatedBroadcast` event fires and the ticket has an assigned technician with a valid email.
+  Sent to the **assigned technician** when the `TicketStatusUpdated` event fires and the ticket has an assigned technician with a valid email.
 
-Note: This notification is also used by the `BroadcastsTicketStatus` trait indirectly — the trait fires `TicketStatusUpdatedBroadcast` which triggers `NotifyAssignedTechnician`, which sends this notification.
-
----
-
-### `TicketNotification.php`
-
-**What it is:** A generic real-time notification that delivers a title, message, type, and optional link via WebSocket broadcast and database storage. It is a general-purpose notification for any ticket-related alert that needs real-time delivery.
-
-**Class:** `App\Notifications\TicketNotification`
-
-**Implements:** `ShouldQueue` (queued delivery).
-
-**Uses:** `Queueable`
-
-**Constructor parameters:**
-| Parameter | Type | Default | Description |
-|---|---|---|---|
-| `$title` | `string` | — | Notification title (e.g. "Ticket Atualizado"). |
-| `$message` | `string` | — | Notification body text. |
-| `$type` | `string` | `'info'` | Notification type category (used for UI styling: `info`, `warning`, `success`, `error`). |
-| `$link` | `?string` | `null` | Optional URL to navigate to when the notification is clicked. |
-
-**`via(object $notifiable)` — channels:**
-- `broadcast` — sends a real-time WebSocket notification via Laravel Reverb/Pusher.
-- `database` — stores a record in the `notifications` table.
-
-**`toBroadcast(object $notifiable)` — WebSocket payload:**
-```json
-{
-  "title": "Ticket Atualizado",
-  "message": "O ticket #42 foi atualizado com sucesso.",
-  "type": "info",
-  "link": "/ui/tickets/42"
-}
-```
-
-**`toArray(object $notifiable)` — database payload:**
-```json
-{
-  "title": "Ticket Atualizado",
-  "message": "O ticket #42 foi atualizado com sucesso.",
-  "type": "info",
-  "link": "/ui/tickets/42"
-}
-```
-The broadcast and database payloads are identical — both carry the same `title`, `message`, `type`, and `link` fields.
-
-**WHO sends it and WHEN:**
-- No production code was found that directly dispatches `TicketNotification`. It is available as a general-purpose notification class but is **not currently used** by any controller, listener, or service in the application. It may be intended for future use or was used in a previous version of the codebase.
+Note: This notification is also used by the `NotifiesTicketStatusChange` trait indirectly — the trait fires `TicketStatusUpdated` which triggers `NotifyAssignedTechnician`, which sends this notification.
 
 ---
 
@@ -181,15 +132,12 @@ Note: The database payload includes `old_status` and `new_status` raw values (no
        $event->newStatus->value
    ));
    ```
-   Sent to the **ticket owner** when the `TicketStatusUpdatedBroadcast` event fires and the owner has a valid email.
+   Sent to the **ticket owner** when the `TicketStatusUpdated` event fires and the owner has a valid email.
 
-2. `app/Concerns/BroadcastsTicketStatus.php:33`:
-   ```php
-   $user->notify(new TicketStatusChanged($ticket, $oldStatusValue, $newStatusValue));
-   ```
-   Sent to the **ticket owner** directly in the `broadcastStatusChange()` trait method, which is called by `TicketLifecycleController`, `TicketAssignmentController`, `TicketCloseController`, and `TicketStartController`.
-
-**Important:** The ticket owner may receive **two** `TicketStatusChanged` notifications for a single status change — one via the event listener (`SendTicketStatusNotification`) and one via the direct `->notify()` call in the `BroadcastsTicketStatus` trait. This is a potential duplication that exists in the current codebase.
+`SendTicketStatusNotification` is the only sender. The `NotifiesTicketStatusChange` trait used
+to call `$user->notify(new TicketStatusChanged(...))` right after dispatching the event, so
+every transition reached the owner twice; that direct call is gone and the listener owns the
+delivery.
 
 ---
 
@@ -198,7 +146,5 @@ Note: The database payload includes `old_status` and `new_status` raw values (no
 - All notifications implement `ShouldQueue` for async delivery.
 - Notification content strings (greetings, lines, subjects) are in Portuguese — managed by the i18n project, not this refactor.
 - `NewTicketNotification` and `TicketStatusChanged` use both `mail` and `database` channels.
-- `TicketNotification` uses `broadcast` and `database` channels for real-time delivery.
 - `TicketStatusChanged::resolveStatusLabel()` maps status strings to human-friendly labels via `TicketStatusEnum`.
-- The `TicketNotification` class has no production dispatchers found — it may be unused or reserved for future use.
 - The `TicketStatusChanged` notification can be sent to the ticket owner from two independent code paths (listener + trait), which may result in duplicate notifications.

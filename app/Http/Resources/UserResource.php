@@ -29,8 +29,6 @@ final class UserResource extends JsonResource
             'avatar_disk' => $this->avatar_disk,
             'email_verified_at' => $this->email_verified_at?->toIso8601String(),
             'last_login_at' => $this->last_login_at?->toIso8601String(),
-            'login_attempts' => $this->login_attempts,
-            'locked_until' => $this->locked_until?->toIso8601String(),
             'created_at' => $this->created_at?->toIso8601String(),
             'updated_at' => $this->updated_at?->toIso8601String(),
         ];

@@ -18,7 +18,6 @@
         "league/flysystem-aws-s3-v3": "^3.35",
         "maatwebsite/excel": "^4.0",
         "openai-php/laravel": "^0.22.0",
-        "pusher/pusher-php-server": "^7.2",
         "sentry/sentry-laravel": "^4.27"
     },
     "require-dev": {

@@ -2,7 +2,6 @@
 
 namespace App\Services;
 
-use App\Models\ThemeSetting;
 use App\Models\User;
 
 /**
@@ -18,14 +17,6 @@ final class ThemePresetService
      * Default theme applied to guests and to users without a saved preference.
      */
     public const DEFAULT_THEME = 'claro-laranja';
-
-    /**
-     * Color keys stored in theme_settings (form field names).
-     */
-    private const COLOR_KEYS = [
-        'primary', 'text', 'text_soft', 'surface', 'surface_alt', 'border',
-        'ticket_open', 'ticket_in_progress', 'ticket_resolved', 'ticket_urgent',
-    ];
 
     /**
      * Field name -> CSS token mapping.
@@ -530,40 +521,6 @@ final class ThemePresetService
     }
 
     /**
-     * Identifies which preset matches stored values
-     * (applies to pre-corrected colors, normalizing case).
-     *
-     * @param  array<string, string>  $values  field name -> color
-     */
-    public function findByValues(array $values): ?string
-    {
-        $normalized = [];
-
-        foreach (self::COLOR_KEYS as $key) {
-            if (isset($values[$key])) {
-                $normalized[$key] = strtolower(ltrim($values[$key], '#'));
-            }
-        }
-
-        foreach ($this->all() as $id => $preset) {
-            $matches = true;
-
-            foreach ($normalized as $key => $color) {
-                if (strtolower(ltrim($preset[$key] ?? '', '#')) !== $color) {
-                    $matches = false;
-                    break;
-                }
-            }
-
-            if ($matches) {
-                return $id;
-            }
-        }
-
-        return null;
-    }
-
-    /**
      * Resolves the effective theme id for a given user preference.
      *
      * Guests and users without a saved (or invalid) preference always fall
@@ -605,32 +562,6 @@ final class ThemePresetService
     }
 
     /**
-     * Applies a preset: saves colors and theme name to theme_settings.
-     *
-     * @return array<string, string> the applied preset
-     */
-    public function apply(string $id): array
-    {
-        $preset = $this->find($id);
-
-        if ($preset === null) {
-            throw new \InvalidArgumentException("Tema desconhecido: {$id}");
-        }
-
-        foreach (self::TOKENS as $field => $token) {
-            ThemeSetting::updateOrCreate(
-                ['key' => $token],
-                ['value' => $preset[$field]]
-            );
-        }
-
-        ThemeSetting::updateOrCreate(['key' => 'theme_name'], ['value' => $id]);
-
-        /** @var array<string, string> $preset */
-        return $preset;
-    }
-
-    /**
      * Persists a preset as the user's personal theme.
      *
      * @return array<string, string> the applied preset
@@ -648,12 +579,5 @@ final class ThemePresetService
 
         /** @var array<string, string> $preset */
         return $preset;
-    }
-
-    /** @return array<int, string> */
-    /** @return array<int, string> */
-    public function colorKeys(): array
-    {
-        return self::COLOR_KEYS;
     }
 }

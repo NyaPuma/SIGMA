@@ -22,8 +22,6 @@ return [
 
             'path' => storage_path('app/backups'),
 
-            'filename' => 'backup_'.date('Y-m-d_His').'.sql',
-
         ],
 
         'compression' => (bool) env('DB_BACKUP_COMPRESSION', true),

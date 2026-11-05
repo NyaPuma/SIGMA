@@ -6,6 +6,7 @@ use App\Http\Requests\UploadPhotoRequest;
 use App\Http\Resources\TicketAttachmentResource;
 use App\Models\Ticket;
 use App\Models\TicketAttachment;
+use App\Support\PhotoUploadPolicy;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
@@ -13,15 +14,6 @@ use Illuminate\Support\Str;
 
 final class TicketAttachmentController extends Controller
 {
-    private const ALLOWED_MIMES = ['image/jpeg', 'image/png', 'image/gif', 'image/webp'];
-
-    private const EXTENSION_BY_MIME = [
-        'image/jpeg' => 'jpg',
-        'image/png' => 'png',
-        'image/gif' => 'gif',
-        'image/webp' => 'webp',
-    ];
-
     /**
      * Uploads and associates a new photo to a ticket.
      */
@@ -33,20 +25,13 @@ final class TicketAttachmentController extends Controller
         $file = $request->file('photo');
         $realMime = $file->getMimeType();
 
-        // 2. Additional security validation of the real MIME type
-        if (! in_array($realMime, self::ALLOWED_MIMES, true)) {
-            return response()->json([
-                'message' => __('ticket_media.Tipo de ficheiro não permitido.'),
-            ], 422);
-        }
-
-        // 3. Safe filename processing and storage write
+        // 2. Safe filename processing and storage write
         //    The extension is derived from the real MIME (never from the client-submitted name)
-        $extension = self::EXTENSION_BY_MIME[$realMime];
+        $extension = PhotoUploadPolicy::extensionFor($realMime);
         $safeFilename = Str::uuid().'.'.$extension;
         $path = $file->storeAs('ticket_photos', $safeFilename, 'public');
 
-        // 4. Register the attachment in the database
+        // 3. Register the attachment in the database
         $attachment = TicketAttachment::create([
             'ticket_id' => $ticket->id,
             'user_id' => $this->authenticatedUser($request)->id,

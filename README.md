@@ -3,7 +3,7 @@
 > **New to programming?** See [NON_TECHNICAL_PROJECT_GUIDE.md](NON_TECHNICAL_PROJECT_GUIDE.md)
 
 ![Status](https://img.shields.io/badge/status-production--ready-brightgreen)
-![Tests](https://img.shields.io/badge/tests-1554%20total-brightgreen)
+![Tests](https://img.shields.io/badge/tests-~1774%20total-brightgreen)
 ![PHP Version](https://img.shields.io/badge/PHP-8.5%2B-blue)
 ![Laravel Version](https://img.shields.io/badge/Laravel-13-red)
 
@@ -128,7 +128,6 @@ And just like in a real restaurant, if something goes wrong at any step — wron
 |---|---|
 | **Blade Templates** | Server-side templating |
 | **Tailwind CSS** | Utility-first CSS framework |
-| **Bootstrap** | Component library |
 | **FullCalendar v6** | Event scheduling and visualization |
 | **Vite** | Asset bundling and development server |
 | **Alpine.js** | Lightweight DOM interactions |
@@ -136,8 +135,7 @@ And just like in a real restaurant, if something goes wrong at any step — wron
 ### Quality & DevOps
 | Technology | Purpose |
 |---|---|
-| **PHPUnit** | Testing framework (1554 tests) |
-| **Vitest** | JavaScript testing |
+| **PHPUnit** | Testing framework (≈1774 tests in 8 suites) |
 | **PHPStan** | Static analysis (Level max) |
 | **Laravel Pint** | Code formatting |
 | **Docker** | Containerization (Multi-stage build) |
@@ -150,7 +148,7 @@ And just like in a real restaurant, if something goes wrong at any step — wron
 ### Prerequisites
 - **PHP 8.5+** with common extensions (PDO, OpenSSL, JSON)
 - **Composer 2.0+**
-- **Node.js 18+** and npm
+- **Node.js 22** and npm
 - **MySQL 8.0+** or SQLite (for development)
 - **Redis** (optional but recommended for production)
 
@@ -225,7 +223,7 @@ php artisan test
 
 Expected output:
 ```
-Tests:    1410 passed
+Tests:    ~1774 passed
 Assertions: 4563
 Duration: ~240s
 Failures: 0
@@ -341,17 +339,17 @@ Comprehensive architectural and operational documentation is available in the `/
 ### Strategy & Management
 - [Project Plan](docs/plano-projeto.md) — Sprint planning, team composition, risk matrix
 - [Product Backlog](docs/product-backlog.md) — Feature list, priorities, acceptance criteria
-- [Process Analysis (As-Is vs To-Be)](docs/analise-processos.md) — Operational improvements and AI-assisted workflows
+- [Process Analysis (As-Is vs To-Be)](docs/analise-pocessos.md) — Operational improvements and AI-assisted workflows
 
 ### Engineering & Architecture
-- [Requirements](docs/requisitos.md) — Functional (RF) and Non-Functional (RNF) requirements
+- [Requirements](docs/Requisitos.md) — Functional (RF) and Non-Functional (RNF) requirements
 - [Authorization & Permissions (RBAC)](docs/permissoes.md) — Role-based access control matrix
 - [Data Architecture (ER Diagram)](docs/diagrama-arquitetura.md) — Relational model, indexing, constraints
 - [API Endpoints](docs/api-endpoints.md) — REST API specification and contracts
 
 ### Quality & Operations
 - [User Guide](docs/guia-utilizador.md) — Step-by-step instructions for each user role
-- [Test Plan](docs/plano-testes.md) — QA scenarios, RBAC security testing, validation matrix
+- [Test Plan](docs/Plano-Testes.md) — QA scenarios, RBAC security testing, validation matrix
 - [Workflow & Integrations](docs/workflow-integracoes.md) — Unified data flow and notification architecture
 
 ---
@@ -414,7 +412,7 @@ app/
 ## 📊 Project Status
 
 ### ✅ Current State
-- **Test Suite**: 1410 tests passing (100% green)
+- **Test Suite**: ≈1774 tests passing (100% green)
 - **Security**: Enterprise-grade hardening applied
 - **Performance**: Optimized for Octane worker mode with Redis caching
 - **Deployment**: Production-ready Docker setup with multi-stage build
@@ -424,7 +422,7 @@ app/
 ### 🚀 Recent Improvements (2026-08-28 to 2026-09-01)
 
 1. **Security Hardening**
-   - Rate limiting on 28 sensitive endpoints
+   - Rate limiting on 35 sensitive endpoints
    - CSRF token validation
    - SQL injection prevention verified
    - HMAC-SHA256 token hashing
@@ -457,7 +455,7 @@ app/
 
 ## 🔒 Security Features
 
-- ✅ **Authentication**: JWT tokens, session management, password reset via secure links
+- ✅ **Authentication**: opaque API tokens (HMAC-SHA256 hashed at rest, not JWT), session management, password reset via secure links
 - ✅ **Authorization**: Role-based access control (RBAC) with three tiers
 - ✅ **Input Validation**: Strict FormRequest validation on all endpoints
 - ✅ **SQL Injection Prevention**: Parameterized queries, safe aggregation functions
@@ -487,7 +485,7 @@ To contribute to this project:
 
 1. **Fork the repository**
 2. **Create a feature branch** (`git checkout -b feature/amazing-feature`)
-3. **Follow code standards** (see `.pint.json` and `phpstan.neon`)
+3. **Follow code standards** (see `phpstan.neon`; Pint runs with its Laravel defaults — there is no `.pint.json`)
 4. **Write tests** for new features (maintain 80%+ coverage)
 5. **Run the full test suite** (`php artisan test`)
 6. **Commit with clear messages** (`git commit -m 'Add amazing feature'`)
@@ -499,7 +497,7 @@ To contribute to this project:
 - Declare strict types: `declare(strict_types=1);` at file top
 - Use type hints on all parameters and returns
 - Follow PSR-12 coding standard (enforced by Laravel Pint)
-- Run `composer lint` before committing
+- Run `vendor/bin/pint` before committing (there is no `composer lint` script)
 - Maintain or improve test coverage
 
 ---

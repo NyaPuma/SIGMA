@@ -84,7 +84,11 @@ export function renderOperationalMetrics(elements, data) {
         elements.metricWaiting.textContent = formatMinutes(data.average_waiting_minutes);
     }
     if (elements.metricSla) {
-        elements.metricSla.textContent = formatPercent(data.sla_success);
+        // null means nothing was closed in the period: there is no rate to show,
+        // and 0 % would be as wrong as the 100 % this used to report.
+        elements.metricSla.textContent = typeof data.sla_success === 'number'
+            ? formatPercent(data.sla_success)
+            : '—';
     }
     if (elements.metricAvailability) {
         elements.metricAvailability.textContent = formatPercent(data.system_availability);

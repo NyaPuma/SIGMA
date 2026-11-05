@@ -8,6 +8,7 @@ use App\Models\Ticket;
 use App\Models\TicketStatus;
 use App\Models\User;
 use App\Models\UserProfile;
+use App\Support\PhotoUploadPolicy;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Storage;
@@ -148,7 +149,7 @@ class TicketPhotoUploadTest extends TestCase
             'opened_at' => now(),
         ]);
 
-        $maxKb = (int) config('services.upload.max_photo_size_kb', 2048);
+        $maxKb = PhotoUploadPolicy::maxSizeKb();
 
         $this->withHeader('X-Auth-Token', $user->api_token)
             ->postJson('/api/tickets/'.$ticket->id.'/photos', [

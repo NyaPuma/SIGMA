@@ -93,4 +93,6 @@ return [
     'Ex: ThinkPad X1 Carbon' => 'Ex: ThinkPad X1 Carbon',
     'Ex: Lenovo Group' => 'Ex: Lenovo Group',
     'Códigos para reportar avarias — afixar junto de cada equipamento.' => 'Codes for reporting faults — post next to each piece of equipment.',
+    'Operacional' => 'Operational',
+    'Clique para selecionar equipamento...' => 'Click to select equipment...',
 ];

@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Jobs;
 
-use App\Jobs\Concerns\SetsRequesterLocale;
+use App\Jobs\Concerns\SetsRequesterContext;
 use App\Models\Equipment;
 use App\Models\Notification;
 use App\Services\QrCodeService;
@@ -24,7 +24,7 @@ final class ExportEquipmentQrPdfJob implements ShouldQueue
     use InteractsWithQueue;
     use Queueable;
     use SerializesModels;
-    use SetsRequesterLocale;
+    use SetsRequesterContext;
 
     /**
      * The maximum number of attempts before the job fails.
@@ -42,7 +42,7 @@ final class ExportEquipmentQrPdfJob implements ShouldQueue
 
     public function handle(QrCodeService $qrCodeService): void
     {
-        $this->applyRequesterLocale($this->userId);
+        $this->applyRequesterContext($this->userId);
 
         $items = Equipment::query()
             // The template prints room?->name on every card, so the relation is loaded up front
@@ -81,7 +81,7 @@ final class ExportEquipmentQrPdfJob implements ShouldQueue
      */
     public function failed(?Throwable $exception): void
     {
-        $this->applyRequesterLocale($this->userId);
+        $this->applyRequesterContext($this->userId);
 
         Notification::create([
             'user_id' => $this->userId,

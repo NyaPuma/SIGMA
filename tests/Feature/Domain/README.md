@@ -11,7 +11,6 @@ Tests for the **core business rules** of the ticket system -- the rules that gov
 | Test | What It Verifies |
 |------|------------------|
 | `TicketLifecycleActionsTest` | The full ticket journey works: open → in-progress → budget review → closed |
-| `TicketStatusCheckerTest` | Status checking logic works correctly (is this ticket in "open" status?) |
 | `TicketQueriesTest` | Dashboard queries return correct data (counts, KPIs, top entities) |
 | `CheckHigherPriorityActionTest` | Logic that checks whether higher-priority tickets exist works correctly |
 

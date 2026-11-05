@@ -21,14 +21,6 @@ final class TicketRepository implements TicketRepositoryInterface
     /**
      * {@inheritDoc}
      */
-    public function findWithRelations(int $id, array $relations = []): ?Ticket
-    {
-        return Ticket::with($relations)->find($id);
-    }
-
-    /**
-     * {@inheritDoc}
-     */
     public function getAll(array $relations = []): LengthAwarePaginator
     {
         return Ticket::with($relations)->latest()->paginate($this->perPage());

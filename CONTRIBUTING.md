@@ -30,7 +30,7 @@ This project is committed to providing a welcoming and inspiring community. We r
 
 - **PHP 8.5+** with common extensions (PDO, OpenSSL, JSON, etc.)
 - **Composer 2.0+** for dependency management
-- **Node.js 18+** with npm for frontend assets
+- **Node.js 22** with npm for frontend assets
 - **MySQL 8.0+** or **SQLite** for the database
 - **Git** for version control
 - **Docker** (optional, for containerized development)
@@ -261,11 +261,11 @@ npx prettier --write resources/css/
 ```
 
 #### 4. Linting
-Run **ESLint** to catch errors:
+Run the project's own quality gates (there is no ESLint configuration or `npm run lint` script):
 
 ```bash
-npm run lint
-npm run lint:fix
+vendor/bin/pint            # PHP code style (use --test to check only)
+vendor/bin/phpstan analyse # static analysis, level max (phpstan.neon)
 ```
 
 ### Database Standards
@@ -403,7 +403,6 @@ Before submitting a PR:
 - [ ] All tests pass: `php artisan test`
 - [ ] Code is formatted: `vendor/bin/pint app/`
 - [ ] Static analysis passes: `vendor/bin/phpstan analyse app/`
-- [ ] ESLint passes: `npm run lint`
 - [ ] CSS builds: `npm run build`
 - [ ] No debugging code (dd(), dump(), var_dump())
 - [ ] Documentation updated
@@ -495,7 +494,6 @@ php artisan test                    # All tests
 php artisan test --filter=UserTest  # Specific test
 php artisan test tests/Unit/        # Test directory
 php artisan test --coverage         # With coverage report
-php artisan test --parallel         # Parallel execution
 ```
 
 ---

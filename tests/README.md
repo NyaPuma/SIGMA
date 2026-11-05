@@ -122,7 +122,7 @@ php artisan test tests/Integration/
 
 ### `Authentication/` -- Login, registration, password reset
 
-**What it covers:** The full authentication lifecycle -- login flows, registration, password reset, MFA, edge cases like expired tokens or locked accounts.
+**What it covers:** The full authentication lifecycle -- login flows, registration, password reset, edge cases like expired tokens or locked accounts.
 
 **How to run it:**
 

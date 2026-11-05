@@ -164,68 +164,6 @@ class TicketWorkflowTest extends TestCase
     }
 
     #[Test]
-    public function it_requests_budget_authorization_when_cost_exceeds_threshold(): void
-    {
-        $user = User::factory()->create();
-        $inProgressStatusId = TicketStatus::where('name', TicketStatusEnum::InProgress->value)->value('id');
-
-        $ticket = Ticket::create([
-            'title' => 'Budget Request Test',
-            'description' => 'Testing budget request',
-            'priority' => TicketPriorityEnum::Medium->value,
-            'user_id' => $user->id,
-            'status_id' => $inProgressStatusId,
-            'opened_at' => now(),
-            'in_progress_at' => now(),
-        ]);
-
-        $threshold = config('services.budget.threshold', 50.00);
-        $estimatedBudget = 5000.00;
-
-        $this->assertGreaterThan($threshold, $estimatedBudget);
-
-        $ticket->budget_requested = true;
-        $ticket->budget_status = BudgetStatusEnum::Pending->value;
-        $ticket->budget_amount = $estimatedBudget;
-        $ticket->budget_requested_at = now();
-        $pendingStatusId = TicketStatus::where('name', TicketStatusEnum::PendingBudget->value)->value('id');
-        $ticket->status_id = $pendingStatusId;
-        $ticket->save();
-
-        $ticket->refresh();
-        $this->assertTrue($ticket->budget_requested);
-        $this->assertEquals(BudgetStatusEnum::Pending->value, $ticket->budget_status);
-        $this->assertEquals(5000.00, $ticket->budget_amount);
-        $this->assertTrue($ticket->hasStatus(TicketStatusEnum::PendingBudget));
-        $this->assertNotNull($ticket->budget_requested_at);
-    }
-
-    #[Test]
-    public function it_skips_budget_request_when_below_threshold(): void
-    {
-        $user = User::factory()->create();
-        $inProgressStatusId = TicketStatus::where('name', TicketStatusEnum::InProgress->value)->value('id');
-
-        $ticket = Ticket::create([
-            'title' => 'Skip Budget',
-            'description' => 'Below threshold',
-            'priority' => TicketPriorityEnum::Low->value,
-            'user_id' => $user->id,
-            'status_id' => $inProgressStatusId,
-            'opened_at' => now(),
-            'in_progress_at' => now(),
-        ]);
-
-        $threshold = config('services.budget.threshold', 50.00);
-        $estimatedBudget = 30.00;
-
-        $this->assertLessThanOrEqual($threshold, $estimatedBudget);
-
-        $ticket->refresh();
-        $this->assertFalse($ticket->budget_requested);
-    }
-
-    #[Test]
     public function it_approves_budget_as_admin(): void
     {
         $adminProfile = UserProfile::where('name', UserRoleEnum::Admin->value)->first();

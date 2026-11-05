@@ -9,6 +9,9 @@ use App\Jobs\SendTestEmailJob;
 use App\Mail\TestMail;
 use App\Models\Notification;
 use App\Services\AnalyticsService;
+use App\Services\LocalizationService;
+use App\Services\PreferenceContext;
+use App\Services\PreferencesService;
 use App\Services\TicketStatusService;
 use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Mail;
@@ -131,6 +134,52 @@ class ExportJobsTest extends FeatureTestCase
         SendTestEmailJob::dispatchSync('test@example.com', 'Teste');
 
         $this->assertSame($default, App::getLocale());
+    }
+
+    #[Test]
+    public function an_export_job_formats_with_the_preferences_of_the_requester(): void
+    {
+        Storage::fake('local');
+        $user = $this->createAdmin(['locale' => 'en-GB']);
+        PreferencesService::saveForUser($user, [
+            'language' => 'en-GB',
+            'currency' => 'USD',
+            'date_format' => 'Y-m-d',
+            'time_format' => 'H:i',
+            'number_format' => '{"decimal":",","thousand":"."}',
+        ]);
+        $this->createTicket(['title' => 'Relatório Excel']);
+
+        ExportExcelJob::dispatchSync($user->id);
+
+        // A worker has no request, session or guard, so without the job storing the
+        // requester's row the formatters would fall back to pt-PT defaults here.
+        $this->assertSame('2026-01-31', app(LocalizationService::class)->formatDate('2026-01-31'));
+        $this->assertSame('1.234,56', app(LocalizationService::class)->formatDecimal(1234.56));
+    }
+
+    #[Test]
+    public function the_preferences_an_export_job_applies_do_not_leak_into_the_next_job(): void
+    {
+        Storage::fake('local');
+        $user = $this->createAdmin();
+        PreferencesService::saveForUser($user, [
+            'language' => 'en-GB',
+            'currency' => 'USD',
+            'date_format' => 'Y-m-d',
+            'time_format' => 'H:i',
+            'number_format' => '{"decimal":",","thousand":"."}',
+        ]);
+        $this->createTicket(['title' => 'Relatório Excel']);
+
+        ExportExcelJob::dispatchSync($user->id);
+        $this->assertSame('2026-01-31', app(LocalizationService::class)->formatDate('2026-01-31'));
+
+        Mail::fake();
+        SendTestEmailJob::dispatchSync('test@example.com', 'Teste');
+
+        $this->assertNull(app(PreferenceContext::class)->get());
+        $this->assertSame('31/01/2026', app(LocalizationService::class)->formatDate('2026-01-31'));
     }
 
     #[Test]

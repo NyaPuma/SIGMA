@@ -49,7 +49,7 @@ return [
     'Detalhe de um fornecedor.' => 'Detail from a supplier.',
     'Detalhe o problema ocorrido, ruídos, fugas ou comportamentos fora do normal...' => 'Detail the problem that occurred, noises, leaks or unusual behavior...',
     'Detalhes do Incidente' => 'Incident Details',
-    'Mão de obra' => 'Labour',
+    'Mão de obra' => 'Labor',
     'Material' => 'Material',
     '€/hora' => '€/hour',
     'Preço unitário' => 'Unit price',
@@ -59,4 +59,9 @@ return [
     'Descrição da tarefa' => 'Job description',
     'Item' => 'Item',
     'Adicionar itens' => 'Add items',
+    'higher_priority_count_waiting' => ':count higher-priority ticket(s) waiting.',
+    'of_them_assigned_to_you' => ':count of them are assigned to you.',
+    'current_ticket_priority' => 'Current ticket: :priority',
+    'about_to_close_ignoring' => 'You are about to close this ticket ignoring the more urgent ones.',
+    'about_to_start_ignoring' => 'You are about to start this ticket ignoring the more urgent ones.',
 ];

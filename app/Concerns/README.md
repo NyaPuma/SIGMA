@@ -1,6 +1,7 @@
 # app/Concerns
 
-Reusable traits and behavior mixins focused on cross-cutting application capabilities (real-time broadcasting, notification triggers).
+Reusable traits for cross-cutting application behavior — right now, one trait that turns a
+committed ticket status transition into the notifications people expect.
 
 > **New to programming?** See [NON_TECHNICAL_PROJECT_GUIDE.md](../../NON_TECHNICAL_PROJECT_GUIDE.md) -- this folder is explained as "The Shared Toolbelt" -- reusable behaviors that any worker can pick up and use.
 
@@ -8,44 +9,58 @@ Reusable traits and behavior mixins focused on cross-cutting application capabil
 
 | File | Purpose |
 |---|---|
-| [`BroadcastsTicketStatus.php`](file:///home/nyapuma/Transferências/Projeto-Final-Cesae/app/Concerns/BroadcastsTicketStatus.php) | Provides the standard helper `broadcastStatusChange()` to broadcast WebSocket updates (`TicketStatusUpdatedBroadcast`) and trigger email/push notifications (`TicketStatusChanged`) when a ticket changes state. |
+| [`NotifiesTicketStatusChange.php`](./NotifiesTicketStatusChange.php) | Provides `notifyStatusChange()`, the single way a ticket controller announces "this ticket changed state": it dispatches the `App\Events\TicketStatusUpdated` event, whose listeners mail the owner and the assigned technician. |
 
 ---
 
-## `BroadcastsTicketStatus.php`
+## `NotifiesTicketStatusChange.php`
 
-**File:** `app/Concerns/BroadcastsTicketStatus.php`
+**File:** `app/Concerns/NotifiesTicketStatusChange.php`
 
 ### What reusable behavior it provides
 
-A single, consistent way for any ticket controller to **announce a ticket status transition**. When a controller calls `broadcastStatusChange()`, the concern:
-1. dispatches the `App\Events\TicketStatusUpdatedBroadcast` event (WebSocket/real-time update for connected clients), and
-2. notifies the ticket's owner via the `App\Notifications\TicketStatusChanged` notification (email/push).
+A single, consistent way for any ticket controller to **report a ticket status transition**.
+When a controller calls `notifyStatusChange()`, the concern:
 
-It normalizes both old and new statuses (accepting either `TicketStatusEnum` instances or plain strings) and guarantees that a broadcast/notification failure never breaks the surrounding ticket workflow.
+1. normalizes both statuses to raw string values (`TicketStatusEnum`, `TicketStatus` model,
+   plain string, or `null`), and
+2. dispatches the `App\Events\TicketStatusUpdated` event through Laravel's `event()` helper.
+
+The actual messaging happens in the listeners registered for that event
+(`SendTicketStatusNotification`, `NotifyAssignedTechnician`) — see `app/Providers/EventServiceProvider.php`.
 
 ### Method
 
 | Member | Signature | Purpose |
 |---|---|---|
-| `broadcastStatusChange()` | `protected function broadcastStatusChange(Ticket $ticket, TicketStatusEnum|string $oldStatus, TicketStatusEnum|string $newStatus): void` | Normalizes both statuses to raw strings (`$oldStatusValue`, `$newStatusValue` via `instanceof TicketStatusEnum ? $status->value : $status`). Emits `new TicketStatusUpdatedBroadcast($ticket, $oldStatusValue, $newStatusValue)` through Laravel's `event()` helper, then, if `$ticket->user?->email` exists, sends `new TicketStatusChanged($ticket, $oldStatusValue, $newStatusValue)` to that user via `$user->notify(...)`. Entire body wrapped in `try/catch (Throwable)` → `Log::warning('Failed to broadcast ticket status change.', ['ticket_id', 'old_status', 'new_status', 'error'])`. |
+| `notifyStatusChange()` | `protected function notifyStatusChange(Ticket $ticket, TicketStatusEnum\|TicketStatus\|string\|null $oldStatus, TicketStatusEnum\|TicketStatus\|string\|null $newStatus): void` | Maps each status through the private `normalizeStatusValue()` (`TicketStatusEnum->value`, `TicketStatus->name`, non-empty string as-is, anything else → `TicketStatusEnum::Open->value`), then dispatches `new TicketStatusUpdated($ticket, $oldStatusValue, $newStatusValue)`. The dispatch is wrapped in `try/catch (Throwable)` → `Log::warning('Failed to dispatch ticket status change.', ['ticket_id', 'old_status', 'new_status', 'error'])`. |
 
 ### Which classes use it
 
-Grep of `use App\Concerns\BroadcastsTicketStatus` across `app/Http/Controllers`:
+Grep of `use App\Concerns\NotifiesTicketStatusChange` across `app/Http/Controllers`:
 
-| Class | File | Usage of `broadcastStatusChange()` |
+| Class | Import | Calls to `notifyStatusChange()` |
 |---|---|---|
 | `App\Http\Controllers\Ticket\TicketLifecycleController` | `app/Http/Controllers/Ticket/TicketLifecycleController.php:5` | `:43` (reopen), `:77` (cancel) |
 | `App\Http\Controllers\Ticket\TicketStartController` | `app/Http/Controllers/Ticket/TicketStartController.php:5` | `:82` (start → `InProgress`) |
-| `App\Http\Controllers\Ticket\TicketCloseController` | `app/Http/Controllers/Ticket/TicketCloseController.php:5` | `:53` and `:112` (close → `Closed`) |
-| `App\Http\Controllers\Ticket\TicketAssignmentController` | `app/Http/Controllers/Ticket/TicketAssignmentController.php:5` | `:62` (assign → `InProgress`) |
+| `App\Http\Controllers\Ticket\TicketCloseController` | `app/Http/Controllers/Ticket/TicketCloseController.php:5` | `:55` and `:115` (close → `Closed`) |
+| `App\Http\Controllers\Ticket\TicketAssignmentController` | `app/Http/Controllers/Ticket/TicketAssignmentController.php:5` | `:63` (assign → `InProgress`) |
 
-Each of these controllers declares `use BroadcastsTicketStatus;` (e.g. `app/Http/Controllers/Ticket/TicketLifecycleController.php:16`), which makes the protected `broadcastStatusChange()` available. The transition values passed are the controller-resolved `oldStatus` (loaded before the workflow mutation) and the new status (a `TicketStatusEnum` constant such as `InProgress`, `Cancelled`, `Closed`, or the refreshed `$ticket->status`).
+Each of these controllers declares `use NotifiesTicketStatusChange;` (e.g.
+`app/Http/Controllers/Ticket/TicketLifecycleController.php:16`), which makes the protected
+method available. The values passed are the `oldStatus` the controller captured *before* the
+workflow mutation and the new status (a `TicketStatusEnum` constant such as `InProgress`,
+`Cancelled`, `Closed`, or the refreshed `$ticket->status`).
 
 ## Notes for Developers & AI
 
-- **Non-blocking Error Handling:** Broadcasting and email notifications are encapsulated in `try/catch` blocks with error logging, ensuring core ticket transitions succeed even if broadcasting channels are offline.
-- **Type Flexibility:** Accepts either a `TicketStatusEnum` instance or a raw string for both old and new status parameters.
-- **Dependency contract:** requires the ticket's `user` relation to be loadable (`$ticket->user`) and the user to have an `email`; a technician/admin ticket with no owner simply skips the notification step.
-- **Event → listener wiring** for `TicketStatusUpdatedBroadcast` (including `NotifyAssignedTechnician`) is configured in `app/Providers/EventServiceProvider.php` — see the Providers README.
+- **Non-blocking error handling:** the dispatch sits in `try/catch (Throwable)` with a
+  `Log::warning`, so a listener that cannot serialize or a mailer that is down cannot undo a
+  transition that is already committed.
+- **Type flexibility:** each status argument accepts a `TicketStatusEnum`, a `TicketStatus`
+  model, a string, or `null` — the caller can pass exactly what it captured.
+- **Ownership of the mail:** this trait only dispatches. `SendTicketStatusNotification` is the
+  only place the owner receives the "status changed" notification; the trait used to call
+  `$user->notify()` here as well, which delivered the same message twice per transition.
+- **Tests:** `tests/Unit/Concerns/NotifiesTicketStatusChangeTest.php` covers the four accepted
+  status shapes, the owner-less ticket, and the "nothing is sent directly from the trait" rule.

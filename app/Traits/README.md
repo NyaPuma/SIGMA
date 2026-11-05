@@ -8,7 +8,7 @@ Shared reusable PHP traits attached to Eloquent models and application services.
 
 | File | Purpose |
 |---|---|
-| [`Auditable.php`](file:///home/nyapuma/Transferências/Projeto-Final-Cesae/app/Traits/Auditable.php) | Automatically records model lifecycle events (`created`, `updated`, `deleted`) to the `audits` table, capturing old/new attribute diffs, acting user ID, IP address, and user agent. |
+| [`Auditable.php`](./Auditable.php) | Automatically records model lifecycle events (`created`, `updated`, `deleted`) to the `audits` table, capturing old/new attribute diffs, acting user ID, IP address, and user agent. |
 
 ---
 

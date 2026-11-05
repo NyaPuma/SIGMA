@@ -10,7 +10,6 @@ Tests for the **security checkpoints** that intercept every request. They verify
 
 | Test | What It Verifies |
 |------|------------------|
-| `CsrfMiddlewareTest` | CSRF protection works (block forged requests, allow legitimate ones) |
 | `CustomAuthMiddlewareTest` | Token authentication works (valid token allowed, invalid/missing token blocked) |
 | `MiddlewareAuthTest` | Auth middleware interaction with routes |
 | `RateLimitMiddlewareTest` | Rate limiting works (too many requests get blocked) |

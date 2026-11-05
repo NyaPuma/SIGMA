@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers\Ticket;
 
-use App\Concerns\BroadcastsTicketStatus;
+use App\Concerns\NotifiesTicketStatusChange;
 use App\Enums\TicketStatusEnum;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\AssignTechnicianToTicketRequest;
@@ -14,7 +14,7 @@ use Illuminate\Http\JsonResponse;
 
 final class TicketAssignmentController extends Controller
 {
-    use BroadcastsTicketStatus;
+    use NotifiesTicketStatusChange;
 
     public function __construct(
         private readonly TechnicianAssignmentService $technicianService,
@@ -53,14 +53,14 @@ final class TicketAssignmentController extends Controller
             return response()->json(['message' => $message], 422);
         }
 
-        // 6. Transition the ticket to In Progress (consistent with the broadcast)
+        // 6. Transition the ticket to In Progress (consistent with the notification)
         $this->workflowService->startRepair($ticket);
 
         // Prevent the status relation (already loaded) from becoming stale in the response
         $ticket->unsetRelation('status');
 
-        // 7. Emit status change to WebSocket channels
-        $this->broadcastStatusChange($ticket, $oldStatus, TicketStatusEnum::InProgress);
+        // 7. Tell the owner and the assigned technician about the status change
+        $this->notifyStatusChange($ticket, $oldStatus, TicketStatusEnum::InProgress);
 
         // 8. Load relations needed for the Resource
         $ticket->loadMissing(['equipment', 'room', 'technician', 'status']);

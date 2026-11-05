@@ -119,4 +119,12 @@ return [
     'mais' => 'more',
     'Sem notificações' => 'No notifications',
     'Erro ao carregar' => 'Error loading',
+    'Confirmar' => 'Confirm',
+    'Pesquisar equipamento...' => 'Search equipment...',
+    'Pesquisar material em stock...' => 'Search stock materials...',
+    'Materiais (Stock)' => 'Materials (Stock)',
+    'Selecionar Materiais (Stock)' => 'Select Materials (Stock)',
+    'Selecionar Equipamento' => 'Select Equipment',
+    'item(s) selecionado(s)' => 'item(s) selected',
+    'Sem sala' => 'No room',
 ];

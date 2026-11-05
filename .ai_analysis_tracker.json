@@ -198,13 +198,9 @@
       "status": "completed",
       "summary": "Docker container build instructions"
     },
-    "docker-compose.yml": {
-      "status": "completed",
-      "summary": "Docker multi-container orchestration"
-    },
     "compose.yaml": {
       "status": "completed",
-      "summary": "Docker Compose configuration (alternative format)"
+      "summary": "Docker Compose stack (app, queue, schedule, redis)"
     },
     "phpunit.xml": {
       "status": "completed",

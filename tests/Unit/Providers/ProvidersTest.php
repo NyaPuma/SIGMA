@@ -4,7 +4,7 @@ namespace Tests\Unit\Providers;
 
 use App\Events\TicketCreated;
 use App\Events\TicketStatusChanged;
-use App\Events\TicketStatusUpdatedBroadcast;
+use App\Events\TicketStatusUpdated;
 use App\Models\Audit;
 use App\Models\Equipment;
 use App\Models\Room;
@@ -70,6 +70,6 @@ class ProvidersTest extends DatabaseTestCase
 
         $this->assertTrue($events->hasListeners(TicketCreated::class));
         $this->assertTrue($events->hasListeners(TicketStatusChanged::class));
-        $this->assertTrue($events->hasListeners(TicketStatusUpdatedBroadcast::class));
+        $this->assertTrue($events->hasListeners(TicketStatusUpdated::class));
     }
 }

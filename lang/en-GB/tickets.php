@@ -114,4 +114,5 @@ return [
     'Registos:' => 'Records:',
     'Gerado automaticamente' => 'Automatically generated',
     'Análise dos estados operacionais, tempos de resolução e custos.' => 'Analysis of operational states, resolution times and costs.',
+    'Relatório limitado aos :total registos mais recentes.' => 'Report limited to the :total most recent records.',
 ];

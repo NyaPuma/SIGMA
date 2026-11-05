@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers\Ticket;
 
-use App\Concerns\BroadcastsTicketStatus;
+use App\Concerns\NotifiesTicketStatusChange;
 use App\Enums\TicketStatusEnum;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\TicketResource;
@@ -13,7 +13,7 @@ use Illuminate\Http\Request;
 
 final class TicketLifecycleController extends Controller
 {
-    use BroadcastsTicketStatus;
+    use NotifiesTicketStatusChange;
 
     public function __construct(
         private readonly TicketWorkflowService $workflowService,
@@ -39,8 +39,8 @@ final class TicketLifecycleController extends Controller
         // Invalidate the cached relation to reflect the new state
         $ticket->unsetRelation('status');
 
-        // 3. Notify clients via WebSockets about the status change
-        $this->broadcastStatusChange($ticket, $oldStatus, $ticket->status);
+        // 3. Notify the owner and the technician about the status change
+        $this->notifyStatusChange($ticket, $oldStatus, $ticket->status);
 
         $ticket->loadMissing(['equipment', 'room', 'technician', 'status']);
 
@@ -73,8 +73,8 @@ final class TicketLifecycleController extends Controller
         // Invalidate the cached relation to reflect the new state
         $ticket->unsetRelation('status');
 
-        // 4. Emit the WebSocket event
-        $this->broadcastStatusChange($ticket, $oldStatus, TicketStatusEnum::Cancelled);
+        // 4. Notify the owner and the technician about the status change
+        $this->notifyStatusChange($ticket, $oldStatus, TicketStatusEnum::Cancelled);
 
         $ticket->loadMissing(['equipment', 'room', 'technician', 'status']);
 

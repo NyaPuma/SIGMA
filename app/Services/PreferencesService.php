@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 namespace App\Services;
 
+use App\Models\User;
 use App\Models\UserPreference;
 use Illuminate\Contracts\Auth\Authenticatable;
 use Illuminate\Http\Request;
@@ -96,7 +97,30 @@ final class PreferencesService
      */
     public static function forUser(Authenticatable $user): array
     {
-        $prefs = UserPreference::where('user_id', self::userId($user))->first();
+        // Read from the loaded model: `forUserId()` would query the same row back.
+        $columnLocale = $user instanceof User ? $user->getAttribute('locale') : null;
+
+        return self::withColumnLocale(self::storedForUserId(self::userId($user)), $columnLocale);
+    }
+
+    /**
+     * Same lookup without needing an authenticated model, so a queue worker —
+     * which has no request, session or guard — can format a report with the
+     * preferences of the user who asked for it.
+     *
+     * @return UserPreferences
+     */
+    public static function forUserId(int $userId): array
+    {
+        return self::withColumnLocale(self::storedForUserId($userId), User::query()->whereKey($userId)->value('locale'));
+    }
+
+    /**
+     * @return UserPreferences
+     */
+    private static function storedForUserId(int $userId): array
+    {
+        $prefs = UserPreference::where('user_id', $userId)->first();
 
         if ($prefs) {
             return [
@@ -109,6 +133,23 @@ final class PreferencesService
         }
 
         return self::DEFAULTS;
+    }
+
+    /**
+     * `users.locale` is the language `SetLocaleMiddleware` applies to a request, and
+     * both write paths keep it in step with `user_preferences.language`. It wins here
+     * so a user whose preference row predates a later locale switch is not reverted.
+     *
+     * @param  UserPreferences  $preferences
+     * @return UserPreferences
+     */
+    private static function withColumnLocale(array $preferences, mixed $columnLocale): array
+    {
+        if (is_string($columnLocale) && $columnLocale !== '' && LocaleService::isSupported($columnLocale)) {
+            $preferences['language'] = $columnLocale;
+        }
+
+        return $preferences;
     }
 
     /**

@@ -328,16 +328,6 @@ final class LocaleService
     }
 
     /**
-     * Codes of all supported languages.
-     *
-     * @return list<string>
-     */
-    public static function codes(): array
-    {
-        return array_keys(self::all());
-    }
-
-    /**
      * Resolves a language code to its default formatting locale.
      *
      * @return array{code: string, locale: string}
@@ -392,29 +382,6 @@ final class LocaleService
         }
 
         return false;
-    }
-
-    /**
-     * Resolves the default_locale for a base language code.
-     *
-     * @return array{code: string, default_locale: string}
-     */
-    public static function resolveDefaultLocale(string $locale): array
-    {
-        $meta = self::meta($locale);
-
-        if ($meta !== null) {
-            return ['code' => $locale, 'default_locale' => $meta['default_locale']];
-        }
-
-        $base = strtolower(explode('-', $locale)[0]);
-        foreach (self::all() as $code => $meta) {
-            if (strtolower(explode('-', $code)[0]) === $base) {
-                return ['code' => $locale, 'default_locale' => $meta['default_locale']];
-            }
-        }
-
-        return ['code' => $locale, 'default_locale' => self::default()];
     }
 
     /**
@@ -919,39 +886,5 @@ final class LocaleService
         }
 
         return 'd/m/Y';
-    }
-
-    /**
-     * Formats a monetary value using the user's currency.
-     */
-    public static function formatMoney(int|float $value, ?Request $request = null, ?string $currency = null): string
-    {
-        $userCurrency = $currency ?? self::userCurrency($request);
-
-        return self::formatCurrency($value, $userCurrency);
-    }
-
-    /**
-     * Formats a date using the user's format.
-     */
-    public static function formatUserDate(mixed $value, ?Request $request = null, ?string $format = null): string
-    {
-        $userFormat = $format ?? self::userDateFormat($request);
-
-        if ($value instanceof \DateTimeInterface) {
-            return $value->format($userFormat);
-        }
-
-        if (! is_string($value) && ! is_int($value) && ! is_float($value)) {
-            return '';
-        }
-
-        try {
-            $date = new \DateTimeImmutable((string) $value);
-
-            return $date->format($userFormat);
-        } catch (\Throwable $e) {
-            return '';
-        }
     }
 }

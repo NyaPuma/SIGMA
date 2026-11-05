@@ -155,10 +155,10 @@ Below is every controller grouped by the area it powers, with a plain-English de
 - **Method:** `login(LoginRequest $request): JsonResponse`
   - **What it does:** Authenticates a user by email + password and issues an API token + session.
   - **When it runs / how it works:**
-    1. Lowercases the submitted email and checks a cache key `login_attempts:{email}`. If the attempt count already reached `max_attempts` (config `services.custom.auth.max_attempts`, default 5), it returns **429** with `Retry-After` (lockout minutes * 60) and the "account temporarily locked" message.
+    1. Lowercases the submitted email and checks a cache key `login_attempts:sha1(ip|email)` — keyed by address **and** email on purpose, exactly like the `rate.limit` middleware on the same route (`RateLimitMiddleware::resolveRequestSignature()`), because a counter stored under the email alone would let anyone lock a real user out of their own account by failing five logins. If the attempt count already reached `max_attempts` (config `services.custom.auth.max_attempts`, default 5), it returns **429** with `Retry-After` (lockout minutes * 60) and the "account temporarily locked" message.
     2. Looks up `User` where `email` matches **and** `active = true`.
     3. Verifies the password with `Hash::check`. On failure it atomically increments the cache counter (`Cache::add` seeds with TTL on first failure, `Cache::increment` for concurrenCy) and returns **401** "invalid credentials".
-    4. On success it forgets the rate-limit key, re-hashes the password if `Hash::needsRehash`, ensures a default user profile exists (`UserService::ensureDefaultProfile`), creates the token (`UserService::createToken`), and returns `UserService::buildAuthResponse` (the JWT token + user, cookie set via the service).
+    4. On success it forgets the rate-limit key, re-hashes the password if `Hash::needsRehash`, ensures a default user profile exists (`UserService::ensureDefaultProfile`), creates the token (`UserService::createToken`), and returns `UserService::buildAuthResponse` (the opaque API token + user, cookie set via the service).
   - **Authorization:** none (public — guest endpoint).
 
 - **Method:** `logout(Request $request): JsonResponse`
@@ -437,7 +437,7 @@ Below is every controller grouped by the area it powers, with a plain-English de
 | PATCH | `/admin/tickets/{ticket}/assign` | `admin.tickets.assign` | `custom.auth` + `role:admin`, no CSRF | `web.php:328` |
 | PATCH | `/api/admin/tickets/{ticket}/assign` | `api.admin.tickets.assign` | `custom.auth` + `role:admin` + `rate.limit:20,1` | `api.php:161` |
 
-**Dependencies:** `TechnicianAssignmentService`, `TicketWorkflowService`, `AssignTechnicianToTicketRequest`, `BroadcastsTicketStatus` trait.
+**Dependencies:** `TechnicianAssignmentService`, `TicketWorkflowService`, `AssignTechnicianToTicketRequest`, `NotifiesTicketStatusChange` trait.
 
 - **Method:** `__invoke(AssignTechnicianToTicketRequest $request, Ticket $ticket): JsonResponse`
   - **What it does:** Assigns a technician and sets the ticket to In Progress.
@@ -448,7 +448,7 @@ Below is every controller grouped by the area it powers, with a plain-English de
     4. Calls `TechnicianAssignmentService::assignToTicket($ticket, $technicianId)` where `technician_id` may be null (auto-assignment).
     5. If null returned, returns **422** with the appropriate message (invalid selected technician vs. no technicians available).
     6. On success, `TicketWorkflowService::startRepair($ticket)` to move to In Progress, unsets the stale `status` relation.
-    7. Broadcasts the status change via WebSockets (`BroadcastsTicketStatus`).
+    7. Dispatches `notifyStatusChange()` so the owner and the technician are told.
     8. Loads relations and returns `{ message, ticket }`.
 
 ---
@@ -465,7 +465,7 @@ Below is every controller grouped by the area it powers, with a plain-English de
 | PUT | `/technician/tickets/{ticket}/start` | `technician.tickets.start` | `custom.auth` + `role:technician` + `rate.limit:20,1`, no CSRF | `web.php:260` |
 | PUT | `/api/technician/tickets/{ticket}/start` | `api.technician.tickets.start` | `custom.auth` + `role:technician` + `rate.limit:20,1` | `api.php:103` |
 
-**Dependencies:** `TicketWorkflowService`, `NotificationService`, `StartTicketRequest`, `BroadcastsTicketStatus` trait.
+**Dependencies:** `TicketWorkflowService`, `NotificationService`, `StartTicketRequest`, `NotifiesTicketStatusChange` trait.
 
 - **Method:** `__invoke(StartTicketRequest $request, Ticket $ticket): JsonResponse`
   - **What it does:** Starts the intervention on an open ticket.
@@ -476,7 +476,7 @@ Below is every controller grouped by the area it powers, with a plain-English de
     4. If higher-priority tickets exist **and** `force` is false, returns **409** with a warning payload `{ warning, message, urgent_tickets_count, my_urgent_tickets_count, current_priority, can_force }`.
     5. Otherwise `TicketWorkflowService::startRepair($ticket, $user)`.
     6. If forced over a priority conflict, `NotificationService::notifyPriorityOverride(...)` is sent to admins.
-    7. Broadcasts the change to In Progress via WebSocket; loads relations; returns `{ message, overridden, ticket }`.
+    7. Dispatches `notifyStatusChange()` (owner + technician are told); loads relations; returns `{ message, overridden, ticket }`.
 
 ---
 
@@ -514,11 +514,11 @@ Below is every controller grouped by the area it powers, with a plain-English de
 | POST | `/tickets/{ticket}/close` | `tickets.close` | `custom.auth`, no CSRF | `web.php:249` |
 | PUT | `/api/technician/tickets/{ticket}/close-final` | `api.technician.tickets.close-final` | `custom.auth` + `role:technician` + `rate.limit:20,1` | `api.php:109` |
 
-**Dependencies:** `TicketWorkflowService`, `NotificationService`, `LocalizationService`, `CloseTicketRequest`, `CloseTicketSimpleRequest`, `BroadcastsTicketStatus` trait.
+**Dependencies:** `TicketWorkflowService`, `NotificationService`, `LocalizationService`, `CloseTicketRequest`, `CloseTicketSimpleRequest`, `NotifiesTicketStatusChange` trait.
 
 - **Method:** `simpleClose(CloseTicketSimpleRequest $request, Ticket $ticket): JsonResponse`
   - **What it does:** Quick close of an in-progress ticket.
-  - **When it runs / how it works:** `authorize('close', $ticket)`; if the ticket is not "In Progress", returns **422**; captures `oldStatus`; `TicketWorkflowService::close($ticket, cost: float, report, minutesSpent: int)`; broadcasts to Closed; loads relations; returns `{ message, ticket }`.
+  - **When it runs / how it works:** `authorize('close', $ticket)`; if the ticket is not "In Progress", returns **422**; captures `oldStatus`; `TicketWorkflowService::close($ticket, cost: float, report, minutesSpent: int)`; dispatches `notifyStatusChange()` for the Closed transition; loads relations; returns `{ message, ticket }`.
 
 - **Method:** `closeFinal(CloseTicketRequest $request, Ticket $ticket): JsonResponse`
   - **What it does:** Final close with pending-priority verification and notification dispatch.
@@ -528,7 +528,7 @@ Below is every controller grouped by the area it powers, with a plain-English de
     3. Reads `actual_cost` (float) and `report` (kept null when absent so it doesn't overwrite the existing technical report), plus `minutes_spent`.
     4. `TicketWorkflowService::close(...)`.
     5. If `force` was used and higher-priority tickets exist, `NotificationService::notifyPriorityOverride(...)`.
-    6. Broadcasts to Closed; formats the cost via `LocalizationService`; dispatches `NotificationService::notifyTicketClosed(...)` to everyone.
+    6. Dispatches `notifyStatusChange()` for the Closed transition; formats the cost via `LocalizationService`; dispatches `NotificationService::notifyTicketClosed(...)` to everyone.
     7. Returns `{ message, ticket }`.
 
 ---
@@ -547,15 +547,15 @@ Below is every controller grouped by the area it powers, with a plain-English de
 | POST | `/tickets/{ticket}/cancel` | `tickets.cancel` | `custom.auth`, no CSRF | `web.php:238` |
 | POST | `/api/tickets/{ticket}/cancel` | `api.tickets.cancel` | `custom.auth` | `api.php:98` |
 
-**Dependencies:** `TicketWorkflowService`, `BroadcastsTicketStatus` trait.
+**Dependencies:** `TicketWorkflowService`, `NotifiesTicketStatusChange` trait.
 
 - **Method:** `reopen(Request $request, Ticket $ticket): JsonResponse`
   - **What it does:** Re-opens a previously closed or cancelled ticket.
-  - **When it runs / how it works:** `authorize('reopen', $ticket)`; if `TicketWorkflowService::reopen($ticket)` returns false (not closed/cancelled), returns **422**; otherwise unsets the stale `status` relation, broadcasts the change, loads relations, returns `{ message, ticket }`.
+  - **When it runs / how it works:** `authorize('reopen', $ticket)`; if `TicketWorkflowService::reopen($ticket)` returns false (not closed/cancelled), returns **422**; otherwise unsets the stale `status` relation, dispatches `notifyStatusChange()`, loads relations, returns `{ message, ticket }`.
 
 - **Method:** `cancel(Request $request, Ticket $ticket): JsonResponse`
   - **What it does:** Cancels an open ticket.
-  - **When it runs / how it works:** `authorize('cancel', $ticket)`; if not "Open", returns **422**; `TicketWorkflowService::cancel($ticket)`; unsets `status`, broadcasts to Cancelled, loads relations, returns `{ message, ticket }`.
+  - **When it runs / how it works:** `authorize('cancel', $ticket)`; if not "Open", returns **422**; `TicketWorkflowService::cancel($ticket)`; unsets `status`, dispatches `notifyStatusChange()`, loads relations, returns `{ message, ticket }`.
 
 ---
 

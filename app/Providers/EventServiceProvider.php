@@ -6,7 +6,7 @@ namespace App\Providers;
 
 use App\Events\TicketCreated;
 use App\Events\TicketStatusChanged;
-use App\Events\TicketStatusUpdatedBroadcast;
+use App\Events\TicketStatusUpdated;
 use App\Listeners\LogTicketWorkflowChange;
 use App\Listeners\NotifyAssignedTechnician;
 use App\Listeners\SendTicketCreatedNotification;
@@ -27,7 +27,7 @@ final class EventServiceProvider extends ServiceProvider
         TicketStatusChanged::class => [
             LogTicketWorkflowChange::class,
         ],
-        TicketStatusUpdatedBroadcast::class => [
+        TicketStatusUpdated::class => [
             SendTicketStatusNotification::class,
             NotifyAssignedTechnician::class,
         ],

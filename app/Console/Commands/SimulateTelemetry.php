@@ -75,10 +75,17 @@ class SimulateTelemetry extends Command
         // Pre-fetch the Open status ID (resolves N+1)
         $openStatusId = $statusService->getByName(TicketStatusEnum::Open);
 
+        // A ticket that is already being worked on still counts as unresolved: matching
+        // only the Open status made the command open a second ticket for equipment whose
+        // first one was In Progress or waiting on a budget.
+        $activeStatusIds = array_map(
+            fn (TicketStatusEnum $status) => $statusService->getByName($status),
+            array_filter(TicketStatusEnum::cases(), fn (TicketStatusEnum $status) => $status->isActive()),
+        );
+
         // Load active equipment with eager-loaded unresolved tickets to avoid N+1
-        $hasOpenTicket = function (Builder $query) use ($openStatusId): void {
-            // Considers it open if status is Open or active non-completed states
-            $query->where('status_id', $openStatusId);
+        $hasOpenTicket = function (Builder $query) use ($activeStatusIds): void {
+            $query->whereIn('status_id', $activeStatusIds);
         };
 
         $equipments = Equipment::where('active', true)

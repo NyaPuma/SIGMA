@@ -3,7 +3,7 @@
 namespace Tests\Unit\Listeners;
 
 use App\Enums\TicketStatusEnum;
-use App\Events\TicketStatusUpdatedBroadcast;
+use App\Events\TicketStatusUpdated;
 use App\Listeners\NotifyAssignedTechnician;
 use App\Models\Ticket;
 use App\Models\User;
@@ -37,7 +37,7 @@ class NotifyAssignedTechnicianTest extends TestCase
         $ticket = Ticket::factory()->create(['assigned_to' => $technician->id]);
 
         $listener = new NotifyAssignedTechnician;
-        $listener->handle(new TicketStatusUpdatedBroadcast(
+        $listener->handle(new TicketStatusUpdated(
             $ticket,
             TicketStatusEnum::Open,
             TicketStatusEnum::InProgress,
@@ -54,7 +54,7 @@ class NotifyAssignedTechnicianTest extends TestCase
         $ticket = Ticket::factory()->create(['assigned_to' => null]);
 
         $listener = new NotifyAssignedTechnician;
-        $listener->handle(new TicketStatusUpdatedBroadcast(
+        $listener->handle(new TicketStatusUpdated(
             $ticket,
             TicketStatusEnum::Open,
             TicketStatusEnum::InProgress,

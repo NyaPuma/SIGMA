@@ -160,14 +160,6 @@ Finds a single ticket by its primary key, without eager-loading any relations.
 - **Returns:** The `Ticket` model or `null`.
 - **Who calls it:** Not called directly by controllers (tickets are resolved via route-model binding in `TicketController::show()`). Available for programmatic use.
 
-##### `findWithRelations(int $id, array $relations = []): ?Ticket`
-
-Finds a single ticket by ID while eagerly loading specified relations in one query — avoids N+1.
-
-- **Query logic:** `Ticket::with($relations)->find($id)` — performs `SELECT *, relation.* FROM tickets LEFT JOIN ... WHERE tickets.id = ?` for each requested relation.
-- **Returns:** The `Ticket` model with loaded relations, or `null`.
-- **Who calls it:** Not called directly by any controller or service in the current codebase. Available for use when a caller needs a single ticket with specific related data loaded eagerly (e.g. for a detail page or an action that needs equipment + room + technician).
-
 ##### `getAll(array $relations = []): LengthAwarePaginator`
 
 Fetches a paginated list of all tickets, ordered newest-first, with optional eager-loaded relations.

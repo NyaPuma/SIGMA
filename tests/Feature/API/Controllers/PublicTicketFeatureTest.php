@@ -73,6 +73,76 @@ final class PublicTicketFeatureTest extends FeatureTestCase
         $response->assertSessionHasErrors(['equipment_id', 'description']);
     }
 
+    public function test_an_oversized_photo_is_refused_and_never_silently_dropped(): void
+    {
+        // Arrange: the configured limit, not a hardcoded one, decides what fits.
+        Queue::fake();
+        Storage::fake('public');
+        config(['services.custom.upload.max_photo_size_kb' => 100]);
+
+        $equipment = Equipment::factory()->create();
+
+        // Act: 300 KB is far above the limit and below the old hardcoded 4096 KB.
+        $response = $this->from("/ticket/new?machine_id={$equipment->id}")
+            ->post('/ticket/store', [
+                'equipment_id' => $equipment->id,
+                'problem_type' => 'avaria',
+                'description' => 'Perde pressão durante a operação.',
+                'photo' => UploadedFile::fake()->image('avaria.png')->size(300),
+            ]);
+
+        // Assert: the reporter is told, and no ticket exists without its photo.
+        $response->assertSessionHasErrors('photo');
+        $this->assertDatabaseCount('tickets', 0);
+        $this->assertDatabaseCount('ticket_attachments', 0);
+    }
+
+    public function test_a_photo_type_the_storage_layer_cannot_name_is_rejected_before_creation(): void
+    {
+        Queue::fake();
+        Storage::fake('public');
+
+        $equipment = Equipment::factory()->create();
+
+        $response = $this->post('/ticket/store', [
+            'equipment_id' => $equipment->id,
+            'problem_type' => 'avaria',
+            'description' => 'Vibracao anormal durante o arranque a frio.',
+            'photo' => UploadedFile::fake()->image('avaria.bmp'),
+        ]);
+
+        $response->assertSessionHasErrors('photo');
+        $this->assertDatabaseCount('tickets', 0);
+    }
+
+    public function test_a_photo_beyond_the_configured_dimensions_is_rejected(): void
+    {
+        Queue::fake();
+        Storage::fake('public');
+
+        $equipment = Equipment::factory()->create();
+
+        $response = $this->post('/ticket/store', [
+            'equipment_id' => $equipment->id,
+            'problem_type' => 'avaria',
+            'description' => 'Fumo saindo do quadro elétrico.',
+            'photo' => UploadedFile::fake()->image('avaria.png', 5000, 5000),
+        ]);
+
+        $response->assertSessionHasErrors('photo');
+        $this->assertDatabaseCount('tickets', 0);
+    }
+
+    public function test_the_form_only_offers_file_types_the_validator_accepts(): void
+    {
+        $equipment = Equipment::factory()->create();
+
+        $response = $this->get("/ticket/new?machine_id={$equipment->id}");
+
+        $response->assertStatus(200);
+        $response->assertSee('accept="image/jpeg,image/png,image/gif,image/webp"', false);
+    }
+
     public function test_confirmation_page_is_only_reachable_through_the_signed_redirect(): void
     {
         // Arrange

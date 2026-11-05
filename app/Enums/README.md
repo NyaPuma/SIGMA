@@ -6,7 +6,7 @@ Enumeration classes (backed string enums) representing standard domain state mac
 
 ## Overview
 
-All 14 enums are **backed string enums** (`enum X: string`). Each exposes a `label()` method that returns a localized (Portuguese) human-readable string via Laravel's `__()` translation helper, keeping the PHP identifiers 100% in English while the display text follows the active locale.
+All 13 enums are **backed string enums** (`enum X: string`). Each exposes a `label()` method that returns a localized (Portuguese) human-readable string via Laravel's `__()` translation helper, keeping the PHP identifiers 100% in English while the display text follows the active locale.
 
 Most enums also expose a `normalize(mixed $value): ?self` static method designed to safely coerce raw input (accents, case, aliases, or already-instantiated enum) into a valid enum instance — returning `null` for unrecognized input instead of throwing.
 
@@ -17,17 +17,16 @@ Most enums also expose a `normalize(mixed $value): ?self` static method designed
 | 1 | [`UserRoleEnum`](#userroleenum) | user, technician, admin | RBAC role hierarchy |
 | 2 | [`TicketPriorityEnum`](#ticketpriorityenum) | baixa, média, alta, crítica | Ticket urgency + SLA |
 | 3 | [`TicketStatusEnum`](#ticketstatusenum) | aberta, em curso, fechada, cancelada, pendente orçamento, recusada | Ticket operational status |
-| 4 | [`TicketWorkflowStatusEnum`](#ticketworkflowstatusenum) | open, in_progress, waiting_budget, approved, rejected, closed, cancelled | Explicit workflow state machine |
-| 5 | [`BudgetStatusEnum`](#budgetstatusenum) | pending, approved, rejected | Budget lifecycle |
-| 6 | [`BudgetDecisionEnum`](#budgetdecisionenum) | approve, reject | Budget approval action |
-| 7 | [`StockMovementTypeEnum`](#stockmovementtypeenum) | in, out, adjust, return | Stock inventory direction |
-| 8 | [`PartUnitOfMeasureEnum`](#partunitofmeasureenum) | unit, meter, liter, kg, pair, set, roll, other | Spare-part measurement |
-| 9 | [`PublicTicketProblemTypeEnum`](#publicticketproblemtypeenum) | avaria, manutencao_preventiva, falta_consumiveis, outro | QR public-form incident category |
-| 10 | [`NotificationTypeEnum`](#notificationtypeenum) | budget_request … low_stock | Notification channel trigger |
-| 11 | [`NotificationPriorityEnum`](#notificationpriorityenum) | low, normal, high, urgent | Notification urgency |
-| 12 | [`MaintenancePlanIntervalTypeEnum`](#maintenanceplanintervaltypeenum) | days, usage_hours, cycles | Recurrence unit for plans |
-| 13 | [`FileTypeEnum`](#filetypeenum) | image, document, video, audio, other | Attachment MIME classification |
-| 14 | [`AuditEventEnum`](#auditeventenum) | created, updated, deleted, login, logout, password_changed | Audit trail event action |
+| 4 | [`BudgetStatusEnum`](#budgetstatusenum) | pending, approved, rejected | Budget lifecycle |
+| 5 | [`BudgetDecisionEnum`](#budgetdecisionenum) | approve, reject | Budget approval action |
+| 6 | [`StockMovementTypeEnum`](#stockmovementtypeenum) | in, out, adjust, return | Stock inventory direction |
+| 7 | [`PartUnitOfMeasureEnum`](#partunitofmeasureenum) | unit, meter, liter, kg, pair, set, roll, other | Spare-part measurement |
+| 8 | [`PublicTicketProblemTypeEnum`](#publicticketproblemtypeenum) | avaria, manutencao_preventiva, falta_consumiveis, outro | QR public-form incident category |
+| 9 | [`NotificationTypeEnum`](#notificationtypeenum) | budget_request … low_stock | Notification channel trigger |
+| 10 | [`NotificationPriorityEnum`](#notificationpriorityenum) | low, normal, high, urgent | Notification urgency |
+| 11 | [`MaintenancePlanIntervalTypeEnum`](#maintenanceplanintervaltypeenum) | days, usage_hours, cycles | Recurrence unit for plans |
+| 12 | [`FileTypeEnum`](#filetypeenum) | image, document, video, audio, other | Attachment MIME classification |
+| 13 | [`AuditEventEnum`](#auditeventenum) | created, updated, deleted, login, logout, password_changed | Audit trail event action |
 
 ## Detailed per-enum reference
 
@@ -124,45 +123,10 @@ Represents the operational status of a ticket, mapped to the legacy `ticket_stat
 - `app/Http/Controllers/TicketController.php:8`, `app/Http/Controllers/TicketBudgetController.php:8`.
 - `app/Http/Controllers/Ticket/TicketStartController.php:6`, `TicketCloseController.php:6`, `TicketLifecycleController.php:6`, `TicketAssignmentController.php:6`.
 - `app/Services/TicketWorkflowService.php:12`, `TicketStatusService.php:7`, `TicketSearchService.php:8`, `TechnicianAssignmentService.php:8`, `AIService.php:7`.
-- `app/Observers/TicketObserver.php:7`, `app/Concerns/BroadcastsTicketStatus.php:5`.
+- `app/Observers/TicketObserver.php:7`, `app/Concerns/NotifiesTicketStatusChange.php:5`.
 - Actions: `CreateTicketAction.php:6`, `CreatePublicTicketAction.php:6`, `CreatePreventiveTicketAction.php:6`, `ScheduleTicketAction.php:6`, `ScheduleMaintenanceAction.php:8`, `SubmitBudgetAction.php:7`, `ApproveBudgetAction.php:7`.
-- `app/Domain/Ticket/Actions/*` — `CancelTicketAction`, `CloseTicketAction`, `ReopenTicketAction`, `StartTicketAction`, `TicketStatusChecker`.
-- `app/Notifications/TicketStatusChanged.php:7`, `app/Events/TicketStatusChanged.php:5`, `app/Events/TicketStatusUpdatedBroadcast.php:5`, `app/Events/TicketCreated.php:6`.
-
----
-
-### `TicketWorkflowStatusEnum`
-
-**File:** [`app/Enums/TicketWorkflowStatusEnum.php`](TicketWorkflowStatusEnum.php)
-
-An **explicit workflow state machine** (English backing values) that complements the DB-facing `TicketStatusEnum`. Describes legal transitions between lifecycle states.
-
-| Case | Value | label() |
-|------|-------|---------|
-| `Open` | `open` | Aberto |
-| `InProgress` | `in_progress` | Em Curso |
-| `WaitingBudget` | `waiting_budget` | Pendente de Orçamento |
-| `Approved` | `approved` | Aprovado |
-| `Rejected` | `rejected` | Recusado |
-| `Closed` | `closed` | Fechado |
-| `Cancelled` | `cancelled` | Cancelado |
-
-**Helper methods:**
-- `label()`, `color()`, `icon()` — display helpers.
-- `isFinal(): bool` — true for Closed/Cancelled/Rejected.
-- `isActive(): bool` — `! $this->isFinal()`.
-- `allowedTransitions(): array<self>` — explicit transition graph:
-  - `Open` → InProgress, WaitingBudget, Cancelled
-  - `InProgress` → WaitingBudget, Approved, Closed, Cancelled
-  - `WaitingBudget` → Approved, Rejected, Cancelled
-  - `Approved` → InProgress, Closed, Cancelled
-  - `Rejected` → WaitingBudget, Cancelled
-  - `Closed`, `Cancelled` → (none — terminal)
-- `canTransitionTo(self $target): bool` — via `allowedTransitions()`.
-- `normalize(mixed): ?self` — exact value matching, lowercased/trimmed.
-
-**Where it's used (real usages):**
-- `app/Domain/Ticket/Services/TicketStatusChecker.php` — used within the ticket domain for transition checks (see `app/Domain/Ticket/`).
+- `app/Domain/Ticket/Actions/*` — `CancelTicketAction`, `CloseTicketAction`, `ReopenTicketAction`, `StartTicketAction`.
+- `app/Notifications/TicketStatusChanged.php:7`, `app/Events/TicketStatusChanged.php:5`, `app/Events/TicketStatusUpdated.php:5`, `app/Events/TicketCreated.php:6`.
 
 ---
 
@@ -428,4 +392,4 @@ Event actions recorded in the audit trail.
 - **Strict Normalization:** Most enums provide a `normalize(mixed $value): ?self` static method designed to safely parse inputs regardless of case, accentuation, or whether the input is already an enum instance.
 - **Labels vs Database Values:** `label()` methods leverage Laravel's translation helper `__('...')` to return localized human-readable labels according to the active application locale, keeping PHP identifiers completely in English.
 - **Database Alignment:** `TicketPriorityEnum` and `TicketStatusEnum` use backing string values matching the legacy lookup schema in database tables (`tickets`, `ticket_statuses`). Do not alter their string values without a planned database schema and data migration.
-- **Workflow vs Status:** `TicketWorkflowStatusEnum` (English values) is the in-application state machine used to enforce legal transitions; `TicketStatusEnum` (Portuguese values) mirrors the persisted DB lookup rows. They serve different layers.
+- **Status transitions:** the rows in the `ticket_statuses` table (`App\Models\TicketStatus`) are the source of truth and `TicketStatusEnum` (Portuguese values, e.g. `em curso`) is how code names them. There is no enum-level transition table; the Domain Actions decide case by case. `ReopenTicketAction` refuses unless the ticket is currently Closed or Cancelled (`app/Domain/Ticket/Actions/ReopenTicketAction.php:28`), while `StartTicketAction`, `CloseTicketAction` and `CancelTicketAction` are idempotent — already in the target status returns success, otherwise they move the ticket there without checking where it came from.

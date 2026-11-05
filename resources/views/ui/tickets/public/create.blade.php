@@ -114,7 +114,7 @@
                             <label for="photo" class="cursor-pointer rounded-xl border border-[var(--border)] bg-[var(--surface)] px-3 py-1.5 text-xs font-semibold text-[var(--text)] transition hover:bg-[var(--surface-2)]">
                                 {{ __('ticket_media.Escolher ficheiro') }}
                             </label>
-                            <input type="file" name="photo" id="photo" accept="image/*" class="hidden">
+                            <input type="file" name="photo" id="photo" accept="{{ $photoAccept }}" class="hidden">
                             <span id="photoName" class="truncate text-xs text-[var(--text-soft)]" data-placeholder="{{ __('ticket_media.Nenhum ficheiro selecionado') }}">{{ __('ticket_media.Nenhum ficheiro selecionado') }}</span>
                         </div>
                         @error('photo')

@@ -228,15 +228,15 @@ The 38 request classes belong to these functional areas:
 
 **`authorize()`:** Always `true`.
 
-**Validation rules (for `photo`):**
-- required; must be an image via `File::image()`.
-- `types($allowedMimes)` — allowed MIME list from `config('services.upload.allowed_photo_mimes')`, default `jpeg, jpg, png, gif, webp`.
-- `max($maxPhotoSizeKb)` — max size from `config('services.upload.max_photo_size_kb')`, default `2048` KB.
-- `dimensions` — max width/height `4096` px.
+**Validation rules (for `photo`):** every limit comes from `App\Support\PhotoUploadPolicy`, the same source the public QR-code form and the storing controllers use, so the two upload paths cannot drift apart.
+- required; must be an image via `File::image()` (which also refuses SVG).
+- `types()` — from `config('services.custom.upload.allowed_photo_mimes')`, default `jpeg, jpg, png, gif, webp`; an empty or unusable list falls back to those defaults.
+- `max()` — from `config('services.custom.upload.max_photo_size_kb')` (default `2048` KB); non-positive or non-numeric values fall back to `2048`.
+- `dimensions()` — max width/height from `services.custom.upload.max_photo_width` / `max_photo_height` (default `4096` px each).
 
 **Messages/localization:** No custom `messages()`; `attributes()` maps `photo`.
 
-**WHICH controller uses it:** `TicketAttachmentController::store()` at `app/Http/Controllers/TicketAttachmentController.php:28`.
+**WHICH controller uses it:** `TicketAttachmentController::store()` at `app/Http/Controllers/TicketAttachmentController.php:20`.
 
 ---
 
@@ -279,11 +279,11 @@ The 38 request classes belong to these functional areas:
 - `description` — required, string, max 5000.
 - `reporter_name` — nullable, string, max 150.
 - `reporter_contact` — nullable, string, max 150.
-- `photo` — nullable, image file, max 4096 KB.
+- `photo` — nullable, image file; the same `PhotoUploadPolicy` limits as `UploadPhotoRequest` (types, `max_photo_size_kb`, max width/height), so a photo the storage layer can keep is never refused and one it cannot keep is reported to the reporter instead of being dropped after the ticket is created.
 
 **Messages/localization:** No custom `messages()`; `attributes()` maps English labels.
 
-**WHICH controller uses it:** `PublicTicketController::store()` at `app/Http/Controllers/PublicTicketController.php:55` (and its private `storePhoto()` helper at line 97).
+**WHICH controller uses it:** `PublicTicketController::store()` at `app/Http/Controllers/PublicTicketController.php:54` (and its private `storePhoto()` helper at line 99); `create()` at line 31 passes the policy's types to the form's `accept` attribute.
 
 ---
 

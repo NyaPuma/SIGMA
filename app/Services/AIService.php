@@ -65,6 +65,9 @@ final class AIService
             3 => 'IT Systems and Networks',
         ];
 
+        // Only these ids may come back from the model; anything else is a hallucination.
+        $offeredIds = [];
+
         // Prompt engineering focused on Administrator Decision Profile
         $prompt = "You act as an Industrial Maintenance Engineering Consultant for the system Administrator.\n";
         $prompt .= "Your sole role is to analyze the fault ticket and recommend the most qualified technician.\n\n";
@@ -76,6 +79,7 @@ final class AIService
 
         $prompt .= "--- AVAILABLE HUMAN RESOURCES ---\n";
         foreach ($technicians as $technician) {
+            $offeredIds[] = (int) $technician->id;
             $specialty = $specialties[($technician->id % 3) + 1];
             $prompt .= "- ID: {$technician->id} | Name: {$technician->name} | Specialty: {$specialty} | Current Workload: {$technician->active_tickets} tickets\n";
         }
@@ -116,11 +120,20 @@ final class AIService
             $result = json_decode(trim($content), true);
 
             if (is_array($result) && isset($result['technician_id'])) {
-                $technicianId = $result['technician_id'];
+                $technicianId = is_numeric($result['technician_id']) ? (int) $result['technician_id'] : null;
                 $justification = $result['justification'] ?? null;
 
+                // The model can invent an id that was never offered, and a foreign key would
+                // reject it only after the recommendation was already shown as valid.
+                if ($technicianId !== null && ! in_array($technicianId, $offeredIds, true)) {
+                    return [
+                        'technician_id' => null,
+                        'justification' => 'AI assistant suggested a technician outside the active team. Please select a technician manually through the Assignment Panel.',
+                    ];
+                }
+
                 return [
-                    'technician_id' => is_numeric($technicianId) ? (int) $technicianId : null,
+                    'technician_id' => $technicianId,
                     'justification' => is_string($justification) ? $justification : 'Assignment recommended by AI assistant.',
                 ];
             }

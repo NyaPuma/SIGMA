@@ -22,18 +22,20 @@ Services are grouped by functional area. Where a method has no in-production cal
   - `?FeatureFlagService $featureFlags = null` — optional; if null a fresh instance is created. Gates the whole feature on the `ai_recommendations` flag.
 
 #### `recommendTechnician(Ticket $ticket): array{technician_id: int|null, justification: string}`
-- **What it does:** Returns an AI-chosen technician ID plus a human-readable justification, or a graceful "no recommendation" when the feature is off, the API fails, or no suitable team exists.
+- **What it does:** Returns an AI-chosen technician ID plus a human-readable justification, or a graceful "no recommendation" when the feature is off, the API fails, the answer is malformed, or the model names a technician that was never offered.
 - **How it works / steps:**
   1. Reads the `ai_recommendations` feature flag; if disabled returns `technician_id = null` with a "manually" justification immediately.
-  2. Loads all active technicians (profile name = `Technician`) with a sub-query count of their active tickets — tickets whose status is **not** Closed and not Cancelled (`app/Services/AIService.php:38-49`).
+  2. Loads all active technicians (profile name = `Technician`) with a sub-query count of their active tickets — tickets whose status is **not** Closed and not Cancelled (`app/Services/AIService.php:40-51`).
   3. If no active technician exists, returns `null` + "no active operational technicians" message.
-  4. Builds a detailed prompt: ticket problem description, equipment name, equipment category, and the list of technicians (ID, name, a statically-assigned specialty based on `id % 3`, and current workload) (`:59-90`).
-  5. Sends the prompt to OpenAI via the circuit breaker (`$breaker->run('openai', ...)`), reading the model and temperature from `config('services.custom.ai.model' / '.temperature')` (`:93-102`).
-  6. Strips possible markdown fences (```` ```json ```` / ```` ``` ````) from the response, `json_decode`s it, and extracts `technician_id` and `justification` (`:108-121`).
-  7. Any exception (open circuit, malformed JSON, missing `technician_id`) is caught and turned into `technician_id = null` with a "select manually" message (`:124-129`).
+  4. Builds a detailed prompt: ticket problem description, equipment name, equipment category, and the list of technicians (ID, name, a statically-assigned specialty based on `id % 3`, and current workload) (`:72-96`). While building it, the offered IDs are collected in `$offeredIds` (`:69`, `:82`).
+  5. Sends the prompt to OpenAI via the circuit breaker (`$breaker->run('openai', ...)`), reading the model and temperature from `config('services.custom.ai.model' / '.temperature')` (`:99-108`).
+  6. Strips possible markdown fences (```` ```json ```` / ```` ``` ````) from the response, `json_decode`s it, and extracts `technician_id` and `justification` (`:114-124`).
+  7. Rejects an ID that is not in `$offeredIds`: the model can invent a user who was never on the team, and the value would otherwise be stored and rendered as a valid recommendation (`:126-133`).
+  8. Any exception (open circuit, malformed JSON, missing `technician_id`) is caught and turned into `technician_id = null` with a "select manually" message (`:142-147`).
 - **Who calls it / when:**
   - `app/Jobs/GenerateAiRecommendationJob.php:63,66` — `handle(AIService $aiService)` calls `recommendTechnician($this->ticket)`. This job is dispatched asynchronously (typically right after a ticket is created) to pre-compute a recommendation in the background.
-  - `AIService` is registered as a singleton in `app/Providers/AppServiceProvider.php:77`.
+  - `AIService` is registered as a singleton in `app/Providers/AppServiceProvider.php:79`.
+- **Data integrity:** the `$offeredIds` clamp is the last trusted check on the value. `tickets.recommended_technician_id` is also constrained to `users.id` by `database/migrations/2026_11_05_000001_constrain_recommended_technician_to_users.php`, but that constraint only exists on MySQL/PostgreSQL — SQLite ignores a foreign key added to an existing table.
 
 ---
 
@@ -42,7 +44,7 @@ Services are grouped by functional area. Where a method has no in-production cal
 - **File:** `app/Services/TicketStatusService.php`
 - **What it is:** Caches and resolves the numeric database ID of each ticket status (Open, In Progress, Closed, Cancelled, Pending Budget, Rejected) using its enum name.
 - **Dependencies (constructor):** None. It is a stateless service relying on a static in-memory array and the Laravel cache.
-- **Note:** Registered as a **singleton** by `app/Providers/AppServiceProvider.php:74`, and injected into `AIService`, `AnalyticsDashboardService`, `TechnicianAssignmentService`, `TicketSearchService`, `TicketWorkflowService`, `ApproveBudgetAction`, `TicketBudgetController`, and the ticket action classes.
+- **Note:** Registered as a **singleton** by `app/Providers/AppServiceProvider.php:76`, and injected into `AIService`, `AnalyticsDashboardService`, `TechnicianAssignmentService`, `TicketSearchService`, `TicketWorkflowService`, `ApproveBudgetAction`, `TicketBudgetController`, and the ticket action classes.
 
 #### `getByName(TicketStatusEnum $status): int`
 - **What it does:** Returns the DB `id` of the given status enum.
@@ -54,8 +56,8 @@ Services are grouped by functional area. Where a method has no in-production cal
 - **Who calls it / when:** Very widely — indirectly via almost every ticket service/action, and directly by:
   - `app/Actions/ApproveBudgetAction.php:31`, `app/Actions/CreatePreventiveTicketAction.php`, `app/Actions/CreatePublicTicketAction.php`, `app/Actions/CreateTicketAction.php`, `app/Actions/ScheduleMaintenanceAction.php`
   - `app/Domain/Ticket/Actions/*` (StartTicketAction, CloseTicketAction, ReopenTicketAction, CancelTicketAction, CheckHigherPriorityAction)
-  - `app/Domain/Ticket/Services/TicketStatusChecker.php`, `app/Http/Controllers/TicketBudgetController.php:145,175`, `app/Http/Controllers/UiController.php`, `app/Console/Commands/SimulateTelemetry.php`
-  - `AIService.php:41-42`, `AnalyticsDashboardService.php:55-57,166`, `TechnicianAssignmentService.php:24,68`, `TicketSearchService.php:43`, `TicketWorkflowService.php:69`, and `app/Models/Ticket.php`.
+  - `app/Http/Controllers/TicketBudgetController.php:145,175`, `app/Http/Controllers/UiController.php`, `app/Console/Commands/SimulateTelemetry.php`
+  - `AIService.php:43-44`, `AnalyticsDashboardService.php:55-57,166`, `TechnicianAssignmentService.php:24,68`, `TicketSearchService.php:43`, `TicketWorkflowService.php:69`, and `app/Models/Ticket.php`.
 
 #### `flush(): void`
 - **What it does:** Clears both the static in-memory cache and all persistent `ticket_status:*` keys.
@@ -73,7 +75,7 @@ Services are grouped by functional area. Where a method has no in-production cal
 - **Dependencies (constructor):**
   - `AnalyticsDashboardService $dashboardService`
   - `AnalyticsExportService $exportService`
-- **Note:** Registered as a **singleton** in `app/Providers/AppServiceProvider.php:75`.
+- **Note:** Registered as a **singleton** in `app/Providers/AppServiceProvider.php:77`.
 
 #### `getDashboardPayload(): array<string, mixed>`
 - **What it does:** Returns the full analytics dashboard payload.
@@ -108,23 +110,23 @@ Services are grouped by functional area. Where a method has no in-production cal
 #### `getDashboardPayload(): array<string, mixed>`
 - **What it does:** Returns the complete dashboard payload, cached.
 - **How it works / steps:** Wraps `buildPayload()` in `Cache::remember('analytics_dashboard_payload:{locale}', 60, ...)` so the payload is rebuilt at most once per minute per locale (`app/Services/AnalyticsDashboardService.php:39-46`).
-- **Who calls it / when:** `app/Http/Controllers/AnalyticsController.php:39` (dashboard view). The cache key is also invalidated by `app/Observers/TicketObserver.php:73`.
+- **Who calls it / when:** `app/Http/Controllers/AnalyticsController.php:39` (dashboard view). The cache key is also invalidated by `app/Observers/TicketObserver.php:98`.
 
 *(All other methods below are private helpers of `buildPayload()` and are listed for completeness.)*
 
-- `private buildPayload(): array` — resolves Open/InProgress/Closed IDs, runs the four domain queries, computes `sla_success` from `sla_met / closed_tickets`, then assembles the entire payload: average resolution/waiting minutes, open/in_progress/waiting_budget/closed counts, system availability, SLA %, priority breakdown, status breakdown, monthly tickets/cost/SLA/MTTR, urgency/room/budget-status/source breakdowns, cost by equipment, stock monthly in/out, low-stock parts, notifications by type, users by role, top equipment/rooms/technicians, and recent activity. It delegates to the private helpers:
-  - `monthlyPerformanceData(array $monthLabels): array{sla, mttr}` — runs a driver-aware SQL query built through `App\Support\DateSql` (SQLite `strftime`/`julianday`, PostgreSQL `to_char`/`EXTRACT`, MySQL `DATE_FORMAT`/`TIMESTAMPDIFF`) over the last months to compute monthly SLA % and MTTR minutes (`:143-189`).
-  - `urgencyBreakdown(Builder $baseQuery): array` — counts `urgent` true vs false/null tickets (`:196-208`).
-  - `roomBreakdown(Builder $baseQuery): array` — counts tickets grouped by room, top 8 by volume (`:215-230`).
-  - `budgetBreakdown(Builder $baseQuery): array` — counts by `budget_status` (Pending/Approved/Rejected) (`:237-252`).
-  - `sourceBreakdown(Builder $baseQuery): array` — counts by `source` (web/qr/api/mobile/telefone), defaulting empty to `web` (`:259-281`).
-  - `costByEquipment(): array` — sums `actual_cost` per equipment, top 8 (`:288-305`).
-  - `stockMonthlyData(array $monthLabels): array` — sums stock In/Return vs Out per month, using `StockMovementTypeEnum` (`:313-348`).
-  - `lowStockParts(): array` — low-stock parts, top 8 by criticality ratio (`:355-368`).
-  - `notificationsByType(): array` — counts notifications per type, top 8, with localized labels (`:375-399`).
-  - `usersByRole(): array` — counts users per profile name (`:406-420`).
-  - `getRecentActivity(): Collection` — last 6 audits with user and a readable description (`:427-440`).
-  - `getAuditDescription(string $event): string` — maps audit event to human text (`:445-453`).
+- `private buildPayload(): array` — resolves Open/InProgress/Closed IDs, runs the four domain queries, computes `sla_success` as `sla_met / closed_tickets` **or `null` when nothing has been closed** (a period with no closures has no SLA evidence, and 100 % rewarded precisely that), then assembles the entire payload: average resolution/waiting minutes, open/in_progress/waiting_budget/closed counts, system availability, SLA %, priority breakdown, status breakdown, monthly tickets/cost/SLA/MTTR, urgency/room/budget-status/source breakdowns, cost by equipment, stock monthly in/out, low-stock parts, notifications by type, users by role, top equipment/rooms/technicians, and recent activity. The `null` reaches `resources/js/pages/analytics/kpi.js:86`, which renders it as an em dash instead of `0 %`. It delegates to the private helpers:
+  - `monthlyPerformanceData(array $monthLabels): array{sla, mttr}` — runs a driver-aware SQL query built through `App\Support\DateSql` (SQLite `strftime`/`julianday`, PostgreSQL `to_char`/`EXTRACT`, MySQL `DATE_FORMAT`/`TIMESTAMPDIFF`) over the last months to compute monthly SLA % and MTTR minutes; a month with no closures is `null`, the same convention as the headline figure (`:154-205`).
+  - `urgencyBreakdown(Builder $baseQuery): array` — counts `urgent` true vs false/null tickets (`:213-225`).
+  - `roomBreakdown(Builder $baseQuery): array` — counts tickets grouped by room, top 8 by volume (`:233-252`).
+  - `budgetBreakdown(Builder $baseQuery): array` — counts by `budget_status` (Pending/Approved/Rejected) (`:260-279`).
+  - `sourceBreakdown(Builder $baseQuery): array` — counts by `source` (web/qr/api/mobile/telefone), defaulting empty to `web` (`:287-313`).
+  - `costByEquipment(): array` — sums `actual_cost` per equipment, top 8 (`:320-341`).
+  - `stockMonthlyData(array $monthLabels): array` — sums stock In/Return vs Out per month, using `StockMovementTypeEnum` (`:349-388`).
+  - `lowStockParts(): array` — low-stock parts, top 8 by criticality ratio (`:395-412`).
+  - `notificationsByType(): array` — counts notifications per type, top 8, with localized labels (`:419-445`).
+  - `usersByRole(): array` — counts users per profile name (`:452-470`).
+  - `getRecentActivity(): Collection` — last 6 audits with user and a readable description (`:477-495`).
+  - `getAuditDescription(string $event): string` — maps audit event to human text (`:500-508`).
 
 ---
 
@@ -222,7 +224,7 @@ Services are grouped by functional area. Where a method has no in-production cal
 - **Dependencies (constructor):**
   - `BudgetNotificationService $budgetService`
   - `TicketNotificationService $ticketService`
-- **Note:** Registered as a **singleton** in `app/Providers/AppServiceProvider.php:76`.
+- **Note:** Registered as a **singleton** in `app/Providers/AppServiceProvider.php:78`.
 
 #### `notifyBudgetSubmitted(Ticket $ticket, string $message): void`
 - **What it does:** Forwards to `budgetService->notifyBudgetSubmitted`.
@@ -238,11 +240,11 @@ Services are grouped by functional area. Where a method has no in-production cal
 
 #### `notifyTicketClosed(Ticket $ticket, string $message): void`
 - **What it does:** Forwards to `ticketService->notifyTicketClosed`.
-- **Who calls it / when:** Via `app/Http/Controllers/Ticket/TicketCloseController.php:116`.
+- **Who calls it / when:** Via `app/Http/Controllers/Ticket/TicketCloseController.php:119`.
 
 #### `notifyPriorityOverride(Ticket $ticket, User $technician, int $urgentCount): void`
 - **What it does:** Forwards to `ticketService->notifyPriorityOverride`, passing the technician's name.
-- **Who calls it / when:** Via `app/Http/Controllers/Ticket/TicketCloseController.php:107` and `app/Http/Controllers/Ticket/TicketStartController.php:74` (when a technician works a lower-priority ticket while more urgent ones are open).
+- **Who calls it / when:** Via `app/Http/Controllers/Ticket/TicketCloseController.php:110` and `app/Http/Controllers/Ticket/TicketStartController.php:74` (when a technician works a lower-priority ticket while more urgent ones are open).
 
 #### `notifyTicketCreated(Ticket $ticket): void`
 - **What it does:** Forwards to `budgetService->notifyTicketCreated`.
@@ -286,12 +288,12 @@ Services are grouped by functional area. Where a method has no in-production cal
 #### `notifyTicketClosed(Ticket $ticket, string $message): void`
 - **What it does:** Notifies the ticket creator that their ticket was closed.
 - **How it works / steps:** If the ticket has a `user_id`, `createForUser` with type `TicketClosed`, title "Ticket Closed - #{id}", linking `/ui/tickets/{id}` (`app/Services/TicketNotificationService.php:19-30`).
-- **Who calls it / when:** Via `NotificationService::notifyTicketClosed` from `app/Http/Controllers/Ticket/TicketCloseController.php:116`.
+- **Who calls it / when:** Via `NotificationService::notifyTicketClosed` from `app/Http/Controllers/Ticket/TicketCloseController.php:119`.
 
 #### `notifyPriorityOverride(Ticket $ticket, string $technicianName, int $urgentCount): void`
 - **What it does:** Alerts all admins when a technician starts a ticket while ignoring more-urgent open ones.
 - **How it works / steps:** Builds a title "Non-Priority Ticket" and a descriptive message naming the technician, ticket, priority and how many more-urgent tickets were ignored; sends via `createForAdmins(...)` with type `PriorityOverride`, linking the ticket (`:35-46`).
-- **Who calls it / when:** Via `NotificationService::notifyPriorityOverride` from `app/Http/Controllers/Ticket/TicketCloseController.php:107` and `app/Http/Controllers/Ticket/TicketStartController.php:74`.
+- **Who calls it / when:** Via `NotificationService::notifyPriorityOverride` from `app/Http/Controllers/Ticket/TicketCloseController.php:110` and `app/Http/Controllers/Ticket/TicketStartController.php:74`.
 
 ---
 
@@ -338,18 +340,18 @@ Services are grouped by functional area. Where a method has no in-production cal
 - **Who calls it / when:** Internally by `createToken()`. (The same utility is replicated as `User::hashToken()`, used by `app/Http/Middleware/CustomAuthMiddleware.php:88`, `app/Services/AuthUserResolver.php:43`, `app/Http/Controllers/ThemeController.php:107`, `app/Traits/Auditable.php:136`.)
 
 #### `createToken(User $user, Request $request, bool $withSession = true): string`
-- **What it does:** Generates, hashes and persists a new API token for the user; optionally ties it to the current session.
+- **What it does:** Generates, hashes and persists a new API token for the user, stamps the last-login columns, and optionally ties the token to the current session.
 - **How it works / steps:**
-  1. Reads token length from `config('services.custom.tokens.length', 60)` and generates a random plain string (`:62-64`).
-  2. Stores `api_token = hashToken(plain)` and `token_created_at = now()` on the user and saves (`:65-67`).
-  3. If `$withSession` and the request has a session: regenerates the session, stores the **plain** token as `api_token`, and saves the session (`:69-72`). (When `false` — e.g. admin creating a user — the new user's session/cookies are not assumed.)
-  4. Loads the `profile` relation and returns the plain token (`:74-76`).
-- **Who calls it / when:** `app/Http/Controllers/AuthController.php:69` (login, `$withSession = true`) and `app/Http/Controllers/RegisterController.php:41` (registration, `$withSession = false`).
+  1. Reads token length from `config('services.custom.tokens.length', 60)` and generates a random plain string (`:59-61`).
+  2. Stores `api_token = hashToken(plain)`, `token_created_at = now()`, `last_login_at = now()` and `last_login_ip = $request->ip()` on the user and saves (`:62-69`). This is the only place a verified credential reaches the database, so it is the only place `last_login_*` can be written — before this they stayed null while `UserResource` served them to the admin API.
+  3. If `$withSession` and the request has a session: regenerates the session, stores the **plain** token as `api_token`, and saves the session (`:71-75`). (When `false` — e.g. admin creating a user — the new user's session/cookies are not assumed.)
+  4. Loads the `profile` relation and returns the plain token (`:76-78`).
+- **Who calls it / when:** `app/Http/Controllers/AuthController.php:78` (login, `$withSession = true`) and `app/Http/Controllers/RegisterController.php:41` (registration, `$withSession = false`).
 
 #### `buildAuthResponse(User $user, string $plainToken, Request $request, int $statusCode = 200): JsonResponse`
 - **What it does:** Builds the authentication JSON response with the user/token and sets the `api_token` and `auth_token` cookies.
-- **How it works / steps:** Returns a JSON `{user, token}` payload with the given status, plus two HttpOnly, SameSite=Lax cookies (`api_token` and `auth_token`) holding the plain token for 30 days, `Secure` when the request is over HTTPS (`:82-89`).
-- **Who calls it / when:** `app/Http/Controllers/AuthController.php:71` (after a successful login).
+- **How it works / steps:** Returns a JSON `{user, token}` payload with the given status, plus two HttpOnly, SameSite=Lax cookies (`api_token` and `auth_token`) holding the plain token for 30 days, `Secure` when the request is over HTTPS (`:86-90`).
+- **Who calls it / when:** `app/Http/Controllers/AuthController.php:80` (after a successful login).
 
 #### `buildLogoutResponse(Request $request): JsonResponse`
 - **What it does:** Invalidates the session and removes both auth cookies.
@@ -408,100 +410,88 @@ Services are grouped by functional area. Where a method has no in-production cal
 - **Source of truth:** `config('locales')` (`languages` list), and currency lists delegated to `PreferencesService`.
 
 #### `static currencySymbol(string $currency): string`
-- Returns the plain symbol (€, £, $, …) for an ISO 4217 code, or the code itself if unknown (`app/Services/LocaleService.php:74-77`).
+- Returns the plain symbol (€, £, $, …) for an ISO 4217 code, or the code itself if unknown (`app/Services/LocaleService.php:86-89`).
 
 #### `static grouped(): array`
-- Returns the languages array from `config('locales.languages')` filtered to arrays (`:84-93`).
+- Returns the languages array from `config('locales.languages')` filtered to arrays (`:96-114`).
 
 #### `static groupedByContinent(): array`
-- Groups supported languages by their `continent` metadata (`:100-113`).
+- Groups supported languages by their `continent` metadata (`:139-152`).
 
 #### `static currenciesByContinent(): array`
-- Groups supported currencies by continent using a built-in map (`:120-178`).
+- Groups supported currencies by continent using a built-in map (`:159-217`).
 
 #### `static supportedCurrencies(): list<string>`
-- Delegates to `PreferencesService::supportedCurrencies()` (`:188-191`).
+- Delegates to `PreferencesService::supportedCurrencies()` (`:227-230`).
 
 #### `static currencyName(string $currency): string`
-- Returns the full localized-looking name of a currency code, or the code (`:196-247`).
+- Returns the full localized-looking name of a currency code, or the code (`:235-286`).
 
 #### `static all(): array<string, array>`
-- Flat (code => metadata) list of all languages sorted alphabetically by name (with intl Collator when available) (`:254-265`).
-
-#### `static codes(): list<string>`
-- Returns `array_keys(self::all())` (`:296-299`).
+- Flat (code => metadata) list of all languages sorted alphabetically by name (with intl Collator when available) (`:293-304`).
 
 #### `static resolveLocale(?string $locale = null): array{code, locale}`
-- Maps a short code to the default formatting locale (e.g. `pt` → `pt-PT`) using the `default_locale` metadata (`:306-321`).
+- Maps a short code to the default formatting locale (e.g. `pt` → `pt-PT`) using the `default_locale` metadata (`:335-350`).
 
 #### `static default(): string`
-- Returns the system default locale (`pt-PT` unless `config('locales.default')` says otherwise) (`:326-336`).
+- Returns the system default locale (`pt-PT` unless `config('locales.default')` says otherwise) (`:355-366`).
 
 #### `static isSupported(string $locale): bool`
-- True if the exact code exists or its base language prefix exists (`:341-355`).
-
-#### `static resolveDefaultLocale(string $locale): array{code, default_locale}`
-- Resolves the `default_locale` for a base language code (`:362-378`).
+- True if the exact code exists or its base language prefix exists (`:371-385`).
 
 #### `static meta(string $locale): ?array`
-- Returns the language metadata array or null (`:385-388`).
+- Returns the language metadata array or null (`:392-395`).
 
 #### `static taxIdentifierLabel(?string $locale = null): string`
-- Returns the region-specific tax label (NIF, CNPJ, EIN, SIRET, …) for the locale (`:393-415`).
+- Returns the region-specific tax label (NIF, CNPJ, EIN, SIRET, …) for the locale (`:400-422`).
 
 #### `static indirectTaxLabel(?string $locale = null): string`
-- Returns the region-specific indirect-tax label (IVA, VAT, TVA, MwSt, …) (`:420-439`).
+- Returns the region-specific indirect-tax label (IVA, VAT, TVA, MwSt, …) (`:427-446`).
 
 #### `static flagEmoji(?string $countryCode): string`
-- Converts an ISO-3166 alpha-2 code to its flag emoji, or a neutral flag for invalid input (`:444-456`).
+- Converts an ISO-3166 alpha-2 code to its flag emoji, or a neutral flag for invalid input (`:451-463`).
 
 #### `static isRtl(string $locale): bool`
-- True if the language metadata marks RTL (`:461-466`).
+- True if the language metadata marks RTL (`:468-473`).
 
 #### `static currency(?string $locale = null): string`
-- Returns the first ISO 4217 currency for the (or current) locale, defaulting to EUR (`:471-477`).
+- Returns the first ISO 4217 currency for the (or current) locale, defaulting to EUR (`:478-484`).
 
 #### `static unitSystem(?string $locale = null): string`
-- Returns `metric`/`imperial_us`/`imperial_uk` for the locale (`:482-488`).
+- Returns `metric`/`imperial_us`/`imperial_uk` for the locale (`:489-495`).
 
 #### `static formatNumber(int|float $value, int $decimals = 0, ?string $locale = null): string`
-- Formats a number using `intl` `NumberFormatter` when available, else `number_format` with the locale's separators (`:493-515`).
+- Formats a number using `intl` `NumberFormatter` when available, else `number_format` with the locale's separators (`:500-522`).
 
 #### `static formatCurrency(int|float $value, ?string $currency = null, ?string $locale = null): string`
-- Formats money with `NumberFormatter::CURRENCY`, with a manual symbol placement fallback (`:520-542`).
+- Formats money with `NumberFormatter::CURRENCY`, with a manual symbol placement fallback (`:527-549`).
 
 #### `static formatPercent(int|float $value, int $decimals = 1, ?string $locale = null): string`
-- Formats a percentage (value is the actual percent, e.g. 55 → "55%") (`:547-566`).
+- Formats a percentage (value is the actual percent, e.g. 55 → "55%") (`:554-573`).
 
 #### `static formatDate(mixed $value, ?string $locale = null): string`
-- Short date formatting (or `d/m/Y` fallback) (`:571-598`).
+- Short date formatting (or `d/m/Y` fallback) (`:578-605`).
 
 #### `static formatDateTime(mixed $value, ?string $locale = null): string`
-- Short date-time formatting (or `d/m/Y H:i` fallback) (`:603-630`).
+- Short date-time formatting (or `d/m/Y H:i` fallback) (`:610-637`).
 
 #### `static convertUnit(float|int $value, string $type, string $fromUnit = '', ?string $locale = null): array`
-- Converts `temperature`/`distance`/`length`/`weight`/`volume` between metric and imperial based on the locale's unit system; returns `{value, unit, formatted}` (`:635-725`).
+- Converts `temperature`/`distance`/`length`/`weight`/`volume` between metric and imperial based on the locale's unit system; returns `{value, unit, formatted}` (`:644-734`).
 
 #### `static sanitize(string $locale): string`
-- Normalizes a locale to a supported code, falling back to `default()` if invalid (`:750-776`).
+- Normalizes a locale to a supported code, falling back to `default()` if invalid (`:763-789`).
 
 #### `static resolveFromRequest(Request $request): string`
-- Resolves the language from session, then cookie, then browser `Accept-Language`, then default — each sanitized (`:781-788`).
+- Resolves the language from session, then cookie, then browser `Accept-Language`, then default — each sanitized (`:794-801`).
 
 #### `static fromBrowser(Request $request): ?string`
-- Matches the browser's language list against supported codes/base prefixes (`:793-820`).
+- Matches the browser's language list against supported codes/base prefixes (`:806-833`).
 
 #### `static userCurrency(?Request $request = null): string`
-- Resolves the active currency from `PreferencesService` for the request, or the auth user's prefs, or `EUR` (`:843-857`).
+- Resolves the active currency from `PreferencesService` for the request, or the auth user's prefs, or `EUR` (`:856-870`).
 
 #### `static userDateFormat(?Request $request = null): string`
-- Resolves the active date format similarly, defaulting to `d/m/Y` (`:862-876`).
-
-#### `static formatMoney(int|float $value, ?Request $request = null, ?string $currency = null): string`
-- Formats a monetary value in the user's currency (`:881-886`).
-
-#### `static formatUserDate(mixed $value, ?Request $request = null, ?string $format = null): string`
-- Formats a date using the user's format string (`:891-906`).
+- Resolves the active date format similarly, defaulting to `d/m/Y` (`:875-889`).
 
 - **Who calls it / when:** Broadly across the app and specifically:
   - `app/Http/Controllers/LocaleController.php:27,31` (`isSupported`, `sanitize`),
@@ -515,8 +505,8 @@ Services are grouped by functional area. Where a method has no in-production cal
 ### LocalizationService
 
 - **File:** `app/Services/LocalizationService.php`
-- **What it is:** Formats numbers, decimals, currency, dates, datetimes, percent and units honouring the logged-in user's preference profile (resolved via `PreferencesService`), with a locale-based fallback when no explicit choice exists.
-- **Dependencies (constructor):** None (stateless; resolves preferences from the current request, and uses `app(CurrencyRateService::class)` and `LocaleService` internally).
+- **What it is:** Formats numbers, decimals, currency, dates, datetimes, percent and units honouring the logged-in user's preference profile (resolved via `PreferencesService`, or from `PreferenceContext` inside a queued job), with a locale-based fallback when no explicit choice exists.
+- **Dependencies (constructor):** None (stateless; resolves preferences from `PreferenceContext`, then the current request, and uses `app(CurrencyRateService::class)` and `LocaleService` internally). Not bound in the container, so every `app(LocalizationService::class)` is a new instance — which is why the job-scoped preferences live in the `PreferenceContext` singleton instead of here.
 
 #### `formatNumber(float $value, ?string $locale = null): string`
 - Formats an integer-style number with the user's separators, or `LocaleService::formatNumber` when no explicit separator choice (`app/Services/LocalizationService.php:27-37`).
@@ -541,8 +531,19 @@ Services are grouped by functional area. Where a method has no in-production cal
 
 - **Who calls it / when:**
   - `app/Http/Controllers/StockReportController.php:116-119` (`formatDecimal` for cost/price/stock values),
-  - `app/Http/Controllers/Ticket/TicketCloseController.php:115` (`formatDecimal` for the close cost),
+  - `app/Http/Controllers/Ticket/TicketCloseController.php:118` (`formatDecimal` for the close cost),
   - internally by `AnalyticsExportService` (via `localization()`), and registered/injected in `app/Providers/AppServiceProvider.php`.
+
+---
+
+### PreferenceContext
+
+- **File:** `app/Services/PreferenceContext.php`
+- **What it is:** Holds the preferences a queued job must format with, because a worker has no request, session or authenticated user for `PreferencesService::current()` to read. Registered as a singleton in `AppServiceProvider::register()` so every `LocalizationService` instance inside the same job sees it.
+- **API:** `set(array $preferences)`, `clear()`, `get(): ?array`.
+- **Who writes it:** `App\Jobs\Concerns\SetsRequesterContext::applyRequesterContext()`, used by the five export jobs.
+- **Who clears it:** `AppServiceProvider::resetRequesterContextForQueuedJobs()`, whose `Queue::before` listener runs before every job — including on the `sync` driver — so one requester's currency cannot leak into the next job.
+- **Who reads it:** `LocalizationService::preferences()` (`app/Services/LocalizationService.php:201-226`), which checks this context before falling back to the request and to the hardcoded defaults.
 
 ---
 
@@ -554,10 +555,13 @@ Services are grouped by functional area. Where a method has no in-production cal
 - **Supported whitelists:** 33 currencies, 7 date formats, 4 time formats, 8 number formats.
 
 #### `static forUser(Authenticatable $user): array`
-- Returns a user's stored preferences, or the defaults if no row (`app/Services/PreferencesService.php:87-102`).
+- Returns a user's stored preferences, or the defaults if no row, with `users.locale` preferred for `language` (`app/Services/PreferencesService.php:98-101`). The column is read from the loaded model, so no extra query.
+
+#### `static forUserId(int $userId): array`
+- Same result for a user id only — the path a queued job uses, where there is no authenticated model, request or guard (`:113-116`). Reads `user_preferences` and `users.locale` (`storedForUserId()` `:121-140`, `withColumnLocale()` `:146-155`).
 
 #### `static fromSession(Request $request): array`
-- Returns session-stored preferences (guests), or defaults (`:107-124`).
+- Returns session-stored preferences (guests), or defaults (`:160-177`).
 
 #### `static current(Request $request): array`
 - Resolves the user via `$request->user()` → `Auth::guard('api')->user()` → `AuthUserResolver::fromRequest`; if found uses `forUser`, else `fromSession` (`:133-144`).
@@ -824,59 +828,45 @@ Services are grouped by functional area. Where a method has no in-production cal
 - **File:** `app/Services/ThemePresetService.php`
 - **What it is:** Single source of truth for the 28 visual themes (14 colour families × light/dark), mapping preset colours to CSS tokens and persisting the user's selection.
 - **Dependencies (constructor):** None.
-- **Constants:** `DEFAULT_THEME = 'claro-laranja'` (applied to guests and users with no saved theme); `COLOR_KEYS` (10 form-field names) and `TOKENS` (10 CSS variables).
+- **Constants:** `DEFAULT_THEME = 'claro-laranja'` (applied to guests and users with no saved theme) and `TOKENS` (the 10 CSS variables each preset fills).
 
 #### `all(): array<string, array>`
-- **What it does:** Returns the full map of theme id → preset (label, mode, family, and the 10 colours) (`app/Services/ThemePresetService.php:49-473`).
+- **What it does:** Returns the full map of theme id → preset (label, mode, family, and the 10 colours) (`app/Services/ThemePresetService.php:40-464`).
 - **Who calls it / when:** `app/Http/Controllers/ThemeController.php:48` (validation of allowed themes) and `app/Http/Controllers/UiController.php:361,375`; also `resources/views/ui/partials/theme-meta.blade.php:27` (embedded as JSON).
 
 #### `find(string $id): ?array`
 - **What it does:** Returns a single preset by id (with its `id` injected), or null.
-- **How it works / steps:** Lookup in `all()` and adds `preset['id'] = $id` (`:475-486`).
+- **How it works / steps:** Lookup in `all()` and adds `preset['id'] = $id` (`:467-478`).
 - **Who calls it / when:** Internally by many methods. No direct external callers found outside the service.
 
 #### `paired(string $id): ?array`
 - **What it does:** Returns the opposite-mode (light ↔ dark) theme of the same family.
-- **How it works / steps:** Finds the preset; scans `all()` for a candidate with the same `family` and different `mode`; returns it or null (`:491-506`).
+- **How it works / steps:** Finds the preset; scans `all()` for a candidate with the same `family` and different `mode`; returns it or null (`:484-499`).
 - **Who calls it / when:** **No in-production caller found**; a public utility for the light/dark toggle.
 
 #### `valuesFor(string $id): array`
 - **What it does:** Maps a preset's colours to their CSS tokens (`--color-primary`, etc.).
-- **How it works / steps:** For each `TOKENS` entry, outputs `token => preset[field]`; empty array if the id is unknown (`:513-528`).
+- **How it works / steps:** For each `TOKENS` entry, outputs `token => preset[field]`; empty array if the id is unknown (`:506-521`).
 - **Who calls it / when:** `app/Http/Controllers/ThemeController.php:23,57,136` and `app/Http/Controllers/UiController.php` theme rendering.
-
-#### `findByValues(array $values): ?string`
-- **What it does:** Reverse-matches a set of stored colour values back to a preset id.
-- **How it works / steps:** Normalizes field names in `COLOR_KEYS` and colours (lowercase, strips leading `#`), then compares each preset's colour family to find a full match; returns null if none (`:536-562`).
-- **Who calls it / when:** **No in-production caller found**; used for detecting which preset matches already-stored (possibly case-normalized) colours.
 
 #### `effectiveThemeId(?string $preference = null): string`
 - **What it does:** Resolves the effective theme id from a user preference, falling back to the default.
-- **How it works / steps:** Returns the preference if it maps to a known preset, else `DEFAULT_THEME` (`:570-577`).
+- **How it works / steps:** Returns the preference if it maps to a known preset, else `DEFAULT_THEME` (`:529-536`).
 - **Who calls it / when:** `app/Http/Controllers/ThemeController.php:66` and `resources/views/ui/partials/theme-meta.blade.php:13`.
 
 #### `active(?string $preference = null): array`
 - **What it does:** Returns the active preset for the user (or the default for guests).
-- **How it works / steps:** `find(effectiveThemeId($preference))` (`:585-588`).
+- **How it works / steps:** `find(effectiveThemeId($preference))` (`:544-552`).
 - **Who calls it / when:** `app/Http/Controllers/UiController.php:362`.
 
 #### `mode(?string $preference = null): string`
-- **What it does:** Returns `dark` or `light` for the active theme (`:593-596`).
+- **What it does:** Returns `dark` or `light` for the active theme (`:557-562`).
 - **Who calls it / when:** `resources/views/ui/partials/theme-meta.blade.php:17`.
-
-#### `apply(string $id): array`
-- **What it does:** Globally applies a preset by writing its colours to the `theme_settings` table.
-- **How it works / steps:** Looks up the preset (throws `InvalidArgumentException` if unknown); `updateOrCreate`s each token key with the preset colour, plus a `theme_name` row; returns the preset (`:603-621`).
-- **Who calls it / when:** **No in-production caller found** in `app/` or routes; the admin-facing per-user save uses `applyForUser` instead.
 
 #### `applyForUser(User $user, string $id): array`
 - **What it does:** Persists a preset as the user's personal theme.
-- **How it works / steps:** Validates the preset (throws on unknown); sets `$user->theme = $id` and saves; returns the preset (`:628-640`).
+- **How it works / steps:** Validates the preset (throws on unknown); sets `$user->theme = $id` and saves; returns the preset (`:569-582`).
 - **Who calls it / when:** `app/Http/Controllers/ThemeController.php:51` and `app/Http/Controllers/UiController.php:379` (theme-save endpoints).
-
-#### `colorKeys(): array`
-- **What it does:** Returns the 10 colour field names (`:642-645`).
-- **Who calls it / when:** No in-production caller found outside the service; a utility for form validation/rendering.
 
 ---
 
@@ -908,7 +898,7 @@ Services are grouped by functional area. Where a method has no in-production cal
 - **File:** `app/Services/SystemSettingsService.php`
 - **What it is:** Describes, reads, updates, resets and auto-applies the curated set of system settings shown on the admin settings page.
 - **Dependencies (constructor):** None.
-- **Note:** Registered as a **singleton** in `app/Providers/AppServiceProvider.php:78`.
+- **Note:** Registered as a **singleton** in `app/Providers/AppServiceProvider.php:80`.
 
 #### `groups(): array`
 - **What it does:** Returns the ordered configuration groups (app, auth, budget, ai, analytics, pagination, tokens, notification, backup) with their fields (`label`, `type` = text/number/float/select/bool, min/max/step/unit/default/help). Only curated, non-secret keys are exposed (`app/Services/SystemSettingsService.php:22-206`).
@@ -932,7 +922,7 @@ Services are grouped by functional area. Where a method has no in-production cal
 #### `applyOverrides(): void`
 - **What it does:** At application boot, loads all saved settings into `config()` so they take effect.
 - **How it works / steps:** Guarded by `Schema::hasTable('system_settings')` (returns silently during install/maintenance); loads all overrides, applies each known field to `config()` (cast), then sets the PHP timezone if `app.timezone` is valid (`:303-334`).
-- **Who calls it / when:** `app/Providers/AppServiceProvider.php:94` — `$this->app->make(SystemSettingsService::class)->applyOverrides()` in `boot()`.
+- **Who calls it / when:** `app/Providers/AppServiceProvider.php:97` — `$this->app->make(SystemSettingsService::class)->applyOverrides()` in `boot()`.
 
 *(Private helpers: `findGroup`, `findField`, `cast`, `normalize`, `normalizeSelect`, `localeOptions` (via `LocaleService::all()`), `mailers` (from `config('mail.mailers')`), `timezones` (curated list with UTC first).)*
 
@@ -980,7 +970,36 @@ Services are grouped by functional area. Where a method has no in-production cal
   3. Otherwise runs `$operation()`; on success resets (forgets) the state and returns the result (`:32-36`).
   4. On failure, increments the failure count; if it reaches `config('observability.circuit_breaker.failure_threshold', 3)`, sets `open_until` to now + `cooldown_seconds` (default 60); saves state; logs a warning; returns the fallback (`:37-58`).
   - Fallback resolution: if `$fallback` is a `Closure` it is invoked with the exception, else returned as-is (`:117-120`).
-- **Who calls it / when:** `AIService.php:94` (`run('openai', ...)`) and `CurrencyRateService.php:201` (`run('frankfurter', ...)`).
+- **Who calls it / when:** `AIService.php:100` (`run('openai', ...)`) and `CurrencyRateService.php:211` (`run('frankfurter', ...)`).
+
+---
+
+### CurrencyRateService
+
+- **File:** `app/Services/CurrencyRateService.php`
+- **What it is:** Fetches EUR-based exchange rates from the Frankfurter provider, stores them in `currency_rates`, and converts an amount between two currencies. Not bound in the container, so each `app(CurrencyRateService::class)` builds a new instance; the rate cache lives in the `Cache` store, not on the object.
+- **Dependencies (constructor):**
+  - `?CircuitBreaker $circuitBreaker = null` — optional; a fresh instance is created when null. Wraps the HTTP call as the `frankfurter` dependency (`:211`).
+  - `?FeatureFlagService $featureFlags = null` — optional; gates the outbound call on `external_currency_rates` (`:204`).
+
+#### `updateRates(): int`
+- **What it does:** Fetches the latest rates, upserts one row per target currency against `BASE_CURRENCY` (`EUR`), and returns how many pairs were stored.
+- **How it works / steps:** Skips an empty payload; ignores rates that are not `> 0`; `updateOrCreate`s `currency_rates`; forgets both cache directions for the pair (`:91-92`) because a rate that just changed may be cached as a value **or** as the miss sentinel; counts and returns (`:64-100`).
+- **Who calls it / when:** `app/Console/Commands/UpdateCurrencyRates.php:21` (artisan `currency:update-rates`), scheduled twice a day by `routes/console.php`.
+
+#### `storedRate(string $from, string $to): ?float`
+- **What it does:** Returns the stored rate for one pair, or `null` when nothing is stored for it.
+- **How it works / steps:** Upper-cases both codes; returns `1.0` for same-currency (`:111-113`); reads `currency_rate:{FROM}:{TO}` through `Cache::remember()` with the `RATE_CACHE_TTL` of 6 hours (`:50`) and caches a pair that is not stored as the `NO_RATE_CACHE_VALUE` sentinel (`:57`), because `Cache::remember()` treats a stored `null` as a miss and would otherwise re-query the table on every conversion; a non-positive stored rate is also reported as a miss (`queryStoredRate`, `:127-142`).
+- **Who calls it / when:** Internal to the class — `getRate()` (`:157`, `:192`) is the only caller; it is public because it is the read API for a single pair.
+
+#### `getRate(string $from, string $to): float`
+- **What it does:** Conversion multiplier (1 FROM = N TO) for a pair, falling back to `1.0` when no stored rate is available, so rendering never fails before the first fetch.
+- **How it works / steps:** Same-currency → `1.0`; exact pair stored → that rate; otherwise the cross rate `rate(BASE→TO) / rate(BASE→FROM)` through `baseUnitRate()` (`:186`), and `1.0` when either leg is unknown or non-positive (`:148-171`).
+- **Who calls it / when:** `convert()` (`:180`) — no other service resolves this class, so the cross-rate path is reached only through the localization layer below.
+
+#### `convert(float $amount, string $from, string $to): float`
+- **What it does:** Returns `$amount * getRate($from, $to)`.
+- **Who calls it / when:** `LocalizationService.php:69` (`formatCurrency()` converts the stored EUR value to the user's preferred currency).
 
 ---
 
@@ -993,7 +1012,7 @@ Services are grouped by functional area. Where a method has no in-production cal
 #### `enabled(string $feature, ?bool $default = null): bool`
 - **What it does:** Returns whether a feature is enabled.
 - **How it works / steps:** Fallback defaults to `config("features.flags.{$feature}")` (or the passed `$default`, else `false`); reads the cache override `feature-flag:{feature}`; returns the bool override or the fallback; cache errors fall back with a warning (`app/Services/FeatureFlagService.php:18-35`).
-- **Who calls it / when:** `AIService.php:31` (`ai_recommendations`) and `CurrencyRateService.php:194` (`external_currency_rates`).
+- **Who calls it / when:** `AIService.php:33` (`ai_recommendations`) and `CurrencyRateService.php:204` (`external_currency_rates`).
 
 #### `enable(string $feature): void`
 - **What it does:** Stores the flag as enabled (forever) (`:37-40`).
@@ -1013,27 +1032,22 @@ Services are grouped by functional area. Where a method has no in-production cal
 
 - **File:** `app/Services/QrCodeService.php`
 - **What it is:** Generates QR codes for equipment that link to the public ticket creation page.
-- **Dependencies (constructor):** None. Uses the Endroid QR-code library (`PngWriter`, `SvgWriter`).
+- **Dependencies (constructor):** None. Uses the Endroid QR-code library (`PngWriter`).
 
 #### `urlFor(Equipment $equipment): string`
 - **What it does:** Builds the public ticket-creation URL pre-filled with the equipment id.
-- **How it works:** `route('ticket.public.create', ['machine_id' => $equipment->id])` (`app/Services/QrCodeService.php:18-21`).
-- **Who calls it / when:** `app/Http/Controllers/QrCodeController.php:28` (returned alongside the data URI) and internally by `png`/`pngDataUri`/`svg`.
+- **How it works:** `route('ticket.public.create', ['machine_id' => $equipment->id])` (`app/Services/QrCodeService.php:17-20`).
+- **Who calls it / when:** `app/Http/Controllers/QrCodeController.php:28` (returned alongside the data URI) and internally by `png`/`pngDataUri`.
 
 #### `png(Equipment $equipment): string`
 - **What it does:** Renders the QR code as PNG binary data (for download).
-- **How it works:** `(new PngWriter)->write(new QrCode($urlFor(...)))->getString()` (`:26-31`).
+- **How it works:** `(new PngWriter)->write(new QrCode($urlFor(...)))->getString()` (`:25-30`).
 - **Who calls it / when:** `app/Http/Controllers/QrCodeController.php:39` (binary PNG download endpoint).
 
 #### `pngDataUri(Equipment $equipment): string`
 - **What it does:** Renders the QR code as a PNG data URI for `<img>`/PDF embedding.
-- **How it works:** Same PNG write, `getDataUri()`; throws `RuntimeException` if empty (`:36-47`).
+- **How it works:** Same PNG write, `getDataUri()`; throws `RuntimeException` if empty (`:35-46`).
 - **Who calls it / when:** `app/Http/Controllers/QrCodeController.php:27` and `app/Jobs/ExportEquipmentQrPdfJob.php:48`.
-
-#### `svg(Equipment $equipment): string`
-- **What it does:** Renders the QR code as SVG vector (high-quality printing).
-- **How it works:** `(new SvgWriter)->write(new QrCode($urlFor(...)))->getString()` (`:52-57`).
-- **Who calls it / when:** No in-production caller found outside the service; available for SVG output.
 
 ---
 

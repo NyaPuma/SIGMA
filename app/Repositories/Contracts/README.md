@@ -76,7 +76,6 @@ The job description for the ticket (maintenance request) librarian. This is the 
 | Method | Signature | What it does |
 |---|---|---|
 | `findById` | `findById(int $id): ?Ticket` | Looks up a single ticket by its primary key without loading any relations. Returns `Ticket` or `null`. |
-| `findWithRelations` | `findWithRelations(int $id, array $relations = []): ?Ticket` | Like `findById`, but eagerly loads specified relationships in one query (e.g. `['equipment', 'room', 'status', 'technician']`). This avoids the N+1 problem when you need a single ticket with its related data. Returns `Ticket` or `null`. |
 | `getAll` | `getAll(array $relations = []): LengthAwarePaginator` | Fetches a paginated list of **all** tickets, newest-first. Caller specifies which relations to eager-load. Per-page is read from `config('services.custom.pagination.default_per_page')`, defaulting to 15. Returns `LengthAwarePaginator`. |
 | `create` | `create(array $data): Ticket` | Saves a new ticket. Returns the created `Ticket` model. |
 | `update` | `update(Ticket $ticket, array $data): bool` | Updates an existing ticket. Returns `true` on success. |
@@ -85,7 +84,7 @@ The job description for the ticket (maintenance request) librarian. This is the 
 | `getTicketsByTechnician` | `getTicketsByTechnician(int $technicianId): LengthAwarePaginator` | Returns only tickets assigned to a specific technician (applies the `forTechnician($technicianId)` scope on the model). Same five eager-loaded relationships as `getOpenTickets()`. Paginated, newest-first. Powers the technician's "my assignments" view. |
 | `getTicketsByUser` | `getTicketsByUser(int $userId): LengthAwarePaginator` | Returns only tickets created by a specific user (`WHERE user_id = $userId`). Eager-loads four relationships: `equipment`, `room`, `technician`, and `status` (notably does *not* load `user` since the caller *is* the user). Paginated, newest-first. Powers the "my requests" view. |
 
-**PHPDoc types:** `findWithRelations` and `getAll` use `@param array<int, string>` for `$relations`. `getAll`, `getOpenTickets`, `getTicketsByTechnician`, and `getTicketsByUser` all use `@return LengthAwarePaginator<Ticket>`.
+**PHPDoc types:** `getAll` uses `@param array<int, string>` for `$relations`. `getAll`, `getOpenTickets`, `getTicketsByTechnician`, and `getTicketsByUser` all use `@return LengthAwarePaginator<Ticket>`.
 
 ---
 

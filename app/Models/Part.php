@@ -4,7 +4,6 @@ declare(strict_types=1);
 
 namespace App\Models;
 
-use App\Enums\PartUnitOfMeasureEnum;
 use App\Traits\Auditable;
 use Database\Factories\PartFactory;
 use Illuminate\Database\Eloquent\Builder;
@@ -15,7 +14,6 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\Pivot;
 use Illuminate\Database\Eloquent\SoftDeletes;
-use InvalidArgumentException;
 
 /**
  * @property-read TaxRate|null $taxRate
@@ -147,15 +145,5 @@ final class Part extends Model
     public function isLowStock(): bool
     {
         return (int) $this->current_stock <= (int) $this->min_stock;
-    }
-
-    /**
-     * Validate that the unit of measure matches a valid enum case.
-     */
-    public function validateUnitOfMeasure(string $unit): void
-    {
-        if (PartUnitOfMeasureEnum::tryFrom($unit) === null) {
-            throw new InvalidArgumentException("Invalid unit of measure: {$unit}");
-        }
     }
 }

@@ -26,10 +26,6 @@ Each file controls one area of the app. The value of every setting can usually b
 - **What it controls:** How daily database backups are taken — where they're saved, whether they're compressed, how long they're kept, and which tables are skipped.
 - **How it works:** The scheduled backup command reads this to build a compressed `.sql` dump, keep 30 days of history (removing anything older), and exclude log-like tables (e.g. `failed_jobs`). Offsite storage (like an S3 bucket) can also be enabled.
 
-### `broadcasting.php`
-- **What it controls:** How the app pushes live events to the browser in real time (e.g. Pusher).
-- **How it works:** If enabled, the app publishes notifications/sockets through Reverb/Pusher so pages can update instantly without a refresh. Defaults to a harmless `log`/`null` driver so nothing is broadcast unless set up.
-
 ### `cache.php`
 - **What it controls:** Where the app stores temporarily-cached data (like repeated lookups) to make things faster.
 - **How it works:** Defaults to the database store (a `cache` table), but can use files, Redis, or memory. Cached results are served instantly instead of recomputing, so the app feels snappier and the database works less.
@@ -95,8 +91,8 @@ Each file controls one area of the app. The value of every setting can usually b
 - **How it works:** When an error or slow request happens, Sentry captures it and sends it to the Sentry dashboard so developers can see and fix bugs in production. This file decides how much detail is captured.
 
 ### `services.php`
-- **What it controls:** Third-party service credentials and internal tuning — keys for Mailgun, Postmark, SendGrid, SES, Slack, plus budget threshold, analytics SLA targets, auth limits (max attempts, lockout, token expiry), upload limits, pagination size, and slow-query logging.
-- **How it works:** Provides one location for external-service keys and for app-level tuning like "how many failed logins before lockout", "max photo upload size", and "items per page". Fine-tunes the everyday behaviour of the app.
+- **What it controls:** Third-party service credentials (Mailgun, Postmark, SendGrid, Resend, SES, Slack) plus two app-level numbers that are not user-editable — `analytics.sla_target_minutes`/`analytics.pdf_export_limit` and `stock.low_stock_alert_cooldown_hours`.
+- **How it works:** Everything an administrator can change from the settings screen lives in `services.custom.php` instead, because that is the tree `SystemSettingsService` writes to. Budget threshold, auth limits, upload limits and pagination are therefore **not** declared here — a second copy under `services.*` would keep serving the `.env` value after the admin saved a new one.
 
 ### `services.custom.php`
 - **What it controls:** The single definition of the application tunables read as `services.custom.*` — auth attempts, lockout and token expiry, budget threshold, availability KPI, AI model/temperature, photo upload limits, pagination defaults, API token length, and the notification mailer.
@@ -132,7 +128,6 @@ Below is the complete key map for every config file. All values read from `.env`
 |---|---|---|
 | `database.connection` | `DB_BACKUP_CONNECTION` | `null` (uses default) |
 | `database.destination.path` | — | `storage/app/backups` |
-| `database.destination.filename` | — | `backup_<date>.sql` |
 | `database.compression` | `DB_BACKUP_COMPRESSION` | `true` |
 | `database.exclude_tables` | — | `['failed_jobs', 'personal_access_tokens']` |
 | `retention.days` | `DB_BACKUP_RETENTION_DAYS` | `30` |
@@ -189,7 +184,6 @@ Below is the complete key map for every config file. All values read from `.env`
 | `ses.region` | `AWS_DEFAULT_REGION` | `us-east-1` |
 | `slack.notifications.bot_user_oauth_token` | `SLACK_BOT_USER_OAUTH_TOKEN` | — |
 | `slack.notifications.channel` | `SLACK_BOT_USER_DEFAULT_CHANNEL` | — |
-| `budget.threshold` | `BUDGET_THRESHOLD` | `50.00` |
 | `analytics.sla_target_minutes` | `SLA_TARGET_MINUTES` | `480` |
 | `analytics.pdf_export_limit` | `ANALYTICS_PDF_EXPORT_LIMIT` | `2000` |
 
@@ -206,7 +200,7 @@ table used to list (`custom.auth.token_expiry_days`, `custom.upload.*`) were dea
 | `auth.max_attempts` | `AUTH_MAX_ATTEMPTS` | `5` |
 | `auth.lockout_minutes` | `AUTH_LOCKOUT_MINUTES` | `15` |
 | `auth.token_expiry_days` | `AUTH_TOKEN_EXPIRY_DAYS` | `30` — read by `CustomAuthMiddleware::isTokenExpired()` |
-| `budget.threshold` | `BUDGET_THRESHOLD` | `50.00` |
+| `budget.threshold` | `BUDGET_THRESHOLD` | `50.00` — read by `TicketBudgetController::processSubmission()` and writable from the settings screen; no `services.budget.threshold` twin exists anymore |
 | `analytics.system_availability` | `SYSTEM_AVAILABILITY` | `99.9` — the only availability key; SystemSettingsService saves the Settings field here and AnalyticsDashboardService reads it back |
 | `ai.model` | `AI_MODEL` | `gpt-4o-mini` — the default also applies when the variable is present but empty, which is how `.env.example` ships it |
 | `ai.temperature` | `AI_TEMPERATURE` | `0.1` |

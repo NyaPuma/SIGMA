@@ -104,13 +104,44 @@ class AnalyticsDashboardServiceTest extends FeatureTestCase
     }
 
     #[Test]
-    public function it_reports_full_sla_success_when_no_tickets_are_closed(): void
+    public function it_reports_no_sla_figure_while_nothing_has_been_closed(): void
     {
         $this->createTicket(['title' => 'Ticket aberto']);
 
         $payload = $this->service->getDashboardPayload();
 
-        $this->assertEquals(100, $payload['sla_success']);
+        // 100 here praised a team that had not resolved anything yet; the dashboard
+        // shows "—" for null instead of inventing a perfect score.
+        $this->assertNull($payload['sla_success']);
+        $this->assertSame(0, $payload['closed_tickets']);
+    }
+
+    #[Test]
+    public function it_reports_the_share_of_closed_tickets_that_resolved_within_the_target(): void
+    {
+        $closed = app(TicketStatusService::class)->getByName(TicketStatusEnum::Closed);
+        $target = (int) config('services.analytics.sla_target_minutes', 480);
+
+        $this->closeWithin($closed, 60);
+        $this->closeWithin($closed, $target);
+        $this->closeWithin($closed, $target + 120);
+
+        $payload = $this->service->getDashboardPayload();
+
+        $this->assertSame(3, $payload['closed_tickets']);
+        $this->assertEquals(66.7, $payload['sla_success']);
+    }
+
+    private function closeWithin(int $closedStatusId, int $resolutionMinutes): void
+    {
+        $openedAt = now()->subDays(3);
+
+        $this->createTicket([
+            'title' => "Encerrado em {$resolutionMinutes} minutos",
+            'status_id' => $closedStatusId,
+            'opened_at' => $openedAt,
+            'closed_at' => $openedAt->copy()->addMinutes($resolutionMinutes),
+        ]);
     }
 
     #[Test]

@@ -7,7 +7,6 @@ namespace App\Services;
 use App\Models\Equipment;
 use Endroid\QrCode\QrCode;
 use Endroid\QrCode\Writer\PngWriter;
-use Endroid\QrCode\Writer\SvgWriter;
 use RuntimeException;
 
 final class QrCodeService
@@ -44,15 +43,5 @@ final class QrCodeService
         }
 
         return $dataUri;
-    }
-
-    /**
-     * Generates the QR Code in SVG format (vector) for high-quality printing.
-     */
-    public function svg(Equipment $equipment): string
-    {
-        $result = (new SvgWriter)->write(new QrCode($this->urlFor($equipment)));
-
-        return $result->getString();
     }
 }

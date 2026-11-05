@@ -31,7 +31,6 @@ coverage
 
 phpunit.result.cache
 
-docker-compose.yml
 compose.yaml
 
 README.md

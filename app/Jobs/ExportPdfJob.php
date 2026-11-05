@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Jobs;
 
-use App\Jobs\Concerns\SetsRequesterLocale;
+use App\Jobs\Concerns\SetsRequesterContext;
 use App\Models\Notification;
 use App\Services\AnalyticsService;
 use App\Support\ExportArtifact;
@@ -22,7 +22,7 @@ final class ExportPdfJob implements ShouldQueue
     use InteractsWithQueue;
     use Queueable;
     use SerializesModels;
-    use SetsRequesterLocale;
+    use SetsRequesterContext;
 
     /**
      * The maximum number of attempts before the job fails.
@@ -40,7 +40,7 @@ final class ExportPdfJob implements ShouldQueue
 
     public function handle(AnalyticsService $analyticsService): void
     {
-        $this->applyRequesterLocale($this->userId);
+        $this->applyRequesterContext($this->userId);
 
         $disk = Storage::disk(ExportArtifact::DISK);
         $relative = ExportArtifact::path($this->userId, 'tickets_report', 'pdf');
@@ -64,7 +64,7 @@ final class ExportPdfJob implements ShouldQueue
      */
     public function failed(?Throwable $exception): void
     {
-        $this->applyRequesterLocale($this->userId);
+        $this->applyRequesterContext($this->userId);
 
         Notification::create([
             'user_id' => $this->userId,

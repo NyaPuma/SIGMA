@@ -6,38 +6,29 @@ Reusable partial components included by the main layout and other views.
 
 ## Files
 
-| File | Purpose |
-|---|---|
-| `background-effects.blade.php` | Background glow/gradient visual effects. |
-| `currency-dropdown.blade.php` | Currency selection dropdown for the topbar. |
-| `currency-modal.blade.php` | Full currency selection modal with currency name display. |
-| `date-format-dropdown.blade.php` | Date format selection dropdown for the topbar. |
-| `date-format-modal.blade.php` | Full date format selection modal with preview examples. |
-| `desktop-sidebar.blade.php` | Desktop sidebar with branding, nav links and auth box. |
-| `language-dropdown.blade.php` | Language selection dropdown for the topbar. |
-| `language-modal.blade.php` | Full language selection modal with continent grouping. |
-| `locale-config.blade.php` | Locale configuration exposed to JavaScript (intl formatting). |
-| `locale-modal.blade.php` | Full language/region selection modal with flags, search and formatting preview. |
-| `locale-trigger.blade.php` | Locale trigger button for opening locale settings. |
-| `localization-modal.blade.php` | Unified localization modal with tabs for language, currency, date, time and decimal format. |
-| `mobile-nav.blade.php` | Mobile navigation drawer with overlay, branding, links and auth box. |
-| `number-format-dropdown.blade.php` | Number format selection dropdown for the topbar. |
-| `preferences-dropdowns-js.blade.php` | JavaScript for preference dropdowns (close on outside click, open/close logic, AJAX update). |
-| `theme-meta.blade.php` | Theme meta tags providing light/dark mode and active theme ID to JavaScript. |
-| `topbar.blade.php` | Top navigation bar. |
-| `notifications-modal.blade.php` | Notifications modal with backdrop blur (same pattern as localization modal). |
+Only these nine partials exist, and every one of them is included by a live template:
+
+| File | Included from | Purpose |
+|---|---|---|
+| `background-effects.blade.php` | `ui/layout.blade.php:197` | Background glow/gradient visual effects. |
+| `desktop-sidebar.blade.php` | `ui/layout.blade.php:203` | Desktop sidebar with branding, nav links and auth box. |
+| `locale-config.blade.php` | `ui/layout.blade.php:20`, `layouts/layout.blade.php:23`, `components/ui/auth/shell.blade.php:37`, `ui/tickets/public/{create,success}` | Locale configuration exposed to JavaScript (intl formatting). |
+| `locale-trigger.blade.php` | `layouts/layout.blade.php:45`, `components/ui/auth/shell.blade.php:48`, `ui/tickets/public/{create,success}` | Locale trigger button for opening the localization modal. |
+| `localization-modal.blade.php` | `ui/layout.blade.php:219`, `layouts/layout.blade.php:57`, `components/ui/auth/shell.blade.php:111`, `ui/tickets/public/create.blade.php:153` | Unified localization modal with tabs for language, currency, date, time and decimal format. |
+| `mobile-nav.blade.php` | `ui/layout.blade.php:200` | Mobile navigation drawer with overlay, branding, links and auth box. |
+| `notifications-modal.blade.php` | `ui/layout.blade.php:220` | Notifications modal with backdrop blur (same pattern as the localization modal). |
+| `theme-meta.blade.php` | `ui/layout.blade.php:18`, `layouts/layout.blade.php:21`, `components/ui/auth/shell.blade.php:35`, `ui/tickets/public/create.blade.php:16` | Theme meta tags providing light/dark mode and active theme ID to JavaScript. |
+| `topbar.blade.php` | `ui/layout.blade.php:207` | Top navigation bar. |
 
 ## Notes for developers / AI
 
-- `preferences-dropdowns-js.blade.php` is a legacy placeholder, no longer included.
-- `language-dropdown.blade.php`, `currency-dropdown.blade.php`, `date-format-dropdown.blade.php` and `number-format-dropdown.blade.php` are legacy orphans — they are NOT included anywhere (the unified `localization-modal.blade.php` replaced them). Keep only if intentionally revived.
 - `theme-meta.blade.php` loads the active theme preset via `ThemePresetService` and sets `<meta>` tags consumed by `early-theme.js` and `core/theme.js`. The inline `<script type="application/json" id="themePresetsData">` is a data-only bridge (no logic) consumed by `core/theme.js` and `pages/definicoes-aparencia.js` — documented exception.
 - `locale-config.blade.php` generates a large inline JS configuration block with auth labels, locale metadata and translation strings.
 - Topbar locale triggers use `data-action="open-locale-modal"` with `data-tab="language|currency|date|time|number"`; handled by `resources/js/components/localization-modal.js` (reads `btn.dataset.tab`). No inline `onclick="openLocalizationModal(...)"` handlers.
+- The modal markup is rendered server-side; the item selector modal is the exception — `resources/js/components/item-selector-modal.js` builds its own overlay in the DOM, so no Blade partial is needed for it.
 
 ## Recent Refactorings
 
+- Removed ten orphaned partials that the unified `localization-modal.blade.php` had superseded and that no `@include`, `view()` call or test referenced: `currency-dropdown`, `currency-modal`, `date-format-dropdown`, `date-format-modal`, `item-selector-modal`, `language-dropdown`, `language-modal`, `locale-modal`, `number-format-dropdown` and `preferences-dropdowns-js` (the last one rendered nothing and said so in its own header comment).
 - `topbar.blade.php`: five inline `onclick="openLocalizationModal('…')"` handlers replaced with `data-action="open-locale-modal" data-tab="…"`.
 - `localization-modal.js`: open-trigger binding now passes `btn.dataset.tab` to `openModal()` so the clicked button opens the matching preference tab.
-- Verified clean: `background-effects`, `currency-modal`, `date-format-modal`, `desktop-sidebar`, `language-modal`, `locale-modal`, `locale-trigger`, `mobile-nav`, `notifications-modal`, `localization-modal` (all `data-*` attributes, no inline JS/CSS).
-- `locale-config.blade.php`: `SGM_DASHBOARD_I18N` and `SGM_TICKETS_I18N` bridges consolidated here (see file).

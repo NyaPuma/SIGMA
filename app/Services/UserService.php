@@ -61,6 +61,11 @@ final class UserService
         $plainToken = Str::random($tokenLength);
         $user->api_token = $this->hashToken($plainToken);
         $user->token_created_at = now();
+        // This is the only place a successful credential check reaches the database, so it
+        // is also where `last_login_*` gets stamped — otherwise the admin API would report
+        // a last login that is permanently null.
+        $user->last_login_at = now();
+        $user->last_login_ip = $request->ip();
         $user->save();
 
         if ($withSession && $request->hasSession()) {

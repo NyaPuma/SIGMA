@@ -2,7 +2,7 @@
 
 > **Status:** Report Only (Out of Scope for Automated Renaming per §3)
 > **Generated:** 2026-08-17
-> **Audited Files:** All 25 migrations under `database/migrations/` and all 22 Eloquent models under `app/Models/`
+> **Audited Files:** All 32 migrations under `database/migrations/` and all 23 Eloquent models under `app/Models/`
 
 ---
 

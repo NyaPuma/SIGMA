@@ -11,6 +11,7 @@ use App\Models\Equipment;
 use App\Models\Ticket;
 use App\Models\TicketAttachment;
 use App\Services\NotificationCreatorService;
+use App\Support\PhotoUploadPolicy;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\URL;
@@ -19,15 +20,6 @@ use Illuminate\View\View;
 
 final class PublicTicketController extends Controller
 {
-    private const ALLOWED_MIMES = ['image/jpeg', 'image/png', 'image/gif', 'image/webp'];
-
-    private const EXTENSION_BY_MIME = [
-        'image/jpeg' => 'jpg',
-        'image/png' => 'png',
-        'image/gif' => 'gif',
-        'image/webp' => 'webp',
-    ];
-
     public function __construct(
         private readonly CreatePublicTicketAction $createPublicTicket,
         private readonly NotificationCreatorService $notificationCreatorService,
@@ -47,6 +39,12 @@ final class PublicTicketController extends Controller
         return view('ui.tickets.public.create', [
             'equipment' => $equipment,
             'problemTypes' => PublicTicketProblemTypeEnum::cases(),
+            // The picker must only offer what the validator accepts; otherwise the reporter
+            // chooses a file and only learns after submitting that it was refused.
+            'photoAccept' => implode(',', array_unique(array_map(
+                static fn (string $type): string => 'image/'.($type === 'jpg' ? 'jpeg' : $type),
+                PhotoUploadPolicy::allowedTypes()
+            ))),
         ]);
     }
 
@@ -106,13 +104,9 @@ final class PublicTicketController extends Controller
             return;
         }
 
+        // The extension comes from the detected MIME, never from the client-submitted name.
         $realMime = $file->getMimeType();
-
-        if (! in_array($realMime, self::ALLOWED_MIMES, true)) {
-            return;
-        }
-
-        $extension = self::EXTENSION_BY_MIME[$realMime];
+        $extension = PhotoUploadPolicy::extensionFor($realMime);
         $safeFilename = Str::uuid().'.'.$extension;
         $path = $file->storeAs('ticket_photos', $safeFilename, 'public');
 

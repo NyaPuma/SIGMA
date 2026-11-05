@@ -704,4 +704,6 @@ return [
     'Equipamentos:' => 'Equipment:',
     'Página' => 'Page',
     'Sem equipamento' => 'No equipment',
+    'Nenhuma peça selecionada' => 'No part selected',
+    'Voltar ao topo' => 'Back to top',
 ];

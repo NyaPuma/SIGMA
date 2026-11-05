@@ -25,7 +25,7 @@ use Illuminate\Support\Carbon;
  * @property Carbon|null $email_verified_at
  * @property Carbon|null $password_changed_at
  * @property Carbon|null $last_login_at
- * @property Carbon|null $locked_until
+ * @property string|null $last_login_ip
  */
 class User extends Authenticatable
 {
@@ -55,8 +55,6 @@ class User extends Authenticatable
         'password_changed_at',
         'last_login_at',
         'last_login_ip',
-        'login_attempts',
-        'locked_until',
     ];
 
     /** @var list<string> */
@@ -73,9 +71,7 @@ class User extends Authenticatable
             'token_created_at' => 'datetime',
             'password_changed_at' => 'datetime',
             'last_login_at' => 'datetime',
-            'locked_until' => 'datetime',
             'active' => 'boolean',
-            'login_attempts' => 'integer',
             'password' => 'hashed',
         ];
     }

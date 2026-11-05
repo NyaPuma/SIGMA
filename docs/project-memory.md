@@ -8,7 +8,7 @@ SGM = Integrated Maintenance Management System. Laravel 13, PHP 8.5, para digita
 - BD: SQLite (dev/testes), PostgreSQL/MySQL (prod)
 - Frontend: Blade + Tailwind + Alpine.js + Vite
 - Auth: sessão + API token (Sanctum-like), RBAC via UserProfile
-- Testes: PHPUnit 12, 8 suites (~1554 testes), SQLite in-memory
+- Testes: PHPUnit 12, 8 suites (≈1774 testes em 255 ficheiros), SQLite in-memory
 - Estático: PHPStan level max (Larastan), Pint
 
 ## Padrões

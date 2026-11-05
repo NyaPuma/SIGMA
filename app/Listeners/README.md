@@ -6,7 +6,7 @@ Event listeners that handle side effects when ticket events are dispatched. All 
 
 ## Overview
 
-This folder contains **4 listener classes** that respond to the 3 ticket events (`TicketCreated`, `TicketStatusChanged`, `TicketStatusUpdatedBroadcast`). All listeners implement `ShouldQueue` and use `InteractsWithQueue`, meaning they run asynchronously in the queue worker after the event is dispatched.
+This folder contains **4 listener classes** that respond to the 3 ticket events (`TicketCreated`, `TicketStatusChanged`, `TicketStatusUpdated`). All listeners implement `ShouldQueue` and use `InteractsWithQueue`, meaning they run asynchronously in the queue worker after the event is dispatched.
 
 **Event → Listener mapping** (defined in `app/Providers/EventServiceProvider.php`):
 
@@ -17,7 +17,7 @@ TicketCreated
 TicketStatusChanged
   └── LogTicketWorkflowChange
 
-TicketStatusUpdatedBroadcast
+TicketStatusUpdated
   ├── SendTicketStatusNotification
   └── NotifyAssignedTechnician
 ```
@@ -57,7 +57,7 @@ TicketStatusChanged::class => [
    - `comment` — `'Status changed from "aberto" to "em_curso".'`
 
 `App\Listeners\LogTicketStatusChange` used to write the same transition from
-`TicketStatusUpdatedBroadcast` as well; it was removed, since one transition must
+`TicketStatusUpdated` as well; it was removed, since one transition must
 produce exactly one history row.
 
 **`failed()` logic:**
@@ -74,11 +74,11 @@ produce exactly one history row.
 
 **Class:** `App\Listeners\NotifyAssignedTechnician`
 
-**Triggers on:** `App\Events\TicketStatusUpdatedBroadcast`
+**Triggers on:** `App\Events\TicketStatusUpdated`
 
 **Registered in:** `EventServiceProvider.php:32-35`:
 ```php
-TicketStatusUpdatedBroadcast::class => [
+TicketStatusUpdated::class => [
     SendTicketStatusNotification::class,
     NotifyAssignedTechnician::class,
 ],
@@ -88,7 +88,7 @@ TicketStatusUpdatedBroadcast::class => [
 - `App\Models\User` — used to check if the technician exists and has an email.
 - `App\Notifications\NewTicketNotification` — the notification class sent to the technician.
 
-**`handle(TicketStatusUpdatedBroadcast $event)` logic:**
+**`handle(TicketStatusUpdated $event)` logic:**
 1. Gets the ticket from the event.
 2. Checks if `$ticket->assigned_to` is set. If not, returns early (no technician assigned).
 3. Loads the `$ticket->technician` relationship (the `User` model for the assigned technician).
@@ -152,11 +152,11 @@ public function __construct(
 
 **Class:** `App\Listeners\SendTicketStatusNotification`
 
-**Triggers on:** `App\Events\TicketStatusUpdatedBroadcast`
+**Triggers on:** `App\Events\TicketStatusUpdated`
 
 **Registered in:** `EventServiceProvider.php:32-35`:
 ```php
-TicketStatusUpdatedBroadcast::class => [
+TicketStatusUpdated::class => [
     SendTicketStatusNotification::class,
     NotifyAssignedTechnician::class,
 ],
@@ -166,7 +166,7 @@ TicketStatusUpdatedBroadcast::class => [
 - `App\Models\User` — used to check if the ticket owner exists and has an email.
 - `App\Notifications\TicketStatusChanged` — the notification class sent to the ticket owner.
 
-**`handle(TicketStatusUpdatedBroadcast $event)` logic:**
+**`handle(TicketStatusUpdated $event)` logic:**
 1. Gets the ticket from the event.
 2. Loads the `$ticket->user` relationship (the `User` model for the ticket creator/owner).
 3. If the user is a valid `User` instance with a non-null `email`, sends `new TicketStatusChanged($ticket, $event->oldStatus->value, $event->newStatus->value)` to them via `$user->notify(...)`.

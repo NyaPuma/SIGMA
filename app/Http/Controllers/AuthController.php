@@ -23,7 +23,11 @@ final class AuthController extends Controller
     {
         $email = strtolower($request->string('email')->toString());
         $password = $request->string('password')->toString();
-        $rateLimitKey = "login_attempts:{$email}";
+        // Keyed by IP + email, never by email alone: a counter under the victim's address
+        // would let anyone lock a colleague out of their own account by typing wrong
+        // passwords five times, with no credential of their own. `rate.limit:5,1` on the
+        // route uses the same signature for the same reason (RateLimitMiddleware:58).
+        $rateLimitKey = 'login_attempts:'.sha1($request->ip().'|'.$email);
 
         $maxAttemptsRaw = config('services.custom.auth.max_attempts', 5);
         $lockoutMinutesRaw = config('services.custom.auth.lockout_minutes', 15);

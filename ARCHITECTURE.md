@@ -559,13 +559,13 @@ database/
 ```
 resources/
 ├── views/                        # Blade templates
-│   ├── app.blade.php
+│   ├── main.blade.php
 │   ├── layouts/
 │   ├── pages/
 │   ├── components/
 │   └── emails/
 ├── js/                           # JavaScript source
-│   ├── bootstrap.ts
+│   ├── app.js
 │   ├── core/
 │   ├── utils/
 │   ├── pages/
@@ -687,7 +687,7 @@ Job Class (implements ShouldQueue)
 
 ### Authentication
 
-**Mechanism**: JWT tokens (API) + Session (Web)
+**Mechanism**: opaque API token (API) + Session (Web) — not JWT
 
 ```
 Web Request
@@ -777,7 +777,7 @@ tests/
 ### Running Tests
 
 ```bash
-php artisan test                          # All tests (1410+)
+php artisan test                          # All tests (~1774)
 php artisan test --filter=AuthFlow        # Specific suite
 php artisan test tests/Unit/              # Directory
 php artisan test --coverage               # Coverage report

@@ -123,4 +123,8 @@ return [
     'mês' => 'month',
     'mín.' => 'min.',
     'resultado(s) encontrado(s)' => 'result(s) found',
+    'não lidas' => 'unread',
+    'mais' => 'more',
+    'Sem notificações' => 'No notifications',
+    'Erro ao carregar' => 'Error loading',
 ];

@@ -114,4 +114,5 @@ return [
     'Tem a certeza que pretende remover esta fotografia?' => 'Are you sure you want to remove this photo?',
     'Ticket atribuído' => 'Ticket assigned',
     'Ticket atualizado' => 'Ticket updated',
+    'Sem registos de tickets para os parâmetros selecionados.' => 'No ticket records found for the selected parameters.',
 ];

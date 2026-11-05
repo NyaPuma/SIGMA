@@ -110,10 +110,10 @@ class RateLimitingTest extends FeatureTestCase
             'email' => 'ratelimit@example.com',
             'password' => 'wrong-password',
         ]);
-        $this->assertContains(
-            $response->status(),
-            [429, 401],
-            'Rate limiting should return 429 Too Many Requests'
+        $response->assertStatus(429);
+        $this->assertNotNull(
+            $response->headers->get('Retry-After'),
+            'A blocked login has to say how long to wait'
         );
     }
 
@@ -161,12 +161,57 @@ class RateLimitingTest extends FeatureTestCase
             $response->assertStatus(401);
         }
 
-        $response = $this->withSession([])
+        // The sixth request from the same address is the one that must be blocked.
+        $this->withSession([])
+            ->withServerVariables(['REMOTE_ADDR' => '192.168.1.1'])
+            ->postJson('/api/login', [
+                'email' => 'multiip@example.com',
+                'password' => 'wrong-password',
+            ])
+            ->assertStatus(429);
+
+        // A different address has to be unaffected: if the counter were keyed by email alone,
+        // anyone could lock a real user out of their own account by guessing their address.
+        $this->withSession([])
             ->withServerVariables(['REMOTE_ADDR' => '192.168.1.2'])
             ->postJson('/api/login', [
                 'email' => 'multiip@example.com',
                 'password' => 'wrong-password',
-            ]);
-        $this->assertContains($response->status(), [429, 401]);
+            ])
+            ->assertStatus(401);
+
+        // And the owner, from a fresh address, can still get in with the right password.
+        $this->withSession([])
+            ->withServerVariables(['REMOTE_ADDR' => '192.168.1.3'])
+            ->postJson('/api/login', [
+                'email' => 'multiip@example.com',
+                'password' => 'Password123!',
+            ])
+            ->assertOk();
+    }
+
+    #[Test]
+    public function it_stamps_the_last_login_on_a_successful_authentication(): void
+    {
+        $user = User::factory()->create([
+            'email' => 'lastlogin@example.com',
+            'password' => Hash::make('Password123!'),
+            'profile_id' => UserProfile::where('name', UserRoleEnum::User->value)->value('id'),
+            'active' => true,
+            'last_login_at' => null,
+            'last_login_ip' => null,
+        ]);
+
+        $this->withSession([])
+            ->withServerVariables(['REMOTE_ADDR' => '192.0.2.44'])
+            ->postJson('/api/login', [
+                'email' => 'lastlogin@example.com',
+                'password' => 'Password123!',
+            ])
+            ->assertOk();
+
+        $user->refresh();
+        $this->assertNotNull($user->last_login_at);
+        $this->assertSame('192.0.2.44', $user->last_login_ip);
     }
 }

@@ -32,7 +32,7 @@ Imagine SGM as a large, well-organised office building. Each folder is a differe
 | [`Listeners/`](Listeners/README.md) | **Follow-up team** | Each one hears a specific announcement and carries out its own small task in response. |
 | [`Observers/`](Observers/README.md) | **Automatic notifiers on the filing cabinet** | Whenever a record is created, changed, or deleted, they trigger side-effects (audit logs, cache clears) without anyone remembering to call them. |
 | [`Mail/`](Mail/README.md) | **Internal post room** | Prepares and sends emails — password resets, ticket confirmations, reports — often on a background schedule. |
-| [`Notifications/`](Notifications/README.md) | **Multi-channel alert desk** | Delivers messages via email, database notification, or real-time broadcast depending on user preference. |
+| [`Notifications/`](Notifications/README.md) | **Alert desk** | Delivers ticket messages by email and in the in-app notification list. |
 | [`Exports/`](Exports/README.md) | **Report-printing room** | Turns live data into CSV, PDF, or Excel files for download. |
 | [`ValueObjects/`](ValueObjects/README.md) | **Specialised measuring tools** | Encapsulates a single concept (like `Money` or `Email`) so invalid data simply cannot exist. |
 | [`Providers/`](Providers/README.md) | **Wiring diagram / switchboard** | Tells Laravel how to connect all the pieces together (dependency injection, event bindings, boot-up tasks). |
@@ -61,7 +61,7 @@ All of this happens in fractions of a second, but every step has a clear owner, 
 | **Actions/** | Single-purpose command/action classes (CQRS-style) | CreateUserAction, CreateTicketAction, etc. |
 | **Concerns/** | Shared PHP traits used across models and services | Auditable trait, logging concerns |
 | **Console/** | Artisan console commands | DatabaseBackup, PartitionAudits, UpdateCurrencyRates |
-| **Domain/** | Domain-specific modules with their own Actions | Ticket workflow, payment processing |
+| **Domain/** | Domain-specific modules with their own Actions, Queries and Services | Ticket workflow (cancel/close/reopen/start), KPI and monthly queries |
 | **DTOs/** | Data Transfer Objects for typed data passing | CreateTicketData, BudgetSubmissionData, etc. |
 | **Enums/** | PHP 8.1+ enums for domain value sets | TicketStatusEnum, TicketPriorityEnum, UserRoleEnum |
 | **Events/** | Laravel event classes (domain events) | TicketCreated, TicketStatusChanged |
@@ -78,6 +78,7 @@ All of this happens in fractions of a second, but every step has a clear owner, 
 | **Providers/** | Laravel service providers (dependency injection) | AppServiceProvider, EventServiceProvider |
 | **Repositories/** | Repository pattern (data access abstraction) | UserRepository, TicketRepository with interfaces |
 | **Services/** | Business logic orchestration & domain services | TicketService, UserService, CurrencyRateService |
+| **Support/** | Stateless helpers shared across layers (see `Support/README.md`) | DateSql, ExportArtifact, MoneyInput, PhotoUploadPolicy, SpreadsheetCell, SqlPattern |
 | **Traits/** | Shared PHP traits for models & services | Auditable (auto-tracking changes) |
 | **ValueObjects/** | Immutable value objects (strongly-typed data) | Email, Money, SerialNumber |
 
@@ -356,7 +357,7 @@ The application is organized in clear, separable layers with distinct responsibi
 ### `Events/`
 **Purpose**: Domain events for decoupled communication
 
-- **Broadcasting**: Implement `ShouldBroadcast` for real-time notifications
+- **Not broadcast**: these are in-process events; there is no WebSocket driver or `routes/channels.php`
 - **Listeners**: Register listeners in EventServiceProvider
 - **Queueable**: Make listeners queueable for async processing
 - **Contracts**: Define event properties as public
@@ -370,9 +371,9 @@ The application is organized in clear, separable layers with distinct responsibi
 - **Markdown**: Use Markdown templates for email body
 
 ### `Notifications/`
-**Purpose**: Multi-channel notifications (database, mail, broadcast)
+**Purpose**: notifications delivered on two channels (mail + database)
 
-- **Channels**: Implement `via()` to return [mail, database, broadcast]
+- **Channels**: `via()` returns `[mail, database]` in both notification classes
 - **Content**: Implement methods for each channel
 - **Routing**: Implement `routeNotificationFor()` for custom routing
 - **Queue**: Make queued for performance

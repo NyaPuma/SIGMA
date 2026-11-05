@@ -58,7 +58,7 @@ This is a final-year project by **Andre Moreira** at **CESAE Digital**, complete
 | Calendar | FullCalendar v6 | Interactive scheduling calendar |
 | Build Tool | Vite | Packages and optimizes frontend files |
 | AI | OpenAI API | Artificial intelligence for smart recommendations |
-| Testing | PHPUnit with 1410+ tests | Automated quality checks |
+| Testing | PHPUnit with ~1774 tests | Automated quality checks |
 | Deployment | Docker with FrankenPHP/Octane | Containerized deployment for production |
 
 ---
@@ -133,7 +133,7 @@ Now visit `http://localhost:8000` in your browser. You should see the login page
 ```bash
 php artisan test
 ```
-This runs all 1410+ tests to verify everything works correctly.
+This runs all ~1774 tests to verify everything works correctly.
 
 ### Quick Start with Docker
 
@@ -196,9 +196,9 @@ This is the shopping list for PHP libraries. It tells the computer which pre-bui
 This is the shopping list for JavaScript libraries -- the tools needed to build the visual interface.
 
 **🔄 Step-by-Step Breakdown:**
-1. **Project Scripts:** Defines commands like `dev` (development), `build` (production), `lint` (code quality check)
-2. **Frontend Libraries:** Includes Tailwind CSS (styling), Alpine.js (interactivity), FullCalendar (scheduling), Vite (build tool), Lucide icons
-3. **Development Tools:** ESLint (code quality), PostCSS (CSS processing)
+1. **Project Scripts:** Defines commands like `dev` (development) and `build` (production) -- there is no lint script
+2. **Frontend Libraries:** Includes Tailwind CSS (styling), Alpine.js (interactivity), FullCalendar (scheduling), Chart.js (charts), Vite (build tool)
+3. **Development Tools:** Tailwind CSS is processed by the `@tailwindcss/vite` plugin -- no ESLint or PostCSS configuration is used
 
 **📥 Inputs & 📤 Outputs:**
 - **Information Needed:** None (read by `npm install` command)
@@ -243,24 +243,22 @@ This is a recipe for building a self-contained "box" (Docker container) that has
 
 ---
 
-### 📄 File: `docker-compose.yml` / `compose.yaml`
+### 📄 File: `compose.yaml`
 
 **🎯 What is this file's main job?**
-This is the orchestration plan for running multiple "boxes" together -- the application server, database, cache, and web server -- all connected and working as a team.
+This is the orchestration plan for running the several "boxes" the application needs at the same time, already connected as a team.
 
 **🔄 Step-by-Step Breakdown:**
 1. **Services Defined:**
-   - `app`: The main PHP application server
-   - `mysql`: The database (MySQL 8)
-   - `redis`: The cache server
-   - `caddy`: The web server that faces the internet
+   - `app`: the application server (built from the `Dockerfile`), reachable at `http://localhost:8000`
+   - `queue`: the worker that processes background jobs (exports, notifications)
+   - `schedule`: the cron-like runner that fires the planned maintenance checks
+   - `redis`: the cache server the three above share
 2. **Networking:** All services can talk to each other via internal names
-3. **Storage:** Persistent volumes so data survives restarts
-4. **Health Checks:** The system monitors each service and restarts if something fails
+3. **Storage:** A persistent volume so the cache survives restarts
+4. **Health Checks:** `app` is polled every 30 seconds and restarted if it stops answering
 
-**📥 Inputs & 📤 Outputs:**
-- **Information Needed:** `docker compose up` command
-- **End Result:** All services running and accessible at `http://localhost`
+There used to be a second file, `docker-compose.yml`, with a MySQL database. It is gone: when both files sit in the same folder, the tool always reads `compose.yaml`, so the other one could never run — and it opened a port that the application image does not even use.
 
 ---
 
@@ -280,7 +278,7 @@ This is the configuration for the automated testing system. It tells the test ru
 
 **📥 Inputs & 📤 Outputs:**
 - **Information Needed:** `php artisan test` or `vendor/bin/phpunit` command
-- **End Result:** Test results showing pass/fail status for 1410+ tests
+- **End Result:** Test results showing pass/fail status for ~1774 tests
 
 ---
 
@@ -295,7 +293,7 @@ This is a blank form showing all the settings the system needs. Developers copy 
 3. **Session & Cache:** Where to store user sessions and cached data
 4. **Queue:** Background job processing settings
 5. **Mail:** Email sending configuration (supports SendGrid, Mailgun, Postmark, Resend, Slack)
-6. **Security:** JWT token settings, password lockout policy (5 failed attempts = 15-minute lockout)
+6. **Security:** API token settings (opaque tokens, not JWT), password lockout policy (5 failed attempts = 15-minute lockout)
 7. **AI/OpenAI:** API key for artificial intelligence features
 8. **Business Rules:** Budget approval threshold (1500 EUR), SLA target (5 days)
 9. **Uploads:** Photo size limits (2MB max, 4096px max dimension)
@@ -690,7 +688,7 @@ Reference data in CSV format -- things like equipment categories, part categorie
 | `pages/` | Page-specific scripts: ticket forms, equipment management, analytics charts, stock tracking |
 | `services/` | API interaction helpers (autocomplete orchestration) |
 | `utils/` | Utility functions: API client with auth headers, localized number/currency formatting |
-| `auth/` | Login form handling, MFA (multi-factor authentication) support |
+| `auth/` | Login form handling (credentials only -- the app has no multi-factor authentication) |
 
 **Business Rule:** JavaScript uses design tokens (CSS variables) for colors, so dark mode works automatically.
 
@@ -747,7 +745,7 @@ Reference data in CSV format -- things like equipment categories, part categorie
 
 ## The `tests/` Folder -- Quality Assurance Lab
 
-**Real-World Analogy & Purpose:** This is the testing laboratory where automated tests verify that every feature works correctly. There are 1410+ tests organized by type.
+**Real-World Analogy & Purpose:** This is the testing laboratory where automated tests verify that every feature works correctly. There are ~1774 tests organized by type.
 
 ### 📂 Folder: `tests/Unit/` (Isolated Tests)
 
@@ -821,7 +819,7 @@ Reference data in CSV format -- things like equipment categories, part categorie
 
 **📄 Test Categories:**
 - `Database/` -- Foreign key integrity, soft deletes, model lifecycle
-- `Broadcasting/` -- Real-time WebSocket updates
+- `Events/` -- ticket events reaching their notification listeners
 - `Mail/` -- Email delivery via Mailgun
 
 ### 📂 Folder: `tests/Fixtures/` (Test Helpers)
@@ -928,7 +926,7 @@ Reference data in CSV format -- things like equipment categories, part categorie
 | **XSS** | Cross-Site Scripting -- an attack where harmful code is injected into pages |
 | **IDOR** | Insecure Direct Object Reference -- an attack where someone accesses others' data by changing IDs |
 | **MFA** | Multi-Factor Authentication -- extra security step beyond password |
-| **JWT** | JSON Web Token -- a digital ID card the system uses to verify users |
+| **API Token** | A random digital passkey the system issues to verify users (hashed before storage; not a JWT) |
 | **Octane** | Laravel's high-performance server that keeps the app in memory for speed |
 | **FrankenPHP** | A modern PHP web server that makes applications run faster |
 | **Vite** | A build tool that packages frontend files for the browser |

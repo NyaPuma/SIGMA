@@ -5,7 +5,7 @@ declare(strict_types=1);
 namespace Tests\Unit\Listeners;
 
 use App\Enums\TicketStatusEnum;
-use App\Events\TicketStatusUpdatedBroadcast;
+use App\Events\TicketStatusUpdated;
 use App\Listeners\SendTicketStatusNotification;
 use App\Models\Ticket;
 use App\Models\User;
@@ -17,7 +17,7 @@ use Tests\TestCase;
 
 /**
  * This listener is the only sender of the "status changed" mail. The
- * `BroadcastsTicketStatus` trait used to notify the owner directly as well, which
+ * `NotifiesTicketStatusChange` trait used to notify the owner directly as well, which
  * delivered the same message twice for every transition.
  */
 class SendTicketStatusNotificationTest extends TestCase
@@ -34,7 +34,7 @@ class SendTicketStatusNotificationTest extends TestCase
         Notification::fake();
 
         $listener = new SendTicketStatusNotification;
-        $listener->handle(new TicketStatusUpdatedBroadcast(
+        $listener->handle(new TicketStatusUpdated(
             $ticket,
             TicketStatusEnum::Open,
             TicketStatusEnum::Closed,
@@ -52,7 +52,7 @@ class SendTicketStatusNotificationTest extends TestCase
         Notification::fake();
 
         $listener = new SendTicketStatusNotification;
-        $listener->handle(new TicketStatusUpdatedBroadcast(
+        $listener->handle(new TicketStatusUpdated(
             $ticket,
             TicketStatusEnum::Open,
             TicketStatusEnum::InProgress,
@@ -72,7 +72,7 @@ class SendTicketStatusNotificationTest extends TestCase
         Notification::fake();
 
         $listener = new SendTicketStatusNotification;
-        $listener->handle(new TicketStatusUpdatedBroadcast(
+        $listener->handle(new TicketStatusUpdated(
             $ticket,
             TicketStatusEnum::Open,
             TicketStatusEnum::InProgress,

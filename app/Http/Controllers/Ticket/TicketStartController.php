@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers\Ticket;
 
-use App\Concerns\BroadcastsTicketStatus;
+use App\Concerns\NotifiesTicketStatusChange;
 use App\Enums\TicketStatusEnum;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StartTicketRequest;
@@ -14,7 +14,7 @@ use Illuminate\Http\JsonResponse;
 
 final class TicketStartController extends Controller
 {
-    use BroadcastsTicketStatus;
+    use NotifiesTicketStatusChange;
 
     public function __construct(
         private readonly TicketWorkflowService $workflowService,
@@ -78,8 +78,8 @@ final class TicketStartController extends Controller
             );
         }
 
-        // 6. Broadcast status change in real time (WebSockets)
-        $this->broadcastStatusChange($ticket, $oldStatus, TicketStatusEnum::InProgress);
+        // 6. Notify the owner and the technician about the status change
+        $this->notifyStatusChange($ticket, $oldStatus, TicketStatusEnum::InProgress);
 
         $ticket->loadMissing(['equipment', 'room', 'technician', 'status']);
 

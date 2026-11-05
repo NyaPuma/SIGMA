@@ -5,60 +5,40 @@ namespace Tests\Unit\Events;
 use App\Enums\TicketStatusEnum;
 use App\Events\TicketStatusChanged;
 use App\Models\Ticket;
-use Illuminate\Broadcasting\Channel;
-use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
+use App\Models\User;
 use PHPUnit\Framework\Attributes\Test;
 use Tests\Base\DatabaseTestCase;
 
 class TicketStatusChangedTest extends DatabaseTestCase
 {
     #[Test]
-    public function it_broadcasts_on_tickets_and_admin_channels(): void
+    public function it_normalizes_the_statuses_and_keeps_the_ticket(): void
     {
         $ticket = Ticket::factory()->create();
-        $event = new TicketStatusChanged($ticket, TicketStatusEnum::Open, TicketStatusEnum::InProgress);
-
-        $channels = $event->broadcastOn();
-
-        $this->assertGreaterThanOrEqual(1, count($channels));
-        $this->assertInstanceOf(Channel::class, $channels[0]);
-    }
-
-    #[Test]
-    public function it_broadcasts_with_correct_event_name(): void
-    {
-        $ticket = Ticket::factory()->create();
-        $event = new TicketStatusChanged($ticket, TicketStatusEnum::Open, TicketStatusEnum::InProgress);
-
-        $this->assertEquals('ticket.status_changed', $event->broadcastAs());
-    }
-
-    #[Test]
-    public function it_normalizes_statuses_and_broadcasts_reference(): void
-    {
-        $ticket = Ticket::factory()->create([
-            'title' => 'Status Test',
-            'priority' => 'alta',
-        ]);
-
         $event = new TicketStatusChanged($ticket, 'Aberto', 'Em Curso');
-        $data = $event->broadcastWith();
 
-        $this->assertEquals(TicketStatusEnum::Open, $event->oldStatus);
-        $this->assertEquals(TicketStatusEnum::InProgress, $event->newStatus);
-        $this->assertEquals($ticket->id, $data['ticket_id']);
-        $this->assertEquals($ticket->reference, $data['code']);
-        $this->assertEquals(TicketStatusEnum::Open->value, $data['old_status']['value']);
-        $this->assertEquals(TicketStatusEnum::InProgress->value, $data['new_status']['value']);
-        $this->assertFalse($data['is_final']);
+        $this->assertSame($ticket->id, $event->ticket->id);
+        $this->assertSame(TicketStatusEnum::Open, $event->oldStatus);
+        $this->assertSame(TicketStatusEnum::InProgress, $event->newStatus);
     }
 
     #[Test]
-    public function it_implements_should_broadcast(): void
+    public function it_records_who_changed_the_status(): void
     {
         $ticket = Ticket::factory()->create();
-        $event = new TicketStatusChanged($ticket, TicketStatusEnum::Open, TicketStatusEnum::InProgress);
+        $technician = User::factory()->create();
 
-        $this->assertInstanceOf(ShouldBroadcast::class, $event);
+        $event = new TicketStatusChanged($ticket, TicketStatusEnum::Open, TicketStatusEnum::Closed, $technician);
+
+        $this->assertSame($technician->id, $event->changedBy?->id);
+    }
+
+    #[Test]
+    public function the_changing_user_is_optional(): void
+    {
+        $ticket = Ticket::factory()->create();
+        $event = new TicketStatusChanged($ticket, TicketStatusEnum::Open, TicketStatusEnum::Closed);
+
+        $this->assertNull($event->changedBy);
     }
 }

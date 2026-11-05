@@ -49,7 +49,7 @@ Runs **after all providers have registered**, before the app serves requests. Ca
 | Blade directives | `registerFormattingDirectives()` | Registers locale-aware directives that delegate to `LocalizationService`: `@money` → `formatCurrency`, `@number` → `formatNumber`, `@percent` → `formatPercent`, `@date` → `formatDate`, `@datetime` → `formatDateTime`, `@localizedDate`, `@localizedDateTime`, `@localizedNumber`, `@localizedCurrency`, and `@localizedUnit` → `convertUnit($expr)['formatted']`. |
 | Sentry sanitization | `registerSentrySanitization()` | `afterResolving(HubInterface::class)` installs a `beforeSendCallback` on the Sentry client that recursively redacts any key matching `/password|token|secret|api[_-]?key|authorization|card|cvv/` (replaced with `[REDACTED]`) across the event's request, contexts, and extra. Moved out of `config/sentry.php` because closures break `php artisan config:cache`. |
 | System settings | `$this->app->make(SystemSettingsService::class)->applyOverrides()` | Applies any overrides saved in the Settings → Configuration page immediately at startup. |
-| Worker locale baseline | `resetLocaleForQueuedJobs()` | Called after `applyOverrides()` because that can itself set `app.locale`. Captures the configured locale once and registers a `Queue::before` listener that re-applies it before every job: a worker keeps one application instance, and `App::setLocale()` (used by the export jobs to honour the requester's language) also rewrites `config('app.locale')`, so without this the first export would leave every later job — and its notifications — in that user's language. |
+| Worker requester context | `resetRequesterContextForQueuedJobs()` | Called after `applyOverrides()` because that can itself set `app.locale`. Captures the configured locale once and registers a `Queue::before` listener that re-applies it — and clears the `PreferenceContext` singleton — before every job: a worker keeps one application instance, and the export jobs use `App::setLocale()` plus the requester's stored preferences to honour that user's language and formats, so without this the first export would leave every later job, and its notifications and PDF, in that user's locale. |
 
 ### WHEN it runs
 
@@ -67,7 +67,7 @@ On **every application boot** (both HTTP requests via `bootstrap/app.php` and CL
 |---|---|
 | `App\Events\TicketCreated` | `App\Listeners\SendTicketCreatedNotification` |
 | `App\Events\TicketStatusChanged` | `App\Listeners\LogTicketWorkflowChange` |
-| `App\Events\TicketStatusUpdatedBroadcast` | `App\Listeners\SendTicketStatusNotification`<br>`App\Listeners\NotifyAssignedTechnician` |
+| `App\Events\TicketStatusUpdated` | `App\Listeners\SendTicketStatusNotification`<br>`App\Listeners\NotifyAssignedTechnician` |
 
 ### What it boots — `boot()`
 
@@ -75,7 +75,7 @@ Calls `parent::boot()` which registers the `$listen` map (without auto-discovery
 
 ### WHEN it runs
 
-On application boot, alongside `AppServiceProvider`. These listeners fire at runtime when the corresponding events are dispatched — e.g. `TicketStatusUpdatedBroadcast` is emitted by `app/Concerns/BroadcastsTicketStatus.php::broadcastStatusChange()` (see the Concerns README) and then fans out to its three listeners.
+On application boot, alongside `AppServiceProvider`. These listeners fire at runtime when the corresponding events are dispatched — e.g. `TicketStatusUpdated` is emitted by `app/Concerns/NotifiesTicketStatusChange.php::notifyStatusChange()` (see the Concerns README) and then fans out to its two listeners.
 
 ---
 

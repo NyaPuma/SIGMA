@@ -4,7 +4,7 @@ declare(strict_types=1);
 
 namespace App\Listeners;
 
-use App\Events\TicketStatusUpdatedBroadcast;
+use App\Events\TicketStatusUpdated;
 use App\Models\User;
 use App\Notifications\TicketStatusChanged;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -28,7 +28,7 @@ final class SendTicketStatusNotification implements ShouldQueue
      */
     public array $backoff = [5, 15, 30];
 
-    public function handle(TicketStatusUpdatedBroadcast $event): void
+    public function handle(TicketStatusUpdated $event): void
     {
         $ticket = $event->ticket;
 
@@ -47,7 +47,7 @@ final class SendTicketStatusNotification implements ShouldQueue
     /**
      * Logs a warning when notification delivery fails after all attempts.
      */
-    public function failed(TicketStatusUpdatedBroadcast $event, Throwable $exception): void
+    public function failed(TicketStatusUpdated $event, Throwable $exception): void
     {
         Log::warning('Failed to send ticket status notification', [
             'ticket_id' => $event->ticket->id,

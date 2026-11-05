@@ -10,7 +10,7 @@ These tests verify that **different subsystems cooperate correctly**. While unit
 
 | Area | What It Verifies |
 |------|------------------|
-| **Broadcasting** | Real-time WebSocket notifications fire correctly when events happen (a ticket status change is broadcast to the right channels) |
+| **Events** | Ticket events reach the listeners that send notifications (a status change really notifies the owner and the technician) |
 | **Queues** | Background jobs are queued and processed correctly (exports, emails, notifications) |
 | **Database** | Foreign key integrity (you can't delete a room that still has equipment in it), soft deletes, model lifecycles, mass assignment protection, relationship correctness |
 | **Mail** | Email delivery works correctly (test email via Mailgun) |
@@ -23,7 +23,7 @@ php artisan test tests/Integration
 
 # A specific area
 php artisan test tests/Integration/Database
-php artisan test tests/Integration/Broadcasting
+php artisan test tests/Integration/Events
 php artisan test tests/Integration/Mail
 
 # A single test

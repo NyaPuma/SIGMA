@@ -60,7 +60,7 @@ Resources map directly to their corresponding models:
 **Formats:** `App\Models\User`.
 
 **Fields exposed:**
-`id`, `name`, `email`, `active`, `profile_id`, `avatar_path`, `avatar_disk`, `email_verified_at` (ISO), `last_login_at` (ISO), `login_attempts`, `locked_until` (ISO), `created_at` (ISO), `updated_at` (ISO).
+`id`, `name`, `email`, `active`, `profile_id`, `avatar_path`, `avatar_disk`, `email_verified_at` (ISO), `last_login_at` (ISO), `created_at` (ISO), `updated_at` (ISO).
 
 **`whenLoaded()` conditions:**
 - `profile` — embeds `{ id, name, description }` when the `profile` relation is loaded.

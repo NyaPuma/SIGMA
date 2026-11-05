@@ -9,7 +9,7 @@ Queued jobs for background processing of exports, alerts, AI recommendations, an
 This folder contains **8 job classes** that implement `ShouldQueue`, meaning they are pushed onto a Laravel queue worker instead of running synchronously in the HTTP request. This keeps the user-facing API fast by offloading heavy work (PDF generation, AI calls, email sending) to background processes. `Concerns/` holds the shared trait the export jobs use.
 
 All export jobs follow the same pattern:
-1. Restore the requester's language with `$this->applyRequesterLocale($this->userId)` (see `Concerns/SetsRequesterLocale.php`) — a worker has no request, session or authenticated user, so nothing else would.
+1. Restore the requester's language and presentation preferences with `$this->applyRequesterContext($this->userId)` (see `Concerns/SetsRequesterContext.php`) — a worker has no request, session or authenticated user, so nothing else would.
 2. Generate a file through `App\Support\ExportArtifact`, which names it `<slug>-<Ymd_His>-<24 random chars>.<ext>` under `exports/{userId}/` on the **private** (`local`) disk — `storage/app/private/exports/`.
 3. Create an `App\Models\Notification` record to tell the user the file is ready, with `link` pointing at the authorized route `/exports/{userId}/{filename}` (`GET /exports/{userId}/{filename}`, name `exports.download`).
 4. If the job fails after all retries, create a failure notification instead.
@@ -36,11 +36,11 @@ Files are never written to the `public` disk: `Dockerfile` runs `storage:link`, 
 4. If the service throws, catches the `Throwable` and logs the error (does **not** re-throw — the job silently succeeds even on failure).
 
 **WHO dispatches it and WHEN:**
-- **Scheduler only** — `bootstrap/app.php:53`:
+- **Scheduler only** — `bootstrap/app.php:62`:
   ```php
-  $schedule->job(new CheckLowStockJob)->dailyAt('06:00');
+  $schedule->job(new CheckLowStockJob)->dailyAt('06:00')->withoutOverlapping();
   ```
-  This runs every day at 06:00 (server time) via Laravel's task scheduler. It is **never** dispatched from any controller or other code path.
+  This runs every day at 06:00 (server time) via Laravel's task scheduler, guarded so a slow run cannot stack on the next slot. It is **never** dispatched from any controller or other code path.
 
 **Queue / retries / timeout:**
 - Uses `Queueable` only (does **not** use `Dispatchable` — it is scheduler-dispatched via `new`, not `::dispatch()`).
@@ -64,7 +64,7 @@ Files are never written to the `public` disk: `Dockerfile` runs `storage:link`, 
 - `public readonly int $userId` — the ID of the user who requested the export.
 
 **`handle()` logic:**
-1. Applies the requester's locale (see `Concerns/SetsRequesterLocale.php`).
+1. Applies the requester's locale and preferences (see `Concerns/SetsRequesterContext.php`).
 2. Builds the artifact path with `ExportArtifact::path($userId, 'tickets_report', 'csv')`, e.g. `exports/12/tickets_report-20260902_143000-Kx9fTb7QpZ2mNrW4dVsLpQ8c.csv`, and ensures `exports/{userId}/` exists on the private disk.
 3. Calls `$analyticsService->exportCsvToFile($disk->path($relative))` to write the CSV data to disk.
 4. Creates an `App\Models\Notification` record for the user with:
@@ -107,7 +107,7 @@ Files are never written to the `public` disk: `Dockerfile` runs `storage:link`, 
 - `public readonly int $userId` — the ID of the user who requested the export.
 
 **`handle()` logic:**
-1. Applies the requester's locale (see `Concerns/SetsRequesterLocale.php`).
+1. Applies the requester's locale and preferences (see `Concerns/SetsRequesterContext.php`).
 2. Builds the artifact path with `ExportArtifact::path($userId, 'tickets_report', 'xlsx')`.
 3. Ensures `exports/{userId}/` exists on the private disk.
 4. Calls `Excel::store(new TicketsExport, $relative, ExportArtifact::DISK, Excel::XLSX)` which:
@@ -146,7 +146,7 @@ Files are never written to the `public` disk: `Dockerfile` runs `storage:link`, 
 - `public readonly int $userId`
 
 **`handle()` logic:**
-1. Applies the requester's locale (see `Concerns/SetsRequesterLocale.php`).
+1. Applies the requester's locale and preferences (see `Concerns/SetsRequesterContext.php`).
 2. Builds the artifact path: `exports/{userId}/tickets_report-20260902_143000-<24 random chars>.pdf`.
 3. Ensures `exports/{userId}/` exists on the private disk.
 4. Calls `$analyticsService->exportPdfToFile($path)` to generate the PDF.
@@ -183,7 +183,7 @@ Files are never written to the `public` disk: `Dockerfile` runs `storage:link`, 
 - `public readonly int $userId`
 
 **`handle()` logic:**
-1. Applies the requester's locale (see `Concerns/SetsRequesterLocale.php`).
+1. Applies the requester's locale and preferences (see `Concerns/SetsRequesterContext.php`).
 2. Queries all equipment where `active = true`, ordered by name.
 3. For each equipment record, generates a PNG data-URI QR code via `$qrCodeService->pngDataUri($equipment)`.
 4. Builds the artifact path: `exports/{userId}/qrcodes-equipment-20260902_143000-<24 random chars>.pdf`.
@@ -224,7 +224,7 @@ Files are never written to the `public` disk: `Dockerfile` runs `storage:link`, 
 - `public readonly ?string $to = null` — optional end date (e.g. `'2026-12-31'`).
 
 **`handle()` logic:**
-1. Applies the requester's locale (see `Concerns/SetsRequesterLocale.php`).
+1. Applies the requester's locale and preferences (see `Concerns/SetsRequesterContext.php`).
 2. Calls `$dashboardService->costByEquipment(from: $this->from, to: $this->to)` to get aggregated cost data per equipment.
 3. Computes `$total = $items->sum('total_value')`.
 4. Builds the artifact path: `exports/{userId}/cost-parts-per-equipment-20260902_143000-<24 random chars>.pdf`.
@@ -279,6 +279,8 @@ Files are never written to the `public` disk: `Dockerfile` runs `storage:link`, 
    - `ai_processed_at` — timestamp of when the recommendation was generated.
 3. If the update fails, logs a warning (does **not** re-throw — the job succeeds even if persistence fails).
 
+`recommendTechnician()` never returns an id that was not on the team it offered to the model, so a hallucinated technician is persisted as `null` together with a reason that tells the administrator to choose manually (see `tests/Unit/Jobs/GenerateAiRecommendationJobTest.php::it_discards_an_ai_recommendation_for_a_technician_it_never_offered`).
+
 **WHO dispatches it and WHEN:**
 - `app/Http/Controllers/TicketController.php:70` — `store()` method:
   ```php
@@ -286,7 +288,7 @@ Files are never written to the `public` disk: `Dockerfile` runs `storage:link`, 
   ```
   Dispatched **after the database transaction commits** when a new ticket is created via the authenticated API (`POST /tickets`).
 
-- `app/Http/Controllers/PublicTicketController.php:77` — `store()` method:
+- `app/Http/Controllers/PublicTicketController.php:79` — `store()` method:
   ```php
   GenerateAiRecommendationJob::dispatch($ticket)->afterCommit();
   ```
@@ -343,18 +345,16 @@ Files are never written to the `public` disk: `Dockerfile` runs `storage:link`, 
 
 ---
 
-## `Concerns/SetsRequesterLocale.php`
+## `Concerns/SetsRequesterContext.php`
 
-**What it is:** A trait used by the five export jobs. A queue worker runs with no HTTP request, session or authenticated user, so `SetLocaleMiddleware` never runs and `__()` would use the process default — an English-speaking user would get a Portuguese notification and a pt-PT-formatted PDF.
+**What it is:** A trait used by the five export jobs. A queue worker runs with no HTTP request, session or authenticated user, so `SetLocaleMiddleware` never runs and `__()` would use the process default — an English-speaking user would get a Portuguese notification and a pt-PT-formatted PDF. The same absence made `LocalizationService::preferences()` fall back to hardcoded `pt-PT`/`EUR`/`d/m/Y`, so a user who asked for US/EUR formatting got the defaults.
 
-**`applyRequesterLocale(int $userId)`:**
-1. Reads only the `locale` column (`User::query()->whereKey($userId)->value('locale')`) — no model hydration.
-2. Ignores an empty, non-string or unsupported value, using the same `LocaleService::isSupported()` check `SetLocaleMiddleware` applies, so a stale value cannot switch the worker to a locale with no translation files.
-3. Calls `App::setLocale(LocaleService::sanitize($locale))`.
+**`applyRequesterContext(int $userId)`:**
+1. Reads the requester's row through `PreferencesService::forUserId($userId)`, which prefers the `users.locale` column for the language and takes currency, date/time format and number separators from `user_preferences`.
+2. Ignores an unsupported language, using the same `LocaleService::isSupported()` check `SetLocaleMiddleware` applies, so a stale value cannot switch the worker to a locale with no translation files.
+3. Calls `App::setLocale(LocaleService::sanitize($locale))` and stores the preferences in the `PreferenceContext` singleton, which `LocalizationService::preferences()` reads before it looks for a request.
 
-**Why the worker does not stay switched:** `App::setLocale()` also rewrites `config('app.locale')`, and one worker instance serves every job it picks up. `AppServiceProvider::resetLocaleForQueuedJobs()` registers a `Queue::before` listener that restores the baseline captured at boot (after `SystemSettingsService::applyOverrides()`, which can itself set `app.locale`). Covered by `tests/Unit/Jobs/ExportJobsTest.php::the_locale_an_export_job_applies_does_not_leak_into_the_next_job`.
-
-**Known gap (deliberate):** `LocalizationService::preferences()` still falls back to hardcoded `pt-PT`/`EUR`/`d/m/Y` when no request is bound, because the requester's own preference row is only loaded through the request-scoped path. Fixing it would need static override state that survives between jobs.
+**Why the worker does not stay switched:** `App::setLocale()` also rewrites `config('app.locale')`, and one worker instance serves every job it picks up. `AppServiceProvider::resetRequesterContextForQueuedJobs()` registers a `Queue::before` listener that restores the locale baseline captured at boot (after `SystemSettingsService::applyOverrides()`, which can itself set `app.locale`) and clears the `PreferenceContext`. Covered by `tests/Unit/Jobs/ExportJobsTest.php::the_locale_an_export_job_applies_does_not_leak_into_the_next_job`, `::an_export_job_formats_with_the_preferences_of_the_requester` and `::the_preferences_an_export_job_applies_do_not_leak_into_the_next_job`.
 
 ---
 

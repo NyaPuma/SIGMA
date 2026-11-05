@@ -17,11 +17,10 @@ Department. Three roles: Operator (standard user), Technician, Administrator
 | Auth | Laravel Sanctum + session, RBAC via UserProfile |
 | Frontend | Blade + Tailwind CSS + Alpine.js + Vite |
 | Queue | sync (dev), database/redis (prod) |
-| Testing | PHPUnit 12, 8 suites (~1554 tests) |
+| Testing | PHPUnit 12, 8 suites (~1774 tests in 255 test files) |
 | Static | PHPStan level max (Larastan), Laravel Pint |
 | AI | OpenAI PHP (ticket categorization/recommendations) |
 | Exports | maatwebsite/excel, barryvdh/laravel-dompdf |
-| Realtime | Pusher (optional) |
 
 ## Project Structure
 

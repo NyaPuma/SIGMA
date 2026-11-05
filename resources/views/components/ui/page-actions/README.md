@@ -8,7 +8,6 @@ Reusable button and link components for page-level actions (create, back, export
 
 | File | Purpose |
 |---|---|
-| `action-button.blade.php` | Quick-action `<button>` wrapper with icon support. Delegates to `base-button`. |
 | `back-button.blade.php` | Back-navigation link with a default left-arrow SVG icon. Delegates to `base-link`. |
 | `base-button.blade.php` | Core `<button>` component. Supports variant, size, weight, icon and type props. |
 | `base-link.blade.php` | Core `<a>` component. Same props as base-button but renders an anchor. |
@@ -25,4 +24,4 @@ Reusable button and link components for page-level actions (create, back, export
 ## Recent Refactorings
 
 - `base-button.blade.php` + `base-link.blade.php` (kept in sync): `success`/`danger`/`warning` variants migrated from base-palette solids (`emerald-600`, `rose-500`, `amber-500`) and `neutral` from a buggy red-hover to the design **ghost state-token pattern** — `border-<state>/30 bg-<state>/10 text-<state> hover:bg-<state>/20` (token colors auto-adapt in dark mode with AA light-mode values). `neutral` hover now uses `hover:bg-[var(--surface-hover,var(--surface))]` (previously incorrectly turned red on hover). `primary`/`accent`/`secondary`/`dark` unchanged.
-- `action-button`, `back-button`, `create-link`, `export-link`, `group`: no markup changes needed — thin token/component wrappers.
+- `back-button`, `create-link`, `export-link`, `group`: no markup changes needed — thin token/component wrappers.
