@@ -26,6 +26,7 @@ final class CloseTicketRequest extends FormRequest
     {
         return [
             'actual_cost' => ['required', 'numeric', 'min:0'],
+            'minutes_spent' => ['nullable', 'integer', 'min:0'],
             'report' => ['nullable', 'string', 'max:5000'],
             'force' => ['nullable', 'boolean'],
         ];

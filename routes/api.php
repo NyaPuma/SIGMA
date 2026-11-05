@@ -183,6 +183,7 @@ Route::middleware(['custom.auth'])->group(function () {
 
         Route::get('/admin/maintenance-plans', [MaintenancePlanController::class, 'index'])->name('api.admin.stock.plans.index');
         Route::post('/admin/maintenance-plans', [MaintenancePlanController::class, 'store'])->name('api.admin.stock.plans.store');
+        Route::get('/admin/maintenance-plans/{plan}', [MaintenancePlanController::class, 'show'])->name('api.admin.stock.plans.show');
         Route::patch('/admin/maintenance-plans/{plan}', [MaintenancePlanController::class, 'update'])->name('api.admin.stock.plans.update');
         Route::delete('/admin/maintenance-plans/{plan}', [MaintenancePlanController::class, 'destroy'])->name('api.admin.stock.plans.destroy');
 

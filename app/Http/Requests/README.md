@@ -356,6 +356,7 @@ The 38 request classes belong to these functional areas:
 
 **Validation rules:**
 - `actual_cost` — required, numeric, `min:0`.
+- `minutes_spent` — nullable, integer, `min:0`. Absent means "leave the recorded time alone" (see `TicketCloseController::closeFinal()`), so it is validated only when sent.
 - `report` — nullable, string, max 5000.
 - `force` — nullable, boolean.
 
@@ -384,6 +385,8 @@ The 38 request classes belong to these functional areas:
 - `minutes_spent` — nullable, integer, `min:0`.
 - `cost` — nullable, numeric, `min:0`.
 - `technical_report` — nullable, string, max 5000.
+
+A field that is **absent** is not the same as `0`: `TicketCloseController::simpleClose()` only forwards a value when the key is present, so a quick close that omits cost or minutes leaves the values the technician already recorded untouched.
 
 **Messages/localization (`messages()`):**
 - `minutes_spent.integer` / `minutes_spent.min` — "O tempo despendido ...".

@@ -31,7 +31,7 @@ The migrations below build the SGM database, table by table. Here is what each i
 | `2026_08_08_000003_create_maintenance_plans_table.php` | `maintenance_plans`, `maintenance_plan_part` | **Preventive maintenance plans** (service every X days/hours/cycles) and which parts each plan needs. |
 | `2026_08_12_000001_create_user_preferences_table.php` | `user_preferences` | Per-user **preferences** — language, currency, date/time/number formats. |
 | `2026_08_30_000001_create_currency_rates_table.php` | `currency_rates` | **Exchange rates** between currencies, with a timestamp of when they were fetched. |
-| `2026_08_05_000001/000002` | `theme_settings`, `system_settings` | **Theme** and **system** key-value settings. |
+| `2026_08_05_000001/000002` | `theme_settings`, `system_settings` | **System** key-value settings (`SystemSetting`, read by `SystemSettingsService`). `theme_settings` is an orphan: themes are PHP presets in `ThemePresetService` and only the chosen id is stored in `users.theme`, so no model or query touches that table any more — see `docs/audit-checklist.md`. |
 
 There are also several **alteration** migrations that adjust existing tables over time rather than creating new ones. The full list, in apply order (other than the base `0001_01_01_*` tables above):
 
@@ -40,7 +40,7 @@ There are also several **alteration** migrations that adjust existing tables ove
 | `2026_07_24_152504_create_audits_append_only_trigger.php` | Adds an **append-only trigger** to `audits` (entries can't be updated/deleted) — MySQL, PostgreSQL and SQLite variants. Each `DB::unprepared()` block is a nowdoc (`<<< 'SQL'`) with single-quoted SQL literals: PHP single-quoted strings have no `''` escape, and MySQL under `sql_mode=ANSI_QUOTES` would read `"45000"` as an identifier. `down()` drops the triggers (and the plpgsql function on PostgreSQL). |
 | `2026_07_31_000001_convert_ticket_tables_to_utf8mb4.php` | Converts the tickets module tables to `utf8mb4`/`utf8mb4_unicode_ci` (MySQL only; no-op elsewhere). |
 | `2026_08_03_000001_add_ai_recommendation_columns_to_tickets_table.php` | Adds AI-recommendation columns to `tickets`: `recommended_technician_id`, `ai_recommendation_reason`, `ai_processed_at`. |
-| `2026_08_07_000001_add_reporter_fields_to_tickets_table.php` | Adds `reporter_name`, `reporter_contact`, `source` to `tickets`; makes `tickets.user_id` and `ticket_attachments.user_id` nullable. |
+| `2026_08_07_000001_add_reporter_fields_to_tickets_table.php` | Adds `reporter_name`, `reporter_contact`, `source` to `tickets`; makes `tickets.user_id` and `ticket_attachments.user_id` nullable. The rollback restores both NOT NULL constraints — and refuses to run while any row has no `user_id`, because rebuilding those tables as NOT NULL would delete the anonymous QR tickets it is meant to keep. |
 | `2026_08_10_000001_add_locale_to_users_table.php` | Adds `locale` (default `pt-PT`) to `users`. |
 | `2026_08_29_000001_add_theme_to_users_table.php` | Adds `theme` (nullable) to `users`. |
 | `2026_08_12_000002_populate_user_preferences.php` | Back-fills default `user_preferences` rows for existing users. `down()` is intentionally empty: the `pt`/`EUR`/`d/m/Y` rows it created are indistinguishable from preferences a user saved by hand, so deleting on rollback would destroy real user data. |
@@ -53,15 +53,16 @@ There are also several **alteration** migrations that adjust existing tables ove
 | `2026_11_04_000001_index_ticket_dates_without_status_prefix.php` | Adds `(deleted_at, opened_at)` and `(deleted_at, resolved_at)` to `tickets`. Every other `tickets` index is led by `status_id`, so a month/KPI/calendar filter on a date range alone could not use any of them; `deleted_at` leads because Eloquent soft deletes append `deleted_at IS NULL` (equality) before the date range. |
 | `2026_11_05_000001_constrain_recommended_technician_to_users.php` | Nulls the `tickets.recommended_technician_id` values that point at no user and adds the `users.id` foreign key (`nullOnDelete`) that the column never had: `2026_08_03_000001` introduced it as a bare `unsignedBigInteger`, while `user_id`, `assigned_to`, `resolved_by`, `budget_approved_by` and `closed_by` all constrain `users`. `Schema::getForeignKeys()` guards the add so a re-run does not fail; SQLite accepts the statement silently, so the real protection on that driver is the id clamp in `AIService::recommendTechnician()`. |
 | `2026_11_05_000002_drop_lockout_columns_from_users_table.php` | Drops `users.login_attempts` and `users.locked_until` plus the `users_locked_until_index`. Nothing ever wrote them — the login flow counts attempts in the cache — while `UserResource` published both on every admin payload and both were mass-assignable, so an admin screen could show a lockout that blocked nobody. `up()` drops the index first (SQLite refuses to drop an indexed column) and each step is guarded by `Schema::hasColumn()`; `down()` restores the columns and the index. |
+| `2026_11_05_000003_index_remaining_foreign_keys.php` | Indexes the eight reference columns that had no index at all: `part_supplier.supplier_id`, `maintenance_plan_part.part_id`, `parts.tax_rate_id`, `ticket_attachments.user_id`, `ticket_comments.user_id` and `tickets.resolved_by`/`closed_by`/`budget_approved_by`. PostgreSQL does not index a foreign key by itself, so every parent delete (`users`, `parts`, `tax_rates`, `suppliers`) and every join through those columns scanned the child table. MySQL already creates one per constraint, so the migration checks `Schema::getIndexes()` and skips a column an existing index leads with instead of adding a duplicate; `down()` only drops the indexes this file names. |
 
 **Note on the `user_preferences` migrations:** the `2026_08_12_000003` (number format) and `2026_08_12_000004` (time format) migrations are both present in this directory and both live on their dated filenames (do **not** rename them). The later `2026_09_02_000001` migration simply widens the `number_format` column that `000003` created.
 
 ## Notes for developers / AI
 
 - **Do not rename migration files or classes** — Laravel tracks applied migrations by filename (the `migrations` table). Renaming would break `migrate:status` and rollback history.
-- Comments within migrations have been translated to English.
+- Comments in the newer migrations are English; the original `0001_01_01_*` schema files still carry their Portuguese section banners (`| Informação Principal |`), so treat those as part of the historical files rather than the convention for new ones.
 - The `audits` table supports MySQL RANGE partitioning (managed by the `PartitionAudits` command).
-- Data migrations (like `populate_user_preferences`) are reversible with sensible rollback logic.
+- A data migration only reverses what can be reversed without touching user data. `populate_user_preferences` deliberately has an empty `down()`: the rows it inserts (pt / EUR / `d/m/Y`) are indistinguishable from preferences a user chose by hand, so deleting "its" rows on rollback would delete live settings.
 
 ## Related Folders
 

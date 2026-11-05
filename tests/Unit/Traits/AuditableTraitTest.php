@@ -128,6 +128,36 @@ class AuditableTraitTest extends TestCase
     }
 
     #[Test]
+    public function it_creates_audit_log_on_ticket_restore(): void
+    {
+        $openStatusId = app(TicketStatusService::class)->getByName(TicketStatusEnum::Open);
+        $user = User::factory()->create();
+        $ticket = Ticket::create([
+            'title' => 'Audit Restore Test',
+            'description' => 'Testing audit restore',
+            'priority' => TicketPriorityEnum::Medium->value,
+            'user_id' => $user->id,
+            'status_id' => $openStatusId,
+            'opened_at' => now(),
+        ]);
+
+        $ticketId = $ticket->id;
+        $ticket->delete();
+        $ticket->restore();
+
+        // O enum `audits.event` prevê 'restored'; sem o listener correspondente o
+        // `restore()` não deixava qualquer rasto de quem reactivou o registo.
+        $audit = Audit::where('auditable_id', $ticketId)
+            ->where('auditable_type', Ticket::class)
+            ->where('event', 'restored')
+            ->first();
+
+        $this->assertNotNull($audit);
+        $this->assertArrayHasKey('deleted_at', $audit->new_values);
+        $this->assertNull($audit->new_values['deleted_at']);
+    }
+
+    #[Test]
     public function it_creates_audit_with_request_metadata(): void
     {
         $openStatusId = app(TicketStatusService::class)->getByName(TicketStatusEnum::Open);

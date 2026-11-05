@@ -70,7 +70,7 @@ produce exactly one history row.
 
 ### `NotifyAssignedTechnician.php`
 
-**What it is:** Sends a `NewTicketNotification` (mail + database) to the technician assigned to a ticket when the ticket's status changes.
+**What it is:** Sends a `NewTicketNotification` (mail) to the technician assigned to a ticket when the ticket's status changes.
 
 **Class:** `App\Listeners\NotifyAssignedTechnician`
 
@@ -93,7 +93,7 @@ TicketStatusUpdated::class => [
 2. Checks if `$ticket->assigned_to` is set. If not, returns early (no technician assigned).
 3. Loads the `$ticket->technician` relationship (the `User` model for the assigned technician).
 4. If the technician is a valid `User` instance with a non-null `email`, sends `new NewTicketNotification($ticket)` to them via `$technician->notify(...)`.
-5. The `NewTicketNotification` sends an email + database notification to the technician about the ticket.
+5. The `NewTicketNotification` sends an e-mail to the technician about the ticket. There is no in-app panel row for this one: the panel is written explicitly, per event, by `NotificationCreatorService` (closure, priority override, budget, low stock), and ticket assignment is not one of them.
 
 **`failed()` logic:**
 - Logs a warning with the ticket ID, assigned technician ID, and error message.
@@ -148,7 +148,7 @@ public function __construct(
 
 ### `SendTicketStatusNotification.php`
 
-**What it is:** Sends a `TicketStatusChanged` notification (mail + database) to the ticket owner when the ticket's status changes.
+**What it is:** Sends a `TicketStatusChanged` notification (mail) to the ticket owner when the ticket's status changes.
 
 **Class:** `App\Listeners\SendTicketStatusNotification`
 
@@ -170,7 +170,7 @@ TicketStatusUpdated::class => [
 1. Gets the ticket from the event.
 2. Loads the `$ticket->user` relationship (the `User` model for the ticket creator/owner).
 3. If the user is a valid `User` instance with a non-null `email`, sends `new TicketStatusChanged($ticket, $event->oldStatus->value, $event->newStatus->value)` to them via `$user->notify(...)`.
-4. The `TicketStatusChanged` notification sends an email + database notification with the old and new status labels.
+4. The `TicketStatusChanged` notification sends an e-mail with the old and new status labels. Panel rows exist only for the events `NotificationCreatorService` is called with — closure goes through `TicketNotificationService::notifyTicketClosed()`, ordinary transitions do not add one.
 
 **`failed()` logic:**
 - Logs a warning with the ticket ID and error message.

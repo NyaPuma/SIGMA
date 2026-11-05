@@ -371,9 +371,9 @@ The application is organized in clear, separable layers with distinct responsibi
 - **Markdown**: Use Markdown templates for email body
 
 ### `Notifications/`
-**Purpose**: notifications delivered on two channels (mail + database)
+**Purpose**: notifications delivered by e-mail
 
-- **Channels**: `via()` returns `[mail, database]` in both notification classes
+- **Channels**: `via()` returns `['mail']` in both notification classes — the `database` channel would write to a table whose schema the framework does not match (see `app/Notifications/README.md`)
 - **Content**: Implement methods for each channel
 - **Routing**: Implement `routeNotificationFor()` for custom routing
 - **Queue**: Make queued for performance

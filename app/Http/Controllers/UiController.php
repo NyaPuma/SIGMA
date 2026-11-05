@@ -340,6 +340,15 @@ final class UiController extends Controller
      */
     public function getTechnicalPicket(Request $request): JsonResponse
     {
+        $user = $request->user();
+
+        // O piquete é dado operacional: o painel só o mostra a técnico/admin, por
+        // isso a rota também tem de o dizer — caso contrário qualquer operador
+        // autenticado lê o roster completo e a carga de trabalho de cada técnico.
+        if ($user === null || (! $user->isAdmin() && ! $user->isTechnician())) {
+            return response()->json(['message' => __('common.Acesso proibido para o seu perfil.')], 403);
+        }
+
         $picket = User::query()
             ->whereHas('profile', fn ($q) => $q->where('name', UserRoleEnum::Technician->value))
             ->where('active', true)

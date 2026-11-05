@@ -43,12 +43,20 @@ final class TicketCloseController extends Controller
 
         $reportRaw = $request->input('technical_report');
 
+        // `float()`/`integer()` devolvem 0 quando a chave não vem no pedido, e zero é um
+        // valor legítimo ("custo 0 €"), por isso a distinção presença/ausência tem de ser
+        // feita aqui: ausente = null = "não tocar na coluna", tal como já acontece com o
+        // relatório. Sem isto, fechar sem preencher custo/minutos apagava os valores que
+        // o técnico tinha registado mais cedo.
+        $cost = $request->filled('cost') ? $request->float('cost') : null;
+        $minutesSpent = $request->filled('minutes_spent') ? $request->integer('minutes_spent') : null;
+
         // 3. Execute the closing workflow
         $this->workflowService->close(
             ticket: $ticket,
-            cost: $request->float('cost'),
+            cost: $cost,
             report: is_string($reportRaw) ? $reportRaw : null,
-            minutesSpent: $request->integer('minutes_spent')
+            minutesSpent: $minutesSpent
         );
 
         // 4. Notify the owner and the technician about the status change
@@ -100,7 +108,7 @@ final class TicketCloseController extends Controller
             ticket: $ticket,
             cost: $cost,
             report: $report,
-            minutesSpent: $request->integer('minutes_spent')
+            minutesSpent: $request->filled('minutes_spent') ? $request->integer('minutes_spent') : null
         );
 
         // 4. Notify if priority was overridden

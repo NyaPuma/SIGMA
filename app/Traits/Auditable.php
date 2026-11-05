@@ -33,7 +33,10 @@ trait Auditable
      */
     public static function bootAuditable(): void
     {
-        foreach (['created', 'updated', 'deleted'] as $event) {
+        // O esquema de `audits.event` aceita precisamente estes quatro valores
+        // (ver 0001_01_01_000006_create_audits_table.php); sem 'restored' aqui, um
+        // `$model->restore()` não deixava nenhum rasto na auditoria.
+        foreach (['created', 'updated', 'deleted', 'restored'] as $event) {
             call_user_func([static::class, $event], function (Model $model) use ($event): void {
                 try {
                     self::createAudit($model, $event);

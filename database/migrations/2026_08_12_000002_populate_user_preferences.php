@@ -4,6 +4,7 @@ declare(strict_types=1);
 
 use App\Models\UserPreference;
 use Illuminate\Database\Migrations\Migration;
+use Illuminate\Support\Facades\DB;
 
 return new class extends Migration
 {

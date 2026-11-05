@@ -32,8 +32,12 @@ final class PublicTicketController extends Controller
     {
         $machineId = (int) $request->query('machine_id');
 
+        // O QR é público e o `machine_id` é sequencial: qualquer pessoa pode percorrer
+        // 1..N e ler o que aqui for renderizado. Por isso só a categoria é carregada —
+        // o suficiente para o reportante reconhecer a máquina. `asset_tag`, marca,
+        // modelo e sala ficam fora do ecrã (inventário interno, localização).
         $equipment = Equipment::query()
-            ->with(['room', 'category'])
+            ->with('category')
             ->findOrFail($machineId);
 
         return view('ui.tickets.public.create', [

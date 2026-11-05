@@ -7,9 +7,10 @@ use App\Models\User;
 /**
  * Single source of truth for preset themes (14 families × light/dark = 28 themes).
  *
- * Each theme defines the complete set of colors stored in `theme_settings`.
- * Each family has a light/dark pair with the same hue — the light/dark toggle
- * button switches to the equivalent and saves it.
+ * The colours live here, in code: a theme is applied by generating CSS variables from
+ * the preset (`ThemeController::customCss`), and the only thing persisted per user is
+ * the preset id in `users.theme`. Each family has a light/dark pair with the same hue —
+ * the light/dark toggle button switches to the equivalent and saves it.
  */
 final class ThemePresetService
 {

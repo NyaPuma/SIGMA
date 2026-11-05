@@ -192,6 +192,31 @@ class TicketWorkflowFeatureTest extends TestCase
         $this->assertEquals('Replaced faulty bearing', $ticket->technical_report);
     }
 
+    public function test_closing_without_cost_or_minutes_keeps_what_the_technician_already_recorded(): void
+    {
+        $user = $this->createUserWithToken(UserRoleEnum::User->value);
+        $technician = $this->createUserWithToken(UserRoleEnum::Technician->value);
+        $inProgressId = TicketStatus::where('name', TicketStatusEnum::InProgress->value)->value('id');
+        $ticket = $this->createTicket($user, [
+            'status_id' => $inProgressId,
+            'assigned_to' => $technician->id,
+            'in_progress_at' => now()->subHours(3),
+            'minutes_spent' => 240,
+            'actual_cost' => 87.25,
+            'technical_report' => 'Diagnóstico feito na véspera',
+        ]);
+
+        $this->withHeader('X-Auth-Token', $technician->api_token)
+            ->putJson("/api/technician/tickets/{$ticket->id}/close")
+            ->assertOk();
+
+        $ticket->refresh();
+        $this->assertTrue($ticket->hasStatus(TicketStatusEnum::Closed));
+        $this->assertEquals(240, $ticket->minutes_spent);
+        $this->assertEquals(87.25, (float) $ticket->actual_cost);
+        $this->assertSame('Diagnóstico feito na véspera', $ticket->technical_report);
+    }
+
     public function test_cannot_close_non_in_progress_ticket(): void
     {
         $user = $this->createUserWithToken(UserRoleEnum::User->value);

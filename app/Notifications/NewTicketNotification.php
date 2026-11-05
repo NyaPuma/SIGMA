@@ -20,13 +20,19 @@ final class NewTicketNotification extends Notification implements ShouldQueue
     ) {}
 
     /**
-     * Defines the notification channels (mail and database).
+     * Defines the notification channels (mail).
      *
      * @return array<int, string>
      */
     public function via(object $notifiable): array
     {
-        return ['mail', 'database'];
+        // Só "mail": o canal `database` do framework escreve um `id` UUID e não preenche
+        // `user_id`/`title`, e a tabela `notifications` deste projecto é do painel interno
+        // (auto-incremento + colunas obrigatórias) — o INSERT falhava sempre. O painel é
+        // escrito à mão por `NotificationCreatorService` nos eventos que a aplicação
+        // mostra (fecho, override de prioridade, orçamento, stock baixo); este nunca foi
+        // um deles, por isso nada muda para quem vê o painel.
+        return ['mail'];
     }
 
     /**
@@ -44,24 +50,5 @@ final class NewTicketNotification extends Notification implements ShouldQueue
             ->action(__('notifications.action_view_ticket'), $ticketUrl)
             ->line(__('notifications.follow_up_line'))
             ->salutation(__('notifications.salutation'));
-    }
-
-    /**
-     * Database representation of the notification (User Panel).
-     *
-     * @return array<string, mixed>
-     */
-    public function toArray(object $notifiable): array
-    {
-        return [
-            'ticket_id' => $this->ticket->id,
-            'title' => __('notifications.db_new_ticket_title'),
-            'message' => __('notifications.db_new_ticket_message', [
-                'id' => $this->ticket->id,
-                'title' => $this->ticket->title,
-            ]),
-            'type' => 'info',
-            'link' => "/ui/tickets/{$this->ticket->id}",
-        ];
     }
 }

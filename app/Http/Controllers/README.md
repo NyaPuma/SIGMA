@@ -144,9 +144,9 @@ Below is every controller grouped by the area it powers, with a plain-English de
 
 | Method | URI | Route name | Middleware | File |
 |---|---|---|---|---|
-| POST | `/login` | `login` | `rate.limit:5,1` (web) | `web.php:56` |
+| POST | `/login` | `login` | `rate.limit:5,1` (web) | `web.php:58` |
 | POST | `/api/login` | `api.login` | `rate.limit:5,1` | `api.php:45` |
-| POST | `/logout` | `auth.logout` | `custom.auth` | `web.php:105` |
+| POST | `/logout` | `auth.logout` | `custom.auth` | `web.php:112` |
 
 (Note: logout has no equivalent in `api.php`.)
 
@@ -177,7 +177,7 @@ Below is every controller grouped by the area it powers, with a plain-English de
 
 | Method | URI | Route name | Middleware | File |
 |---|---|---|---|---|
-| POST | `/admin/users/register` | `admin.users.register` | `custom.auth` + `role:admin` + `rate.limit:5,1` | `web.php:322` |
+| POST | `/admin/users/register` | `admin.users.register` | `custom.auth` + `role:admin` + `rate.limit:5,1` | `web.php:337` |
 
 (There is no equivalent in `api.php`.)
 
@@ -237,9 +237,9 @@ Below is every controller grouped by the area it powers, with a plain-English de
 
 | Method | URI | Route name | Middleware | File |
 |---|---|---|---|---|
-| POST | `/password/change` | `auth.password.change` | `custom.auth` + `rate.limit:10,1` | `web.php:108` |
+| POST | `/password/change` | `auth.password.change` | `custom.auth` + `rate.limit:10,1` | `web.php:115` |
 | POST | `/api/password/change` | `api.password.change` | `custom.auth` + `rate.limit:10,1` | `api.php:71` |
-| POST | `/profile/update` | `auth.profile.update` | `custom.auth` + `rate.limit:10,1` | `web.php:111` |
+| POST | `/profile/update` | `auth.profile.update` | `custom.auth` + `rate.limit:10,1` | `web.php:118` |
 
 (`profile/update` only in `web.php`.)
 
@@ -267,13 +267,13 @@ Below is every controller grouped by the area it powers, with a plain-English de
 
 | Method | URI | Route name | Middleware | File |
 |---|---|---|---|---|
-| GET | `/preferences` | `preferences.edit` | public | `web.php:76` |
-| POST | `/preferences/language` | `preferences.update_language` | public, no CSRF | `web.php:78` |
-| POST | `/preferences/currency` | `preferences.update_currency` | public, no CSRF | `web.php:81` |
-| POST | `/preferences/date-format` | `preferences.update_date_format` | public, no CSRF | `web.php:84` |
-| POST | `/preferences/time-format` | `preferences.update_time_format` | public, no CSRF | `web.php:87` |
-| POST | `/preferences/number-format` | `preferences.update_number_format` | public, no CSRF | `web.php:90` |
-| POST | `/preferences` | `preferences.update_all` | public, no CSRF | `web.php:93` |
+| GET | `/preferences` | `preferences.edit` | public | `web.php:83` |
+| POST | `/preferences/language` | `preferences.update_language` | public, no CSRF | `web.php:85` |
+| POST | `/preferences/currency` | `preferences.update_currency` | public, no CSRF | `web.php:88` |
+| POST | `/preferences/date-format` | `preferences.update_date_format` | public, no CSRF | `web.php:91` |
+| POST | `/preferences/time-format` | `preferences.update_time_format` | public, no CSRF | `web.php:94` |
+| POST | `/preferences/number-format` | `preferences.update_number_format` | public, no CSRF | `web.php:97` |
+| POST | `/preferences` | `preferences.update_all` | public, no CSRF | `web.php:100` |
 
 **Dependencies:** `PreferencesService`, `LocaleService`, `AuthUserResolver`.
 
@@ -314,12 +314,12 @@ Below is every controller grouped by the area it powers, with a plain-English de
 
 | Method | URI | Route name | File |
 |---|---|---|---|
-| GET | `/admin/users` | `admin.users.index` / `api.admin.users.index` | `web.php:336`, `api.php:136` |
-| POST | `/admin/users` | `admin.users.store` / `api.admin.users.store` | `web.php:337`, `api.php:137` |
-| PATCH | `/admin/users/{targetUser}` | `admin.users.update` / `api.admin.users.update` | `web.php:338`, `api.php:138` |
-| PATCH | `/admin/users/{targetUser}/inactive` | `admin.users.inactivate` / `api.admin.users.inactivate` | `web.php:339`, `api.php:139` |
-| DELETE | `/admin/users/{targetUser}` | `admin.users.destroy` / `api.admin.users.destroy` | `web.php:340`, `api.php:140` |
-| GET | `/admin/profiles` | `admin.profiles.index` / `api.admin.profiles.index` | `web.php:341`, `api.php:141` |
+| GET | `/admin/users` | `admin.users.index` / `api.admin.users.index` | `web.php:351`, `api.php:136` |
+| POST | `/admin/users` | `admin.users.store` / `api.admin.users.store` | `web.php:352`, `api.php:137` |
+| PATCH | `/admin/users/{targetUser}` | `admin.users.update` / `api.admin.users.update` | `web.php:353`, `api.php:138` |
+| PATCH | `/admin/users/{targetUser}/inactive` | `admin.users.inactivate` / `api.admin.users.inactivate` | `web.php:354`, `api.php:139` |
+| DELETE | `/admin/users/{targetUser}` | `admin.users.destroy` / `api.admin.users.destroy` | `web.php:355`, `api.php:140` |
+| GET | `/admin/profiles` | `admin.profiles.index` / `api.admin.profiles.index` | `web.php:356`, `api.php:141` |
 
 **Dependencies:** `UserRepositoryInterface`, `CreateUserAction`, `UpdateUserAction`, `StoreUserRequest`, `UpdateUserRequest`, `UserResource`, `UserProfileResource`.
 
@@ -358,8 +358,8 @@ Below is every controller grouped by the area it powers, with a plain-English de
 
 | Method | URI | Route name | File |
 |---|---|---|---|
-| PATCH | `/admin/tickets/{ticket}/approve-budget` | `admin.tickets.approve-budget` / `api.admin.tickets.approve-budget` | `web.php:367`, `api.php:160` |
-| POST | `/admin/preventive` | `admin.preventive.store` / `api.admin.preventive.store` | `web.php:366`, `api.php:159` |
+| PATCH | `/admin/tickets/{ticket}/approve-budget` | `admin.tickets.approve-budget` / `api.admin.tickets.approve-budget` | `web.php:383`, `api.php:160` |
+| POST | `/admin/preventive` | `admin.preventive.store` / `api.admin.preventive.store` | `web.php:382`, `api.php:159` |
 
 **Dependencies:** `ApproveBudgetAction`, `CreatePreventiveTicketAction`, `BudgetDecisionRequest`, `StorePreventiveRequest`, `BudgetDecisionData`, `TicketResource`.
 
@@ -386,13 +386,13 @@ Below is every controller grouped by the area it powers, with a plain-English de
 
 | Method | URI | Route name | Middleware | File |
 |---|---|---|---|---|
-| GET | `/tickets` | `tickets.index` / `api.tickets.index` | `custom.auth` | `web.php:210`, `api.php:76` |
-| POST | `/tickets` | `tickets.store` / `api.tickets.store` | `custom.auth` + `rate.limit:30,1` | `web.php:212`, `api.php:78` |
-| GET | `/tickets/search` | `tickets.search` / `api.tickets.search` | `custom.auth` | `web.php:208`, `api.php:77` |
-| GET | `/tickets/{ticket}` | `tickets.show` / `api.tickets.show` | `custom.auth` | `web.php:211`, `api.php:81` |
-| GET | `/admin/tickets/{ticket}` | `admin.tickets.show` | `custom.auth` + `role:admin` | `web.php:327` |
-| GET | `/technician/tickets/open` | `technician.tickets.open` | `custom.auth` + `role:admin` | `web.php:309` |
-| GET | `/tickets/most-urgent` | `tickets.most-urgent` | `custom.auth` | `web.php:209` |
+| GET | `/tickets` | `tickets.index` / `api.tickets.index` | `custom.auth` | `web.php:223`, `api.php:76` |
+| POST | `/tickets` | `tickets.store` / `api.tickets.store` | `custom.auth` + `rate.limit:30,1` | `web.php:225`, `api.php:78` |
+| GET | `/tickets/search` | `tickets.search` / `api.tickets.search` | `custom.auth` | `web.php:221`, `api.php:77` |
+| GET | `/tickets/{ticket}` | `tickets.show` / `api.tickets.show` | `custom.auth` | `web.php:224`, `api.php:81` |
+| GET | `/admin/tickets/{ticket}` | `admin.tickets.show` | `custom.auth` + `role:admin` | `web.php:342` |
+| GET | `/technician/tickets/open` | `technician.tickets.open` | `custom.auth` + `role:admin` | `web.php:322` |
+| GET | `/tickets/most-urgent` | `tickets.most-urgent` | `custom.auth` | `web.php:222` |
 
 > Note the URL pattern order: `/tickets/search` and `/tickets/most-urgent` are declared **before** `/tickets/{ticket}` so they are not captured by the `{ticket}` wildcard.
 
@@ -433,8 +433,8 @@ Below is every controller grouped by the area it powers, with a plain-English de
 
 | Method | URI | Route name | Middleware | File |
 |---|---|---|---|---|
-| POST | `/tickets/{ticket}/assign-technician` | `tickets.assign-technician` | `custom.auth` + `role:admin` + `rate.limit:20,1` | `web.php:310` |
-| PATCH | `/admin/tickets/{ticket}/assign` | `admin.tickets.assign` | `custom.auth` + `role:admin`, no CSRF | `web.php:328` |
+| POST | `/tickets/{ticket}/assign-technician` | `tickets.assign-technician` | `custom.auth` + `role:admin` + `rate.limit:20,1` | `web.php:323` |
+| PATCH | `/admin/tickets/{ticket}/assign` | `admin.tickets.assign` | `custom.auth` + `role:admin`, no CSRF | `web.php:343` |
 | PATCH | `/api/admin/tickets/{ticket}/assign` | `api.admin.tickets.assign` | `custom.auth` + `role:admin` + `rate.limit:20,1` | `api.php:161` |
 
 **Dependencies:** `TechnicianAssignmentService`, `TicketWorkflowService`, `AssignTechnicianToTicketRequest`, `NotifiesTicketStatusChange` trait.
@@ -462,7 +462,7 @@ Below is every controller grouped by the area it powers, with a plain-English de
 
 | Method | URI | Route name | Middleware | File |
 |---|---|---|---|---|
-| PUT | `/technician/tickets/{ticket}/start` | `technician.tickets.start` | `custom.auth` + `role:technician` + `rate.limit:20,1`, no CSRF | `web.php:260` |
+| PUT | `/technician/tickets/{ticket}/start` | `technician.tickets.start` | `custom.auth` + `role:technician` + `rate.limit:20,1`, no CSRF | `web.php:273` |
 | PUT | `/api/technician/tickets/{ticket}/start` | `api.technician.tickets.start` | `custom.auth` + `role:technician` + `rate.limit:20,1` | `api.php:103` |
 
 **Dependencies:** `TicketWorkflowService`, `NotificationService`, `StartTicketRequest`, `NotifiesTicketStatusChange` trait.
@@ -489,7 +489,7 @@ Below is every controller grouped by the area it powers, with a plain-English de
 
 | Method | URI | Route name | Middleware | File |
 |---|---|---|---|---|
-| POST | `/tickets/{ticket}/schedule` | `tickets.schedule` | `custom.auth`, no CSRF | `web.php:241` |
+| POST | `/tickets/{ticket}/schedule` | `tickets.schedule` | `custom.auth`, no CSRF | `web.php:254` |
 | POST | `/api/tickets/{ticket}/schedule` | `api.tickets.schedule` | `custom.auth` | `api.php:99` |
 
 **Dependencies:** `ScheduleTicketAction`, `ScheduleTicketRequest`, `ScheduleTicketData`, `TicketResource`.
@@ -509,9 +509,9 @@ Below is every controller grouped by the area it powers, with a plain-English de
 
 | Method | URI | Route name | Middleware | File |
 |---|---|---|---|---|
-| PUT | `/technician/tickets/{ticket}/close` | `technician.tickets.close` | `custom.auth` + `role:technician` + `rate.limit:20,1`, no CSRF | `web.php:264` |
+| PUT | `/technician/tickets/{ticket}/close` | `technician.tickets.close` | `custom.auth` + `role:technician` + `rate.limit:20,1`, no CSRF | `web.php:277` |
 | PUT | `/api/technician/tickets/{ticket}/close` | `api.technician.tickets.close` | `custom.auth` + `role:technician` + `rate.limit:20,1` | `api.php:106` |
-| POST | `/tickets/{ticket}/close` | `tickets.close` | `custom.auth`, no CSRF | `web.php:249` |
+| POST | `/tickets/{ticket}/close` | `tickets.close` | `custom.auth`, no CSRF | `web.php:262` |
 | PUT | `/api/technician/tickets/{ticket}/close-final` | `api.technician.tickets.close-final` | `custom.auth` + `role:technician` + `rate.limit:20,1` | `api.php:109` |
 
 **Dependencies:** `TicketWorkflowService`, `NotificationService`, `LocalizationService`, `CloseTicketRequest`, `CloseTicketSimpleRequest`, `NotifiesTicketStatusChange` trait.
@@ -542,9 +542,9 @@ Below is every controller grouped by the area it powers, with a plain-English de
 
 | Method | URI | Route name | Middleware | File |
 |---|---|---|---|---|
-| POST | `/tickets/{ticket}/reopen` | `tickets.reopen` | `custom.auth`, no CSRF | `web.php:235` |
+| POST | `/tickets/{ticket}/reopen` | `tickets.reopen` | `custom.auth`, no CSRF | `web.php:248` |
 | POST | `/api/tickets/{ticket}/reopen` | `api.tickets.reopen` | `custom.auth` | `api.php:97` |
-| POST | `/tickets/{ticket}/cancel` | `tickets.cancel` | `custom.auth`, no CSRF | `web.php:238` |
+| POST | `/tickets/{ticket}/cancel` | `tickets.cancel` | `custom.auth`, no CSRF | `web.php:251` |
 | POST | `/api/tickets/{ticket}/cancel` | `api.tickets.cancel` | `custom.auth` | `api.php:98` |
 
 **Dependencies:** `TicketWorkflowService`, `NotifiesTicketStatusChange` trait.
@@ -568,8 +568,8 @@ Below is every controller grouped by the area it powers, with a plain-English de
 
 | Method | URI | Route name | Middleware | File |
 |---|---|---|---|---|
-| POST | `/tickets/{ticket}/budget` | `tickets.budget` | `custom.auth`, no CSRF | `web.php:254` |
-| PUT | `/technician/tickets/{ticket}/request-budget` | `technician.tickets.request-budget` | `custom.auth` + `role:technician` + `rate.limit:20,1`, no CSRF | `web.php:276` |
+| POST | `/tickets/{ticket}/budget` | `tickets.budget` | `custom.auth`, no CSRF | `web.php:259` |
+| PUT | `/technician/tickets/{ticket}/request-budget` | `technician.tickets.request-budget` | `custom.auth` + `role:technician` + `rate.limit:20,1`, no CSRF | `web.php:281` |
 | PUT | `/api/technician/tickets/{ticket}/request-budget` | `api.technician.tickets.request-budget` | `custom.auth` + `role:technician` + `rate.limit:20,1` | `api.php:112` |
 
 **Dependencies:** `TicketStatusService`, `NotificationService`, `SubmitBudgetRequest`, `RequestBudgetRequest`, `BudgetSubmissionData`, `TicketResource`. Uses the `LocksTicketRow` concern (`app/Domain/Ticket/Concerns/LocksTicketRow.php`).
@@ -600,9 +600,9 @@ Below is every controller grouped by the area it powers, with a plain-English de
 
 | Method | URI | Route name | Middleware | File |
 |---|---|---|---|---|
-| POST | `/tickets/{ticket}/comments` | `tickets.comments.store` | `custom.auth` + `rate.limit:30,1`, no CSRF | `web.php:218` |
+| POST | `/tickets/{ticket}/comments` | `tickets.comments.store` | `custom.auth` + `rate.limit:30,1`, no CSRF | `web.php:231` |
 | POST | `/api/tickets/{ticket}/comments` | `api.tickets.comments.store` | `custom.auth` + `rate.limit:30,1` | `api.php:84` |
-| GET | `/tickets/{ticket}/comments` | `tickets.comments.index` | `custom.auth` | `web.php:222` |
+| GET | `/tickets/{ticket}/comments` | `tickets.comments.index` | `custom.auth` | `web.php:235` |
 | GET | `/api/tickets/{ticket}/comments` | `api.tickets.comments.index` | `custom.auth` | `api.php:87` |
 
 **Dependencies:** `StoreCommentRequest`, `TicketCommentResource`.
@@ -626,11 +626,11 @@ Below is every controller grouped by the area it powers, with a plain-English de
 
 | Method | URI | Route name | Middleware | File |
 |---|---|---|---|---|
-| POST | `/tickets/{ticket}/photos` | `tickets.photos.store` | `custom.auth` + `rate.limit:30,1`, no CSRF | `web.php:225` |
+| POST | `/tickets/{ticket}/photos` | `tickets.photos.store` | `custom.auth` + `rate.limit:30,1`, no CSRF | `web.php:238` |
 | POST | `/api/tickets/{ticket}/photos` | `api.tickets.photos.store` | `custom.auth` + `rate.limit:30,1` | `api.php:90` |
-| GET | `/tickets/{ticket}/photos` | `tickets.photos.index` | `custom.auth` | `web.php:229` |
+| GET | `/tickets/{ticket}/photos` | `tickets.photos.index` | `custom.auth` | `web.php:242` |
 | GET | `/api/tickets/{ticket}/photos` | `api.tickets.photos.index` | `custom.auth` | `api.php:93` |
-| DELETE | `/tickets/{ticket}/photos/{attachment}` | `tickets.photos.destroy` | `custom.auth`, no CSRF | `web.php:230` |
+| DELETE | `/tickets/{ticket}/photos/{attachment}` | `tickets.photos.destroy` | `custom.auth`, no CSRF | `web.php:243` |
 | DELETE | `/api/tickets/{ticket}/photos/{attachment}` | `api.tickets.photos.destroy` | `custom.auth` | `api.php:94` |
 
 **Dependencies:** `UploadPhotoRequest`, `TicketAttachmentResource`. Allowed MIME types: JPEG, PNG, GIF, WebP.
@@ -662,16 +662,16 @@ Below is every controller grouped by the area it powers, with a plain-English de
 
 | Method | URI | Route name | Middleware | File |
 |---|---|---|---|---|
-| GET | `/api/rooms` | `rooms.index` | `custom.auth` | `web.php:196` |
-| GET | `/admin/rooms` | `admin.rooms.index` / `api.admin.rooms.index` | `custom.auth` + `role:admin` | `web.php:360`, `api.php:153` |
-| POST | `/api/rooms` | `rooms.store` | `custom.auth`, no CSRF | `web.php:197` |
-| POST | `/admin/rooms` | `admin.rooms.store` / `api.admin.rooms.store` | `custom.auth` + `role:admin` | `web.php:361`, `api.php:154` |
-| PUT | `/api/rooms/{room}` | `rooms.update` | `custom.auth`, no CSRF | `web.php:200` |
-| PATCH | `/api/rooms/{room}` | `rooms.update-patch` | `custom.auth`, no CSRF | `web.php:203` |
-| PATCH | `/admin/rooms/{room}` | `admin.rooms.update` / `api.admin.rooms.update` | `custom.auth` + `role:admin` | `web.php:362`, `api.php:155` |
-| PATCH | `/admin/rooms/{room}/inactive` | `admin.rooms.inactivate` / `api.admin.rooms.inactivate` | `custom.auth` + `role:admin` | `web.php:363`, `api.php:156` |
+| GET | `/api/rooms` | `rooms.index` | `custom.auth` | `web.php:209` |
+| GET | `/admin/rooms` | `admin.rooms.index` / `api.admin.rooms.index` | `custom.auth` + `role:admin` | `web.php:376`, `api.php:153` |
+| POST | `/api/rooms` | `rooms.store` | `custom.auth`, no CSRF | `web.php:210` |
+| POST | `/admin/rooms` | `admin.rooms.store` / `api.admin.rooms.store` | `custom.auth` + `role:admin` | `web.php:377`, `api.php:154` |
+| PUT | `/api/rooms/{room}` | `rooms.update` | `custom.auth`, no CSRF | `web.php:213` |
+| PATCH | `/api/rooms/{room}` | `rooms.update-patch` | `custom.auth`, no CSRF | `web.php:216` |
+| PATCH | `/admin/rooms/{room}` | `admin.rooms.update` / `api.admin.rooms.update` | `custom.auth` + `role:admin` | `web.php:378`, `api.php:155` |
+| PATCH | `/admin/rooms/{room}/inactive` | `admin.rooms.inactivate` / `api.admin.rooms.inactivate` | `custom.auth` + `role:admin` | `web.php:379`, `api.php:156` |
 
-> Note: `GET /api/rooms` and `POST/PUT/PATCH /api/rooms[/{id}]` (the `RoomController` lines in the `web.php` "Rooms API" block, `web.php:196-205`) are declared **outside** the `role:admin` group, so they are gated only by `custom.auth`. The `/admin/rooms` equivalents additionally require `role:admin`.
+> Note: `GET /api/rooms` and `POST/PUT/PATCH /api/rooms[/{id}]` (the `RoomController` lines in the `web.php` "Rooms API" block, `web.php:209-216`) are declared **outside** the `role:admin` group, so the route layer only requires `custom.auth`. Authorization is enforced one layer down: each method calls `$this->authorize(...)` (`RoomController::indexRoom()` / `storeRoom()` / `updateRoom()`) and `RoomPolicy` allows read only for admin/technician and write only for admin. The `/admin/rooms` equivalents additionally carry the `role:admin` middleware.
 
 **Dependencies:** `RoomRepositoryInterface`, `CreateRoomAction`, `UpdateRoomAction`, `StoreRoomRequest`, `UpdateRoomRequest`, `RoomResource`.
 
@@ -703,10 +703,10 @@ Below is every controller grouped by the area it powers, with a plain-English de
 
 | Method | URI | Route name | File |
 |---|---|---|---|
-| GET | `/admin/equipment` | `admin.equipment.index` / `api.admin.equipment.index` | `web.php:344`, `api.php:147` |
-| POST | `/admin/equipment` | `admin.equipment.store` / `api.admin.equipment.store` | `web.php:345`, `api.php:148` |
-| PATCH | `/admin/equipment/{equipment}` | `admin.equipment.update` / `api.admin.equipment.update` | `web.php:346`, `api.php:149` |
-| DELETE | `/admin/equipment/{equipment}` | `admin.equipment.destroy` / `api.admin.equipment.destroy` | `web.php:347`, `api.php:150` |
+| GET | `/admin/equipment` | `admin.equipment.index` / `api.admin.equipment.index` | `web.php:359`, `api.php:147` |
+| POST | `/admin/equipment` | `admin.equipment.store` / `api.admin.equipment.store` | `web.php:360`, `api.php:148` |
+| PATCH | `/admin/equipment/{equipment}` | `admin.equipment.update` / `api.admin.equipment.update` | `web.php:361`, `api.php:149` |
+| DELETE | `/admin/equipment/{equipment}` | `admin.equipment.destroy` / `api.admin.equipment.destroy` | `web.php:362`, `api.php:150` |
 
 **Dependencies:** `EquipmentRepositoryInterface`, `CreateEquipmentAction`, `UpdateEquipmentAction`, `StoreEquipmentRequest`, `UpdateEquipmentRequest`, `EquipmentResource`.
 
@@ -741,11 +741,11 @@ Below is every controller grouped by the area it powers, with a plain-English de
 
 | Method | URI | Route name | Middleware | File |
 |---|---|---|---|---|
-| GET | `/stock/parts` | `stock.parts.index` / `api.stock.parts.index` | `custom.auth` + `role:admin,technician` | `web.php:276`, `api.php:119` |
-| GET | `/stock/parts/{part}` | `stock.parts.show` / `api.stock.parts.show` | `custom.auth` + `role:admin,technician` | `web.php:277`, `api.php:120` |
-| POST | `/admin/parts` | `admin.stock.parts.store` / `api.admin.stock.parts.store` | `custom.auth` + `role:admin` | `web.php:372`, `api.php:166` |
-| PATCH | `/admin/parts/{part}` | `admin.stock.parts.update` / `api.admin.stock.parts.update` | `custom.auth` + `role:admin` | `web.php:373`, `api.php:167` |
-| DELETE | `/admin/parts/{part}` | `admin.stock.parts.destroy` / `api.admin.stock.parts.destroy` | `custom.auth` + `role:admin` | `web.php:374`, `api.php:168` |
+| GET | `/stock/parts` | `stock.parts.index` / `api.stock.parts.index` | `custom.auth` + `role:admin,technician` | `web.php:289`, `api.php:119` |
+| GET | `/stock/parts/{part}` | `stock.parts.show` / `api.stock.parts.show` | `custom.auth` + `role:admin,technician` | `web.php:290`, `api.php:120` |
+| POST | `/admin/parts` | `admin.stock.parts.store` / `api.admin.stock.parts.store` | `custom.auth` + `role:admin` | `web.php:388`, `api.php:166` |
+| PATCH | `/admin/parts/{part}` | `admin.stock.parts.update` / `api.admin.stock.parts.update` | `custom.auth` + `role:admin` | `web.php:389`, `api.php:167` |
+| DELETE | `/admin/parts/{part}` | `admin.stock.parts.destroy` / `api.admin.stock.parts.destroy` | `custom.auth` + `role:admin` | `web.php:390`, `api.php:168` |
 
 **Dependencies:** `PartService`, `CreatePartAction`, `UpdatePartAction`, `StorePartRequest`, `UpdatePartRequest`, `PartResource`.
 
@@ -781,9 +781,9 @@ Below is every controller grouped by the area it powers, with a plain-English de
 | Method | URI | Route name | File |
 |---|---|---|---|
 | GET | `/admin/part-categories` | `api.admin.stock.categories.index` | `api.php:179` (web: no index route mapped) |
-| POST | `/admin/part-categories` | `admin.stock.categories.store` / `api.admin.stock.categories.store` | `web.php:384`, `api.php:180` |
-| PATCH | `/admin/part-categories/{category}` | `admin.stock.categories.update` / `api.admin.stock.categories.update` | `web.php:385`, `api.php:181` |
-| DELETE | `/admin/part-categories/{category}` | `admin.stock.categories.destroy` / `api.admin.stock.categories.destroy` | `web.php:386`, `api.php:182` |
+| POST | `/admin/part-categories` | `admin.stock.categories.store` / `api.admin.stock.categories.store` | `web.php:400`, `api.php:180` |
+| PATCH | `/admin/part-categories/{category}` | `admin.stock.categories.update` / `api.admin.stock.categories.update` | `web.php:401`, `api.php:181` |
+| DELETE | `/admin/part-categories/{category}` | `admin.stock.categories.destroy` / `api.admin.stock.categories.destroy` | `web.php:402`, `api.php:182` |
 
 > **Verify:** The `index()` method is only wired in `api.php:179` (`/admin/part-categories` GET). There is **no** `index` route in `web.php` for the part-category list (the web UI list is served by `StockUiController::categories` instead).
 
@@ -816,8 +816,8 @@ Below is every controller grouped by the area it powers, with a plain-English de
 
 | Method | URI | Route name | File |
 |---|---|---|---|
-| GET | `/stock/movements` | `stock.movements.index` / `api.stock.movements.index` | `web.php:280`, `api.php:123` |
-| POST | `/stock/movements` | `stock.movements.store` / `api.stock.movements.store` | `web.php:281`, `api.php:124` |
+| GET | `/stock/movements` | `stock.movements.index` / `api.stock.movements.index` | `web.php:293`, `api.php:123` |
+| POST | `/stock/movements` | `stock.movements.store` / `api.stock.movements.store` | `web.php:294`, `api.php:124` |
 
 **Dependencies:** `StockMovementService`, `StoreStockMovementRequest`, `StockMovementResource`, `StockMovementTypeEnum`.
 
@@ -840,12 +840,12 @@ Below is every controller grouped by the area it powers, with a plain-English de
 
 | Method | URI | Route name | File |
 |---|---|---|---|
-| GET | `/stock/dashboard/summary` | `stock.dashboard.summary` / `api.stock.dashboard.summary` | `web.php:284`, `api.php:125` |
-| GET | `/stock/dashboard/top-consumed` | `stock.dashboard.top-consumed` / `api.stock.dashboard.top-consumed` | `web.php:285`, `api.php:126` |
-| GET | `/stock/dashboard/slow-moving` | `stock.dashboard.slow-moving` / `api.stock.dashboard.slow-moving` | `web.php:286`, `api.php:127` |
-| GET | `/stock/dashboard/runout-forecast` | `stock.dashboard.runout-forecast` / `api.stock.dashboard.runout-forecast` | `web.php:287`, `api.php:128` |
-| GET | `/stock/dashboard/cost-by-equipment` | `stock.dashboard.cost-by-equipment` / `api.stock.dashboard.cost-by-equipment` | `web.php:288`, `api.php:129` |
-| GET | `/stock/dashboard/cost-by-ticket` | `stock.dashboard.cost-by-ticket` / `api.stock.dashboard.cost-by-ticket` | `web.php:289`, `api.php:130` |
+| GET | `/stock/dashboard/summary` | `stock.dashboard.summary` / `api.stock.dashboard.summary` | `web.php:297`, `api.php:125` |
+| GET | `/stock/dashboard/top-consumed` | `stock.dashboard.top-consumed` / `api.stock.dashboard.top-consumed` | `web.php:298`, `api.php:126` |
+| GET | `/stock/dashboard/slow-moving` | `stock.dashboard.slow-moving` / `api.stock.dashboard.slow-moving` | `web.php:299`, `api.php:127` |
+| GET | `/stock/dashboard/runout-forecast` | `stock.dashboard.runout-forecast` / `api.stock.dashboard.runout-forecast` | `web.php:300`, `api.php:128` |
+| GET | `/stock/dashboard/cost-by-equipment` | `stock.dashboard.cost-by-equipment` / `api.stock.dashboard.cost-by-equipment` | `web.php:301`, `api.php:129` |
+| GET | `/stock/dashboard/cost-by-ticket` | `stock.dashboard.cost-by-ticket` / `api.stock.dashboard.cost-by-ticket` | `web.php:302`, `api.php:130` |
 
 **Dependencies:** `StockDashboardService`, `LowStockAlertService`.
 
@@ -884,9 +884,9 @@ Below is every controller grouped by the area it powers, with a plain-English de
 
 | Method | URI | Route name | File |
 |---|---|---|---|
-| GET | `/stock/reports/low-stock.csv` | `stock.reports.low-stock.csv` / `api.stock.reports.low-stock.csv` | `web.php:395`, `api.php:190` |
-| GET | `/stock/reports/inventory.csv` | `stock.reports.inventory.csv` / `api.stock.reports.inventory.csv` | `web.php:396`, `api.php:191` |
-| GET | `/stock/reports/costs-by-equipment.pdf` | `stock.reports.costs-by-equipment.pdf` / `api.stock.reports.costs-by-equipment.pdf` | `web.php:397`, `api.php:192` |
+| GET | `/stock/reports/low-stock.csv` | `stock.reports.low-stock.csv` / `api.stock.reports.low-stock.csv` | `web.php:411`, `api.php:191` |
+| GET | `/stock/reports/inventory.csv` | `stock.reports.inventory.csv` / `api.stock.reports.inventory.csv` | `web.php:412`, `api.php:192` |
+| GET | `/stock/reports/costs-by-equipment.pdf` | `stock.reports.costs-by-equipment.pdf` / `api.stock.reports.costs-by-equipment.pdf` | `web.php:413`, `api.php:193` |
 
 **Dependencies:** `LocalizationService`, `ExportStockCostsPdfJob`.
 
@@ -913,18 +913,18 @@ Below is every controller grouped by the area it powers, with a plain-English de
 
 | Method | URI | Route name | Middleware | File |
 |---|---|---|---|---|
-| GET | `/ui/stock` | `ui.stock.dashboard` | `custom.auth` | `web.php:164` |
-| GET | `/ui/stock/parts` | `ui.stock.parts` | `custom.auth` | `web.php:165` |
-| GET | `/ui/stock/parts/create` | `ui.stock.parts.create` | `custom.auth` + `role:admin` | `web.php:166` |
-| GET | `/ui/stock/parts/{part}` | `ui.stock.parts.show` | `custom.auth` | `web.php:169` |
-| GET | `/ui/stock/parts/{part}/edit` | `ui.stock.parts.edit` | `custom.auth` + `role:admin` | `web.php:172` |
-| GET | `/ui/stock/suppliers` | `ui.stock.suppliers` | `custom.auth` | `web.php:176` |
-| GET | `/ui/stock/suppliers/create` | `ui.stock.suppliers.create` | `custom.auth` + `role:admin` | `web.php:177` |
-| GET | `/ui/stock/suppliers/{supplier}/edit` | `ui.stock.suppliers.edit` | `custom.auth` + `role:admin` | `web.php:180` |
-| GET | `/ui/stock/movements` | `ui.stock.movements` | `custom.auth` | `web.php:184` |
-| GET | `/ui/stock/tax-rates` | `ui.stock.tax-rates` | `custom.auth` + `role:admin` | `web.php:185` |
-| GET | `/ui/stock/categories` | `ui.stock.categories` | `custom.auth` + `role:admin` | `web.php:188` |
-| GET | `/ui/stock/plans` | `ui.stock.plans` | `custom.auth` + `role:admin` | `web.php:191` |
+| GET | `/ui/stock` | `ui.stock.dashboard` | `custom.auth` | `web.php:177` |
+| GET | `/ui/stock/parts` | `ui.stock.parts` | `custom.auth` | `web.php:178` |
+| GET | `/ui/stock/parts/create` | `ui.stock.parts.create` | `custom.auth` + `role:admin` | `web.php:179` |
+| GET | `/ui/stock/parts/{part}` | `ui.stock.parts.show` | `custom.auth` | `web.php:182` |
+| GET | `/ui/stock/parts/{part}/edit` | `ui.stock.parts.edit` | `custom.auth` + `role:admin` | `web.php:185` |
+| GET | `/ui/stock/suppliers` | `ui.stock.suppliers` | `custom.auth` | `web.php:189` |
+| GET | `/ui/stock/suppliers/create` | `ui.stock.suppliers.create` | `custom.auth` + `role:admin` | `web.php:190` |
+| GET | `/ui/stock/suppliers/{supplier}/edit` | `ui.stock.suppliers.edit` | `custom.auth` + `role:admin` | `web.php:193` |
+| GET | `/ui/stock/movements` | `ui.stock.movements` | `custom.auth` | `web.php:197` |
+| GET | `/ui/stock/tax-rates` | `ui.stock.tax-rates` | `custom.auth` + `role:admin` | `web.php:198` |
+| GET | `/ui/stock/categories` | `ui.stock.categories` | `custom.auth` + `role:admin` | `web.php:201` |
+| GET | `/ui/stock/plans` | `ui.stock.plans` | `custom.auth` + `role:admin` | `web.php:204` |
 
 - **Method:** `dashboard(Request $request): View` — renders `ui.stock.dashboard` with the authenticated user.
 - **Method:** `parts(Request $request): View` — renders `ui.stock.parts` with the user and active part categories sorted by name.
@@ -950,11 +950,11 @@ Below is every controller grouped by the area it powers, with a plain-English de
 
 | Method | URI | Route name | Middleware | File |
 |---|---|---|---|---|
-| GET | `/stock/suppliers` | `stock.suppliers.index` / `api.stock.suppliers.index` | `custom.auth` + `role:admin,technician` | `web.php:278`, `api.php:121` |
-| GET | `/stock/suppliers/{supplier}` | `stock.suppliers.show` / `api.stock.suppliers.show` | `custom.auth` + `role:admin,technician` | `web.php:279`, `api.php:122` |
-| POST | `/admin/suppliers` | `admin.stock.suppliers.store` / `api.admin.stock.suppliers.store` | `custom.auth` + `role:admin` | `web.php:376`, `api.php:170` |
-| PATCH | `/admin/suppliers/{supplier}` | `admin.stock.suppliers.update` / `api.admin.stock.suppliers.update` | `custom.auth` + `role:admin` | `web.php:377`, `api.php:171` |
-| DELETE | `/admin/suppliers/{supplier}` | `admin.stock.suppliers.destroy` / `api.admin.stock.suppliers.destroy` | `custom.auth` + `role:admin` | `web.php:378`, `api.php:172` |
+| GET | `/stock/suppliers` | `stock.suppliers.index` / `api.stock.suppliers.index` | `custom.auth` + `role:admin,technician` | `web.php:291`, `api.php:121` |
+| GET | `/stock/suppliers/{supplier}` | `stock.suppliers.show` / `api.stock.suppliers.show` | `custom.auth` + `role:admin,technician` | `web.php:292`, `api.php:122` |
+| POST | `/admin/suppliers` | `admin.stock.suppliers.store` / `api.admin.stock.suppliers.store` | `custom.auth` + `role:admin` | `web.php:392`, `api.php:170` |
+| PATCH | `/admin/suppliers/{supplier}` | `admin.stock.suppliers.update` / `api.admin.stock.suppliers.update` | `custom.auth` + `role:admin` | `web.php:393`, `api.php:171` |
+| DELETE | `/admin/suppliers/{supplier}` | `admin.stock.suppliers.destroy` / `api.admin.stock.suppliers.destroy` | `custom.auth` + `role:admin` | `web.php:394`, `api.php:172` |
 
 **Dependencies:** `CreateSupplierAction`, `UpdateSupplierAction`, `StoreSupplierRequest`, `UpdateSupplierRequest`, `SupplierResource`.
 
@@ -990,9 +990,9 @@ Below is every controller grouped by the area it powers, with a plain-English de
 | Method | URI | Route name | File |
 |---|---|---|---|
 | GET | `/admin/tax-rates` | `api.admin.stock.tax-rates.index` | `api.php:174` (web: no index route mapped) |
-| POST | `/admin/tax-rates` | `admin.stock.tax-rates.store` / `api.admin.stock.tax-rates.store` | `web.php:380`, `api.php:175` |
-| PATCH | `/admin/tax-rates/{taxRate}` | `admin.stock.tax-rates.update` / `api.admin.stock.tax-rates.update` | `web.php:381`, `api.php:176` |
-| DELETE | `/admin/tax-rates/{taxRate}` | `admin.stock.tax-rates.destroy` / `api.admin.stock.tax-rates.destroy` | `web.php:382`, `api.php:177` |
+| POST | `/admin/tax-rates` | `admin.stock.tax-rates.store` / `api.admin.stock.tax-rates.store` | `web.php:396`, `api.php:175` |
+| PATCH | `/admin/tax-rates/{taxRate}` | `admin.stock.tax-rates.update` / `api.admin.stock.tax-rates.update` | `web.php:397`, `api.php:176` |
+| DELETE | `/admin/tax-rates/{taxRate}` | `admin.stock.tax-rates.destroy` / `api.admin.stock.tax-rates.destroy` | `web.php:398`, `api.php:177` |
 
 > **Verify:** The `index()` method is only wired in `api.php:174` (`/admin/tax-rates` GET). There is **no** `index` route in `web.php` for the tax-rate list (the web UI list is served by `StockUiController::taxRates`).
 
@@ -1029,13 +1029,13 @@ Below is every controller grouped by the area it powers, with a plain-English de
 
 | Method | URI | Route name | File |
 |---|---|---|---|
-| GET | `/admin/maintenance-plans` | `admin.stock.plans.index` / `api.admin.stock.plans.index` | `web.php:388`, `api.php:184` |
-| GET | `/admin/maintenance-plans/{plan}` | `admin.stock.plans.show` | `web.php:392` |
-| POST | `/admin/maintenance-plans` | `admin.stock.plans.store` / `api.admin.stock.plans.store` | `web.php:389`, `api.php:185` |
-| PATCH | `/admin/maintenance-plans/{plan}` | `admin.stock.plans.update` / `api.admin.stock.plans.update` | `web.php:390`, `api.php:186` |
-| DELETE | `/admin/maintenance-plans/{plan}` | `admin.stock.plans.destroy` / `api.admin.stock.plans.destroy` | `web.php:391`, `api.php:187` |
+| GET | `/admin/maintenance-plans` | `admin.stock.plans.index` / `api.admin.stock.plans.index` | `web.php:404`, `api.php:184` |
+| GET | `/admin/maintenance-plans/{plan}` | `admin.stock.plans.show` / `api.admin.stock.plans.show` | `web.php:408`, `api.php:186` |
+| POST | `/admin/maintenance-plans` | `admin.stock.plans.store` / `api.admin.stock.plans.store` | `web.php:405`, `api.php:185` |
+| PATCH | `/admin/maintenance-plans/{plan}` | `admin.stock.plans.update` / `api.admin.stock.plans.update` | `web.php:406`, `api.php:187` |
+| DELETE | `/admin/maintenance-plans/{plan}` | `admin.stock.plans.destroy` / `api.admin.stock.plans.destroy` | `web.php:407`, `api.php:188` |
 
-> **Note:** `/admin/maintenance-plans/{plan}` (GET `show`) is declared **after** the other `/admin/maintenance-plans` routes (`web.php:392`) so the earlier fixed routes match first.
+> **Note:** `/admin/maintenance-plans/{plan}` (GET `show`) is declared **after** the collection routes in `web.php` (`web.php:408`) but **before** the PATCH/DELETE in `api.php` (`api.php:186`). The order is cosmetic — Laravel matches on method and URI, and `{plan}` cannot collide with the bare `/admin/maintenance-plans`. The GET detail is registered on both sides because the OpenAPI spec documents it.
 
 **Dependencies:** `MaintenancePlanActions`, `StoreMaintenancePlanRequest`, `UpdateMaintenancePlanRequest`, `MaintenancePlanResource`, `MaintenancePlanIntervalTypeEnum`.
 
@@ -1072,10 +1072,10 @@ Below is every controller grouped by the area it powers, with a plain-English de
 
 | Method | URI | Route name | Middleware | File |
 |---|---|---|---|---|
-| GET | `/calendar` | `calendar.view` | `custom.auth` | `web.php:255` |
-| GET | `/calendar/events` | `calendar.events` | `custom.auth` | `web.php:254` |
-| POST | `/calendar/maintenance` | `calendar.maintenance` | `custom.auth` + `role:admin` | `web.php:306` |
-| PATCH | `/calendar/events/{ticket}` | `calendar.events.reschedule` | `custom.auth` | `web.php:256` |
+| GET | `/calendar` | `calendar.view` | `custom.auth` | `web.php:268` |
+| GET | `/calendar/events` | `calendar.events` | `custom.auth` | `web.php:267` |
+| POST | `/calendar/maintenance` | `calendar.maintenance` | `custom.auth` + `role:admin` | `web.php:319` |
+| PATCH | `/calendar/events/{ticket}` | `calendar.events.reschedule` | `custom.auth` | `web.php:269` |
 
 **Dependencies:** `CalendarService`, `ScheduleMaintenanceAction`, `ScheduleMaintenanceRequest`, `RescheduleEventRequest`, `ScheduleMaintenanceData`, `TicketResource`.
 
@@ -1110,9 +1110,9 @@ Below is every controller grouped by the area it powers, with a plain-English de
 
 | Method | URI | Route name | Middleware | File |
 |---|---|---|---|---|
-| GET | `/notifications` | `notifications.index` / `api.notifications.index` | `custom.auth` | `web.php:116`, `api.php:204` |
-| PATCH | `/notifications/{id}` | `notifications.mark-read` / `api.notifications.mark-read` | `custom.auth`, no CSRF (web) | `web.php:117`, `api.php:205` |
-| POST | `/notifications/test-email` | `notifications.test-email` / `api.notifications.test-email` | `custom.auth` + `rate.limit:5,1`, no CSRF (web) | `web.php:120`, `api.php:206` |
+| GET | `/notifications` | `notifications.index` / `api.notifications.index` | `custom.auth` | `web.php:128`, `api.php:205` |
+| PATCH | `/notifications/{id}` | `notifications.mark-read` / `api.notifications.mark-read` | `custom.auth`, no CSRF (web) | `web.php:129`, `api.php:206` |
+| POST | `/notifications/test-email` | `notifications.test-email` / `api.notifications.test-email` | `custom.auth` + `rate.limit:5,1`, no CSRF (web) | `web.php:132`, `api.php:207` |
 
 **Dependencies:** `NotificationResource`, `SendTestEmailJob`.
 
@@ -1159,7 +1159,7 @@ Below is every controller grouped by the area it powers, with a plain-English de
 
 | Method | URI | Route name | Middleware | File |
 |---|---|---|---|---|
-| GET | `/admin/audits` | `admin.audits.index` | `custom.auth` + `role:admin` | `web.php:333` |
+| GET | `/admin/audits` | `admin.audits.index` | `custom.auth` + `role:admin` | `web.php:348` |
 | GET | `/api/admin/audits` | `api.admin.audits.index` | `custom.auth` + `role:admin` | `api.php:144` |
 
 **Dependencies:** `AuditResource`.
@@ -1183,10 +1183,10 @@ Below is every controller grouped by the area it powers, with a plain-English de
 
 | Method | URI | Route name | Middleware | File |
 |---|---|---|---|---|
-| GET | `/` | `home` | public | `web.php:49` |
-| GET | `/lang/{locale}` | `lang.switch` | public | `web.php:50` |
-| GET | `/ui/login` | `ui.login` | public | `web.php:52` |
-| GET | `/test-email` | `test.email` | public | `web.php:54` |
+| GET | `/` | `home` | public | `web.php:51` |
+| GET | `/lang/{locale}` | `lang.switch` | public | `web.php:52` |
+| GET | `/ui/login` | `ui.login` | public | `web.php:54` |
+| GET | `/test-email` | `test.email` | public | `web.php:56` |
 | GET | `/api/password/reset/{token}` | `api.password.reset.form` | public | `api.php:53` |
 
 - **Method:** `home(): View` — renders the `main` Blade view (landing page). Public.
@@ -1210,29 +1210,29 @@ Below is every controller grouped by the area it powers, with a plain-English de
 
 | Method | URI | Route name | Extra middleware | File |
 |---|---|---|---|---|
-| GET | `/ui` | `ui.index` | — | `web.php:126` |
-| GET | `/ui/profile` | `ui.profile` | — | `web.php:127` |
-| GET | `/ui/tickets` | `ui.tickets` | — | `web.php:128` |
-| GET | `/ui/tickets/create` | `ui.tickets.create` | `role:admin,user` | `web.php:129` |
-| GET | `/ui/tickets/{id}` | `ui.tickets.show` | — | `web.php:132` |
-| GET | `/ui/equipments` | `ui.equipments` | — | `web.php:133` |
-| GET | `/equipments` | `equipments.list` | — | `web.php:134` |
-| GET | `/dashboard/picket` | `dashboard.picket` | — | `web.php:135` |
-| GET | `/ui/settings/appearance` | `ui.settings.appearance` | — | `web.php:138` |
-| POST | `/ui/settings/appearance` | `ui.settings.appearance.update` | no CSRF | `web.php:139` |
-| GET | `/ui/equipments/create` | `ui.equipments.create` | `role:admin` | `web.php:147` |
-| GET | `/ui/equipments/{equipment}` | `ui.equipments.show` | — | `web.php:150` |
-| GET | `/ui/equipments/{equipment}/edit` | `ui.equipments.edit` | `role:admin` | `web.php:153` |
-| GET | `/ui/rooms` | `ui.rooms` | — | `web.php:158` |
-| GET | `/ui/rooms/{room}` | `ui.rooms.show` | — | `web.php:159` |
-| GET | `/ui/users` | `ui.users` | `role:admin` | `web.php:296` |
-| GET | `/ui/audits` | `ui.audits` | `role:admin` | `web.php:297` |
-| GET | `/ui/users/create` | `ui.users.create` | `role:admin` | `web.php:298` |
-| GET | `/ui/users/{targetUser}/edit` | `ui.users.edit` | `role:admin` | `web.php:299` |
-| GET | `/ui/users/{targetUser}` | `ui.users.show` | `role:admin` | `web.php:300` |
-| GET | `/ui/rooms/create` | `ui.rooms.create` | `role:admin` | `web.php:301` |
-| GET | `/ui/rooms/{room}/edit` | `ui.rooms.edit` | `role:admin` | `web.php:302` |
-| GET | `/ui/analytics` | `ui.analytics` | `role:admin` | `web.php:303` |
+| GET | `/ui` | `ui.index` | — | `web.php:138` |
+| GET | `/ui/profile` | `ui.profile` | — | `web.php:139` |
+| GET | `/ui/tickets` | `ui.tickets` | — | `web.php:140` |
+| GET | `/ui/tickets/create` | `ui.tickets.create` | `role:admin,user` | `web.php:141` |
+| GET | `/ui/tickets/{id}` | `ui.tickets.show` | — | `web.php:144` |
+| GET | `/ui/equipments` | `ui.equipments` | — | `web.php:145` |
+| GET | `/equipments` | `equipments.list` | — | `web.php:146` |
+| GET | `/dashboard/picket` | `dashboard.picket` | — | `web.php:147` |
+| GET | `/ui/settings/appearance` | `ui.settings.appearance` | — | `web.php:151` |
+| POST | `/ui/settings/appearance` | `ui.settings.appearance.update` | no CSRF | `web.php:152` |
+| GET | `/ui/equipments/create` | `ui.equipments.create` | `role:admin` | `web.php:160` |
+| GET | `/ui/equipments/{equipment}` | `ui.equipments.show` | — | `web.php:163` |
+| GET | `/ui/equipments/{equipment}/edit` | `ui.equipments.edit` | `role:admin` | `web.php:166` |
+| GET | `/ui/rooms` | `ui.rooms` | — | `web.php:171` |
+| GET | `/ui/rooms/{room}` | `ui.rooms.show` | — | `web.php:172` |
+| GET | `/ui/users` | `ui.users` | `role:admin` | `web.php:309` |
+| GET | `/ui/audits` | `ui.audits` | `role:admin` | `web.php:310` |
+| GET | `/ui/users/create` | `ui.users.create` | `role:admin` | `web.php:311` |
+| GET | `/ui/users/{targetUser}/edit` | `ui.users.edit` | `role:admin` | `web.php:312` |
+| GET | `/ui/users/{targetUser}` | `ui.users.show` | `role:admin` | `web.php:313` |
+| GET | `/ui/rooms/create` | `ui.rooms.create` | `role:admin` | `web.php:314` |
+| GET | `/ui/rooms/{room}/edit` | `ui.rooms.edit` | `role:admin` | `web.php:315` |
+| GET | `/ui/analytics` | `ui.analytics` | `role:admin` | `web.php:316` |
 
 **Dependencies:** `EquipmentService`, `ThemePresetService`, `TicketStatusService`, `TicketStatusEnum`, `UserRoleEnum`.
 
@@ -1281,7 +1281,7 @@ Below is every controller grouped by the area it powers, with a plain-English de
 
 | Method | URI | Route name | Middleware | File |
 |---|---|---|---|---|
-| POST | `/locale` | `locale.switch` | public, no CSRF | `web.php:51` |
+| POST | `/locale` | `locale.switch` | public, no CSRF | `web.php:53` |
 
 **Dependencies:** `LocaleService`, `PreferencesService`, `AuthUserResolver`.
 
@@ -1300,8 +1300,8 @@ Below is every controller grouped by the area it powers, with a plain-English de
 
 | Method | URI | Route name | Middleware | File |
 |---|---|---|---|---|
-| GET | `/theme/custom.css` | `theme.custom` | public | `web.php:53` |
-| POST | `/theme/switch` | `theme.switch` | `custom.auth`, no CSRF | `web.php:142` |
+| GET | `/theme/custom.css` | `theme.custom` | public | `web.php:55` |
+| POST | `/theme/switch` | `theme.switch` | `custom.auth`, no CSRF | `web.php:155` |
 
 **Dependencies:** `ThemePresetService`.
 
@@ -1327,8 +1327,8 @@ Below is every controller grouped by the area it powers, with a plain-English de
 
 | Method | URI | Route name | File |
 |---|---|---|---|
-| GET | `/ui/settings/system` | `ui.settings.system` | `web.php:304` |
-| POST | `/ui/settings/system` | `ui.settings.system.update` | `web.php:305` |
+| GET | `/ui/settings/system` | `ui.settings.system` | `web.php:317` |
+| POST | `/ui/settings/system` | `ui.settings.system.update` | `web.php:318` |
 
 (No `api.php` equivalent.)
 
@@ -1353,9 +1353,9 @@ Below is every controller grouped by the area it powers, with a plain-English de
 
 | Method | URI | Route name | File |
 |---|---|---|---|
-| GET | `/ui/equipments/{equipment}/qr` | `ui.equipments.qr` | `web.php:350` |
-| GET | `/ui/equipments/{equipment}/qr/download` | `ui.equipments.qr.download` | `web.php:353` |
-| GET | `/ui/equipments/qr/export` | `ui.equipments.qr.export` | `web.php:356` |
+| GET | `/ui/equipments/{equipment}/qr` | `ui.equipments.qr` | `web.php:365` |
+| GET | `/ui/equipments/{equipment}/qr/download` | `ui.equipments.qr.download` | `web.php:368` |
+| GET | `/ui/equipments/qr/export` | `ui.equipments.qr.export` | `web.php:371` |
 
 (No `api.php` equivalent.)
 
@@ -1384,11 +1384,11 @@ Below is every controller grouped by the area it powers, with a plain-English de
 
 | Method | URI | Route name | File |
 |---|---|---|---|
-| GET | `/analytics` | `analytics.stats` | `web.php:316` |
-| GET | `/api/analytics/stats` | `api.analytics.stats` | `api.php:197` |
-| GET | `/analytics/export/csv` | `analytics.export.csv` / `api.analytics.export.csv` | `web.php:317`, `api.php:198` |
-| GET | `/analytics/export/pdf` | `analytics.export.pdf` / `api.analytics.export.pdf` | `web.php:318`, `api.php:199` |
-| GET | `/analytics/export/excel` | `analytics.export.excel` / `api.analytics.export.excel` | `web.php:319`, `api.php:200` |
+| GET | `/analytics` | `analytics.stats` | `web.php:329` |
+| GET | `/api/analytics/stats` | `api.analytics.stats` | `api.php:198` |
+| GET | `/analytics/export/csv` | `analytics.export.csv` / `api.analytics.export.csv` | `web.php:332`, `api.php:199` |
+| GET | `/analytics/export/pdf` | `analytics.export.pdf` / `api.analytics.export.pdf` | `web.php:333`, `api.php:200` |
+| GET | `/analytics/export/excel` | `analytics.export.excel` / `api.analytics.export.excel` | `web.php:334`, `api.php:201` |
 
 **Dependencies:** `AnalyticsService`, `ExportCsvJob`, `ExportPdfJob`, `ExportExcelJob`.
 

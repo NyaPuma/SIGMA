@@ -1,12 +1,14 @@
 # app/Notifications
 
-Notification classes for delivering ticket-related alerts by mail and in the database.
+Notification classes for delivering ticket-related alerts by e-mail.
 
 > **New to programming?** See [NON_TECHNICAL_PROJECT_GUIDE.md](../../NON_TECHNICAL_PROJECT_GUIDE.md) -- this folder is explained as "The Alert System" that pushes notifications to users via email, browser pop-ups, or the app.
 
 ## Overview
 
-This folder contains **2 notification classes** that implement Laravel's `Notification` contract. Each one declares the channels it supports with `via()` — both return `['mail', 'database']` — and provides the content for each channel with `toMail()` and `toArray()`. There is no broadcast channel: neither class defines `toBroadcast()` and the application has no WebSocket driver configured.
+This folder contains **2 notification classes** that implement Laravel's `Notification` contract. Each one declares the channels it supports with `via()` — both return `['mail']` — and provides the e-mail content with `toMail()`. There is no broadcast channel: neither class defines `toBroadcast()` and the application has no WebSocket driver configured.
+
+Neither class declares the `database` channel either, and that is deliberate. The framework's `DatabaseChannel` writes its own `id` (a UUID), a `type` holding the notification class name, and leaves `user_id`, `title` and `message` empty -- but the `notifications` table in this project is the internal panel's table: `id` is a `bigint` auto-increment, `user_id`/`title`/`message` are NOT NULL and `type` is a closed enum. Every `INSERT` failed with "2 problems: datatype mismatch / NOT NULL constraint failed", and because the caller wraps delivery in a `try`, nobody noticed. The panel is written by `NotificationCreatorService`, which knows that schema; notifications go out by e-mail.
 
 All notifications in this project implement `ShouldQueue`, meaning they are dispatched asynchronously to the queue worker rather than being sent synchronously during the HTTP request.
 
@@ -14,8 +16,8 @@ All notifications in this project implement `ShouldQueue`, meaning they are disp
 
 | Notification | Channels | Purpose |
 |---|---|---|
-| `NewTicketNotification` | `mail`, `database` | Email + in-app alert for new tickets |
-| `TicketStatusChanged` | `mail`, `database` | Email + in-app alert for status changes |
+| `NewTicketNotification` | `mail` | E-mail to the assigned technician about a new ticket |
+| `TicketStatusChanged` | `mail` | E-mail to the ticket owner about a status change |
 
 ---
 
@@ -36,9 +38,7 @@ All notifications in this project implement `ShouldQueue`, meaning they are disp
 |---|---|---|
 | `$ticket` | `App\Models\Ticket` | The newly created ticket (public readonly). |
 
-**`via(object $notifiable)` — channels:**
-- `mail` — sends an email to the notifiable user.
-- `database` — stores a record in the `notifications` table for the in-app notification panel.
+**`via(object $notifiable)` — channels:** `['mail']` (see the note above about the `database` channel).
 
 **`toMail(object $notifiable)` — email content:**
 - **Subject:** `__('notifications.subject_new_ticket', ['id' => $this->ticket->id])` — e.g. "Novo Ticket #42"
@@ -49,17 +49,6 @@ All notifications in this project implement `ShouldQueue`, meaning they are disp
 - **Action button:** "Ver Ticket" → `url("/ui/tickets/{$this->ticket->id}")`
 - **Closing line:** `__('notifications.follow_up_line')`
 - **Salutation:** `__('notifications.salutation')`
-
-**`toArray(object $notifiable)` — database payload:**
-```json
-{
-  "ticket_id": 42,
-  "title": "Novo Ticket",
-  "message": "Novo ticket #42: Broken projector in Room B",
-  "type": "info",
-  "link": "/ui/tickets/42"
-}
-```
 
 **WHO sends it and WHEN:**
 - `app/Listeners/NotifyAssignedTechnician.php:43`:
@@ -74,7 +63,7 @@ Note: This notification is also used by the `NotifiesTicketStatusChange` trait i
 
 ### `TicketStatusChanged.php`
 
-**What it is:** A notification sent to the ticket owner when their ticket's status changes, informing them of the old and new status via email and database storage.
+**What it is:** A notification sent to the ticket owner when their ticket's status changes, informing them of the old and new status by e-mail.
 
 **Class:** `App\Notifications\TicketStatusChanged`
 
@@ -89,9 +78,7 @@ Note: This notification is also used by the `NotifiesTicketStatusChange` trait i
 | `$oldStatus` | `string` | The old status string (e.g. `'aberto'`). |
 | `$newStatus` | `string` | The new status string (e.g. `'em_curso'`). |
 
-**`via(object $notifiable)` — channels:**
-- `mail` — sends an email to the ticket owner.
-- `database` — stores a record in the `notifications` table.
+**`via(object $notifiable)` — channels:** `['mail']` — sends an e-mail to the ticket owner (see the note above about the `database` channel).
 
 **`toMail(object $notifiable)` — email content:**
 - **Subject:** `__('notifications.subject_status_changed', ['id' => $this->ticket->id, 'status' => $newLabel])` — e.g. "Estado do Ticket #42 atualizado para Em Curso"
@@ -103,20 +90,6 @@ Note: This notification is also used by the `NotifiesTicketStatusChange` trait i
   4. `__('notifications.new_status_line', ['status' => $newLabel])` — "Novo estado: Em Curso"
 - **Action button:** "Ver Ticket" → `url("/ui/tickets/{$this->ticket->id}")`
 - **Closing line:** `__('notifications.thanks_line')`
-
-**`toArray(object $notifiable)` — database payload:**
-```json
-{
-  "ticket_id": 42,
-  "title": "Estado Ticket #42",
-  "message": "Ticket Broken projector in Room B atualizado para Em Curso",
-  "type": "info",
-  "link": "/ui/tickets/42",
-  "old_status": "aberto",
-  "new_status": "em_curso"
-}
-```
-Note: The database payload includes `old_status` and `new_status` raw values (not just labels), which can be used by the frontend to render status badges.
 
 **Private method `resolveStatusLabel(string $status)`:**
 - Tries `TicketStatusEnum::tryFrom($status)` first (matches by enum value).
@@ -145,6 +118,5 @@ delivery.
 
 - All notifications implement `ShouldQueue` for async delivery.
 - Notification content strings (greetings, lines, subjects) are in Portuguese — managed by the i18n project, not this refactor.
-- `NewTicketNotification` and `TicketStatusChanged` use both `mail` and `database` channels.
+- `NewTicketNotification` and `TicketStatusChanged` are mail-only. The in-app panel has its own writer (`NotificationCreatorService`) because its table does not match the framework's notification schema.
 - `TicketStatusChanged::resolveStatusLabel()` maps status strings to human-friendly labels via `TicketStatusEnum`.
-- The `TicketStatusChanged` notification can be sent to the ticket owner from two independent code paths (listener + trait), which may result in duplicate notifications.

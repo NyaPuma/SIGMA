@@ -55,7 +55,7 @@ final class StockReportController extends Controller
             ], ';');
 
             Part::query()
-                ->select(['id', 'sku', 'name', 'brand', 'category_id', 'current_stock', 'min_stock', 'location'])
+                ->select(['id', 'sku', 'name', 'brand', 'part_category_id', 'current_stock', 'min_stock', 'location'])
                 ->with('category')
                 ->lowStock()
                 ->orderBy('name')
@@ -114,7 +114,7 @@ final class StockReportController extends Controller
             ], ';');
 
             Part::query()
-                ->select(['id', 'sku', 'name', 'brand', 'category_id', 'current_stock', 'cost_price', 'tax_rate_id', 'location'])
+                ->select(['id', 'sku', 'name', 'brand', 'part_category_id', 'current_stock', 'cost_price', 'tax_rate_id', 'location'])
                 ->with(['category', 'taxRate'])
                 ->orderBy('name')
                 ->lazy()

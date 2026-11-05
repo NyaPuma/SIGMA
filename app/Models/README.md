@@ -23,7 +23,6 @@ Eloquent ORM models representing the persistence layer and domain entities of th
 | [`Supplier.php`](Supplier.php) | `suppliers` | `belongsToMany(Part)` | External vendors and parts suppliers, tracking tax IDs (NIF) and lead times. |
 | [`SystemSetting.php`](SystemSetting.php) | `system_settings` | None | Key-value application runtime configuration overrides. |
 | [`TaxRate.php`](TaxRate.php) | `tax_rates` | `hasMany(Part)` | VAT / sales tax rates applied to spare parts catalog pricing. |
-| [`ThemeSetting.php`](ThemeSetting.php) | `theme_settings` | None | UI appearance settings and CSS customization variables. |
 | [`Ticket.php`](Ticket.php) | `tickets` | `belongsTo(User)` (reporter), `belongsTo(User, technician)`, `belongsTo(TicketStatus)`, `belongsTo(Equipment)`, `belongsTo(Room)`, `belongsTo(User, budgetApprovedBy)`, `belongsTo(User, resolvedBy)`, `belongsTo(User, closedBy)`, `belongsTo(User, recommendedTechnician)`, `hasMany(TicketWorkflowHistory)`, `hasMany(TicketComment)`, `hasMany(TicketAttachment)` | Core incident and maintenance ticket entity with lifecycle timestamps, budgets, and SLAs. |
 | [`TicketAttachment.php`](TicketAttachment.php) | `ticket_attachments` | `belongsTo(Ticket)`, `belongsTo(User)` | Uploaded evidence, photos, and documents attached to tickets. Automatically deletes files on model deletion. |
 | [`TicketComment.php`](TicketComment.php) | `ticket_comments` | `belongsTo(Ticket)`, `belongsTo(User)`, `belongsTo(TicketComment, parent)`, `hasMany(TicketComment, replies)` | Communication thread messages and internal notes on tickets. |
@@ -905,26 +904,6 @@ Eloquent ORM models representing the persistence layer and domain entities of th
 
 ---
 
-### ThemeSetting
-
-- **File:** `app/Models/ThemeSetting.php`
-- **What it is:** A UI appearance or theming key-value pair -- controls things like primary colour, border radius, font size, and dark/light mode.
-- **Database table:** `theme_settings`
-- **Key fields (from migration `2026_08_05_000001_create_theme_settings_table.php`):**
-  - `id` -- auto-incrementing bigint primary key
-  - `key` (string, unique) -- setting name/key (e.g., `primary_color`, `border_radius`)
-  - `value` (string) -- the setting value (e.g., `#3b82f6`, `8px`)
-  - `created_at` / `updated_at` -- timestamps
-- **Relationships:** None.
-- **Traits:** None (plain Model).
-- **Casts:** None.
-- **Scopes:** None defined in the model.
-- **WHERE/WHEN it's used:**
-  - **Read/Updated:** `ThemePresetService` (manages theme presets and customizations; uses `updateOrCreate` to save theme values). The `ThemeController` reads and writes these settings via the service.
-  - **Read:** Frontend theme application (reads key-value pairs to apply as CSS variables or theme tokens).
-
----
-
 ### ExchangeRate
 
 - **File:** `app/Models/ExchangeRate.php`
@@ -980,7 +959,7 @@ Most domain entities use Laravel's `SoftDeletes` trait. When a model is soft-del
 
 **Models with SoftDeletes:** `Equipment`, `EquipmentCategory`, `Part`, `PartCategory`, `Room`, `Supplier`, `TaxRate`, `MaintenancePlan`, `Ticket`, `TicketType`, `TicketStatus`, `TicketAttachment`, `TicketComment`, `User`, `UserProfile`, `Notification`
 
-**Models without SoftDeletes:** `Audit`, `StockMovement`, `TicketWorkflowHistory`, `SystemSetting`, `ThemeSetting`, `ExchangeRate`, `UserPreference`
+**Models without SoftDeletes:** `Audit`, `StockMovement`, `TicketWorkflowHistory`, `SystemSetting`, `ExchangeRate`, `UserPreference`
 
 ### Observer Registration
 

@@ -23,13 +23,18 @@ final class TicketStatusChanged extends Notification implements ShouldQueue
     ) {}
 
     /**
-     * Defines the notification channels (mail and database).
+     * Defines the notification channels (mail).
      *
      * @return array<int, string>
      */
     public function via(object $notifiable): array
     {
-        return ['mail', 'database'];
+        // Ver NewTicketNotification::via() — o canal `database` do framework não é
+        // compatível com o esquema da tabela `notifications` deste projecto, por isso o
+        // INSERT falhava a cada tentativa do job. As linhas do painel são escritas por
+        // `NotificationCreatorService` (fecho, override de prioridade, orçamento, stock
+        // baixo), o que já acontecia independentemente deste canal.
+        return ['mail'];
     }
 
     /**
@@ -54,29 +59,6 @@ final class TicketStatusChanged extends Notification implements ShouldQueue
             ->line(__('notifications.new_status_line', ['status' => $newLabel]))
             ->action(__('notifications.action_view_ticket'), url("/ui/tickets/{$this->ticket->id}"))
             ->line(__('notifications.thanks_line'));
-    }
-
-    /**
-     * Database representation of the notification (User Panel).
-     *
-     * @return array<string, mixed>
-     */
-    public function toArray(object $notifiable): array
-    {
-        $newLabel = $this->resolveStatusLabel($this->newStatus);
-
-        return [
-            'ticket_id' => $this->ticket->id,
-            'title' => __('notifications.db_status_title', ['id' => $this->ticket->id]),
-            'message' => __('notifications.db_status_message', [
-                'title' => $this->ticket->title,
-                'status' => $newLabel,
-            ]),
-            'type' => 'info',
-            'link' => "/ui/tickets/{$this->ticket->id}",
-            'old_status' => $this->oldStatus,
-            'new_status' => $this->newStatus,
-        ];
     }
 
     /**

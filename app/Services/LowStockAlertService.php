@@ -64,7 +64,7 @@ final class LowStockAlertService
         $entries = [];
 
         foreach ($parts as $part) {
-            $message = __('stock.:part — current stock :current (minimum :min)', [
+            $message = __('stock.:part — stock atual :current (mínimo :min)', [
                 'part' => $part->name,
                 'current' => $part->current_stock,
                 'min' => $part->min_stock,
@@ -76,7 +76,7 @@ final class LowStockAlertService
             }
 
             $entries[] = [
-                'title' => __('stock.Low Stock'),
+                'title' => NotificationTypeEnum::LowStock->label(),
                 'message' => $message,
                 'type' => NotificationTypeEnum::LowStock->value,
                 'link' => $link,
