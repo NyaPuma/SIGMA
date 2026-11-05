@@ -20,7 +20,7 @@ function resetForm(form) {
     form.dataset.categoryId = '';
     document.getElementById('catName').value = '';
     document.getElementById('catActive').checked = true;
-    document.getElementById('categoryFormTitle').textContent = 'New category';
+    document.getElementById('categoryFormTitle').textContent = window.SGM_UI_I18N?.newCategoryTitle || 'New category';
     document.getElementById('catMessage').textContent = '';
 }
 
@@ -67,7 +67,7 @@ function handleEdit(button) {
     const form = document.getElementById('categoryForm');
     form.dataset.categoryFormMode = 'edit';
     form.dataset.categoryId = button.dataset.categoryEdit;
-    document.getElementById('categoryFormTitle').textContent = 'Edit category';
+    document.getElementById('categoryFormTitle').textContent = window.SGM_UI_I18N?.editCategoryTitle || 'Edit category';
     document.getElementById('catMessage').textContent = '';
 }
 

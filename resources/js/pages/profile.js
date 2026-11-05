@@ -132,11 +132,11 @@ function init() {
             }
 
             if (!payload.current_password) {
-                return 'The current password is required to change the password.';
+                return window.SGM_UI_I18N?.passwordCurrentRequired || 'The current password is required to change the password.';
             }
 
             if (payload.password !== payload.password_confirmation) {
-                return 'The passwords do not match.';
+                return window.SGM_UI_I18N?.passwordsDoNotMatch || 'The passwords do not match.';
             }
 
             return null;

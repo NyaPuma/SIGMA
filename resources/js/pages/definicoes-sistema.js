@@ -11,8 +11,8 @@ function setSaveStatus(form, state, message = '') {
 
     const messages = {
         saving: (window.SGM_UI_I18N?.saving || 'Saving...'),
-        saved: 'Saved',
-        dirty: 'Unsaved changes',
+        saved: (window.SGM_UI_I18N?.savedShort || 'Saved'),
+        dirty: (window.SGM_UI_I18N?.unsavedChanges || 'Unsaved changes'),
         error: message || (window.SGM_UI_I18N?.saveError || 'Error saving — please try again.'),
         idle: '',
     };
@@ -50,7 +50,9 @@ function applySavedValues(form, values) {
             const wrapper = field.closest('.system-settings__field');
             const label = wrapper ? wrapper.querySelector('[data-switch-label]') : null;
             if (label) {
-                label.textContent = field.checked ? 'Active' : 'Inactive';
+                label.textContent = field.checked
+                    ? (window.SGM_UI_I18N?.stateActive || 'Active')
+                    : (window.SGM_UI_I18N?.stateInactive || 'Inactive');
             }
         }
     });

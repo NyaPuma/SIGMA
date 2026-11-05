@@ -150,7 +150,7 @@ function resetForm() {
     const firstRow = firstPartRow();
     initPartRow(firstRow, null);
 
-    document.getElementById('planFormTitle').textContent = 'New maintenance plan';
+    document.getElementById('planFormTitle').textContent = window.SGM_UI_I18N?.newPlanTitle || 'New maintenance plan';
     document.getElementById('plMessage').textContent = '';
 }
 
@@ -262,7 +262,7 @@ async function handleEdit(id) {
         const form = document.getElementById('planForm');
         form.dataset.planFormMode = 'edit';
         form.dataset.planId = String(id);
-        document.getElementById('planFormTitle').textContent = 'Edit maintenance plan';
+        document.getElementById('planFormTitle').textContent = window.SGM_UI_I18N?.editPlanTitle || 'Edit maintenance plan';
         message.textContent = '';
     } catch (error) {
         showMessage(error.message, true);

@@ -1,4 +1,9 @@
 import { qs, formToObject, post, saveToken } from './utils';
+import { escapeHtml } from '../utils/escape.js';
+
+function labels() {
+    return window.SGM_AUTH_I18N || {};
+}
 
 function getMsgEl() {
     return qs('#msg');
@@ -27,7 +32,7 @@ function setButtonLoading(btn, loading) {
         if (btn.dataset.originalContent === undefined) {
             btn.dataset.originalContent = btn.innerHTML;
         }
-        btn.innerHTML = `<span class="inline-flex items-center gap-2">${SPINNER_HTML} Authenticating...</span>`;
+        btn.innerHTML = `<span class="inline-flex items-center gap-2">${SPINNER_HTML} ${escapeHtml(labels().authenticating || 'Authenticating...')}</span>`;
     } else {
         btn.innerHTML = btn.dataset.originalContent || '';
     }
@@ -40,7 +45,7 @@ function initPasswordToggle() {
     btn.addEventListener('click', () => {
         const isPassword = input.type === 'password';
         input.type = isPassword ? 'text' : 'password';
-        btn.textContent = isPassword ? 'Hide' : 'Show';
+        btn.textContent = isPassword ? (labels().hide || 'Hide') : (labels().show || 'Show');
     });
 }
 
@@ -60,7 +65,7 @@ async function submitLogin(event) {
     if (data.email) data.email = data.email.trim();
 
     setButtonLoading(button, true);
-    updateMsg('Verifying credentials on server...', 'loading');
+    updateMsg(labels().verifyingCredentials || 'Verifying credentials on server...', 'loading');
 
     try {
         const response = await post('/login', {
@@ -69,7 +74,7 @@ async function submitLogin(event) {
         });
 
         if (!response.ok) {
-            updateMsg(response.data.message || 'Invalid login credentials.', 'error');
+            updateMsg(response.data.message || labels().invalidCredentials || 'Invalid login credentials.', 'error');
             setButtonLoading(button, false);
             return;
         }
@@ -78,7 +83,7 @@ async function submitLogin(event) {
             saveToken(response.data.token, response.data.user);
         }
 
-        updateMsg('Authentication successful! Redirecting...', 'success');
+        updateMsg(labels().authSuccess || 'Authentication successful! Redirecting...', 'success');
         setButtonLoading(button, false);
 
         setTimeout(() => {
@@ -86,7 +91,7 @@ async function submitLogin(event) {
         }, 500);
 
     } catch (error) {
-        updateMsg('Critical server communication failure.', 'error');
+        updateMsg(labels().serverCommunicationFailed || 'Critical server communication failure.', 'error');
         setButtonLoading(button, false);
     }
 }

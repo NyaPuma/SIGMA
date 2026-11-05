@@ -100,7 +100,7 @@ final class UserService
 
         $secure = $request->secure();
 
-        return response()->json(['message' => __('messages.Session terminated successfully.')])
+        return response()->json(['message' => __('messages.Sessão terminada com sucesso.')])
             ->withCookie(cookie('api_token', null, -1, '/', null, $secure, true, false, 'Lax'))
             ->withCookie(cookie('auth_token', null, -1, '/', null, $secure, false, false, 'Lax'));
     }

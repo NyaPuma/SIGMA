@@ -95,10 +95,9 @@
                         {{ __('equipment.Equipamento / Ativo Afetado *') }}
                     </label>
                     <div class="relative">
-                        <input type="text" id="equipmentSearchInput" autocomplete="off" placeholder="{{ __('equipment.Escreva para pesquisar equipamento, série ou sala...') }}"
+                        <input type="text" id="equipmentSearchInput" autocomplete="off" placeholder="{{ __('equipment.Clique para selecionar equipamento...') }}"
                             class="w-full rounded-2xl border border-[var(--border)] bg-[var(--surface-2)] px-4 py-3 text-xs text-[var(--text)] outline-none focus:border-primary focus:ring-4 focus:ring-primary/15 transition-all">
                         <input type="hidden" id="selectedEquipmentId" name="equipment_id" required>
-                        <div id="equipmentSuggestions" class="hidden absolute z-50 mt-1 w-full max-h-52 overflow-y-auto rounded-2xl border border-[var(--border)] bg-[var(--surface)] shadow-2xl divide-y divide-[var(--border)]/50"></div>
                     </div>
                 </div>
 

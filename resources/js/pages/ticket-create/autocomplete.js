@@ -6,9 +6,9 @@ export async function initAutocomplete() {
 
     if (!searchInput || !hiddenIdInput) return;
 
-    // Make input readonly and add click handler to open modal
+    // The field is a modal trigger: it is never typed into, so the placeholder
+    // (owned by the Blade view) has to describe a click, not typing.
     searchInput.readOnly = true;
-    searchInput.placeholder = 'Click to select equipment...';
     searchInput.style.cursor = 'pointer';
 
     searchInput.addEventListener('click', () => {

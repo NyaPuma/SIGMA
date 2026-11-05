@@ -72,7 +72,7 @@ function bindForm() {
         };
 
         submitBtn.disabled = true;
-        message.textContent = 'A registar movimento...';
+        message.textContent = window.SGM_UI_I18N?.recordingMovement || 'Recording movement...';
         message.className = 'text-xs font-medium text-(--text-soft)';
 
         try {

@@ -559,11 +559,6 @@ function initCalendar() {
 function init() {
     initCalendar();
 
-    const modalTitle = document.getElementById('modalTitle');
-    if (modalTitle && !modalTitle.textContent.trim()) {
-        modalTitle.textContent = 'Event Details';
-    }
-
     initEquipmentSearch();
 
     document.querySelectorAll('[data-action="schedule"]').forEach(el => {

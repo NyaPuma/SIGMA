@@ -82,8 +82,10 @@ function renderItemRow(item, itemType) {
 
 function renderItemsList(items, itemType) {
     if (!items || items.length === 0) {
-        const emptyText = itemType === 'part' ? 'No material in stock.' : 'No equipment found.';
-        return `<div class="py-6 text-center text-xs text-(--text-soft)">${emptyText}</div>`;
+        const emptyText = itemType === 'part'
+            ? (uiLabels().noMaterialInStock || 'No material in stock.')
+            : (uiLabels().noEquipmentFound || 'No equipment found.');
+        return `<div class="py-6 text-center text-xs text-(--text-soft)">${escapeHtml(emptyText)}</div>`;
     }
 
     return items.map((item) => renderItemRow(item, itemType)).join('');
@@ -112,8 +114,10 @@ async function loadItemsIntoModal(query, setLoading = true) {
     if (!list) return;
 
     if (setLoading) {
-        const loadingText = modal.itemType === 'part' ? 'Loading materials...' : 'Loading equipment...';
-        list.innerHTML = `<div class="py-6 text-center text-xs text-(--text-soft)">${loadingText}</div>`;
+        const loadingText = modal.itemType === 'part'
+            ? (uiLabels().loadingMaterials || 'Loading materials...')
+            : (uiLabels().loadingEquipment || 'Loading equipment...');
+        list.innerHTML = `<div class="py-6 text-center text-xs text-(--text-soft)">${escapeHtml(loadingText)}</div>`;
     }
 
     try {
@@ -122,8 +126,10 @@ async function loadItemsIntoModal(query, setLoading = true) {
         if (error?.name === 'AbortError') return;
         modal.items = [];
         if (modal.overlay?.contains(list)) {
-            const errorText = modal.itemType === 'part' ? 'Error loading materials.' : 'Error loading equipment.';
-            list.innerHTML = `<div class="py-6 text-center text-xs text-danger">${errorText}</div>`;
+            const errorText = modal.itemType === 'part'
+                ? (uiLabels().errorLoadingMaterials || 'Error loading materials.')
+                : (uiLabels().errorLoadingEquipment || 'Error loading equipment.');
+            list.innerHTML = `<div class="py-6 text-center text-xs text-danger">${escapeHtml(errorText)}</div>`;
             return;
         }
     }

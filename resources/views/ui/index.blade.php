@@ -5,6 +5,7 @@
 @php
     $profileName = $user->profile->name ?? 'user';
     $isAdmin = $profileName === 'admin';
+    $isOperations = $isAdmin || $profileName === 'technician';
 
     $profileLabel = match ($profileName) {
         'admin' => __('common.Administrador'),
@@ -49,6 +50,7 @@
             </div>
         </div>
 
+        @if($isOperations)
         <div class="rounded-2xl border border-(--border) bg-(--surface) p-6 shadow-[0_1px_2px_rgba(0,0,0,0.01)] flex flex-col justify-between">
             <div>
                 <div class="mb-4 border-b border-(--border) pb-3">
@@ -67,6 +69,7 @@
                 </div>
             @endif
         </div>
+        @endif
     </div>
     </div>
 @endsection

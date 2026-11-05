@@ -80,7 +80,7 @@
                     <label class="text-xs font-bold uppercase tracking-wider text-[var(--text-soft)]">
                         {{ __('stock.Peças previstas (deixe em branco se não aplicável)') }}
                     </label>
-                    <button type="button" id="plAddPartBtn" class="inline-flex items-center gap-1.5 rounded-xl border border-[var(--border)] bg-[var(--surface)] px-3 py-1.5 text-xs font-bold text-[var(--text)] hover:bg-[var(--surface-2)] transition">
+                    <button type="button" id="plAddPart" class="inline-flex items-center gap-1.5 rounded-xl border border-[var(--border)] bg-[var(--surface)] px-3 py-1.5 text-xs font-bold text-[var(--text)] hover:bg-[var(--surface-2)] transition">
                         <svg class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
                             <path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"/>
                         </svg>
@@ -95,7 +95,6 @@
                         {{ __('common.Nenhuma peça selecionada') }}
                     </div>
                 </div>
-                <div id="plSelectedParts" class="hidden space-y-2 mt-3"></div>
             </div>
 
             <div class="flex items-center gap-3">

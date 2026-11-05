@@ -46,13 +46,17 @@ window.axios = apiClient;
 /**
  * HELPERS
  */
+function i18n() {
+    return window.SGM_UI_I18N || {};
+}
+
 function handleSessionExpiration() {
     localStorage.removeItem('api_token');
     localStorage.removeItem('user_role');
     localStorage.removeItem('user_name');
 
     if (window.showToast) {
-        window.showToast('Session expired. Redirecting...', 'error');
+        window.showToast(i18n().sessionExpired || 'Session expired. Redirecting...', 'error');
     }
 
     setTimeout(() => {
@@ -76,8 +80,8 @@ window.api = {
 /**
  * NETWORK MONITORING
  */
-window.addEventListener('offline', () => window.showToast?.('Offline mode active.', 'error'));
-window.addEventListener('online', () => window.showToast?.('Connection restored.', 'success'));
+window.addEventListener('offline', () => window.showToast?.(i18n().offlineMode || 'No connection to the server.', 'error'));
+window.addEventListener('online', () => window.showToast?.(i18n().connectionRestored || 'Connection restored.', 'success'));
 
 /**
  * Converts an HTMLFormElement or FormData into a plain JavaScript object

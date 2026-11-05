@@ -22,7 +22,7 @@ function resetForm(form) {
     document.getElementById('trPercent').value = '';
     document.getElementById('trDefault').checked = false;
     document.getElementById('trActive').checked = true;
-    document.getElementById('taxRateFormTitle').textContent = 'New VAT rate';
+    document.getElementById('taxRateFormTitle').textContent = window.SGM_UI_I18N?.newTaxRateTitle || 'New VAT rate';
     document.getElementById('trMessage').textContent = '';
 }
 
@@ -73,7 +73,7 @@ async function handleEdit(button) {
     const form = document.getElementById('taxRateForm');
     form.dataset.taxRateFormMode = 'edit';
     form.dataset.taxRateId = button.dataset.taxRateEdit;
-    document.getElementById('taxRateFormTitle').textContent = 'Edit VAT rate';
+    document.getElementById('taxRateFormTitle').textContent = window.SGM_UI_I18N?.editTaxRateTitle || 'Edit VAT rate';
     document.getElementById('trMessage').textContent = '';
 }
 

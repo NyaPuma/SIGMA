@@ -14,7 +14,7 @@ Only these nine partials exist, and every one of them is included by a live temp
 | `desktop-sidebar.blade.php` | `ui/layout.blade.php:203` | Desktop sidebar with branding, nav links and auth box. |
 | `locale-config.blade.php` | `ui/layout.blade.php:20`, `layouts/layout.blade.php:23`, `components/ui/auth/shell.blade.php:37`, `ui/tickets/public/{create,success}` | Locale configuration exposed to JavaScript (intl formatting). |
 | `locale-trigger.blade.php` | `layouts/layout.blade.php:45`, `components/ui/auth/shell.blade.php:48`, `ui/tickets/public/{create,success}` | Locale trigger button for opening the localization modal. |
-| `localization-modal.blade.php` | `ui/layout.blade.php:219`, `layouts/layout.blade.php:57`, `components/ui/auth/shell.blade.php:111`, `ui/tickets/public/create.blade.php:153` | Unified localization modal with tabs for language, currency, date, time and decimal format. |
+| `localization-modal.blade.php` | `ui/layout.blade.php:219`, `layouts/layout.blade.php:57`, `components/ui/auth/shell.blade.php:111`, `ui/tickets/public/create.blade.php:140` | Unified localization modal with tabs for language, currency, date, time and decimal format. |
 | `mobile-nav.blade.php` | `ui/layout.blade.php:200` | Mobile navigation drawer with overlay, branding, links and auth box. |
 | `notifications-modal.blade.php` | `ui/layout.blade.php:220` | Notifications modal with backdrop blur (same pattern as the localization modal). |
 | `theme-meta.blade.php` | `ui/layout.blade.php:18`, `layouts/layout.blade.php:21`, `components/ui/auth/shell.blade.php:35`, `ui/tickets/public/create.blade.php:16` | Theme meta tags providing light/dark mode and active theme ID to JavaScript. |

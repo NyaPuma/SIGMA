@@ -51,22 +51,9 @@
                         <span class="inline-flex items-center gap-1.5 rounded-xl border border-[var(--border)] bg-[var(--surface)] px-3 py-1.5 text-xs font-bold text-[var(--text)]">
                             {{ $equipment->category?->name ?? __('equipment.Equipamento') }}
                         </span>
-                        @if($equipment->room)
-                            <span class="inline-flex items-center gap-1.5 rounded-xl border border-[var(--border)] bg-[var(--surface)] px-3 py-1.5 text-xs font-semibold text-[var(--text-soft)]">
-                                <svg class="h-3.5 w-3.5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M15 10.5a3 3 0 11-6 0 3 3 0 016 0zm4.5 0a7.5 7.5 0 11-15 0 7.5 7.5 0 0115 0z"/></svg>
-                                {{ $equipment->room->name }}
-                            </span>
-                        @endif
-                        @if($equipment->asset_tag)
-                            <span class="ml-auto inline-flex items-center rounded-xl border border-[var(--border)] bg-[var(--surface)] px-3 py-1.5 font-mono text-xs font-bold text-[var(--text-soft)]">
-                                {{ $equipment->asset_tag }}
-                            </span>
-                        @endif
                     </div>
                     <h2 class="mt-4 text-lg font-black tracking-tight text-[var(--text)]">{{ $equipment->name }}</h2>
-                    <p class="mt-1 text-xs text-[var(--text-soft)]">
-                        {{ trim(($equipment->brand ?? '') . ' ' . ($equipment->model ?? '')) ?: __('equipment.Equipamento registado') }}
-                    </p>
+                    <p class="mt-1 text-xs text-[var(--text-soft)]">{{ __('equipment.Equipamento registado') }}</p>
                 </div>
 
                 {{-- Form --}}

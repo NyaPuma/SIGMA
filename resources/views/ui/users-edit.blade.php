@@ -15,7 +15,7 @@
                 <div class="relative w-24 h-24 rounded-2xl overflow-hidden border-2 border-primary/30 shadow-md bg-[var(--surface)] flex-shrink-0 flex items-center justify-center">
                     <img id="avatarPreview" 
                          src="{{ $targetUser->avatar_url ?? 'https://ui-avatars.com/api/?name=' . urlencode($targetUser->name) . '&background=f97316&color=ffffff&bold=true' }}" 
-                         alt="Foto de Perfil" 
+                         alt="{{ __('ticket_media.Fotografia do Utilizador') }}" 
                          class="w-full h-full object-cover">
                 </div>
 
