@@ -32,10 +32,9 @@ final readonly class UserObserver
     private function ensureValidProfile(User $user): void
     {
         if ($user->profile_id) {
-            $profileName = UserProfile::where('id', $user->profile_id)->value('name');
+            $profileExists = UserProfile::query()->whereKey($user->profile_id)->exists();
 
-            // Validate that the profile exists and maps to a valid enum case
-            if (is_string($profileName) && UserRoleEnum::tryFrom($profileName) !== null) {
+            if ($profileExists) {
                 return;
             }
         }

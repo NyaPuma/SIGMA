@@ -100,6 +100,7 @@
       class="app-shell ui-shell{{ \App\Services\LocaleService::isRtl(app()->getLocale()) ? ' rtl' : '' }}">
 
     @php
+        $user = $user ?? auth()->user() ?? request()->user();
         $userRole = $user?->profile?->name ?? null;
 
         // --- Inline icons (Heroicons outline — consistent with the existing convention) ---
