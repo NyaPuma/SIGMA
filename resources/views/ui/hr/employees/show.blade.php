@@ -3,6 +3,9 @@
 @section('content')
 <x-ui.partials.page-header title="{{ $employee->full_name }}" subtitle="Ficha de colaborador" badge="RH">
     <x-slot:actions>
+        <a href="{{ route('ui.hr.employees.contracts.index', $employee) }}" class="px-4 py-2 text-xs font-semibold rounded-xl border border-[var(--border)]">Contratos</a>
+        <a href="{{ route('ui.hr.employees.schedules.index', $employee) }}" class="px-4 py-2 text-xs font-semibold rounded-xl border border-[var(--border)]">Horários/Escalas</a>
+        <a href="{{ route('ui.hr.employees.documents.index', $employee) }}" class="px-4 py-2 text-xs font-semibold rounded-xl border border-[var(--border)]">Documentos</a>
         <a href="{{ route('ui.hr.employees.edit', $employee) }}" class="ui-button ui-button--primary px-4 py-2 text-xs font-bold rounded-xl">Editar</a>
         <a href="{{ route('ui.hr.employees.index') }}" class="px-4 py-2 text-xs font-semibold rounded-xl border border-[var(--border)]">Voltar</a>
     </x-slot:actions>
@@ -24,6 +27,32 @@
         </div>
 
         <div class="space-y-6">
+            <div class="bg-[var(--surface)] border border-[var(--border)] rounded-2xl p-6">
+                <div class="flex items-center justify-between mb-3">
+                    <h3 class="font-bold text-base">Contratos</h3>
+                    <a href="{{ route('ui.hr.employees.contracts.index', $employee) }}" class="text-primary text-xs font-semibold">Gerir</a>
+                </div>
+                @if($employee->contracts->isEmpty())
+                    <p class="text-sm text-[var(--text-soft)]">Sem contratos.</p>
+                @else
+                    <ul class="text-sm space-y-2">
+                        @foreach($employee->contracts->take(5) as $c)
+                            <li>{{ $c->type }} — {{ optional($c->start_date)->format('Y-m-d') }} @if($c->end_date) a {{ optional($c->end_date)->format('Y-m-d') }} @endif {{ $c->active ? '(ativo)' : '(inativo)' }}</li>
+                        @endforeach
+                    </ul>
+                @endif
+            </div>
+            <div class="bg-[var(--surface)] border border-[var(--border)] rounded-2xl p-6">
+                <div class="flex items-center justify-between mb-3">
+                    <h3 class="font-bold text-base">Horários/Escalas</h3>
+                    <a href="{{ route('ui.hr.employees.schedules.index', $employee) }}" class="text-primary text-xs font-semibold">Gerir</a>
+                </div>
+                @if($employee->schedules->isEmpty())
+                    <p class="text-sm text-[var(--text-soft)]">Sem horários definidos.</p>
+                @else
+                    <p class="text-sm text-[var(--text-soft)]">{{ $employee->schedules->count() }} horário(s) definido(s).</p>
+                @endif
+            </div>
             <div class="bg-[var(--surface)] border border-[var(--border)] rounded-2xl p-6">
                 <h3 class="font-bold text-base mb-3">Assiduidade recente</h3>
                 @if($employee->attendanceRecords->isEmpty())

@@ -1,10 +1,13 @@
 <?php
 
 use App\Http\Controllers\Admin\Hr\AttendanceController as HrAttendanceController;
+use App\Http\Controllers\Admin\Hr\ContractController as HrContractController;
 use App\Http\Controllers\Admin\Hr\DepartmentController as HrDepartmentController;
 use App\Http\Controllers\Admin\Hr\EmployeeController as HrEmployeeController;
+use App\Http\Controllers\Admin\Hr\EmployeeDocumentController as HrEmployeeDocumentController;
 use App\Http\Controllers\Admin\Hr\LeaveController as HrLeaveController;
 use App\Http\Controllers\Admin\Hr\PositionController as HrPositionController;
+use App\Http\Controllers\Admin\Hr\ScheduleController as HrScheduleController;
 use App\Http\Controllers\Admin\RbacController;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\AdminEquipmentController;
@@ -453,6 +456,26 @@ Route::middleware(['custom.auth'])->group(function () {
         Route::get('/ui/hr/employees/{employee}/edit', [HrEmployeeController::class, 'edit'])->name('ui.hr.employees.edit');
         Route::patch('/ui/hr/employees/{employee}', [HrEmployeeController::class, 'update'])->name('ui.hr.employees.update');
         Route::delete('/ui/hr/employees/{employee}', [HrEmployeeController::class, 'destroy'])->name('ui.hr.employees.destroy');
+
+        // Employee contracts
+        Route::get('/ui/hr/employees/{employee}/contracts', [HrContractController::class, 'index'])->name('ui.hr.employees.contracts.index');
+        Route::get('/ui/hr/employees/{employee}/contracts/create', [HrContractController::class, 'create'])->name('ui.hr.employees.contracts.create');
+        Route::post('/ui/hr/employees/{employee}/contracts', [HrContractController::class, 'store'])->name('ui.hr.employees.contracts.store');
+        Route::get('/ui/hr/employees/{employee}/contracts/{contract}/edit', [HrContractController::class, 'edit'])->name('ui.hr.employees.contracts.edit');
+        Route::patch('/ui/hr/employees/{employee}/contracts/{contract}', [HrContractController::class, 'update'])->name('ui.hr.employees.contracts.update');
+        Route::delete('/ui/hr/employees/{employee}/contracts/{contract}', [HrContractController::class, 'destroy'])->name('ui.hr.employees.contracts.destroy');
+
+        // Employee schedules
+        Route::get('/ui/hr/employees/{employee}/schedules', [HrScheduleController::class, 'index'])->name('ui.hr.employees.schedules.index');
+        Route::post('/ui/hr/employees/{employee}/schedules', [HrScheduleController::class, 'store'])->name('ui.hr.employees.schedules.store');
+        Route::patch('/ui/hr/employees/{employee}/schedules/{schedule}', [HrScheduleController::class, 'update'])->name('ui.hr.employees.schedules.update');
+        Route::delete('/ui/hr/employees/{employee}/schedules/{schedule}', [HrScheduleController::class, 'destroy'])->name('ui.hr.employees.schedules.destroy');
+
+        // Employee documents
+        Route::get('/ui/hr/employees/{employee}/documents', [HrEmployeeDocumentController::class, 'index'])->name('ui.hr.employees.documents.index');
+        Route::post('/ui/hr/employees/{employee}/documents', [HrEmployeeDocumentController::class, 'store'])->name('ui.hr.employees.documents.store');
+        Route::get('/ui/hr/employees/{employee}/documents/{document}/download', [HrEmployeeDocumentController::class, 'download'])->name('ui.hr.employees.documents.download');
+        Route::delete('/ui/hr/employees/{employee}/documents/{document}', [HrEmployeeDocumentController::class, 'destroy'])->name('ui.hr.employees.documents.destroy');
 
         // Attendance
         Route::get('/ui/hr/attendance', [HrAttendanceController::class, 'index'])->name('ui.hr.attendance.index');
