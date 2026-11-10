@@ -5,6 +5,8 @@ declare(strict_types=1);
 namespace App\Http\Controllers\Admin\Hr;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\HR\StoreDepartmentRequest;
+use App\Http\Requests\HR\UpdateDepartmentRequest;
 use App\Models\Department;
 use App\Models\User;
 use Illuminate\Http\RedirectResponse;
@@ -29,19 +31,10 @@ final class DepartmentController extends Controller
         return view('ui.hr.departments.create', compact('managers'));
     }
 
-    public function store(Request $request): RedirectResponse
+    public function store(StoreDepartmentRequest $request): RedirectResponse
     {
         $this->authorizeAdminOrPermission($request, 'hr.departments.manage');
-        /** @var array<string, mixed> $data */
-        $data = $request->validate([
-            'name' => ['required', 'string', 'max:150'],
-            'code' => ['nullable', 'string', 'max:50', 'unique:departments,code'],
-            'description' => ['nullable', 'string'],
-            'manager_id' => ['nullable', 'integer', 'exists:users,id'],
-            'active' => ['nullable', 'boolean'],
-        ]);
-        $data['active'] = $request->boolean('active', true);
-        Department::create($data);
+        Department::create($request->validatedWithDefaults());
 
         return redirect()->route('ui.hr.departments.index')->with('success', 'Departamento criado com sucesso.');
     }
@@ -54,19 +47,10 @@ final class DepartmentController extends Controller
         return view('ui.hr.departments.edit', compact('department', 'managers'));
     }
 
-    public function update(Request $request, Department $department): RedirectResponse
+    public function update(UpdateDepartmentRequest $request, Department $department): RedirectResponse
     {
         $this->authorizeAdminOrPermission($request, 'hr.departments.manage');
-        /** @var array<string, mixed> $data */
-        $data = $request->validate([
-            'name' => ['required', 'string', 'max:150'],
-            'code' => ['nullable', 'string', 'max:50', 'unique:departments,code,'.$department->id],
-            'description' => ['nullable', 'string'],
-            'manager_id' => ['nullable', 'integer', 'exists:users,id'],
-            'active' => ['nullable', 'boolean'],
-        ]);
-        $data['active'] = $request->boolean('active');
-        $department->update($data);
+        $department->update($request->validatedWithDefaults());
 
         return redirect()->route('ui.hr.departments.index')->with('success', 'Departamento atualizado com sucesso.');
     }

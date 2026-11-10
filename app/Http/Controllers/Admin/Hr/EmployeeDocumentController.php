@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Http\Controllers\Admin\Hr;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\HR\StoreEmployeeDocumentRequest;
 use App\Models\Employee;
 use App\Models\EmployeeDocument;
 use Illuminate\Http\RedirectResponse;
@@ -23,16 +24,9 @@ final class EmployeeDocumentController extends Controller
         return view('ui.hr.documents.index', compact('employee'));
     }
 
-    public function store(Request $request, Employee $employee): RedirectResponse
+    public function store(StoreEmployeeDocumentRequest $request, Employee $employee): RedirectResponse
     {
         $this->authorizeAdminOrPermission($request, 'hr.employees.manage');
-        /** @var array<string, mixed> $data */
-        $data = $request->validate([
-            'title' => ['required', 'string', 'max:200'],
-            'category' => ['nullable', 'string', 'max:100'],
-            'file' => ['required', 'file', 'max:10240'], // 10MB
-            'notes' => ['nullable', 'string'],
-        ]);
 
         $file = $request->file('file');
         if (! $file) {
@@ -40,6 +34,8 @@ final class EmployeeDocumentController extends Controller
         }
 
         $path = $file->store('employee-documents/'.$employee->id, 'local');
+        /** @var array<string, mixed> $data */
+        $data = $request->validated();
 
         EmployeeDocument::create([
             'employee_id' => $employee->id,

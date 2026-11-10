@@ -5,6 +5,8 @@ declare(strict_types=1);
 namespace App\Http\Controllers\Admin\Hr;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\HR\StoreEmployeeRequest;
+use App\Http\Requests\HR\UpdateEmployeeRequest;
 use App\Models\Department;
 use App\Models\Employee;
 use App\Models\Position;
@@ -34,11 +36,10 @@ final class EmployeeController extends Controller
         return view('ui.hr.employees.create', $this->formData());
     }
 
-    public function store(Request $request): RedirectResponse
+    public function store(StoreEmployeeRequest $request): RedirectResponse
     {
         $this->authorizeAdminOrPermission($request, 'hr.employees.manage');
-        $data = $this->validateData($request);
-        Employee::create($data);
+        Employee::create($request->validated());
 
         return redirect()->route('ui.hr.employees.index')->with('success', 'Colaborador criado com sucesso.');
     }
@@ -66,11 +67,10 @@ final class EmployeeController extends Controller
         return view('ui.hr.employees.edit', array_merge(['employee' => $employee], $this->formData()));
     }
 
-    public function update(Request $request, Employee $employee): RedirectResponse
+    public function update(UpdateEmployeeRequest $request, Employee $employee): RedirectResponse
     {
         $this->authorizeAdminOrPermission($request, 'hr.employees.manage');
-        $data = $this->validateData($request, $employee->id);
-        $employee->update($data);
+        $employee->update($request->validated());
 
         return redirect()->route('ui.hr.employees.index')->with('success', 'Colaborador atualizado com sucesso.');
     }
@@ -92,32 +92,6 @@ final class EmployeeController extends Controller
             'users' => User::query()->where('active', true)->orderBy('name')->get(),
             'statuses' => ['active' => 'Ativo', 'on_leave' => 'Em licença', 'terminated' => 'Terminado'],
         ];
-    }
-
-    /** @return array<string, mixed> */
-    private function validateData(Request $request, ?int $employeeId = null): array
-    {
-        $unique = 'unique:employees,employee_number'.($employeeId ? ','.$employeeId : '');
-        /** @var array<string, mixed> $data */
-        $data = $request->validate([
-            'user_id' => ['nullable', 'integer', 'exists:users,id'],
-            'employee_number' => ['nullable', 'string', 'max:50', $unique],
-            'first_name' => ['required', 'string', 'max:100'],
-            'last_name' => ['required', 'string', 'max:100'],
-            'email' => ['nullable', 'email', 'max:255'],
-            'phone' => ['nullable', 'string', 'max:50'],
-            'tax_id' => ['nullable', 'string', 'max:50'],
-            'birth_date' => ['nullable', 'date'],
-            'address' => ['nullable', 'string', 'max:500'],
-            'department_id' => ['nullable', 'integer', 'exists:departments,id'],
-            'position_id' => ['nullable', 'integer', 'exists:positions,id'],
-            'hire_date' => ['nullable', 'date'],
-            'termination_date' => ['nullable', 'date', 'after_or_equal:hire_date'],
-            'status' => ['required', 'string', 'in:active,on_leave,terminated'],
-            'notes' => ['nullable', 'string'],
-        ]);
-
-        return $data;
     }
 
     private function authorizeAdminOrPermission(Request $request, string $permission): void

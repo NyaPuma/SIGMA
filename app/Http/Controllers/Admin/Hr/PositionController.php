@@ -5,6 +5,8 @@ declare(strict_types=1);
 namespace App\Http\Controllers\Admin\Hr;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\HR\StorePositionRequest;
+use App\Http\Requests\HR\UpdatePositionRequest;
 use App\Models\Department;
 use App\Models\Position;
 use Illuminate\Http\RedirectResponse;
@@ -29,18 +31,10 @@ final class PositionController extends Controller
         return view('ui.hr.positions.create', compact('departments'));
     }
 
-    public function store(Request $request): RedirectResponse
+    public function store(StorePositionRequest $request): RedirectResponse
     {
         $this->authorizeAdminOrPermission($request, 'hr.positions.manage');
-        /** @var array<string, mixed> $data */
-        $data = $request->validate([
-            'name' => ['required', 'string', 'max:150'],
-            'department_id' => ['nullable', 'integer', 'exists:departments,id'],
-            'description' => ['nullable', 'string'],
-            'active' => ['nullable', 'boolean'],
-        ]);
-        $data['active'] = $request->boolean('active', true);
-        Position::create($data);
+        Position::create($request->validatedWithDefaults());
 
         return redirect()->route('ui.hr.positions.index')->with('success', 'Cargo criado com sucesso.');
     }
@@ -53,18 +47,10 @@ final class PositionController extends Controller
         return view('ui.hr.positions.edit', compact('position', 'departments'));
     }
 
-    public function update(Request $request, Position $position): RedirectResponse
+    public function update(UpdatePositionRequest $request, Position $position): RedirectResponse
     {
         $this->authorizeAdminOrPermission($request, 'hr.positions.manage');
-        /** @var array<string, mixed> $data */
-        $data = $request->validate([
-            'name' => ['required', 'string', 'max:150'],
-            'department_id' => ['nullable', 'integer', 'exists:departments,id'],
-            'description' => ['nullable', 'string'],
-            'active' => ['nullable', 'boolean'],
-        ]);
-        $data['active'] = $request->boolean('active');
-        $position->update($data);
+        $position->update($request->validatedWithDefaults());
 
         return redirect()->route('ui.hr.positions.index')->with('success', 'Cargo atualizado com sucesso.');
     }

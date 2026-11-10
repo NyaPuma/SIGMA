@@ -5,6 +5,8 @@ declare(strict_types=1);
 namespace App\Http\Controllers\Admin\Hr;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\HR\StoreEmploymentContractRequest;
+use App\Http\Requests\HR\UpdateEmploymentContractRequest;
 use App\Models\Employee;
 use App\Models\EmploymentContract;
 use Illuminate\Http\RedirectResponse;
@@ -28,24 +30,10 @@ final class ContractController extends Controller
         return view('ui.hr.contracts.create', compact('employee'));
     }
 
-    public function store(Request $request, Employee $employee): RedirectResponse
+    public function store(StoreEmploymentContractRequest $request, Employee $employee): RedirectResponse
     {
         $this->authorizeAdminOrPermission($request, 'hr.contracts.manage');
-        /** @var array<string, mixed> $data */
-        $data = $request->validate([
-            'type' => ['required', 'string', 'max:50'],
-            'start_date' => ['required', 'date'],
-            'end_date' => ['nullable', 'date', 'after_or_equal:start_date'],
-            'salary_amount' => ['nullable', 'numeric', 'min:0'],
-            'salary_currency' => ['nullable', 'string', 'max:10'],
-            'work_hours_per_week' => ['nullable', 'numeric', 'min:0', 'max:168'],
-            'notes' => ['nullable', 'string'],
-            'active' => ['nullable', 'boolean'],
-        ]);
-        $data['employee_id'] = $employee->id;
-        $data['active'] = $request->boolean('active', true);
-        $data['salary_currency'] = $data['salary_currency'] ?? 'EUR';
-        EmploymentContract::create($data);
+        EmploymentContract::create($request->validatedWithDefaults($employee->id));
 
         return redirect()->route('ui.hr.employees.contracts.index', $employee)->with('success', 'Contrato criado com sucesso.');
     }
@@ -58,23 +46,11 @@ final class ContractController extends Controller
         return view('ui.hr.contracts.edit', compact('employee', 'contract'));
     }
 
-    public function update(Request $request, Employee $employee, EmploymentContract $contract): RedirectResponse
+    public function update(UpdateEmploymentContractRequest $request, Employee $employee, EmploymentContract $contract): RedirectResponse
     {
         $this->authorizeAdminOrPermission($request, 'hr.contracts.manage');
         abort_unless($contract->employee_id === $employee->id, 404);
-        /** @var array<string, mixed> $data */
-        $data = $request->validate([
-            'type' => ['required', 'string', 'max:50'],
-            'start_date' => ['required', 'date'],
-            'end_date' => ['nullable', 'date', 'after_or_equal:start_date'],
-            'salary_amount' => ['nullable', 'numeric', 'min:0'],
-            'salary_currency' => ['nullable', 'string', 'max:10'],
-            'work_hours_per_week' => ['nullable', 'numeric', 'min:0', 'max:168'],
-            'notes' => ['nullable', 'string'],
-            'active' => ['nullable', 'boolean'],
-        ]);
-        $data['active'] = $request->boolean('active');
-        $contract->update($data);
+        $contract->update($request->validatedWithDefaults());
 
         return redirect()->route('ui.hr.employees.contracts.index', $employee)->with('success', 'Contrato atualizado com sucesso.');
     }

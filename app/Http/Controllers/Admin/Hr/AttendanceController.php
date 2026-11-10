@@ -5,6 +5,7 @@ declare(strict_types=1);
 namespace App\Http\Controllers\Admin\Hr;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\HR\StoreAttendanceRecordRequest;
 use App\Models\AttendanceRecord;
 use App\Models\Employee;
 use Illuminate\Http\RedirectResponse;
@@ -22,23 +23,10 @@ final class AttendanceController extends Controller
         return view('ui.hr.attendance.index', compact('records', 'employees'));
     }
 
-    public function store(Request $request): RedirectResponse
+    public function store(StoreAttendanceRecordRequest $request): RedirectResponse
     {
         $this->authorizeAdminOrPermission($request, 'hr.attendance.manage');
-        /** @var array<string, mixed> $data */
-        $data = $request->validate([
-            'employee_id' => ['required', 'integer', 'exists:employees,id'],
-            'date' => ['required', 'date'],
-            'check_in' => ['nullable', 'date'],
-            'check_out' => ['nullable', 'date', 'after_or_equal:check_in'],
-            'break_minutes' => ['nullable', 'integer', 'min:0'],
-            'status' => ['required', 'string', 'in:present,absent,late,half_day,remote,holiday'],
-            'notes' => ['nullable', 'string'],
-        ]);
-        $break = $data['break_minutes'] ?? 0;
-        $data['break_minutes'] = is_numeric($break) ? (int) $break : 0;
-        $data['recorded_by'] = $request->user()?->id;
-
+        $data = $request->validatedWithDefaults($request->user()?->id);
         /** @var array<string, mixed> $keys */
         $keys = ['employee_id' => $data['employee_id'], 'date' => $data['date']];
         AttendanceRecord::query()->updateOrCreate($keys, $data);

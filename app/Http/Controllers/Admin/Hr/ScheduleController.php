@@ -5,6 +5,8 @@ declare(strict_types=1);
 namespace App\Http\Controllers\Admin\Hr;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\HR\StoreWorkScheduleRequest;
+use App\Http\Requests\HR\UpdateWorkScheduleRequest;
 use App\Models\Employee;
 use App\Models\WorkSchedule;
 use Illuminate\Http\RedirectResponse;
@@ -21,44 +23,19 @@ final class ScheduleController extends Controller
         return view('ui.hr.schedules.index', compact('employee'));
     }
 
-    public function store(Request $request, Employee $employee): RedirectResponse
+    public function store(StoreWorkScheduleRequest $request, Employee $employee): RedirectResponse
     {
         $this->authorizeAdminOrPermission($request, 'hr.schedules.manage');
-        /** @var array<string, mixed> $data */
-        $data = $request->validate([
-            'name' => ['nullable', 'string', 'max:100'],
-            'day_of_week' => ['required', 'integer', 'min:0', 'max:6'],
-            'start_time' => ['required', 'date_format:H:i'],
-            'end_time' => ['required', 'date_format:H:i', 'after:start_time'],
-            'break_minutes' => ['nullable', 'integer', 'min:0'],
-            'active' => ['nullable', 'boolean'],
-        ]);
-        $data['employee_id'] = $employee->id;
-        $data['active'] = $request->boolean('active', true);
-        $break = $data['break_minutes'] ?? 0;
-        $data['break_minutes'] = is_numeric($break) ? (int) $break : 0;
-        WorkSchedule::create($data);
+        WorkSchedule::create($request->validatedWithDefaults($employee->id));
 
         return redirect()->route('ui.hr.employees.schedules.index', $employee)->with('success', 'Horário criado com sucesso.');
     }
 
-    public function update(Request $request, Employee $employee, WorkSchedule $schedule): RedirectResponse
+    public function update(UpdateWorkScheduleRequest $request, Employee $employee, WorkSchedule $schedule): RedirectResponse
     {
         $this->authorizeAdminOrPermission($request, 'hr.schedules.manage');
         abort_unless($schedule->employee_id === $employee->id, 404);
-        /** @var array<string, mixed> $data */
-        $data = $request->validate([
-            'name' => ['nullable', 'string', 'max:100'],
-            'day_of_week' => ['required', 'integer', 'min:0', 'max:6'],
-            'start_time' => ['required', 'date_format:H:i'],
-            'end_time' => ['required', 'date_format:H:i', 'after:start_time'],
-            'break_minutes' => ['nullable', 'integer', 'min:0'],
-            'active' => ['nullable', 'boolean'],
-        ]);
-        $data['active'] = $request->boolean('active');
-        $break = $data['break_minutes'] ?? 0;
-        $data['break_minutes'] = is_numeric($break) ? (int) $break : 0;
-        $schedule->update($data);
+        $schedule->update($request->validatedWithDefaults());
 
         return redirect()->route('ui.hr.employees.schedules.index', $employee)->with('success', 'Horário atualizado com sucesso.');
     }
