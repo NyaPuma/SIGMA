@@ -72,4 +72,9 @@ return [
     'Login / Registo' => 'Login / Cadastro',
     'Terminar sessão' => 'Sair',
     'Ver perfil' => 'Ver perfil',
+    'verifying_credentials' => 'Verificando as credenciais no servidor...',
+    'invalid_credentials' => 'Credenciais inválidas.',
+    'auth_success' => 'Autenticação bem-sucedida! Redirecionando...',
+    'server_communication_failed' => 'Falha crítica na comunicação com o servidor.',
+    'authenticating' => 'Autenticando...',
 ];

@@ -63,7 +63,7 @@ return [
     'Intervenção concluída e ticket fechado com sucesso.' => 'Intervenção concluída e ticket fechado com sucesso.',
     'Intervenção iniciada com sucesso.' => 'Intervenção iniciada com sucesso.',
     'Lista os registos de auditoria do sistema.
-Protegido globalmente via middleware e verificado via Policy.' => 'Lista os registos de auditoria do sistema.
+Protegido globalmente via middleware e verificado via Policy.' => 'Lista os registros de auditoria do sistema.
 Protegido globalmente via middleware e verificado via Policy.',
     'Manutenção preventiva agendada com sucesso.' => 'Manutenção preventiva agendada com sucesso.',
     'Mensagem automática de sistema • Não responda a este endereço' => 'Mensagem automática de sistema • Não responda a este endereço',
@@ -113,4 +113,10 @@ Protegido globalmente via middleware e verificado via Policy.',
     'Utilizador criado com sucesso.' => 'Usuário criado com sucesso.',
     'Utilizador inativado com sucesso.' => 'Usuário inativado com sucesso.',
     'Valor total do stock, total de peças, contagem de peças com stock baixo e lista de alertas.' => 'Valor total do estoque, total de peças, contagem de peças com estoque baixo e lista de alertas.',
+    'Aparência atualizada com sucesso.' => 'Aparência atualizada com sucesso.',
+    'Escolha um tema pré-definido — a sua preferência é guardada por utilizador e aplicada nos próximos acessos.' => 'Escolha um tema predefinido — sua preferência é salva por usuário e aplicada nos próximos acessos.',
+    'Canal de envio:' => 'Canal de envio:',
+    'Este é um disparo de validação estrutural enviado para confirmar a correta integração, credenciação e entrega de mensagens na plataforma.' => 'Este é um disparo de validação estrutural enviado para confirmar a correta integração, credenciação e entrega de mensagens na plataforma.',
+    'Ligação Estabelecida com Sucesso' => 'Ligação Estabelecida com Sucesso',
+    'Verificação de Serviço' => 'Verificação de Serviço',
 ];

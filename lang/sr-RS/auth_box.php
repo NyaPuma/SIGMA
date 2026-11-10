@@ -1,8 +1,9 @@
 <?php
 
 return [
-    'profile' => 'View Profile',
+    'profile' => 'Pogledaj profil',
     'logout' => 'Odjavi se',
-    'signin' => 'Sign in',
-    'login_register' => 'Login / Register',
+    'signin' => 'Prijava',
+    'login_register' => 'Prijava / Registracija',
+    'connection_error' => 'Greška u vezi',
 ];

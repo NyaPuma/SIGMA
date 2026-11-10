@@ -11,7 +11,7 @@ return [
     'Atividade Recente' => 'Actividad Reciente',
     'Cada família tem um par claro/escuro com o mesmo matiz — o botão do painel alterna entre os dois.' => 'Cada familia tiene un par claro/oscuro con el mismo matiz: el botón del panel alterna entre ambos.',
     'Dashboard' => 'Panel de control',
-    'Dashboard Analítico' => 'Dashboard Analítico',
+    'Dashboard Analítico' => 'Panel Analítico',
     'Este é o texto principal do painel, desenhado para leitura confortável no dia a dia.' => 'Este es el texto principal del panel, diseñado para una lectura cómoda en el día a día.',
     'Indicadores Operacionais' => 'Indicadores Operativos',
     'Métricas da agenda atual' => 'Métricas de la agenda actual',
@@ -33,4 +33,5 @@ return [
     'Tickets Resolvidos' => 'Tickets Resueltos',
     'Urgentes' => 'Urgentes',
     'Últimas ações registadas na plataforma para acompanhar rapidamente a atividade operacional.' => 'Últimas acciones registradas en la plataforma para seguir rápidamente la actividad operativa.',
+    'Sem ocorrências em curso' => 'Sin incidencias en curso',
 ];

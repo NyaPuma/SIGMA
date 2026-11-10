@@ -15,4 +15,8 @@ return [
     'hours' => 'h',
     'day' => 'd',
     'days' => 'd',
+    'load_error' => 'Greška pri učitavanju analitičkih podataka.',
+    'export_processing' => 'Generisanje...',
+    'export_start_error' => 'Nije moguće pokrenuti izvoz.',
+    'export_network_error' => 'Greška u mreži pri pokretanju izvoza. Pokušajte ponovo.',
 ];

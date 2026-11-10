@@ -72,4 +72,9 @@ return [
     'Login / Registo' => 'ورود / ثبت نام',
     'Terminar sessão' => 'پایان نشست',
     'Ver perfil' => 'مشاهده پروفایل',
+    'verifying_credentials' => 'در حال اعتبارسنجی مشخصات ورود در سرور...',
+    'invalid_credentials' => 'مشخصات ورود نامعتبر است.',
+    'auth_success' => 'احراز هویت با موفقیت انجام شد! در حال انتقال...',
+    'server_communication_failed' => 'خطای بحرانی در ارتباط با سرور.',
+    'authenticating' => 'در حال احراز هویت...',
 ];

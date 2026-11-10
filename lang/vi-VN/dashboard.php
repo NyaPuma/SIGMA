@@ -33,4 +33,5 @@ return [
     'Tickets Resolvidos' => 'Yêu cầu đã giải quyết',
     'Urgentes' => 'Khẩn cấp',
     'Últimas ações registadas na plataforma para acompanhar rapidamente a atividade operacional.' => 'Các thao tác gần đây được ghi nhận trên nền tảng để theo dõi nhanh hoạt động vận hành.',
+    'Sem ocorrências em curso' => 'Không có sự cố nào đang diễn ra',
 ];

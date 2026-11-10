@@ -15,4 +15,8 @@ return [
     'hours' => 'h',
     'day' => 'd',
     'days' => 'd',
+    'load_error' => 'Gabim gjatë ngarkimit të të dhënave analitike.',
+    'export_processing' => 'Duke gjeneruar...',
+    'export_start_error' => 'Nisja e eksportimit dështoi.',
+    'export_network_error' => 'Gabim rrjeti gjatë nisjes së eksportimit. Provo përsëri.',
 ];

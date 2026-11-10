@@ -72,4 +72,9 @@ return [
     'Login / Registo' => 'Inloggning / Registrering',
     'Terminar sessão' => 'Logga ut',
     'Ver perfil' => 'Visa profil',
+    'verifying_credentials' => 'Verifierar inloggningsuppgifter på servern...',
+    'invalid_credentials' => 'Ogiltiga inloggningsuppgifter.',
+    'auth_success' => 'Autentisering lyckades! Omdirigerar...',
+    'server_communication_failed' => 'Kritiskt kommunikationsfel med servern.',
+    'authenticating' => 'Autentiserar...',
 ];

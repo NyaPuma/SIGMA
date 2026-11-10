@@ -1,0 +1,27 @@
+<?php
+
+return [
+    'A carregar peças...' => 'Učitavanje dijelova...',
+    'Atualiza uma peça.' => 'Ažurira dio.',
+    'Atualizar categoria de peças' => 'Ažuriraj kategoriju dijelova',
+    'Atualizar peça' => 'Ažuriraj dio',
+    'Categorias de Peças' => 'Kategorije dijelova',
+    'Desativar categoria de peças' => 'Deaktiviraj kategoriju dijelova',
+    'Entradas e saídas de stock aparecerão aqui.' => 'Ulazi i izlazi zaliha pojavit će se ovdje.',
+    'Informação da Peça' => 'Podaci o dijelu',
+    'Lista paginada de peças' => 'Paginirana lista dijelova',
+    'Listar categorias de peças' => 'Nabrajanje kategorija dijelova',
+    'Mínimo' => 'Minimalno',
+    'Mínimo 8 caracteres' => 'Najmanje 8 znakova',
+    'Mínimo de 8 caracteres' => 'Najmanje 8 znakova',
+    'Peças mais consumidas' => 'Najpotrošeniji dijelovi',
+    'Stock inicial' => 'Početna zaliha',
+    'Stock inicial de catalogação' => 'Početna zaliha pri katalogizaciji',
+    'Stock máximo' => 'Maksimalna zaliha',
+    'Stock mínimo' => 'Minimalna zaliha',
+    'Valor em stock' => 'Vrijednost zaliha',
+    'Ajuste de inventário' => 'Korekcija inventara',
+    'Consumo em intervenção' => 'Potrošnja u intervenciji',
+    'Devolução de sobrante' => 'Povrat viška',
+    'consumo' => 'potrošnja',
+];

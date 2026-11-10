@@ -1,7 +1,7 @@
 <?php
 
 return [
-    'previous' => 'Previous',
+    'previous' => 'Prethodno',
     'next' => 'Sljedeće',
     'page' => 'Page',
     'of' => 'of',

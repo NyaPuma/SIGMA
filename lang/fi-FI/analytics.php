@@ -15,4 +15,8 @@ return [
     'hours' => 'h',
     'day' => 'd',
     'days' => 'd',
+    'load_error' => 'Virhe analyysitietojen latauksessa.',
+    'export_processing' => 'Generoidaan...',
+    'export_start_error' => 'Vientiä ei voitu käynnistää.',
+    'export_network_error' => 'Verkkovirhe vientiä käynnistettäessä. Yritä uudelleen.',
 ];

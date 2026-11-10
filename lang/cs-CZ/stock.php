@@ -113,4 +113,7 @@ return [
     'consumo' => 'spotřeba',
     'em stock' => 'na skladě',
     'peças' => 'díly',
+    'Clique para selecionar peça...' => 'Klepnutím vyberte díl...',
+    'Consumo de peças e respetivo valor nas intervenções de cada equipamento.' => 'Spotřeba dílů a jejich hodnota při zásazích na jednotlivých zařízeních.',
+    'Não existem saídas de peças associadas a equipamentos no período selecionado.' => 'Ve vybraném období nejsou žádné výdeje dílů spojené se zařízeními.',
 ];

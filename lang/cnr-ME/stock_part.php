@@ -7,6 +7,6 @@ return [
     'ok' => 'OK',
     'details' => 'Pregled details',
     'edit' => 'Uredi',
-    'empty' => 'Ne parts found with the applied filters',
-    'Limiar a partir do qual um orçamento precisa de aprovação.' => 'Threshold above which a budget needs approval.',
+    'empty' => 'Uz primijenjene filtere nije nađen nijedan dio',
+    'Limiar a partir do qual um orçamento precisa de aprovação.' => 'Vrijednost od koje budžet zahtijeva odobrenje.',
 ];

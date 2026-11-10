@@ -63,8 +63,7 @@ return [
     'Intervenção concluída e ticket fechado com sucesso.' => 'Intervenție finalizată și tichet închis cu succes.',
     'Intervenção iniciada com sucesso.' => 'Intervenția a fost începută cu succes.',
     'Lista os registos de auditoria do sistema.
-Protegido globalmente via middleware e verificado via Policy.' => 'Lista os registos de auditoria do sistema.
-Protegido globalmente via middleware e verificado via Policy.',
+Protegido globalmente via middleware e verificado via Policy.' => 'Afișează registrele de audit ale sistemului. Protejat la nivel global prin middleware și verificat prin Policy.',
     'Manutenção preventiva agendada com sucesso.' => 'Întreținerea preventivă a fost programată cu succes.',
     'Mensagem automática de sistema • Não responda a este endereço' => 'Mesaj automat de sistem • Nu răspundeți la această adresă',
     'Movimento de stock registado com sucesso.' => 'Mișcarea de stoc a fost înregistrată cu succes.',
@@ -113,4 +112,10 @@ Protegido globalmente via middleware e verificado via Policy.',
     'Utilizador criado com sucesso.' => 'Utilizatorul a fost creat cu succes.',
     'Utilizador inativado com sucesso.' => 'Utilizatorul a fost dezactivat cu succes.',
     'Valor total do stock, total de peças, contagem de peças com stock baixo e lista de alertas.' => 'Valoarea totală a stocului, totalul pieselor, numărul pieselor cu stoc redus și lista alertelor.',
+    'Aparência atualizada com sucesso.' => 'Aspect actualizat cu succes.',
+    'Escolha um tema pré-definido — a sua preferência é guardada por utilizador e aplicada nos próximos acessos.' => 'Alegeți o temă predefinită — preferința dvs. este salvată per utilizator și aplicată la următoarele accesări.',
+    'Canal de envio:' => 'Canal de trimitere:',
+    'Este é um disparo de validação estrutural enviado para confirmar a correta integração, credenciação e entrega de mensagens na plataforma.' => 'Aceasta este o probă de validare structurală trimisă pentru a confirma integrarea, autentificarea și livrarea corectă a mesajelor pe platformă.',
+    'Ligação Estabelecida com Sucesso' => 'Conexiune stabilită cu succes',
+    'Verificação de Serviço' => 'Verificarea serviciului',
 ];

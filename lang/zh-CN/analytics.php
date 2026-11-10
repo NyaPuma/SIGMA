@@ -15,4 +15,8 @@ return [
     'hours' => '时',
     'day' => '天',
     'days' => '天',
+    'load_error' => '加载分析数据时出错。',
+    'export_processing' => '正在生成...',
+    'export_start_error' => '无法启动导出。',
+    'export_network_error' => '启动导出时出现网络错误。请重试。',
 ];

@@ -1,16 +1,30 @@
 # Internationalization (i18n) Progress — SGM
 
-> Last updated: 2026-08-21 (Phase 4: 53 complete ✅ — 11 remaining completed; see sections 4.1, 6 and 7)
-> Source of truth (reference locale): en (values: en-GB)
+> Last updated: 2026-11-05 (see §0 for the current state and the quality-repair campaign; §1–§8 are the historical audit record of the JSON→PHP migration and key-parity work, phases 1–4, 2026-08)
+> Source of sense: pt-PT (the strings in the code). Confirmation pivot for meaning: en-GB.
+
+## 0. Current state (2026-11-05)
+
+The older sections measure **keys**. Keys alone stopped being a sufficient definition of "translated": a locale could hold 1498/1498 paths and still display English, Portuguese or a corrupted hybrid, because `__()` returns whatever is in the file and a copy of the source string looks like a valid value.
+
+Three things changed:
+
+1. **A value classifier is the gate.** `classifyValue()` in `lib-i18n.php` labels every value in every locale as `ok`, `formato`, `internacional`, `europeu`, or as pending (`falta`, `portugues`, `ingles`, `mistura`, `pidgin`, `escrita`). The CI test `tests/Unit/Support/TranslationDriftTest.php` fails if a single value lands in a pending category, so "complete" now means *keys complete **and** nothing pending*. Earlier claims of "0 missing, 100%" in §2/§4/§5 only ever proved key parity.
+2. **The pipeline is `coverage → translations/ → verify-locale → apply-translations`.** `php coverage.php [--work=work3]` writes, per locale and group, the list of keys still pending; agents write batches under `translations/<locale>/<group>.php`; `php verify-locale.php <locale>` rejects a batch that leaves any key pending or touches keys outside pt-PT; `php apply-translations.php [--overwrite] <locale>` merges the accepted batch into `lang/`. Applying a batch changes the locale's own corpus, which is used as the translation dictionary, so previously tolerated copies get unmasked — the campaign runs in waves until `coverage.php` reports TOTAL pending 0.
+3. **Evasion is treated as a defect class, not noise.** The classifier rejects byte copies, mixed-script pidgin (`Breaдзcrumb`), single-letter script injection inside an English word (`passworдз`, `manდatory`) and half-mangled substrings (`interдоwne`). Each rule was added after observing a specific batch try to pass it; `REPAIR-BRIEF.md` records the rules for future waves. Known residual gap: Latin-script locales can still copy English without any script change — those are caught by comparing against the English pivot token by token, not by script.
+
+Consequences for the numbers below: §2, §4 and §5 describe the 2026-08 state (key parity) and remain true as history; they are **not** evidence of translation quality. `en-GB` is the value reference for English, not the source of truth — new keys enter `pt-PT` first, since the code calls `__('domain.{pt-PT string}')`.
+
+**The canonical set is 1497 keys, not the 1498 counted in §2–§5.** `ui.div` was a literal key with no call site anywhere in `app/`, `resources/`, `routes/`, `config/` or `tests/` (it had been listed at §4 as a "legitimate identity value"); it was removed from pt-PT, all 53 locales and the English pivot on 2026-11-05.
 
 ## 1. Context and Rules
 
 Target architecture: `lang/{locale}/{domain}.php`, with PHP arrays grouped by domain (e.g., `auth.php`, `tickets.php`, `stock.php`). The JSON format (`lang/{locale}.json`) was **completely eliminated** in Front C (2026-08-14); the 18 original files are archived in `docs/i18n/archive-json/` (audit reference and historical canonical source).
 
-- The source of truth is `en` (English).
-- Any new key enters `en` first.
+- The source of truth is `en` (English). *(Historical wording of this phase — superseded by §0: the source of sense is `pt-PT`, because the code calls `__()` with Portuguese literals; `en-GB` is only the English value reference.)*
+- Any new key enters `en` first. *(Superseded: a new key enters `pt-PT` first.)*
 - "Missing key" comparisons use `en`'s key tree as the canonical set.
-- A locale only becomes `✅ Complete` when it has exactly the same number of keys, in the same domains, as `en` **and** the JSON→PHP migration is complete.
+- A locale only becomes `✅ Complete` when it has exactly the same number of keys, in the same domains, as `en` **and** the JSON→PHP migration is complete. *(Superseded by §0: `✅ Complete` additionally requires 0 values pending in `classifyValue()`, enforced by `TranslationDriftTest`.)*
 
 **Canonical key set definition (measured in Phase 1):**
 - Source keys are strings in Portuguese (pt-PT). The JSON (`lang/{locale}.json`) maps each source string → translation (in `pt-PT` it's identity, since it's the source language).
@@ -103,7 +117,7 @@ Note on "identity values": value equals the key (the source string). In `pt-PT` 
 
 \* **ru-RU (Phase 3b), uk-UA and bg-BG (Phase 3c), zh-CN, zh-TW and ja-JP (Phase 3):** created from scratch on 2026-08-16, **with no historical JSON** (`lang/{locale}.json` never existed). The canonical metric of 2853 paths (1355 JSON + 1498 PHP) is a **structural source gap** — the 1355 JSON paths are no longer accessed by the app (Front B migrated all code to `__('domain.key')`; 0 flat calls). Therefore these locales are measured by **functional coverage**: the **1498 PHP paths are complete (21 domains, 0 missing, 0 empty)** and cover **1211/1211 (100%) of paths actually used in code** — identical to the other locales (audit `docs/i18n/scripts/audit_usage.py`).
 
-\*\* **Identity values in locales created from scratch — all legitimate** (technical terms/acronyms `ID`, `MTTR`, `NIF`, `SKU`, `SLA`, `API`, `OK`, `Swagger`, `cURL`, `Round-robin`, `part_id`; formats `Y-m-d`, `Y-m-d H:i:s`, `d`, `div`, `—`; placeholders `:reference — :equipment (:priority)`): **17 in ru-RU, 15 in uk-UA, 12 in bg-BG, 17 in zh-CN, 17 in zh-TW, 17 in ja-JP, 17 in ko-KR**. No pending review.
+\*\* **Identity values in locales created from scratch — all legitimate** (technical terms/acronyms `ID`, `MTTR`, `NIF`, `SKU`, `SLA`, `API`, `OK`, `Swagger`, `cURL`, `Round-robin`, `part_id`; formats `Y-m-d`, `Y-m-d H:i:s`, `d`, `—`; placeholders `:reference — :equipment (:priority)`): **17 in ru-RU, 15 in uk-UA, 12 in bg-BG, 17 in zh-CN, 17 in zh-TW, 17 in ja-JP, 17 in ko-KR**. No pending review. (`div` was in this list in 2026-08; it was not a legitimate identity value but a dead key with no call site — removed 2026-11-05, see §0.)
 
 | Locale | en key count (ref) | Present count | % | Status (keys) | Identity values (JSON / PHP) | JSON→PHP migration | Last verified |
 |---|---|---|---|---|---|---|---|
@@ -309,7 +323,7 @@ The 18 `lang/{locale}.json` files were **deleted** and archived in `docs/i18n/ar
 - `mín.`
 - `meses`
 - `mês`
-- `div`
+- `div` *(dead key — removed from every locale on 2026-11-05, see §0)*
 - `de`
 
 **Languages/preferences (14)** — suggest `preferences.php`/`messages.php`:

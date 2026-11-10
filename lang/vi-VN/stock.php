@@ -113,4 +113,7 @@ return [
     'consumo' => 'tiêu thụ',
     'em stock' => 'có trong kho',
     'peças' => 'phụ tùng',
+    'Clique para selecionar peça...' => 'Nhấp để chọn phụ tùng...',
+    'Consumo de peças e respetivo valor nas intervenções de cada equipamento.' => 'Mức tiêu thụ phụ tùng và giá trị tương ứng trong các lần bảo trì của từng thiết bị.',
+    'Não existem saídas de peças associadas a equipamentos no período selecionado.' => 'Không có xuất phụ tùng gắn với thiết bị trong khoảng thời gian đã chọn.',
 ];

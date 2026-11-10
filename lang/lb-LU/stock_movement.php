@@ -1,7 +1,7 @@
 <?php
 
 return [
-    'inventory_adjustment' => 'Inventory adjustment',
-    'surplus_return' => 'Return of surplus',
-    'intervention_consumption' => 'Consumption during intervention',
+    'inventory_adjustment' => 'Inventarupassung',
+    'surplus_return' => 'Zréckgabe vum Iwwerschoss',
+    'intervention_consumption' => 'Verbruuch bei der Interventioun',
 ];

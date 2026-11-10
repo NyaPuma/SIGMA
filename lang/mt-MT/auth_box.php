@@ -1,8 +1,9 @@
 <?php
 
 return [
-    'profile' => 'View Profile',
+    'profile' => 'Ara l-Profil',
     'logout' => 'онфос',
-    'signin' => 'Sign in',
-    'login_register' => 'Login / Register',
+    'signin' => 'Idħol',
+    'login_register' => 'Login / Reġistru',
+    'connection_error' => 'Żball tal-konnessjoni',
 ];

@@ -72,4 +72,9 @@ return [
     'Login / Registo' => 'Masuk / Daftar',
     'Terminar sessão' => 'Keluar',
     'Ver perfil' => 'Lihat profil',
+    'verifying_credentials' => 'Memverifikasi kredensial di server...',
+    'invalid_credentials' => 'Kredensial tidak valid.',
+    'auth_success' => 'Autentikasi berhasil! Mengalihkan...',
+    'server_communication_failed' => 'Kegagalan komunikasi kritis dengan server.',
+    'authenticating' => 'Mengautentikasi...',
 ];

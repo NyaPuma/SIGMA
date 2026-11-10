@@ -15,11 +15,6 @@ use PHPUnit\Framework\TestCase;
  */
 final class TranslationKeyParityTest extends TestCase
 {
-    /**
-     * Locales translated by hand, which must therefore stay complete.
-     */
-    private const MAINTAINED_LOCALES = ['en-GB', 'en-US'];
-
     private const LANG_ROOT = __DIR__.'/../../../lang';
 
     /**
@@ -70,8 +65,8 @@ final class TranslationKeyParityTest extends TestCase
         );
     }
 
-    #[DataProvider('maintainedLocaleProvider')]
-    public function test_a_maintained_locale_is_key_complete(string $locale): void
+    #[DataProvider('localeProvider')]
+    public function test_every_locale_is_key_complete(string $locale): void
     {
         $missing = array_diff(self::keys('pt-PT'), self::keys($locale));
 
@@ -79,17 +74,6 @@ final class TranslationKeyParityTest extends TestCase
             [],
             $missing,
             "lang/{$locale} is missing ".count($missing)." key(s) defined by lang/pt-PT; users of {$locale} would see Portuguese text: ".implode(', ', array_slice($missing, 0, 10))
-        );
-    }
-
-    /**
-     * @return array<string, array{0: string}>
-     */
-    public static function maintainedLocaleProvider(): array
-    {
-        return array_combine(
-            self::MAINTAINED_LOCALES,
-            array_map(static fn (string $locale): array => [$locale], self::MAINTAINED_LOCALES)
         );
     }
 

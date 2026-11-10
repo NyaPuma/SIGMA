@@ -113,4 +113,7 @@ return [
     'consumo' => 'การใช้',
     'em stock' => 'มีสต็อก',
     'peças' => 'อะไหล่',
+    'Clique para selecionar peça...' => 'คลิกเพื่อเลือกอะไหล่...',
+    'Consumo de peças e respetivo valor nas intervenções de cada equipamento.' => 'การใช้อะไหล่และมูลค่าที่เกี่ยวข้องในการซ่อมแซมของแต่ละอุปกรณ์',
+    'Não existem saídas de peças associadas a equipamentos no período selecionado.' => 'ไม่มีการจ่ายอะไหล่ที่เชื่อมโยงกับอุปกรณ์ในช่วงเวลาที่เลือก',
 ];

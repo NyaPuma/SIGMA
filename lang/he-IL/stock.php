@@ -113,4 +113,7 @@ return [
     'consumo' => 'צריכה',
     'em stock' => 'במלאי',
     'peças' => 'חלקים',
+    'Clique para selecionar peça...' => 'לחץ כדי לבחור חלק...',
+    'Consumo de peças e respetivo valor nas intervenções de cada equipamento.' => 'צריכת החלקים ושווים בטיפולים שבוצעו בכל פריט ציוד.',
+    'Não existem saídas de peças associadas a equipamentos no período selecionado.' => 'אין יציאות של חלקים המשויכות לציוד בתקופה שנבחרה.',
 ];

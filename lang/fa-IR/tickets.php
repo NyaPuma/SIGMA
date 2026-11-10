@@ -109,4 +109,10 @@ return [
     'Tem a certeza que pretende remover esta fotografia?' => 'آیا مطمئن هستید که می‌خواهید این عکس را حذف کنید؟',
     'Ticket atribuído' => 'بلیط تخصیص داده شد',
     'Ticket atualizado' => 'بلیط به‌روزرسانی شد',
+    'Relatório limitado aos :total registos mais recentes.' => 'گزارش به :total رکورد اخیر محدود شده است.',
+    'Registos:' => 'رکوردها:',
+    'Emitido em:' => 'تاریخ صدور:',
+    'Gerado automaticamente' => 'به‌طور خودکار تولید شده',
+    'Análise dos estados operacionais, tempos de resolução e custos.' => 'تحلیل وضعیت‌های عملیاتی، زمان‌های رفع مشکل و هزینه‌ها.',
+    'Sem registos de tickets para os parâmetros selecionados.' => 'برای پارامترهای انتخاب‌شده هیچ رکورد بلیطی وجود ندارد.',
 ];

@@ -63,8 +63,8 @@ return [
     'Intervenção concluída e ticket fechado com sucesso.' => 'Müdahale tamamlandı ve ticket başarıyla kapatıldı.',
     'Intervenção iniciada com sucesso.' => 'Müdahale başarıyla başlatıldı.',
     'Lista os registos de auditoria do sistema.
-Protegido globalmente via middleware e verificado via Policy.' => 'Lista os registos de auditoria do sistema.
-Protegido globalmente via middleware e verificado via Policy.',
+Protegido globalmente via middleware e verificado via Policy.' => 'Sistem denetim kayıtlarını listeler.
+Middleware üzerinden genel olarak korunur ve Policy üzerinden doğrulanır.',
     'Manutenção preventiva agendada com sucesso.' => 'Önleyici bakım başarıyla planlandı.',
     'Mensagem automática de sistema • Não responda a este endereço' => 'Otomatik sistem mesajı • Bu adrese yanıt vermeyin',
     'Movimento de stock registado com sucesso.' => 'Stok hareketi başarıyla kaydedildi.',
@@ -113,4 +113,10 @@ Protegido globalmente via middleware e verificado via Policy.',
     'Utilizador criado com sucesso.' => 'Kullanıcı başarıyla oluşturuldu.',
     'Utilizador inativado com sucesso.' => 'Kullanıcı başarıyla devre dışı bırakıldı.',
     'Valor total do stock, total de peças, contagem de peças com stock baixo e lista de alertas.' => 'Toplam stok değeri, toplam parça sayısı, düşük stoklu parça sayısı ve uyarı listesi.',
+    'Aparência atualizada com sucesso.' => 'Görünüm başarıyla güncellendi.',
+    'Escolha um tema pré-definido — a sua preferência é guardada por utilizador e aplicada nos próximos acessos.' => 'Hazır bir tema seçin — tercihiniz kullanıcı bazında kaydedilir ve sonraki girişlerde uygulanır.',
+    'Canal de envio:' => 'Gönderim kanalı:',
+    'Este é um disparo de validação estrutural enviado para confirmar a correta integração, credenciação e entrega de mensagens na plataforma.' => 'Bu, platformda doğru entegrasyonu, kimlik doğrulamayı ve mesaj iletimini doğrulamak için gönderilen yapısal bir doğrulama tetiklemesidir.',
+    'Ligação Estabelecida com Sucesso' => 'Bağlantı Başarıyla Kuruldu',
+    'Verificação de Serviço' => 'Hizmet Doğrulaması',
 ];

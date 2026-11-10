@@ -33,4 +33,5 @@ return [
     'Tickets Resolvidos' => 'Løste billetter',
     'Urgentes' => 'Hastende',
     'Últimas ações registadas na plataforma para acompanhar rapidamente a atividade operacional.' => 'Siste registrerte handlinger på plattformen for raskt å følge driftsaktivitet.',
+    'Sem ocorrências em curso' => 'Ingen pågående hendelser',
 ];

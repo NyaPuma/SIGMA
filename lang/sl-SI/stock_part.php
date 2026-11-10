@@ -2,11 +2,11 @@
 
 return [
     'min' => 'min.',
-    'out' => 'Out of stock',
-    'low' => 'Low stock',
+    'out' => 'Razprodano',
+    'low' => 'Nizka zaloga',
     'ok' => 'OK',
-    'details' => 'View details',
+    'details' => 'Podrobnosti',
     'edit' => 'Uredi',
-    'empty' => 'No parts found with the applied filters',
-    'Limiar a partir do qual um orçamento precisa de aprovação.' => 'Threshold above which a budget needs approval.',
+    'empty' => 'Z uporabljenimi filtri ni najdenih nobenih delov',
+    'Limiar a partir do qual um orçamento precisa de aprovação.' => 'Prag, od katerega dalje proračun potrebuje odobritev.',
 ];

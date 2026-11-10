@@ -3,10 +3,10 @@
 return [
     'urgent' => 'Ітно',
     'normal' => 'Нормално',
-    'web' => 'Web',
-    'qr' => 'QR Code',
+    'web' => 'Веб',
+    'qr' => 'QR-код',
     'api' => 'API',
-    'mobile' => 'Mobile',
+    'mobile' => 'Мобилен',
     'phone' => 'Телефон',
     'ticket_updated' => 'Тикетот е актуелизиран',
     'ticket_assigned' => 'Тикетот е делеген',

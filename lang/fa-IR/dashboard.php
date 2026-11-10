@@ -33,4 +33,5 @@ return [
     'Tickets Resolvidos' => 'بلیط‌های حل شده',
     'Urgentes' => 'فوری',
     'Últimas ações registadas na plataforma para acompanhar rapidamente a atividade operacional.' => 'آخرین اقدامات ثبت شده در پلتفرم برای پیگیری سریع فعالیت‌های عملیاتی.',
+    'Sem ocorrências em curso' => 'هیچ رخداد در جریانی وجود ندارد',
 ];

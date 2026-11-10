@@ -109,4 +109,10 @@ return [
     'Tem a certeza que pretende remover esta fotografia?' => 'Naozaj chcete odstrániť túto fotografiu?',
     'Ticket atribuído' => 'Lístok priradený',
     'Ticket atualizado' => 'Lístok aktualizovaný',
+    'Relatório limitado aos :total registos mais recentes.' => 'Report je obmedzený na :total najnovších záznamov.',
+    'Registos:' => 'Záznamy:',
+    'Emitido em:' => 'Vydané dňa:',
+    'Gerado automaticamente' => 'Vygenerované automaticky',
+    'Análise dos estados operacionais, tempos de resolução e custos.' => 'Analýza prevádzkových stavov, časov vyriešenia a nákladov.',
+    'Sem registos de tickets para os parâmetros selecionados.' => 'Žiadne záznamy lístkov pre zvolené parametre.',
 ];

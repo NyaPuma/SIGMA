@@ -72,4 +72,9 @@ return [
     'Login / Registo' => 'Anmelden / Registrieren',
     'Terminar sessão' => 'Abmelden',
     'Ver perfil' => 'Profil anzeigen',
+    'verifying_credentials' => 'Anmeldedaten werden auf dem Server überprüft...',
+    'invalid_credentials' => 'Ungültige Anmeldedaten.',
+    'auth_success' => 'Anmeldung erfolgreich! Weiterleitung...',
+    'server_communication_failed' => 'Kritischer Kommunikationsfehler mit dem Server.',
+    'authenticating' => 'Anmeldung läuft...',
 ];

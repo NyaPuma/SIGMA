@@ -72,4 +72,9 @@ return [
     'Login / Registo' => 'Iniciar sesión / Registro',
     'Terminar sessão' => 'Cerrar sesión',
     'Ver perfil' => 'Ver perfil',
+    'verifying_credentials' => 'Verificando las credenciales en el servidor...',
+    'invalid_credentials' => 'Credenciales no válidas.',
+    'auth_success' => '¡Autenticación correcta! Redirigiendo...',
+    'server_communication_failed' => 'Fallo crítico de comunicación con el servidor.',
+    'authenticating' => 'Autenticando...',
 ];

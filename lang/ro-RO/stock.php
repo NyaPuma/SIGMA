@@ -113,4 +113,7 @@ return [
     'consumo' => 'consum',
     'em stock' => 'în stoc',
     'peças' => 'piese',
+    'Clique para selecionar peça...' => 'Faceți clic pentru a selecta o piesă...',
+    'Consumo de peças e respetivo valor nas intervenções de cada equipamento.' => 'Consumul de piese și valoarea acestuia în intervențiile fiecărui echipament.',
+    'Não existem saídas de peças associadas a equipamentos no período selecionado.' => 'Nu există ieșiri de piese asociate cu echipamente în perioada selectată.',
 ];

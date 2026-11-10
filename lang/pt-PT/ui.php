@@ -133,7 +133,6 @@ return [
     'Y-m-d H:i:s' => 'Y-m-d H:i:s',
     'd' => 'd',
     'de' => 'de',
-    'div' => 'div',
     'equipamento(s)' => 'equipamento(s)',
     'h' => 'h',
     'meses' => 'meses',

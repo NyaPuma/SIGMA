@@ -72,4 +72,9 @@ return [
     'Login / Registo' => 'Вхід / Реєстрація',
     'Terminar sessão' => 'Вийти',
     'Ver perfil' => 'Переглянути профіль',
+    'verifying_credentials' => 'Перевірка облікових даних на сервері...',
+    'invalid_credentials' => 'Недійсні облікові дані.',
+    'auth_success' => 'Автентифікація успішна! Переспрямовування...',
+    'server_communication_failed' => 'Критична помилка зв’язку з сервером.',
+    'authenticating' => 'Автентифікація...',
 ];

@@ -3,6 +3,7 @@
 return [
     'profile' => 'Skatīt Profilis',
     'logout' => 'Iziet',
-    'signin' => 'Sign in',
+    'signin' => 'Pieteikšanās',
     'login_register' => 'Pieteikšanās / Reģistrācija',
+    'connection_error' => 'Savienojuma kļūda',
 ];

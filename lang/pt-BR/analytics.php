@@ -15,4 +15,8 @@ return [
     'hours' => 'h',
     'day' => 'd',
     'days' => 'd',
+    'load_error' => 'Erro ao carregar os dados analíticos.',
+    'export_processing' => 'Gerando...',
+    'export_start_error' => 'Não foi possível iniciar a exportação.',
+    'export_network_error' => 'Não foi possível iniciar a exportação por causa de um erro de rede. Tente novamente.',
 ];

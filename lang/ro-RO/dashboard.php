@@ -33,4 +33,5 @@ return [
     'Tickets Resolvidos' => 'Tichete Rezolvate',
     'Urgentes' => 'Urgente',
     'Últimas ações registadas na plataforma para acompanhar rapidamente a atividade operacional.' => 'Ultimele acțiuni înregistrate pe platformă pentru a urmări rapid activitatea operațională.',
+    'Sem ocorrências em curso' => 'Niciun incident în desfășurare',
 ];

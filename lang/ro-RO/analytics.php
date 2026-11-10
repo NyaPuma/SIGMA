@@ -15,4 +15,8 @@ return [
     'hours' => 'h',
     'day' => 'd',
     'days' => 'd',
+    'load_error' => 'Eroare la încărcarea datelor analitice.',
+    'export_processing' => 'Se generează...',
+    'export_start_error' => 'Nu s-a putut porni exportul.',
+    'export_network_error' => 'Eroare de rețea la pornirea exportului. Încercați din nou.',
 ];

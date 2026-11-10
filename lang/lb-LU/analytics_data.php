@@ -1,17 +1,17 @@
 <?php
 
 return [
-    'urgent' => 'Urgent',
-    'normal' => 'Normal',
+    'urgent' => 'Dréngend',
+    'normal' => 'Gewéinlech',
     'web' => 'Web',
-    'qr' => 'QR Code',
+    'qr' => 'QR-Code',
     'api' => 'API',
-    'mobile' => 'Mobile',
-    'phone' => 'Telephone',
-    'ticket_updated' => 'Ticket updated',
-    'ticket_assigned' => 'Ticket assigned',
-    'comment_added' => 'Comment added',
-    'attachment_added' => 'Attachment added',
-    'budget_request' => 'Budget request',
-    'Estatísticas' => 'Statistics',
+    'mobile' => 'Mobel',
+    'phone' => 'Telefon',
+    'ticket_updated' => 'Ticket aktualiséiert',
+    'ticket_assigned' => 'Ticket zougewisen',
+    'comment_added' => 'Kommentar derbäigesat',
+    'attachment_added' => 'Unhank derbäigesat',
+    'budget_request' => 'Budgetufro',
+    'Estatísticas' => 'Statistiken',
 ];

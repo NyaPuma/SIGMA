@@ -72,4 +72,9 @@ return [
     'Login / Registo' => 'Logg inn / Registrer',
     'Terminar sessão' => 'Logg ut',
     'Ver perfil' => 'Se profil',
+    'verifying_credentials' => 'Verifiserer påloggingsinformasjonen på serveren...',
+    'invalid_credentials' => 'Ugyldige påloggingsopplysninger.',
+    'auth_success' => 'Autentisering vellykket! Omdirigerer...',
+    'server_communication_failed' => 'Kritisk kommunikasjonsfeil med serveren.',
+    'authenticating' => 'Autentiserer...',
 ];

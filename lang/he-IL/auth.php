@@ -72,4 +72,9 @@ return [
     'Login / Registo' => 'כניסה / רישום',
     'Terminar sessão' => 'התנתקות',
     'Ver perfil' => 'צפה בפרופיל',
+    'verifying_credentials' => 'מאמת את פרטי הכניסה מול השרת...',
+    'invalid_credentials' => 'פרטי הכניסה אינם חוקיים.',
+    'auth_success' => 'האימות בוצע בהצלחה! מפנה בהמשך...',
+    'server_communication_failed' => 'כשל קריטי בתקשורת מול השרת.',
+    'authenticating' => 'מאמת...',
 ];

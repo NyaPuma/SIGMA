@@ -33,4 +33,5 @@ return [
     'Tickets Resolvidos' => 'Вирішені заявки',
     'Urgentes' => 'Термінові',
     'Últimas ações registadas na plataforma para acompanhar rapidamente a atividade operacional.' => 'Останні зареєстровані дії на платформі для швидкого відстеження операційної діяльності.',
+    'Sem ocorrências em curso' => 'Немає відкритих інцидентів',
 ];

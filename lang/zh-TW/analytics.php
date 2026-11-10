@@ -15,4 +15,8 @@ return [
     'hours' => '小時',
     'day' => '天',
     'days' => '天',
+    'load_error' => '載入分析資料時發生錯誤。',
+    'export_processing' => '正在產生...',
+    'export_start_error' => '無法啟動匯出。',
+    'export_network_error' => '啟動匯出時發生網路錯誤。請再試一次。',
 ];

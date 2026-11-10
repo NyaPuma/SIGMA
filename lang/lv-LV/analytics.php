@@ -15,4 +15,8 @@ return [
     'hours' => 'st',
     'day' => 'd',
     'days' => 'd',
+    'load_error' => 'Kļūda, ielādējot analītikas datus.',
+    'export_processing' => 'Notiek ģenerēšana...',
+    'export_start_error' => 'Neizdevās sākt eksportēšanu.',
+    'export_network_error' => 'Tīkla kļūda, sākot eksportēšanu. Mēģiniet vēlreiz.',
 ];

@@ -109,4 +109,10 @@ return [
     'Tem a certeza que pretende remover esta fotografia?' => 'האם אתה בטוח שברצונך להסיר את התמונה הזו?',
     'Ticket atribuído' => 'כרטיס הוקצה',
     'Ticket atualizado' => 'כרטיס עודכן',
+    'Relatório limitado aos :total registos mais recentes.' => 'הדוח מוגבל ל-:total הרשומות העדכניות ביותר.',
+    'Registos:' => 'רשומות:',
+    'Emitido em:' => 'הופק בתאריך:',
+    'Gerado automaticamente' => 'נוצר אוטומטית',
+    'Análise dos estados operacionais, tempos de resolução e custos.' => 'ניתוח של מצבים תפעוליים, זמני פתרון ועלויות.',
+    'Sem registos de tickets para os parâmetros selecionados.' => 'אין רשומות של כרטיסים עבור הפרמטרים שנבחרו.',
 ];

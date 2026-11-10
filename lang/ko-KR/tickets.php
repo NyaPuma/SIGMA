@@ -109,4 +109,10 @@ return [
     'Tem a certeza que pretende remover esta fotografia?' => '이 사진을 제거하시겠습니까?',
     'Ticket atribuído' => '티켓이 배정되었습니다',
     'Ticket atualizado' => '티켓이 업데이트되었습니다',
+    'Relatório limitado aos :total registos mais recentes.' => '보고서는 가장 최근 기록 :total건으로 제한됩니다.',
+    'Registos:' => '기록:',
+    'Emitido em:' => '발행일:',
+    'Gerado automaticamente' => '자동 생성됨',
+    'Análise dos estados operacionais, tempos de resolução e custos.' => '운영 상태, 해결 시간 및 비용 분석.',
+    'Sem registos de tickets para os parâmetros selecionados.' => '선택한 조건에 대한 티켓 기록이 없습니다.',
 ];

@@ -72,4 +72,9 @@ return [
     'Login / Registo' => 'Σύνδεση / Εγγραφή',
     'Terminar sessão' => 'Τερματισμός συνεδρίας',
     'Ver perfil' => 'Προβολή προφίλ',
+    'verifying_credentials' => 'Έλεγχος πιστοποιητικών στον διακομιστή...',
+    'invalid_credentials' => 'Μη έγκυρα πιστοποιητικά.',
+    'auth_success' => 'Η ταυτοποίηση ήταν επιτυχής! Ανακατεύθυνση...',
+    'server_communication_failed' => 'Κρίσιμη βλάβη στην επικοινωνία με τον διακομιστή.',
+    'authenticating' => 'Ταυτοποίηση...',
 ];

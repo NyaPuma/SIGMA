@@ -15,4 +15,8 @@ return [
     'hours' => 'Timer',
     'day' => 'Dag',
     'days' => 'Dager',
+    'load_error' => 'Feil under lasting av analysedata.',
+    'export_processing' => 'Genererer...',
+    'export_start_error' => 'Kunne ikke starte eksporten.',
+    'export_network_error' => 'Nettverksfeil ved start av eksporten. Prøv igjen.',
 ];

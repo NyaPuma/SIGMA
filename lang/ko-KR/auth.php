@@ -72,4 +72,9 @@ return [
     'Login / Registo' => '로그인 / 회원가입',
     'Terminar sessão' => '로그아웃',
     'Ver perfil' => '프로필 보기',
+    'verifying_credentials' => '서버에서 자격 증명을 확인하는 중...',
+    'invalid_credentials' => '자격 증명이 유효하지 않습니다.',
+    'auth_success' => '인증에 성공했습니다! 리다이렉트하는 중...',
+    'server_communication_failed' => '서버와의 통신에 심각한 장애가 발생했습니다.',
+    'authenticating' => '인증하는 중...',
 ];

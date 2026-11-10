@@ -63,8 +63,7 @@ return [
     'Intervenção concluída e ticket fechado com sucesso.' => 'Toimenpide valmistunut ja tiketti suljettu onnistuneesti.',
     'Intervenção iniciada com sucesso.' => 'Toimenpide aloitettu onnistuneesti.',
     'Lista os registos de auditoria do sistema.
-Protegido globalmente via middleware e verificado via Policy.' => 'Lista os registos de auditoria do sistema.
-Protegido globalmente via middleware e verificado via Policy.',
+Protegido globalmente via middleware e verificado via Policy.' => 'Luettelee järjestelmän auditointilokit. Suojattu globesti middlewaren kautta ja tarkistettu Policyn kautta.',
     'Manutenção preventiva agendada com sucesso.' => 'Ennaltaehkäisevä huolto aikataulutettu onnistuneesti.',
     'Mensagem automática de sistema • Não responda a este endereço' => 'Automaattinen järjestelmäviesti • Älä vastaa tähän osoitteeseen',
     'Movimento de stock registado com sucesso.' => 'Varastoliike rekisteröity onnistuneesti.',
@@ -113,4 +112,10 @@ Protegido globalmente via middleware e verificado via Policy.',
     'Utilizador criado com sucesso.' => 'Käyttäjä luotu onnistuneesti.',
     'Utilizador inativado com sucesso.' => 'Käyttäjä poistettu käytöstä onnistuneesti.',
     'Valor total do stock, total de peças, contagem de peças com stock baixo e lista de alertas.' => 'Varaston kokonaisarvo, varaosien kokonaismäärä, vähävarastoisten varaosien määrä ja hälytysluettelo.',
+    'Aparência atualizada com sucesso.' => 'Ulkoasu päivitettiin onnistuneesti.',
+    'Escolha um tema pré-definido — a sua preferência é guardada por utilizador e aplicada nos próximos acessos.' => 'Valitse esimääritetty teema — mieltymyksesi tallennetaan käyttäjäkohtaisesti ja otetaan käyttöön tulevissa kirjautumisissa.',
+    'Canal de envio:' => 'Lähetyskanava:',
+    'Este é um disparo de validação estrutural enviado para confirmar a correta integração, credenciação e entrega de mensagens na plataforma.' => 'Tämä on rakenteellisen validoinnin testilähetys, joka on lähetetty varmistamaan alustan oikean integraation, todennuksen ja viestien toimituksen.',
+    'Ligação Estabelecida com Sucesso' => 'Yhteys muodostettu onnistuneesti',
+    'Verificação de Serviço' => 'Palvelun tarkistus',
 ];

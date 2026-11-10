@@ -113,4 +113,10 @@ Protegido globalmente via middleware e verificado via Policy.' => 'システム�
     'Utilizador criado com sucesso.' => 'ユーザーが正常に作成されました。',
     'Utilizador inativado com sucesso.' => 'ユーザーが正常に無効化されました。',
     'Valor total do stock, total de peças, contagem de peças com stock baixo e lista de alertas.' => '在庫総額、部品総数、低在庫部品数、アラートリスト。',
+    'Aparência atualizada com sucesso.' => '外観を正常に更新しました。',
+    'Escolha um tema pré-definido — a sua preferência é guardada por utilizador e aplicada nos próximos acessos.' => 'プリセットのテーマを選択してください — 設定はユーザーごとに保存され、次回以降のアクセスに適用されます。',
+    'Canal de envio:' => '送信チャネル：',
+    'Este é um disparo de validação estrutural enviado para confirmar a correta integração, credenciação e entrega de mensagens na plataforma.' => 'これは、プラットフォーム上での正しい統合、認証、およびメッセージ配信を確認するために送信された構造検証用のトリガーです。',
+    'Ligação Estabelecida com Sucesso' => '接続が正常に確立されました',
+    'Verificação de Serviço' => 'サービス検証',
 ];

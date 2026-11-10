@@ -1,8 +1,11 @@
 <?php
 
 return [
-    'in_stock' => 'in stock',
-    'month' => 'montსთ',
-    'months' => 'montსთs',
-    'consumption' => 'consumption',
+    'in_stock' => 'მარაგში',
+    'month' => 'თვე',
+    'months' => 'თვეები',
+    'consumption' => 'მოხმარება',
+    'no_low_stock' => 'არცერთი ნაწილი არ არის დაბალ მარაგზე.',
+    'no_consumption' => 'მოხმარება არ დაფიქსირებულა.',
+    'no_runout' => 'პერიოდის განმავლობაში არ არის გამოფიტვის პროგნოზები.',
 ];

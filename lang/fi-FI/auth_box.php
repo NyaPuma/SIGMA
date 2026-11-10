@@ -5,4 +5,5 @@ return [
     'logout' => 'Kirjaudu ulos',
     'signin' => 'Kirjaudu sisään',
     'login_register' => 'Kirjautuminen / rekisteröinti',
+    'connection_error' => 'Yhteysvirhe',
 ];

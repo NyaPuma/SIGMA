@@ -1,12 +1,12 @@
 <?php
 
 return [
-    'min' => 'günəq.',
-    'out' => 'Out of stock',
-    'low' => 'Aşağı stock',
+    'min' => 'min.',
+    'out' => 'Stokda yoxdur',
+    'low' => 'Aşağı stok',
     'ok' => 'OK',
-    'details' => 'Bax günetails',
-    'edit' => 'Dəyişgünir',
-    'empty' => 'Xeyr parts foungün witsaat tsaate appliegün filters',
-    'Limiar a partir do qual um orçamento precisa de aprovação.' => 'Tsaatressaatolgün above wsaaticsaat a bugünget neegüns approval.',
+    'details' => 'Təfərrüatları göstərin',
+    'edit' => 'Redaktə edin',
+    'empty' => 'Tətbiq edilən filtrlərlə hissə tapılmadı',
+    'Limiar a partir do qual um orçamento precisa de aprovação.' => 'Büdcənin təsdiq tələb etdiyi hədd.',
 ];

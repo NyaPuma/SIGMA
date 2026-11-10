@@ -109,4 +109,10 @@ return [
     'Tem a certeza que pretende remover esta fotografia?' => 'Είστε βέβαιοι ότι θέλετε να αφαιρέσετε αυτή τη φωτογραφία;',
     'Ticket atribuído' => 'Το δελτίο ανατέθηκε',
     'Ticket atualizado' => 'Το δελτίο ενημερώθηκε',
+    'Relatório limitado aos :total registos mais recentes.' => 'Η αναφορά περιορίζεται στις :total πιο πρόσφατες εγγραφές.',
+    'Registos:' => 'Εγγραφές:',
+    'Emitido em:' => 'Εκδόθηκε στις:',
+    'Gerado automaticamente' => 'Δημιουργήθηκε αυτόματα',
+    'Análise dos estados operacionais, tempos de resolução e custos.' => 'Ανάλυση των λειτουργικών καταστάσεων, των χρόνων επίλυσης και των κόστων.',
+    'Sem registos de tickets para os parâmetros selecionados.' => 'Δεν υπάρχουν εγγραφές δελτίων για τις επιλεγμένες παραμέτρους.',
 ];

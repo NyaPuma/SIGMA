@@ -2,11 +2,11 @@
 
 return [
     'min' => 'წთ.',
-    'out' => 'Out of stock',
+    'out' => 'ამოიწურა',
     'low' => 'დაბალი stock',
     'ok' => 'OK',
-    'details' => 'ნახვა დetails',
+    'details' => 'დეტალების ნახვა',
     'edit' => 'რედაქტირება',
-    'empty' => 'არა parts founდ witსთ tსთe applieდ filters',
-    'Limiar a partir do qual um orçamento precisa de aprovação.' => 'Tსთresსთolდ above wსთicსთ a buდget neeდs approval.',
+    'empty' => 'გამოყენებული ფილტრებით ნაწილი ვერ მოიძებნა',
+    'Limiar a partir do qual um orçamento precisa de aprovação.' => 'ზღვარი, რომლის ზემოთაც ბიუჯეტს დამტკიცება სჭირდება.',
 ];

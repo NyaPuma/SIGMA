@@ -1,0 +1,27 @@
+<?php
+
+return [
+    'A carregar inventário de equipamentos...' => 'S\'està carregant l\'inventari d\'equipaments...',
+    'Aloque equipamentos através da gestão de equipamentos.' => 'Aloqueu els equipaments mitjançant la gestió d\'equipaments.',
+    'As ações efetuadas neste equipamento serão registadas automaticamente.' => 'Les accions realitzades en aquest equipament es registraran automàticament.',
+    'Consulte e organize as salas e equipamentos associados.' => 'Consulteu i organitzeu les sales i els equipaments associats.',
+    'Custo acumulado de intervenções atribuídas a cada equipamento.' => 'Cost acumulat de les intervencions atribuïdes a cada equipament.',
+    'Custo de Peças por Equipamento' => 'Cost de peces per equipament',
+    'Custo de peças por equipamento' => 'Cost de peces per equipament',
+    'Custo de peças por equipamento.' => 'Cost de peces per equipament.',
+    'Custos de peças por equipamento' => 'Costos de peces per equipament',
+    'Defina periodicidades de manutenção e as peças previstas por equipamento.' => 'Definiu les periodicitats de manteniment i les peces previstes per equipament.',
+    'Equipamento / Ativo Afetado *' => 'Equipament / Actiu afectat *',
+    'Equipamento operacional no inventário' => 'Equipament operatiu a l\'inventari',
+    'Equipamentos com Mais Avarias' => 'Equipaments amb més avaries',
+    'Exportar PDF de custos por equipamento' => 'Exportar el PDF de costos per equipament',
+    'Nenhum equipamento ativo encontrado.' => 'No s\'ha trobat cap equipament actiu.',
+    'O custo não pode ser um valor negativo.' => 'El cost no pot ser un valor negatiu.',
+    'O custo real não pode ser um valor negativo.' => 'El cost real no pot ser un valor negatiu.',
+    'O tempo despendido não pode ser um valor negativo.' => 'El temps dedicat no pot ser un valor negatiu.',
+    'Plano com equipamento e peças associadas' => 'Pla amb equipament i peces associades',
+    'Registe um novo equipamento no inventário e associe-o a uma sala e categoria.' => 'Registreu un nou equipament a l\'inventari i associeu-lo a una sala i categoria.',
+    'Técnicos Mais Ativos' => 'Tècnics més actius',
+    'Clique para selecionar equipamento...' => 'Feu clic per seleccionar un equipament...',
+    'Ex: Portátil Lenovo ThinkPad' => 'Ex: Portàtil Lenovo ThinkPad',
+];

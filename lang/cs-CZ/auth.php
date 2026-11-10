@@ -72,4 +72,9 @@ return [
     'Login / Registo' => 'Přihlášení / Registrace',
     'Terminar sessão' => 'Ukončit relaci',
     'Ver perfil' => 'Zobrazit profil',
+    'verifying_credentials' => 'Ověřování přihlašovacích údajů na serveru...',
+    'invalid_credentials' => 'Neplatné přihlašovací údaje.',
+    'auth_success' => 'Ověření proběhlo úspěšně! Přesměrovávání...',
+    'server_communication_failed' => 'Závažná chyba komunikace se serverem.',
+    'authenticating' => 'Ověřování...',
 ];

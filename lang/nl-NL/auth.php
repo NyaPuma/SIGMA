@@ -72,4 +72,9 @@ return [
     'Login / Registo' => 'Inloggen / registratie',
     'Terminar sessão' => 'Sessie beëindigen',
     'Ver perfil' => 'Profiel bekijken',
+    'verifying_credentials' => 'Inloggegevens worden op de server gecontroleerd...',
+    'invalid_credentials' => 'Ongeldige inloggegevens.',
+    'auth_success' => 'Authenticatie succesvol! Doorverwijzen...',
+    'server_communication_failed' => 'Kritieke communicatiefout met de server.',
+    'authenticating' => 'Authenticeren...',
 ];

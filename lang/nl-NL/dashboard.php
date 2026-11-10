@@ -33,4 +33,5 @@ return [
     'Tickets Resolvidos' => 'Opgeloste tickets',
     'Urgentes' => 'Urgent',
     'Últimas ações registadas na plataforma para acompanhar rapidamente a atividade operacional.' => 'Laatste op het platform geregistreerde acties om de operationele activiteit snel te volgen.',
+    'Sem ocorrências em curso' => 'Geen lopende incidenten',
 ];

@@ -63,8 +63,7 @@ return [
     'Intervenção concluída e ticket fechado com sucesso.' => 'A beavatkozás befejezve, a jegy sikeresen lezárva.',
     'Intervenção iniciada com sucesso.' => 'A beavatkozás sikeresen elindítva.',
     'Lista os registos de auditoria do sistema.
-Protegido globalmente via middleware e verificado via Policy.' => 'Lista os registos de auditoria do sistema.
-Protegido globalmente via middleware e verificado via Policy.',
+Protegido globalmente via middleware e verificado via Policy.' => 'Felsorolja a rendszer auditnaplóit. Globálisan védett middleware-en keresztül és Policy-n keresztül ellenőrzött.',
     'Manutenção preventiva agendada com sucesso.' => 'A megelőző karbantartás sikeresen ütemezve.',
     'Mensagem automática de sistema • Não responda a este endereço' => 'Automatikus rendszerüzenet • Ne válaszoljon erre a címre',
     'Movimento de stock registado com sucesso.' => 'A készletmozgás sikeresen regisztrálva.',
@@ -113,4 +112,10 @@ Protegido globalmente via middleware e verificado via Policy.',
     'Utilizador criado com sucesso.' => 'A felhasználó sikeresen létrehozva.',
     'Utilizador inativado com sucesso.' => 'A felhasználó sikeresen inaktiválva.',
     'Valor total do stock, total de peças, contagem de peças com stock baixo e lista de alertas.' => 'A készlet teljes értéke, az alkatrészek összesenje, az alacsony készletű alkatrészek száma és a jelzések listája.',
+    'Aparência atualizada com sucesso.' => 'A megjelenés sikeresen frissítve.',
+    'Escolha um tema pré-definido — a sua preferência é guardada por utilizador e aplicada nos próximos acessos.' => 'Válasszon egy előre definiált témát — a beállítást felhasználónként mentjük, és a következő belépésekkor alkalmazzuk.',
+    'Canal de envio:' => 'Küldési csatorna:',
+    'Este é um disparo de validação estrutural enviado para confirmar a correta integração, credenciação e entrega de mensagens na plataforma.' => 'Ez egy strukturális validációs kiküldés, amelyet a megfelelő integráció, hitelesítés és üzenetkézbesítés megerősítésére küldtek a platformon.',
+    'Ligação Estabelecida com Sucesso' => 'A kapcsolat sikeresen létesült',
+    'Verificação de Serviço' => 'Szolgáltatás ellenőrzése',
 ];

@@ -4,7 +4,7 @@ return [
     'urgent' => 'გადაუდებელი',
     'normal' => 'ნორმალური',
     'web' => 'Web',
-    'qr' => 'QR Coდe',
+    'qr' => 'QR კოდი',
     'api' => 'API',
     'mobile' => 'Mobile',
     'phone' => 'ტელეფონი',

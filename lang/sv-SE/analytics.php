@@ -15,4 +15,8 @@ return [
     'hours' => 'h',
     'day' => 'd',
     'days' => 'd',
+    'load_error' => 'Fel vid inläsning av analysdata.',
+    'export_processing' => 'Genererar...',
+    'export_start_error' => 'Det gick inte att starta exporten.',
+    'export_network_error' => 'Nätverksfel när exporten startades. Försök igen.',
 ];

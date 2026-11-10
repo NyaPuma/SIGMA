@@ -33,4 +33,5 @@ return [
     'Tickets Resolvidos' => 'Rozwiązane ticket',
     'Urgentes' => 'Pilne',
     'Últimas ações registadas na plataforma para acompanhar rapidamente a atividade operacional.' => 'Ostatnie akcje zarejestrowane na platformie, aby szybko śledzić aktywność operacyjną.',
+    'Sem ocorrências em curso' => 'Brak zdarzeń w toku',
 ];

@@ -109,4 +109,10 @@ return [
     'Tem a certeza que pretende remover esta fotografia?' => 'Вы уверены, что хотите удалить эту фотографию?',
     'Ticket atribuído' => 'Заявка назначена',
     'Ticket atualizado' => 'Заявка обновлена',
+    'Relatório limitado aos :total registos mais recentes.' => 'Отчёт ограничен последними :total записями.',
+    'Registos:' => 'Записей:',
+    'Emitido em:' => 'Дата выпуска:',
+    'Gerado automaticamente' => 'Сформировано автоматически',
+    'Análise dos estados operacionais, tempos de resolução e custos.' => 'Анализ операционных состояний, времени решения и затрат.',
+    'Sem registos de tickets para os parâmetros selecionados.' => 'Нет записей заявок по выбранным параметрам.',
 ];

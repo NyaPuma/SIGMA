@@ -113,4 +113,10 @@ Protegido globalmente via middleware e verificado via Policy.' => 'Изброя�
     'Utilizador criado com sucesso.' => 'Потребителят е създаден успешно.',
     'Utilizador inativado com sucesso.' => 'Потребителят е деактивиран успешно.',
     'Valor total do stock, total de peças, contagem de peças com stock baixo e lista de alertas.' => 'Обща стойност на наличността, общ брой части, брой части с нисък запас и списък с аларми.',
+    'Aparência atualizada com sucesso.' => 'Външният вид е актуализиран успешно.',
+    'Escolha um tema pré-definido — a sua preferência é guardada por utilizador e aplicada nos próximos acessos.' => 'Изберете предварително зададена тема — предпочитанието ви се запазва за всеки потребител и се прилага при следващите влизания.',
+    'Canal de envio:' => 'Канал за изпращане:',
+    'Este é um disparo de validação estrutural enviado para confirmar a correta integração, credenciação e entrega de mensagens na plataforma.' => 'Това е тестово стартиране на структурна валидация, изпратено за да потвърди правилната интеграция, удостоверяването и доставката на съобщения в платформата.',
+    'Ligação Estabelecida com Sucesso' => 'Връзката е успешно установена',
+    'Verificação de Serviço' => 'Проверка на услугата',
 ];

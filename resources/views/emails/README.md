@@ -9,7 +9,7 @@ HTML email templates for transactional and notification emails.
 | File | Purpose |
 |---|---|
 | `passwordReset.blade.php` | Password reset email. Contains a branded action button linking to the reset URL, a security box with link expiry and warning text, and a raw URL fallback for restrictive email clients. |
-| `test-mail.blade.php` | Mailgun integration test email. Sends a diagnostic validation message with telemetry metadata (driver, status, timestamp). |
+| `test-mail.blade.php` | Diagnostic test email. Sends a validation message with the mailer actually used and the issuance timestamp; every string goes through `__()`, so the mail follows the application locale. |
 | `ticketCreated.blade.php` | New fault/ticket notification email. Displays ticket details (title, equipment, room, priority, reporter, date, description) in a structured table with a "View Details" action button. |
 
 ## Notes for developers / AI

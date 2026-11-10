@@ -84,7 +84,7 @@ final class NotificationController extends Controller
     #[OA\Post(
         path: '/notifications/test-email',
         tags: ['Notifications'],
-        summary: 'Send test email via Mailgun',
+        summary: 'Send a test email through the configured mailer',
         security: [['X-Auth-Token' => []], ['BearerAuth' => []]],
         responses: [
             new OA\Response(response: 200, description: 'Test email sent'),

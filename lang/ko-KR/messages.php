@@ -113,4 +113,10 @@ Protegido globalmente via middleware e verificado via Policy.' => '시스템 감
     'Utilizador criado com sucesso.' => '사용자가 성공적으로 생성되었습니다.',
     'Utilizador inativado com sucesso.' => '사용자가 성공적으로 비활성화되었습니다.',
     'Valor total do stock, total de peças, contagem de peças com stock baixo e lista de alertas.' => '재고 총액, 부품 총수, 저재고 부품 수 및 알림 목록.',
+    'Aparência atualizada com sucesso.' => '외관이 성공적으로 업데이트되었습니다.',
+    'Escolha um tema pré-definido — a sua preferência é guardada por utilizador e aplicada nos próximos acessos.' => '사전 설정된 테마를 선택하세요 — 선호 설정은 사용자별로 저장되어 다음 접속 시 적용됩니다.',
+    'Canal de envio:' => '전송 채널:',
+    'Este é um disparo de validação estrutural enviado para confirmar a correta integração, credenciação e entrega de mensagens na plataforma.' => '이는 플랫폼에서의 올바른 통합, 인증 및 메시지 전달을 확인하기 위해 전송된 구조 검증 트리거입니다.',
+    'Ligação Estabelecida com Sucesso' => '연결이 성공적으로 설정되었습니다',
+    'Verificação de Serviço' => '서비스 검증',
 ];

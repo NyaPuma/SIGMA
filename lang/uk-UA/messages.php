@@ -113,4 +113,10 @@ Protegido globalmente via middleware e verificado via Policy.' => 'Перелі�
     'Utilizador criado com sucesso.' => 'Користувача успішно створено.',
     'Utilizador inativado com sucesso.' => 'Користувача успішно деактивовано.',
     'Valor total do stock, total de peças, contagem de peças com stock baixo e lista de alertas.' => 'Загальна вартість запасу, загальна кількість деталей, кількість деталей із низьким запасом та список попереджень.',
+    'Aparência atualizada com sucesso.' => 'Зовнішній вигляд успішно оновлено.',
+    'Escolha um tema pré-definido — a sua preferência é guardada por utilizador e aplicada nos próximos acessos.' => 'Оберіть готову тему — ваші налаштування зберігаються для кожного користувача та застосовуються під час наступних входів.',
+    'Canal de envio:' => 'Канал надсилання:',
+    'Este é um disparo de validação estrutural enviado para confirmar a correta integração, credenciação e entrega de mensagens na plataforma.' => 'Це тестовий запуск структурної валідації, надісланий для підтвердження правильної інтеграції, автентифікації та доставки повідомлень на платформі.',
+    'Ligação Estabelecida com Sucesso' => 'З’єднання успішно встановлено',
+    'Verificação de Serviço' => 'Перевірка сервісу',
 ];

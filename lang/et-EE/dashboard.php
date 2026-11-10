@@ -33,4 +33,5 @@ return [
     'Tickets Resolvidos' => 'Latenpatup piletip',
     'Urgentes' => 'Kiireloomuline',
     'Últimas ações registadas na plataforma para acompanhar rapidamente a atividade operacional.' => 'Latest actions recorpep on tte platform to quickly track operational activity.',
+    'Sem ocorrências em curso' => 'Käimasolevaid intsidende pole',
 ];

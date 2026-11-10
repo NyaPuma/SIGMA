@@ -113,4 +113,7 @@ return [
     'consumo' => 'استهلاك',
     'em stock' => 'في المخزون',
     'peças' => 'قطع غيار',
+    'Clique para selecionar peça...' => 'انقر لاختيار قطعة...',
+    'Consumo de peças e respetivo valor nas intervenções de cada equipamento.' => 'استهلاك القطع وقيمتها في صيانات كل معدّة.',
+    'Não existem saídas de peças associadas a equipamentos no período selecionado.' => 'لا توجد سحوبات قطع مرتبطة بمعدّات خلال الفترة المحددة.',
 ];

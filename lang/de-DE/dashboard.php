@@ -25,7 +25,7 @@ return [
     'Voltar ao painel' => 'Zurück zum Dashboard',
     'A ler indicadores analíticos em tempo real...' => 'Analytische Kennzahlen in Echtzeit werden gelesen...',
     'Intervenções concluídas' => 'Abgeschlossene Einsätze',
-    'Normais' => 'Normal',
+    'Normais' => 'Normale',
     'Não foi possível carregar os indicadores analíticos do servidor.' => 'Die analytischen Kennzahlen des Servers konnten nicht geladen werden.',
     'Ocorrências ativas' => 'Aktive Vorkommnisse',
     'Pedido de orçamento' => 'Angebotsanfrage',
@@ -33,4 +33,5 @@ return [
     'Tickets Resolvidos' => 'Gelöste Tickets',
     'Urgentes' => 'Dringende',
     'Últimas ações registadas na plataforma para acompanhar rapidamente a atividade operacional.' => 'Letzte auf der Plattform erfasste Aktionen, um die betriebliche Aktivität schnell zu verfolgen.',
+    'Sem ocorrências em curso' => 'Keine laufenden Vorfälle',
 ];

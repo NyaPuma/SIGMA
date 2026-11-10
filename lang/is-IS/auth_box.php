@@ -3,6 +3,7 @@
 return [
     'profile' => 'Skoða Prófíll',
     'logout' => 'Skrá út',
-    'signin' => 'Sign in',
+    'signin' => 'Innskráning',
     'login_register' => 'Innskráning / Skráning',
+    'connection_error' => 'Tengingarvilla',
 ];

@@ -113,4 +113,10 @@ Protegido globalmente via middleware e verificado via Policy.' => '列出系统�
     'Utilizador criado com sucesso.' => '用户创建成功。',
     'Utilizador inativado com sucesso.' => '用户停用成功。',
     'Valor total do stock, total de peças, contagem de peças com stock baixo e lista de alertas.' => '库存总值、零件总数、低库存零件数量及预警列表。',
+    'Aparência atualizada com sucesso.' => '外观更新成功。',
+    'Escolha um tema pré-definido — a sua preferência é guardada por utilizador e aplicada nos próximos acessos.' => '请选择一个预设主题 — 您的偏好会按用户保存，并在下次登录时应用。',
+    'Canal de envio:' => '发送渠道：',
+    'Este é um disparo de validação estrutural enviado para confirmar a correta integração, credenciação e entrega de mensagens na plataforma.' => '这是一条已发送的结构验证触发，用于确认平台上的集成、身份验证和消息投递均正确无误。',
+    'Ligação Estabelecida com Sucesso' => '连接已成功建立',
+    'Verificação de Serviço' => '服务验证',
 ];

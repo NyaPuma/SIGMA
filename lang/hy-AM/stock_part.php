@@ -1,12 +1,12 @@
 <?php
 
 return [
-    'min' => 'min.',
-    'out' => 'Out of stock',
-    'low' => 'Low stock',
+    'min' => 'նվ.',
+    'out' => 'Սպառված',
+    'low' => 'Ցածր պաշար',
     'ok' => 'OK',
-    'details' => 'View details',
-    'edit' => 'Edit',
-    'empty' => 'No parts found with the applied filters',
-    'Limiar a partir do qual um orçamento precisa de aprovação.' => 'Threshold above which a budget needs approval.',
+    'details' => 'Դիտել մանրամասները',
+    'edit' => 'Խմբագրել',
+    'empty' => 'Զտիչներով մասեր չեն կիրառվել',
+    'Limiar a partir do qual um orçamento precisa de aprovação.' => 'Շեմ, որից բարձր բյուջեն հաստատման կարիք ունի:',
 ];

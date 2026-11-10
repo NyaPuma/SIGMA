@@ -113,4 +113,10 @@ Protegido globalmente via middleware e verificado via Policy.' => 'सिस्�
     'Utilizador criado com sucesso.' => 'उपयोगकर्ता सफलतापूर्वक बनाया गया।',
     'Utilizador inativado com sucesso.' => 'उपयोगकर्ता सफलतापूर्वक निष्क्रिय किया गया।',
     'Valor total do stock, total de peças, contagem de peças com stock baixo e lista de alertas.' => 'स्टॉक का कुल मूल्य, कुल पार्ट, कम स्टॉक वाली पार्ट की संख्या और अलर्ट सूची।',
+    'Aparência atualizada com sucesso.' => 'रूप सफलतापूर्वक अपडेट किया गया।',
+    'Escolha um tema pré-definido — a sua preferência é guardada por utilizador e aplicada nos próximos acessos.' => 'कोई पूर्वनिर्धारित थीम चुनें — आपकी पसंद उपयोगकर्ता-वार सहेजी जाती है और आगे की पहुँचों पर लागू होती है।',
+    'Canal de envio:' => 'भेजने का चैनल:',
+    'Este é um disparo de validação estrutural enviado para confirmar a correta integração, credenciação e entrega de mensagens na plataforma.' => 'यह एक संरचनात्मक सत्यापन ट्रिगर है जिसे प्लेटफ़ॉर्म पर सही एकीकरण, प्रमाणीकरण और संदेश वितरण की पुष्टि करने के लिए भेजा गया है।',
+    'Ligação Estabelecida com Sucesso' => 'कनेक्शन सफलतापूर्वक स्थापित किया गया',
+    'Verificação de Serviço' => 'सेवा सत्यापन',
 ];

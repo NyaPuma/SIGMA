@@ -1,8 +1,9 @@
 <?php
 
 return [
-    'profile' => 'View Profile',
+    'profile' => 'Прикажи профил',
     'logout' => 'Одлоги се',
-    'signin' => 'Sign in',
-    'login_register' => 'Login / Register',
+    'signin' => 'Најави се',
+    'login_register' => 'Најава / Регистрация',
+    'connection_error' => 'Грешка при поврзување',
 ];

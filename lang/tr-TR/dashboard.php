@@ -33,4 +33,5 @@ return [
     'Tickets Resolvidos' => 'Çözülen Ticketlar',
     'Urgentes' => 'Acil',
     'Últimas ações registadas na plataforma para acompanhar rapidamente a atividade operacional.' => 'Operasyonel faaliyeti hızlıca takip etmek için platformda kayıtlı son eylemler.',
+    'Sem ocorrências em curso' => 'Devam eden olay yok',
 ];

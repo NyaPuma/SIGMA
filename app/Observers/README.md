@@ -119,7 +119,7 @@ private function invalidateAnalyticsCache(): void
 }
 ```
 - Clears **one key**: `analytics_dashboard_payload:<locale>` — the locale-suffixed key written by `AnalyticsDashboardService::getDashboardPayload()` (`app/Services/AnalyticsDashboardService.php:44`). There is no unsuffixed producer, so no unsuffixed key is written or read.
-- Payloads cached under *other* locales are left to expire on their own 60 s TTL. Forgetting every key in `config('locales.languages')` (52 entries) was measured as 52 deletes per ticket write, which is worse than the one-minute staleness it removed.
+- Payloads cached under *other* locales are left to expire on their own 60 s TTL. Forgetting every key in `config('locales.languages')` (53 entries) was measured as 52 deletes per ticket write, which is worse than the one-minute staleness it removed.
 - This ensures the dashboard analytics are recalculated on the next request after any ticket change.
 
 **Important design note:** The observer does **not** fire `TicketStatusChanged` when the `status_id` changes if the original status ID was null. This handles edge cases where a ticket is created with a `status_id` that is later set for the first time.

@@ -2,11 +2,11 @@
 
 return [
     'min' => 'min.',
-    'out' => 'Out of stock',
-    'low' => 'Low stock',
+    'out' => 'Ma fadalx',
+    'low' => 'Stock baxx',
     'ok' => 'OK',
-    'details' => 'View details',
+    'details' => 'Ara d-dettalji',
     'edit' => 'ббедла',
-    'empty' => 'No parts found with the applied filters',
-    'Limiar a partir do qual um orçamento precisa de aprovação.' => 'Threshold above which a budget needs approval.',
+    'empty' => 'Ma nstabet ebda biċċa bil-filtri applikati',
+    'Limiar a partir do qual um orçamento precisa de aprovação.' => 'Il-limitu li minnu baġit jeħtieġ approvazzjoni.',
 ];

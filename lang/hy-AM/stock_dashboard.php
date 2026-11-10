@@ -1,8 +1,11 @@
 <?php
 
 return [
-    'in_stock' => 'in stock',
-    'month' => 'month',
-    'months' => 'months',
-    'consumption' => 'consumption',
+    'in_stock' => 'պահեստում',
+    'month' => 'ամիս',
+    'months' => 'ամիսներ',
+    'consumption' => 'սպառում',
+    'no_low_stock' => 'Ոչ մի մաս չի գտնվում ցածր պահեստային զգոնության մեջ:',
+    'no_consumption' => 'Սպառում չի գրանցվել։',
+    'no_runout' => 'Ժամանակահատվածում պաշարների պակասի կանխատեսումներ չկան։',
 ];

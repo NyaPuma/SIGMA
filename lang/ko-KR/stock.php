@@ -113,4 +113,7 @@ return [
     'consumo' => '소비',
     'em stock' => '재고 있음',
     'peças' => '부품',
+    'Clique para selecionar peça...' => '클릭하여 부품을 선택하세요...',
+    'Consumo de peças e respetivo valor nas intervenções de cada equipamento.' => '각 장비의 수리에서 부품 소모량과 관련 금액.',
+    'Não existem saídas de peças associadas a equipamentos no período selecionado.' => '선택한 기간에 장비와 연결된 부품 출고가 없습니다.',
 ];

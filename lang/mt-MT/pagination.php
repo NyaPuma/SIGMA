@@ -1,8 +1,8 @@
 <?php
 
 return [
-    'previous' => 'Previous',
+    'previous' => 'Ta’ Qabel',
     'next' => 'мпус',
-    'page' => 'Page',
-    'of' => 'of',
+    'page' => 'Paġna',
+    'of' => 'minn',
 ];

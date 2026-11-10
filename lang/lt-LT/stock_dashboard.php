@@ -1,8 +1,11 @@
 <?php
 
 return [
-    'in_stock' => 'in stock',
+    'in_stock' => 'yra atsargose',
     'month' => 'montval',
     'months' => 'montvals',
-    'consumption' => 'consumption',
+    'consumption' => 'suvartojama',
+    'no_low_stock' => 'Nėra dalių, pažymėtų mažo likučio įspėjimu.',
+    'no_consumption' => 'Nėra užregistruotų sąnaudų.',
+    'no_runout' => 'Per šį laikotarpį atsargų išsenimo prognozių nėra.',
 ];

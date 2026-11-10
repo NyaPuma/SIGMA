@@ -3,6 +3,7 @@
 return [
     'profile' => 'Прагляд Профіль',
     'logout' => 'Выйсці',
-    'signin' => 'Sign in',
+    'signin' => 'Увайсці',
     'login_register' => 'Уваход / Рэгістрацыя',
+    'connection_error' => 'Памылка злучэння',
 ];

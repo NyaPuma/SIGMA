@@ -113,4 +113,7 @@ return [
     'consumo' => 'खपत',
     'em stock' => 'स्टॉक में',
     'peças' => 'पार्ट',
+    'Clique para selecionar peça...' => 'पार्ट चुनने के लिए क्लिक करें...',
+    'Consumo de peças e respetivo valor nas intervenções de cada equipamento.' => 'प्रत्येक उपकरण के रखरखाव कार्यों में पार्ट की खपत और उसका मूल्य।',
+    'Não existem saídas de peças associadas a equipamentos no período selecionado.' => 'चुनी गई अवधि में उपकरण से जुड़ी कोई पार्ट निकासी दर्ज नहीं है।',
 ];

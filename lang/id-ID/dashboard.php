@@ -33,4 +33,5 @@ return [
     'Tickets Resolvidos' => 'Tiket Teratasi',
     'Urgentes' => 'Mendesak',
     'Últimas ações registadas na plataforma para acompanhar rapidamente a atividade operacional.' => 'Tindakan tercatat terkini di platform untuk memantau aktivitas operasional secara cepat.',
+    'Sem ocorrências em curso' => 'Tidak ada kejadian yang sedang berjalan',
 ];

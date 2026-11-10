@@ -113,4 +113,7 @@ return [
     'consumo' => 'مصرف',
     'em stock' => 'در انبار',
     'peças' => 'قطعات',
+    'Clique para selecionar peça...' => 'برای انتخاب قطعه کلیک کنید...',
+    'Consumo de peças e respetivo valor nas intervenções de cada equipamento.' => 'مصرف قطعات و ارزش مربوط به آن‌ها در تعمیرات هر تجهیز.',
+    'Não existem saídas de peças associadas a equipamentos no período selecionado.' => 'در بازه انتخاب‌شده، خروج قطعه‌ای مرتبط با تجهیزی ثبت نشده است.',
 ];

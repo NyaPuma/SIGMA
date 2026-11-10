@@ -113,4 +113,7 @@ return [
     'consumo' => 'penggunaan',
     'em stock' => 'dalam stok',
     'peças' => 'alat ganti',
+    'Clique para selecionar peça...' => 'Klik untuk memilih komponen...',
+    'Consumo de peças e respetivo valor nas intervenções de cada equipamento.' => 'Penggunaan komponen beserta nilainya dalam pembaikan setiap peralatan.',
+    'Não existem saídas de peças associadas a equipamentos no período selecionado.' => 'Tiada pengeluaran komponen yang dikaitkan dengan peralatan dalam tempoh yang dipilih.',
 ];

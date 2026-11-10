@@ -1,8 +1,8 @@
 <?php
 
 return [
-    'previous' => 'Previous',
+    'previous' => 'წინა',
     'next' => 'შემდეგი',
-    'page' => 'Page',
-    'of' => 'of',
+    'page' => 'გვერდი',
+    'of' => 'დან',
 ];

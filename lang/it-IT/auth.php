@@ -72,4 +72,9 @@ return [
     'Login / Registo' => 'Accesso / Registrazione',
     'Terminar sessão' => 'Termina sessione',
     'Ver perfil' => 'Visualizza profilo',
+    'verifying_credentials' => 'Verifica delle credenziali sul server...',
+    'invalid_credentials' => 'Credenziali non valide.',
+    'auth_success' => 'Autenticazione riuscita! Reindirizzamento...',
+    'server_communication_failed' => 'Guasto critico nella comunicazione con il server.',
+    'authenticating' => 'Autenticazione...',
 ];

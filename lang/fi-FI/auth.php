@@ -72,4 +72,9 @@ return [
     'Login / Registo' => 'Kirjautuminen / rekisteröinti',
     'Terminar sessão' => 'Kirjaudu ulos',
     'Ver perfil' => 'Näytä profiili',
+    'verifying_credentials' => 'Tarkistetaan kirjautumistietoja palvelimella...',
+    'invalid_credentials' => 'Virheelliset kirjautumistiedot.',
+    'auth_success' => 'Todennus onnistui! Uudelleenohjataan...',
+    'server_communication_failed' => 'Kriittinen viestintävirhe palvelimeen.',
+    'authenticating' => 'Todennetaan...',
 ];

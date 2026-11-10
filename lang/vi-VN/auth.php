@@ -72,4 +72,9 @@ return [
     'Login / Registo' => 'Đăng nhập / Đăng ký',
     'Terminar sessão' => 'Đăng xuất',
     'Ver perfil' => 'Xem hồ sơ',
+    'verifying_credentials' => 'Đang xác minh thông tin đăng nhập trên máy chủ...',
+    'invalid_credentials' => 'Thông tin đăng nhập không hợp lệ.',
+    'auth_success' => 'Xác thực thành công! Đang chuyển hướng...',
+    'server_communication_failed' => 'Giao tiếp với máy chủ thất bại nghiêm trọng.',
+    'authenticating' => 'Đang xác thực...',
 ];

@@ -5,4 +5,5 @@ return [
     'logout' => 'Kijelentkezés',
     'signin' => 'Bejelentkezés',
     'login_register' => 'Bejelentkezés / regisztráció',
+    'connection_error' => 'Kapcsolódási hiba',
 ];

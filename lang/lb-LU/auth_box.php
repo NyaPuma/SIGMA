@@ -1,8 +1,9 @@
 <?php
 
 return [
-    'profile' => 'View Profile',
-    'logout' => 'Sign Out',
-    'signin' => 'Sign in',
-    'login_register' => 'Login / Register',
+    'profile' => 'Profil weisen',
+    'logout' => 'Ofmellen',
+    'signin' => 'Uumellen',
+    'login_register' => 'Login / Registréierung',
+    'connection_error' => 'Verbindungsfeeler',
 ];

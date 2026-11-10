@@ -33,4 +33,5 @@ return [
     'Tickets Resolvidos' => 'हल किए गए टिकट',
     'Urgentes' => 'अत्यावश्यक',
     'Últimas ações registadas na plataforma para acompanhar rapidamente a atividade operacional.' => 'प्लेटफ़ॉर्म पर दर्ज नवीनतम क्रियाएँ, संचालन गतिविधि का तुरंत अनुसरण करने के लिए।',
+    'Sem ocorrências em curso' => 'कोई खुली घटना नहीं',
 ];

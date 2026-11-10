@@ -72,4 +72,9 @@ return [
     'Login / Registo' => 'ログイン / 新規登録',
     'Terminar sessão' => 'ログアウト',
     'Ver perfil' => 'プロフィールを表示',
+    'verifying_credentials' => 'サーバーで認証情報を確認しています...',
+    'invalid_credentials' => '認証情報が無効です。',
+    'auth_success' => '認証に成功しました！リダイレクトしています...',
+    'server_communication_failed' => 'サーバーとの通信に重大な障害が発生しました。',
+    'authenticating' => '認証しています...',
 ];

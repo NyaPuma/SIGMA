@@ -98,7 +98,7 @@ return [
     'Stock baixo' => 'Stock bajo',
     'Stock inicial' => 'Stock inicial',
     'Stock inicial de catalogação' => 'Stock inicial de catalogación',
-    'Stock máximo' => 'Stock máximo',
+    'Stock máximo' => 'Máximo de existencias',
     'Stock mínimo' => 'Stock mínimo',
     'Top peças mais consumidas' => 'Top piezas más consumidas',
     'Top peças mais consumidas num período.' => 'Top de piezas más consumidas en un periodo.',
@@ -113,4 +113,7 @@ return [
     'consumo' => 'consumo',
     'em stock' => 'en stock',
     'peças' => 'piezas',
+    'Clique para selecionar peça...' => 'Haga clic para seleccionar una pieza...',
+    'Consumo de peças e respetivo valor nas intervenções de cada equipamento.' => 'Consumo de piezas y su valor en las intervenciones de cada equipo.',
+    'Não existem saídas de peças associadas a equipamentos no período selecionado.' => 'No existen salidas de piezas asociadas a equipos en el período seleccionado.',
 ];
