@@ -1,0 +1,31 @@
+@extends('ui.layout')
+@section('page_key', 'hr-employees')
+@section('content')
+<x-ui.partials.page-header title="Editar Colaborador" subtitle="{{ $employee->full_name }}" badge="RH">
+    <form method="POST" action="{{ route('ui.hr.employees.update', $employee) }}" class="max-w-4xl space-y-6 bg-[var(--surface)] border border-[var(--border)] rounded-2xl p-6">
+        @csrf
+        @method('PATCH')
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div><label class="block text-xs font-bold uppercase tracking-wider text-[var(--text-soft)] mb-1">N.º Colaborador</label><input name="employee_number" value="{{ old('employee_number', $employee->employee_number) }}" class="w-full rounded-xl border border-[var(--border)] bg-[var(--surface-2)] px-3 py-2.5 text-sm">@error('employee_number')<p class="text-red-600 text-xs mt-1">{{ $message }}</p>@enderror</div>
+            <div><label class="block text-xs font-bold uppercase tracking-wider text-[var(--text-soft)] mb-1">Utilizador (login)</label><select name="user_id" class="w-full rounded-xl border border-[var(--border)] bg-[var(--surface-2)] px-3 py-2.5 text-sm"><option value="">—</option>@foreach($users as $u)<option value="{{ $u->id }}" @selected(old('user_id', $employee->user_id)==$u->id)>{{ $u->name }} ({{ $u->email }})</option>@endforeach</select></div>
+            <div><label class="block text-xs font-bold uppercase tracking-wider text-[var(--text-soft)] mb-1">Nome *</label><input name="first_name" value="{{ old('first_name', $employee->first_name) }}" required class="w-full rounded-xl border border-[var(--border)] bg-[var(--surface-2)] px-3 py-2.5 text-sm"></div>
+            <div><label class="block text-xs font-bold uppercase tracking-wider text-[var(--text-soft)] mb-1">Apelido *</label><input name="last_name" value="{{ old('last_name', $employee->last_name) }}" required class="w-full rounded-xl border border-[var(--border)] bg-[var(--surface-2)] px-3 py-2.5 text-sm"></div>
+            <div><label class="block text-xs font-bold uppercase tracking-wider text-[var(--text-soft)] mb-1">Email</label><input type="email" name="email" value="{{ old('email', $employee->email) }}" class="w-full rounded-xl border border-[var(--border)] bg-[var(--surface-2)] px-3 py-2.5 text-sm"></div>
+            <div><label class="block text-xs font-bold uppercase tracking-wider text-[var(--text-soft)] mb-1">Telefone</label><input name="phone" value="{{ old('phone', $employee->phone) }}" class="w-full rounded-xl border border-[var(--border)] bg-[var(--surface-2)] px-3 py-2.5 text-sm"></div>
+            <div><label class="block text-xs font-bold uppercase tracking-wider text-[var(--text-soft)] mb-1">NIF / ID Fiscal</label><input name="tax_id" value="{{ old('tax_id', $employee->tax_id) }}" class="w-full rounded-xl border border-[var(--border)] bg-[var(--surface-2)] px-3 py-2.5 text-sm"></div>
+            <div><label class="block text-xs font-bold uppercase tracking-wider text-[var(--text-soft)] mb-1">Data de nascimento</label><input type="date" name="birth_date" value="{{ old('birth_date', optional($employee->birth_date)->format('Y-m-d')) }}" class="w-full rounded-xl border border-[var(--border)] bg-[var(--surface-2)] px-3 py-2.5 text-sm"></div>
+            <div class="md:col-span-2"><label class="block text-xs font-bold uppercase tracking-wider text-[var(--text-soft)] mb-1">Morada</label><input name="address" value="{{ old('address', $employee->address) }}" class="w-full rounded-xl border border-[var(--border)] bg-[var(--surface-2)] px-3 py-2.5 text-sm"></div>
+            <div><label class="block text-xs font-bold uppercase tracking-wider text-[var(--text-soft)] mb-1">Departamento</label><select name="department_id" class="w-full rounded-xl border border-[var(--border)] bg-[var(--surface-2)] px-3 py-2.5 text-sm"><option value="">—</option>@foreach($departments as $d)<option value="{{ $d->id }}" @selected(old('department_id', $employee->department_id)==$d->id)>{{ $d->name }}</option>@endforeach</select></div>
+            <div><label class="block text-xs font-bold uppercase tracking-wider text-[var(--text-soft)] mb-1">Cargo</label><select name="position_id" class="w-full rounded-xl border border-[var(--border)] bg-[var(--surface-2)] px-3 py-2.5 text-sm"><option value="">—</option>@foreach($positions as $p)<option value="{{ $p->id }}" @selected(old('position_id', $employee->position_id)==$p->id)>{{ $p->name }}</option>@endforeach</select></div>
+            <div><label class="block text-xs font-bold uppercase tracking-wider text-[var(--text-soft)] mb-1">Data de admissão</label><input type="date" name="hire_date" value="{{ old('hire_date', optional($employee->hire_date)->format('Y-m-d')) }}" class="w-full rounded-xl border border-[var(--border)] bg-[var(--surface-2)] px-3 py-2.5 text-sm"></div>
+            <div><label class="block text-xs font-bold uppercase tracking-wider text-[var(--text-soft)] mb-1">Data de cessação</label><input type="date" name="termination_date" value="{{ old('termination_date', optional($employee->termination_date)->format('Y-m-d')) }}" class="w-full rounded-xl border border-[var(--border)] bg-[var(--surface-2)] px-3 py-2.5 text-sm"></div>
+            <div><label class="block text-xs font-bold uppercase tracking-wider text-[var(--text-soft)] mb-1">Estado *</label><select name="status" required class="w-full rounded-xl border border-[var(--border)] bg-[var(--surface-2)] px-3 py-2.5 text-sm">@foreach($statuses as $k=>$v)<option value="{{ $k }}" @selected(old('status', $employee->status)==$k)>{{ $v }}</option>@endforeach</select></div>
+        </div>
+        <div><label class="block text-xs font-bold uppercase tracking-wider text-[var(--text-soft)] mb-1">Notas</label><textarea name="notes" rows="3" class="w-full rounded-xl border border-[var(--border)] bg-[var(--surface-2)] px-3 py-2.5 text-sm">{{ old('notes', $employee->notes) }}</textarea></div>
+        <div class="flex gap-3 pt-2">
+            <button type="submit" class="ui-button ui-button--primary px-4 py-2 text-xs font-bold rounded-xl">Guardar</button>
+            <a href="{{ route('ui.hr.employees.index') }}" class="px-4 py-2 text-xs font-semibold rounded-xl border border-[var(--border)]">Cancelar</a>
+        </div>
+    </form>
+</x-ui.partials.page-header>
+@endsection

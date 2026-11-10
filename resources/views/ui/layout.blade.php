@@ -144,6 +144,27 @@
             ];
         }
 
+        // HR module (permission-based)
+        if ($user && ($user->isAdmin() || $user->hasPermission('hr.access'))) {
+            $hrItems = [];
+            if ($user->isAdmin() || $user->hasPermission('hr.employees.view')) {
+                $hrItems[] = ['href' => 'ui/hr/employees', 'active' => 'ui/hr/employees*', 'label' => 'Colaboradores', 'icon' => $icon['users'], 'exact' => false];
+            }
+            if ($user->isAdmin() || $user->hasPermission('hr.departments.view')) {
+                $hrItems[] = ['href' => 'ui/hr/departments', 'active' => 'ui/hr/departments*', 'label' => 'Departamentos', 'icon' => $icon['doc'], 'exact' => false];
+            }
+            if ($user->isAdmin() || $user->hasPermission('hr.positions.view')) {
+                $hrItems[] = ['href' => 'ui/hr/positions', 'active' => 'ui/hr/positions*', 'label' => 'Cargos', 'icon' => $icon['doc'], 'exact' => false];
+            }
+            if ($user->isAdmin() || $user->hasPermission('hr.attendance.view')) {
+                $hrItems[] = ['href' => 'ui/hr/attendance', 'active' => 'ui/hr/attendance*', 'label' => 'Assiduidade', 'icon' => $icon['calendar'], 'exact' => false];
+            }
+            if ($user->isAdmin() || $user->hasPermission('hr.leaves.view')) {
+                $hrItems[] = ['href' => 'ui/hr/leaves', 'active' => 'ui/hr/leaves*', 'label' => 'Ausências/Férias', 'icon' => $icon['calendar'], 'exact' => false];
+            }
+            $navItems = array_merge($navItems, $hrItems);
+        }
+
         $navItems[] = [
             'href' => 'ui/settings/appearance',
             'active' => 'ui/settings/appearance*',
@@ -161,6 +182,7 @@
                     'icon' => $icon['users'],
                     'exact' => false,
                 ],
+                ['href' => 'admin/rbac/roles', 'active' => 'admin/rbac*', 'label' => 'Acessos & Roles', 'icon' => $icon['gear'], 'exact' => false],
                 ['href' => 'ui/audits', 'active' => 'ui/audits*', 'label' => __('common.Auditoria'), 'icon' => $icon['doc'], 'exact' => false],
                 [
                     'href' => 'ui/analytics',
@@ -179,7 +201,7 @@
                 [
                     'href' => 'docs/openapi',
                     'active' => 'docs/openapi*',
-                    'label' => __('common.Swagger'),
+                    'label' => 'OpenAPI (Swagger)',
                     'icon' => $icon['book'],
                     'exact' => false,
                 ],

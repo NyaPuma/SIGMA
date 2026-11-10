@@ -1,24 +1,26 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Database\Seeders;
 
+use App\Models\UserProfile;
 use Illuminate\Database\Seeder;
-use Illuminate\Support\Facades\DB;
 
 class UserProfilesSeeder extends Seeder
 {
     public function run(): void
     {
         $profiles = [
-            ['name' => 'admin'],
-            ['name' => 'technician'],
-            ['name' => 'user'],
+            ['name' => 'admin', 'slug' => 'admin', 'display_name' => 'Administrador', 'area' => 'admin', 'is_system' => true],
+            ['name' => 'technician', 'slug' => 'technician', 'display_name' => 'Técnico', 'area' => 'operations', 'is_system' => true],
+            ['name' => 'user', 'slug' => 'user', 'display_name' => 'Utilizador', 'area' => 'general', 'is_system' => true],
         ];
 
         foreach ($profiles as $profile) {
-            DB::table('user_profiles')->updateOrInsert(
+            UserProfile::query()->updateOrCreate(
                 ['name' => $profile['name']],
-                ['name' => $profile['name'], 'created_at' => now(), 'updated_at' => now()]
+                array_merge($profile, ['active' => true])
             );
         }
     }

@@ -3,6 +3,7 @@
 declare(strict_types=1);
 
 use App\Http\Middleware\CustomAuthMiddleware;
+use App\Http\Middleware\PermissionMiddleware;
 use App\Http\Middleware\RateLimitMiddleware;
 use App\Http\Middleware\RequestContextMiddleware;
 use App\Http\Middleware\RoleMiddleware;
@@ -48,6 +49,7 @@ return Application::configure(basePath: dirname(__DIR__))
         $middleware->alias([
             'custom.auth' => CustomAuthMiddleware::class,
             'role' => RoleMiddleware::class,
+            'permission' => PermissionMiddleware::class,
             'rate.limit' => RateLimitMiddleware::class,
         ]);
 

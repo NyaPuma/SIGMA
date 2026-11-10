@@ -10,6 +10,7 @@ use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
@@ -91,20 +92,47 @@ class User extends Authenticatable
 
     public function isAdmin(): bool
     {
-        return $this->profile?->name === UserRoleEnum::Admin->value;
+        return $this->profile?->name === UserRoleEnum::Admin->value || $this->profile?->slug === UserRoleEnum::Admin->value;
     }
 
     public function isTechnician(): bool
     {
-        return $this->profile?->name === UserRoleEnum::Technician->value;
+        return $this->profile?->name === UserRoleEnum::Technician->value || $this->profile?->slug === UserRoleEnum::Technician->value;
     }
 
     public function isCommonUser(): bool
     {
-        return $this->profile?->name === UserRoleEnum::User->value;
+        return $this->profile?->name === UserRoleEnum::User->value || $this->profile?->slug === UserRoleEnum::User->value;
+    }
+
+    public function hasPermission(string $slug): bool
+    {
+        if (! $this->active || ! $this->profile) {
+            return false;
+        }
+
+        return $this->profile->hasPermission($slug);
+    }
+
+    /** @param list<string> $slugs */
+    public function hasAnyPermission(array $slugs): bool
+    {
+        foreach ($slugs as $slug) {
+            if ($this->hasPermission($slug)) {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     // --- RELATIONSHIPS ---
+
+    /** @return HasOne<Employee, $this> */
+    public function employee(): HasOne
+    {
+        return $this->hasOne(Employee::class, 'user_id');
+    }
 
     /**
      * Tickets reported/created by this user.

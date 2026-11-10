@@ -1,5 +1,11 @@
 <?php
 
+use App\Http\Controllers\Admin\Hr\AttendanceController as HrAttendanceController;
+use App\Http\Controllers\Admin\Hr\DepartmentController as HrDepartmentController;
+use App\Http\Controllers\Admin\Hr\EmployeeController as HrEmployeeController;
+use App\Http\Controllers\Admin\Hr\LeaveController as HrLeaveController;
+use App\Http\Controllers\Admin\Hr\PositionController as HrPositionController;
+use App\Http\Controllers\Admin\RbacController;
 use App\Http\Controllers\AdminController;
 use App\Http\Controllers\AdminEquipmentController;
 use App\Http\Controllers\AdminUserController;
@@ -411,5 +417,52 @@ Route::middleware(['custom.auth'])->group(function () {
         Route::get('/stock/reports/low-stock.csv', [StockReportController::class, 'lowStockCsv'])->name('stock.reports.low-stock.csv');
         Route::get('/stock/reports/inventory.csv', [StockReportController::class, 'inventoryCsv'])->name('stock.reports.inventory.csv');
         Route::get('/stock/reports/costs-by-equipment.pdf', [StockReportController::class, 'costsByEquipmentPdf'])->name('stock.reports.costs-by-equipment.pdf');
+
+        // --- RBAC Management (Admin only) ---
+        Route::get('/admin/rbac/roles', [RbacController::class, 'roles'])->name('ui.admin.rbac.roles');
+        Route::post('/admin/rbac/roles', [RbacController::class, 'storeRole'])->name('ui.admin.rbac.roles.store');
+        Route::get('/admin/rbac/roles/{role}/edit', [RbacController::class, 'editRole'])->name('ui.admin.rbac.roles.edit');
+        Route::patch('/admin/rbac/roles/{role}', [RbacController::class, 'updateRole'])->name('ui.admin.rbac.roles.update');
+        Route::get('/admin/rbac/user-roles', [RbacController::class, 'userRoles'])->name('ui.admin.rbac.user-roles');
+        Route::patch('/admin/rbac/user-roles/{user}', [RbacController::class, 'updateUserRole'])->name('ui.admin.rbac.user-roles.update');
+    });
+
+    // --- HR Module (permission-based access) ---
+    Route::middleware(['permission:hr.access'])->group(function () {
+        // Departments
+        Route::get('/ui/hr/departments', [HrDepartmentController::class, 'index'])->name('ui.hr.departments.index');
+        Route::get('/ui/hr/departments/create', [HrDepartmentController::class, 'create'])->name('ui.hr.departments.create');
+        Route::post('/ui/hr/departments', [HrDepartmentController::class, 'store'])->name('ui.hr.departments.store');
+        Route::get('/ui/hr/departments/{department}/edit', [HrDepartmentController::class, 'edit'])->name('ui.hr.departments.edit');
+        Route::patch('/ui/hr/departments/{department}', [HrDepartmentController::class, 'update'])->name('ui.hr.departments.update');
+        Route::delete('/ui/hr/departments/{department}', [HrDepartmentController::class, 'destroy'])->name('ui.hr.departments.destroy');
+
+        // Positions
+        Route::get('/ui/hr/positions', [HrPositionController::class, 'index'])->name('ui.hr.positions.index');
+        Route::get('/ui/hr/positions/create', [HrPositionController::class, 'create'])->name('ui.hr.positions.create');
+        Route::post('/ui/hr/positions', [HrPositionController::class, 'store'])->name('ui.hr.positions.store');
+        Route::get('/ui/hr/positions/{position}/edit', [HrPositionController::class, 'edit'])->name('ui.hr.positions.edit');
+        Route::patch('/ui/hr/positions/{position}', [HrPositionController::class, 'update'])->name('ui.hr.positions.update');
+        Route::delete('/ui/hr/positions/{position}', [HrPositionController::class, 'destroy'])->name('ui.hr.positions.destroy');
+
+        // Employees
+        Route::get('/ui/hr/employees', [HrEmployeeController::class, 'index'])->name('ui.hr.employees.index');
+        Route::get('/ui/hr/employees/create', [HrEmployeeController::class, 'create'])->name('ui.hr.employees.create');
+        Route::post('/ui/hr/employees', [HrEmployeeController::class, 'store'])->name('ui.hr.employees.store');
+        Route::get('/ui/hr/employees/{employee}', [HrEmployeeController::class, 'show'])->name('ui.hr.employees.show');
+        Route::get('/ui/hr/employees/{employee}/edit', [HrEmployeeController::class, 'edit'])->name('ui.hr.employees.edit');
+        Route::patch('/ui/hr/employees/{employee}', [HrEmployeeController::class, 'update'])->name('ui.hr.employees.update');
+        Route::delete('/ui/hr/employees/{employee}', [HrEmployeeController::class, 'destroy'])->name('ui.hr.employees.destroy');
+
+        // Attendance
+        Route::get('/ui/hr/attendance', [HrAttendanceController::class, 'index'])->name('ui.hr.attendance.index');
+        Route::post('/ui/hr/attendance', [HrAttendanceController::class, 'store'])->name('ui.hr.attendance.store');
+        Route::delete('/ui/hr/attendance/{attendance}', [HrAttendanceController::class, 'destroy'])->name('ui.hr.attendance.destroy');
+
+        // Leaves
+        Route::get('/ui/hr/leaves', [HrLeaveController::class, 'index'])->name('ui.hr.leaves.index');
+        Route::post('/ui/hr/leaves', [HrLeaveController::class, 'store'])->name('ui.hr.leaves.store');
+        Route::post('/ui/hr/leaves/types', [HrLeaveController::class, 'storeType'])->name('ui.hr.leaves.types.store');
+        Route::patch('/ui/hr/leaves/{leave}/status', [HrLeaveController::class, 'updateStatus'])->name('ui.hr.leaves.status');
     });
 });
