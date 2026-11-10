@@ -6,18 +6,18 @@
         @csrf
         @method('PATCH')
         <div>
-            <label class="block text-xs font-bold uppercase tracking-wider text-[var(--text-soft)] mb-1">Nome *</label>
-            <input name="name" value="{{ old('name', $department->name) }}" required class="w-full rounded-xl border border-[var(--border)] bg-[var(--surface-2)] px-3 py-2.5 text-sm">
+            <label for="department-name" class="block text-xs font-bold uppercase tracking-wider text-[var(--text-soft)] mb-1">Nome *</label>
+            <input id="department-name" name="name" value="{{ old('name', $department->name) }}" required class="w-full rounded-xl border border-[var(--border)] bg-[var(--surface-2)] px-3 py-2.5 text-sm">
             @error('name')<p class="text-red-600 text-xs mt-1">{{ $message }}</p>@enderror
         </div>
         <div>
-            <label class="block text-xs font-bold uppercase tracking-wider text-[var(--text-soft)] mb-1">Código</label>
-            <input name="code" value="{{ old('code', $department->code) }}" class="w-full rounded-xl border border-[var(--border)] bg-[var(--surface-2)] px-3 py-2.5 text-sm">
+            <label for="department-code" class="block text-xs font-bold uppercase tracking-wider text-[var(--text-soft)] mb-1">Código</label>
+            <input id="department-code" name="code" value="{{ old('code', $department->code) }}" class="w-full rounded-xl border border-[var(--border)] bg-[var(--surface-2)] px-3 py-2.5 text-sm">
             @error('code')<p class="text-red-600 text-xs mt-1">{{ $message }}</p>@enderror
         </div>
         <div>
-            <label class="block text-xs font-bold uppercase tracking-wider text-[var(--text-soft)] mb-1">Gestor</label>
-            <select name="manager_id" class="w-full rounded-xl border border-[var(--border)] bg-[var(--surface-2)] px-3 py-2.5 text-sm">
+            <label for="department-manager" class="block text-xs font-bold uppercase tracking-wider text-[var(--text-soft)] mb-1">Gestor</label>
+            <select id="department-manager" name="manager_id" class="w-full rounded-xl border border-[var(--border)] bg-[var(--surface-2)] px-3 py-2.5 text-sm">
                 <option value="">—</option>
                 @foreach($managers as $m)
                     <option value="{{ $m->id }}" @selected(old('manager_id', $department->manager_id)==$m->id)>{{ $m->name }}</option>
@@ -25,10 +25,10 @@
             </select>
         </div>
         <div>
-            <label class="block text-xs font-bold uppercase tracking-wider text-[var(--text-soft)] mb-1">Descrição</label>
-            <textarea name="description" rows="3" class="w-full rounded-xl border border-[var(--border)] bg-[var(--surface-2)] px-3 py-2.5 text-sm">{{ old('description', $department->description) }}</textarea>
+            <label for="department-description" class="block text-xs font-bold uppercase tracking-wider text-[var(--text-soft)] mb-1">Descrição</label>
+            <textarea id="department-description" name="description" rows="3" class="w-full rounded-xl border border-[var(--border)] bg-[var(--surface-2)] px-3 py-2.5 text-sm">{{ old('description', $department->description) }}</textarea>
         </div>
-        <label class="inline-flex items-center gap-2 text-sm"><input type="checkbox" name="active" value="1" {{ old('active', $department->active) ? 'checked' : '' }}> Ativo</label>
+        <label class="inline-flex items-center gap-2 text-sm"><input id="department-active" type="checkbox" name="active" value="1" {{ old('active', $department->active) ? 'checked' : '' }}> Ativo</label>
         <div class="flex gap-3 pt-2">
             <button type="submit" class="ui-button ui-button--primary px-4 py-2 text-xs font-bold rounded-xl">Guardar</button>
             <a href="{{ route('ui.hr.departments.index') }}" class="px-4 py-2 text-xs font-semibold rounded-xl border border-[var(--border)]">Cancelar</a>

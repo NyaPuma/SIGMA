@@ -19,11 +19,11 @@
             <table class="min-w-full divide-y divide-[var(--border)] text-left text-xs">
                 <thead class="bg-[var(--surface-2)] text-[var(--text-soft)] uppercase tracking-wider font-bold text-xs">
                     <tr>
-                        <th class="px-6 py-4">Nome</th>
-                        <th class="px-6 py-4">Código</th>
-                        <th class="px-6 py-4">Gestor</th>
-                        <th class="px-6 py-4">Estado</th>
-                        <th class="px-6 py-4 text-right">Ações</th>
+                        <th scope="col" class="px-6 py-4">Nome</th>
+                        <th scope="col" class="px-6 py-4">Código</th>
+                        <th scope="col" class="px-6 py-4">Gestor</th>
+                        <th scope="col" class="px-6 py-4">Estado</th>
+                        <th scope="col" class="px-6 py-4 text-right">Ações</th>
                     </tr>
                 </thead>
                 <tbody class="divide-y divide-[var(--border)] text-[var(--text)]">
