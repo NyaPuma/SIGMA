@@ -109,4 +109,10 @@ return [
     'Tem a certeza que pretende remover esta fotografia?' => 'Bạn có chắc chắn muốn gỡ bỏ ảnh này không?',
     'Ticket atribuído' => 'Yêu cầu đã được phân công',
     'Ticket atualizado' => 'Yêu cầu đã được cập nhật',
+    'Relatório limitado aos :total registos mais recentes.' => 'Báo cáo giới hạn ở :total bản ghi mới nhất.',
+    'Registos:' => 'Bản ghi:',
+    'Emitido em:' => 'Xuất ngày:',
+    'Gerado automaticamente' => 'Được tạo tự động',
+    'Análise dos estados operacionais, tempos de resolução e custos.' => 'Phân tích trạng thái vận hành, thời gian xử lý và chi phí.',
+    'Sem registos de tickets para os parâmetros selecionados.' => 'Không có bản ghi yêu cầu nào với các tham số đã chọn.',
 ];

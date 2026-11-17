@@ -1,8 +1,8 @@
 <?php
 
 return [
-    'previous' => 'Previous',
+    'previous' => 'Ankstesnis',
     'next' => 'Kitas',
-    'page' => 'Page',
-    'of' => 'of',
+    'page' => 'Puslapis',
+    'of' => 'iš',
 ];

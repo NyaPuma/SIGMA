@@ -109,4 +109,10 @@ return [
     'Tem a certeza que pretende remover esta fotografia?' => 'क्या आप वाकई इस फोटो को हटाना चाहते हैं?',
     'Ticket atribuído' => 'टिकट असाइन किया गया',
     'Ticket atualizado' => 'टिकट अपडेट किया गया',
+    'Relatório limitado aos :total registos mais recentes.' => 'रिपोर्ट सबसे नए :total रिकॉर्ड तक सीमित है।',
+    'Registos:' => 'रिकॉर्ड:',
+    'Emitido em:' => 'जारी करने की तिथि:',
+    'Gerado automaticamente' => 'स्वतः उत्पन्न',
+    'Análise dos estados operacionais, tempos de resolução e custos.' => 'संचालन स्थितियों, समाधान समय और लागत का विश्लेषण।',
+    'Sem registos de tickets para os parâmetros selecionados.' => 'चुने गए मापदंडों के लिए कोई टिकट रिकॉर्ड नहीं।',
 ];

@@ -33,4 +33,5 @@ return [
     'Tickets Resolvidos' => '해결된 티켓',
     'Urgentes' => '긴급',
     'Últimas ações registadas na plataforma para acompanhar rapidamente a atividade operacional.' => '플랫폼에 기록된 최신 작업으로 운영 활동을 빠르게 파악하세요.',
+    'Sem ocorrências em curso' => '진행 중인 이벤트가 없습니다',
 ];

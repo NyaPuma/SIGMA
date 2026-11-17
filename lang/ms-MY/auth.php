@@ -72,4 +72,9 @@ return [
     'Login / Registo' => 'Log Masuk / Pendaftaran',
     'Terminar sessão' => 'Tamat sesi',
     'Ver perfil' => 'Lihat profil',
+    'verifying_credentials' => 'Menyemak kelayakan pada pelayan...',
+    'invalid_credentials' => 'Kelayakan log masuk tidak sah.',
+    'auth_success' => 'Pengesahan berjaya! Mengalih...',
+    'server_communication_failed' => 'Kegagalan komunikasi kritikal dengan pelayan.',
+    'authenticating' => 'Mengesahkan...',
 ];

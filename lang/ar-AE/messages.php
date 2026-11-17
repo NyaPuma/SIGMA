@@ -113,4 +113,10 @@ Protegido globalmente via middleware e verificado via Policy.' => 'عرض سجل
     'Utilizador criado com sucesso.' => 'تم إنشاء المستخدم بنجاح.',
     'Utilizador inativado com sucesso.' => 'تم تعطيل المستخدم بنجاح.',
     'Valor total do stock, total de peças, contagem de peças com stock baixo e lista de alertas.' => 'القيمة الإجمالية للمخزون، إجمالي القطع، عدد القطع ذات المخزون المنخفض وقائمة التنبيهات.',
+    'Aparência atualizada com sucesso.' => 'تم تحديث المظهر بنجاح.',
+    'Escolha um tema pré-definido — a sua preferência é guardada por utilizador e aplicada nos próximos acessos.' => 'اختر سمة محددة مسبقًا — يُحفظ تفضيلك لكل مستخدم ويُطبَّق في عمليات الدخول القادمة.',
+    'Canal de envio:' => 'قناة الإرسال:',
+    'Este é um disparo de validação estrutural enviado para confirmar a correta integração, credenciação e entrega de mensagens na plataforma.' => 'هذا استدعاء تحقق هيكلي أُرسل للتأكد من صحة التكامل والمصادقة وتسليم الرسائل على المنصة.',
+    'Ligação Estabelecida com Sucesso' => 'تم إنشاء الاتصال بنجاح',
+    'Verificação de Serviço' => 'التحقق من الخدمة',
 ];

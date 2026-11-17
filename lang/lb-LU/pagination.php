@@ -1,8 +1,8 @@
 <?php
 
 return [
-    'previous' => 'Previous',
-    'next' => 'Next',
-    'page' => 'Page',
-    'of' => 'of',
+    'previous' => 'Vireg',
+    'next' => 'Nächst',
+    'page' => 'Säit',
+    'of' => 'vun',
 ];

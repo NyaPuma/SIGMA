@@ -1,8 +1,11 @@
 <?php
 
 return [
-    'in_stock' => 'in stock',
-    'month' => 'month',
-    'months' => 'months',
-    'consumption' => 'consumption',
+    'in_stock' => 'на залиха',
+    'month' => 'месец',
+    'months' => 'месеци',
+    'consumption' => 'потрошувачка',
+    'no_low_stock' => 'Нема делови со предупредување за ниска залиха.',
+    'no_consumption' => 'Нема запишана потрошувачка.',
+    'no_runout' => 'Нема прогнози за исцрпување на залихите во периодов.',
 ];

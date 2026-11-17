@@ -15,4 +15,8 @@ return [
     'hours' => 'hod',
     'day' => 'deň',
     'days' => 'dní',
+    'load_error' => 'Chyba pri načítavaní analytických údajov.',
+    'export_processing' => 'Generovanie...',
+    'export_start_error' => 'Nepodarilo sa spustiť export.',
+    'export_network_error' => 'Pri spúšťaní exportu došlo k chybe siete. Skúste to znova.',
 ];

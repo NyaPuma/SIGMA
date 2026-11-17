@@ -50,7 +50,9 @@ final class SendTestEmailJob implements ShouldQueue
 
         $mailClient = $mailerConfig ? Mail::mailer($mailerConfig) : Mail::mailer();
 
-        $mailClient->to($this->email)->send(new TestMail($this->name));
+        $defaultMailer = config('mail.default', 'log');
+        $defaultMailer = is_string($defaultMailer) ? $defaultMailer : 'log';
+        $mailClient->to($this->email)->send(new TestMail($this->name, $mailerConfig ?? $defaultMailer));
 
         Log::info('Test email sent successfully via queue', [
             'email' => $this->email,

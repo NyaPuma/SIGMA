@@ -33,4 +33,5 @@ return [
     'Tickets Resolvidos' => 'Lösta Ärenden',
     'Urgentes' => 'Brådskande',
     'Últimas ações registadas na plataforma para acompanhar rapidamente a atividade operacional.' => 'Senaste åtgärder som registrerats på plattformen för att snabbt följa den operativa aktiviteten.',
+    'Sem ocorrências em curso' => 'Inga pågående incidenter',
 ];

@@ -72,4 +72,9 @@ return [
     'Login / Registo' => 'Prihlásenie / Registrácia',
     'Terminar sessão' => 'Odhlásiť sa',
     'Ver perfil' => 'Zobraziť profil',
+    'verifying_credentials' => 'Overovanie prihlasovacích údajov na serveri...',
+    'invalid_credentials' => 'Neplatné prihlasovacie údaje.',
+    'auth_success' => 'Overenie je úspešné! Presmerovanie...',
+    'server_communication_failed' => 'Kritická chyba komunikácie so serverom.',
+    'authenticating' => 'Overovanie...',
 ];

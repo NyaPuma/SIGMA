@@ -1,0 +1,27 @@
+<?php
+
+return [
+    'empty' => 'Heç bir sübut yüklənməyib.',
+    'remove_photo' => 'Fotonu çıxarın',
+    'remove_file' => 'Faylı çıxarın',
+    'load_error' => 'Fotolar yüklənərkən xəta baş verdi.',
+    'confirm_remove' => 'Bu fotonu çıxarmaq istədiyinizə əminsiniz?',
+    'remove_error' => 'Fotonu çıxararkən xəta baş verdi.',
+    'removed' => 'Fotonu uğurla çıxarıldı.',
+    'sent' => 'Fotonu göndərildi!',
+    'file' => 'Fayl',
+    'Anexos' => 'Əlavə fayllar',
+    'Atualize as credenciais, fotografia e permissões de acesso do perfil de utilizador.' => 'İstifadəçi profilinin giriş məlumatlarını, fotonu və giriş icazələrini yeniləyin.',
+    'Carregue uma imagem (PNG, JPG ou WEBP até 2MB).' => 'Şəkil yükləyin (2 MB-dək PNG, JPG və ya WEBP).',
+    'Emergência Imediata. Risco de acidente.' => 'Dərhal Fövqəladə Vəziyyət. Qəza riski.',
+    'Escolher Fotografia' => 'Foto Seçin',
+    'Escolher ficheiro' => 'Fayl Seçin',
+    'Fotografia (Opcional)' => 'Foto (İsteyə bağlı)',
+    'Fotografia do Utilizador' => 'İstifadəçi Fotosu',
+    'Imagem' => 'Şəkil',
+    'Inserir Imagem (Opcional)' => 'Şəkil Əlavə Edin (İsteyə bağlı)',
+    'Nenhum ficheiro' => 'Fayl yoxdur',
+    'Nenhum ficheiro selecionado' => 'Fayl seçilməyib',
+    'Perfil atual: :profile. Aceda aos módulos conforme as permissões do seu papel.' => 'Cari profil: :profile. Rolunuza verilmiş icazələrə uyğun modullara daxil olun.',
+    'Tipo de ficheiro não permitido.' => 'Fayl növünə icazə verilmir.',
+];

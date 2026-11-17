@@ -72,4 +72,9 @@ return [
     'Login / Registo' => 'Вход / Регистрация',
     'Terminar sessão' => 'Выйти',
     'Ver perfil' => 'Просмотреть профиль',
+    'verifying_credentials' => 'Проверка учётных данных на сервере...',
+    'invalid_credentials' => 'Неверные учётные данные.',
+    'auth_success' => 'Аутентификация прошла успешно! Перенаправление...',
+    'server_communication_failed' => 'Критический сбой связи с сервером.',
+    'authenticating' => 'Аутентификация...',
 ];

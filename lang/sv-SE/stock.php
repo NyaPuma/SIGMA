@@ -113,4 +113,7 @@ return [
     'consumo' => 'förbrukning',
     'em stock' => 'i lager',
     'peças' => 'delar',
+    'Clique para selecionar peça...' => 'Klicka för att välja del...',
+    'Consumo de peças e respetivo valor nas intervenções de cada equipamento.' => 'Förbrukning av delar och deras värde vid åtgärder på varje utrustning.',
+    'Não existem saídas de peças associadas a equipamentos no período selecionado.' => 'Det finns inga uttag av delar kopplade till utrustning under den valda perioden.',
 ];

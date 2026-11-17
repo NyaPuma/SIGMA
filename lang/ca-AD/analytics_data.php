@@ -1,8 +1,8 @@
 <?php
 
 return [
-    'urgent' => 'Urgent',
-    'normal' => 'Normal',
+    'urgent' => 'Urgents',
+    'normal' => 'Normals',
     'web' => 'Web',
     'qr' => 'QR Code',
     'api' => 'API',

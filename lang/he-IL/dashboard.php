@@ -33,4 +33,5 @@ return [
     'Tickets Resolvidos' => 'כרטיסים שנפתרו',
     'Urgentes' => 'דחופים',
     'Últimas ações registadas na plataforma para acompanhar rapidamente a atividade operacional.' => 'פעולות אחרונות רשומות בפלטפורמה למעקב מהיר אחר פעילות תפעולית.',
+    'Sem ocorrências em curso' => 'אין אירועים פעילים',
 ];

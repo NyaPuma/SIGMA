@@ -141,7 +141,7 @@
             </td>
             <td>
                 <div class="label">{{ __('common.Duração Total') }}</div>
-                <div class="value">{{ $tickets->sum('minutes_spent') }}<span class="unit-min"> min</span></div>
+                <div class="value">{{ $tickets->sum('minutes_spent') }}<span class="unit-min"> {{ __('analytics.minutes') }}</span></div>
             </td>
             <td>
                 <div class="label">{{ __('common.Custo Total') }}</div>

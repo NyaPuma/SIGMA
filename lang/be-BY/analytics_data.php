@@ -4,7 +4,7 @@ return [
     'urgent' => 'Тэрміновы',
     'normal' => 'Звычайны',
     'web' => 'Web',
-    'qr' => 'QR Coдзe',
+    'qr' => 'QR-код',
     'api' => 'API',
     'mobile' => 'Mobile',
     'phone' => 'Тэлефон',

@@ -5,4 +5,5 @@ return [
     'logout' => 'התנתקות',
     'signin' => 'כניסה',
     'login_register' => 'כניסה / רישום',
+    'connection_error' => 'שגיאת התחברות',
 ];

@@ -113,4 +113,7 @@ return [
     'consumo' => 'fogyasztás',
     'em stock' => 'raktáron',
     'peças' => 'alkatrészek',
+    'Clique para selecionar peça...' => 'Kattintson alkatrész kiválasztásához...',
+    'Consumo de peças e respetivo valor nas intervenções de cada equipamento.' => 'Alkatrészfelhasználás és annak értéke az egyes eszközök beavatkozásai során.',
+    'Não existem saídas de peças associadas a equipamentos no período selecionado.' => 'A kiválasztott időszakban nincs eszközhöz rendelt alkatrészkiadás.',
 ];

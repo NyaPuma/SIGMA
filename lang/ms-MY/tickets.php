@@ -109,4 +109,10 @@ return [
     'Tem a certeza que pretende remover esta fotografia?' => 'Adakah anda pasti mahu membuang foto ini?',
     'Ticket atribuído' => 'Tiket ditugaskan',
     'Ticket atualizado' => 'Tiket dikemas kini',
+    'Relatório limitado aos :total registos mais recentes.' => 'Laporan dihadkan kepada :total rekod terbaharu.',
+    'Registos:' => 'Rekod:',
+    'Emitido em:' => 'Dikeluarkan pada:',
+    'Gerado automaticamente' => 'Dijana secara automatik',
+    'Análise dos estados operacionais, tempos de resolução e custos.' => 'Analisis status operasi, masa penyelesaian dan kos.',
+    'Sem registos de tickets para os parâmetros selecionados.' => 'Tiada rekod tiket untuk parameter yang dipilih.',
 ];

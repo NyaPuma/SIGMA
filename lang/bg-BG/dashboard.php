@@ -33,4 +33,5 @@ return [
     'Tickets Resolvidos' => 'Решени заявки',
     'Urgentes' => 'Спешни',
     'Últimas ações registadas na plataforma para acompanhar rapidamente a atividade operacional.' => 'Последни действия, регистрирани в платформата, за бързо проследяване на оперативната дейност.',
+    'Sem ocorrências em curso' => 'Няма текущи инциденти',
 ];

@@ -72,4 +72,9 @@ return [
     'Login / Registo' => '登入 / 註冊',
     'Terminar sessão' => '登出',
     'Ver perfil' => '檢視個人資料',
+    'verifying_credentials' => '正在伺服器上驗證憑證...',
+    'invalid_credentials' => '憑證無效。',
+    'auth_success' => '身分驗證成功！正在重新導向...',
+    'server_communication_failed' => '與伺服器的通訊發生嚴重故障。',
+    'authenticating' => '正在驗證身分...',
 ];

@@ -115,4 +115,8 @@ Protegido globalmente via middleware e verificado via Policy.',
     'Utilizador criado com sucesso.' => 'User created successfully.',
     'Utilizador inativado com sucesso.' => 'User successfully inactivated.',
     'Valor total do stock, total de peças, contagem de peças com stock baixo e lista de alertas.' => 'Total stock value, total parts, count of low stock parts and alert list.',
+    'Canal de envio:' => 'Sending channel:',
+    'Este é um disparo de validação estrutural enviado para confirmar a correta integração, credenciação e entrega de mensagens na plataforma.' => 'This is a structural validation dispatch sent to confirm correct integration, authentication and message delivery on the platform.',
+    'Ligação Estabelecida com Sucesso' => 'Connection Established Successfully',
+    'Verificação de Serviço' => 'Service Verification',
 ];

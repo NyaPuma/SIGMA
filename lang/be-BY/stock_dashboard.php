@@ -1,8 +1,11 @@
 <?php
 
 return [
-    'in_stock' => 'in stock',
-    'month' => 'montгадз',
-    'months' => 'montгадзs',
-    'consumption' => 'consumption',
+    'in_stock' => 'на складзе',
+    'month' => 'месяц',
+    'months' => 'месяцы',
+    'consumption' => 'выдатак',
+    'no_low_stock' => 'Няма дэталяў з папярэджаннем пра нізкі склад.',
+    'no_consumption' => 'Выдатак не запісаны.',
+    'no_runout' => 'У перыядзе няма прагнозаў вычарпання складу.',
 ];

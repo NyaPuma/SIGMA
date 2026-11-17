@@ -33,4 +33,5 @@ return [
     'Tickets Resolvidos' => 'Επιλυμένα Δελτία',
     'Urgentes' => 'Επείγοντα',
     'Últimas ações registadas na plataforma para acompanhar rapidamente a atividade operacional.' => 'Τελευταίες ενέργειες που καταγράφηκαν στην πλατφόρμα για γρήγορη παρακολούθηση της λειτουργικής δραστηριότητας.',
+    'Sem ocorrências em curso' => 'Χωρίς τρέχοντα περιστατικά',
 ];

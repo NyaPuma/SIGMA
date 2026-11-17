@@ -1,8 +1,9 @@
 <?php
 
 return [
-    'profile' => 'Bax Profil',
-    'logout' => 'Çıxış',
-    'signin' => 'Sign in',
-    'login_register' => 'Giriş / Qeygüniyyat',
+    'profile' => 'Profila baxın',
+    'logout' => 'Sessiyadan çıxın',
+    'signin' => 'Daxil olun',
+    'login_register' => 'Giriş / Qeydiyyat',
+    'connection_error' => 'Əlaqə xətası',
 ];

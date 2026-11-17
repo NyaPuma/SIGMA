@@ -33,4 +33,5 @@ return [
     'Tickets Resolvidos' => 'Megoldott jegyek',
     'Urgentes' => 'Sürgősek',
     'Últimas ações registadas na plataforma para acompanhar rapidamente a atividade operacional.' => 'A platformon rögzített legutóbbi műveletek az operatív tevékenység gyors követéséhez.',
+    'Sem ocorrências em curso' => 'Nincs folyamatban lévő incidens',
 ];
