@@ -1,0 +1,26 @@
+<?php
+
+return [
+    'A carregar inventário de equipamentos...' => 'Notiek iekārtu inventāra ielāde...',
+    'Aloque equipamentos através da gestão de equipamentos.' => 'Piešķiriet iekārtas, izmantojot iekārtu pārvaldību.',
+    'As ações efetuadas neste equipamento serão registadas automaticamente.' => 'Veiktās darbības šajā iekārtā tiks reģistrētas automātiski.',
+    'Associe o equipamento a uma sala através da edição.' => 'Saistiet iekārtu ar telpu, izmantojot rediģēšanu.',
+    'Crie um agendamento proativo de rotina para os técnicos.' => 'Izveidojiet tehniķiem regulāru proaktīvu apkopes grafiku.',
+    'Custos de peças por equipamento' => 'Detaļu izmaksas pa iekārtām',
+    'Descreva de forma objetiva o que se passa com o equipamento...' => 'Objektīvi aprakstiet, kas notiek ar iekārtu...',
+    'Dispara a geração assíncrona do relatório de custos por equipamento (PDF).' => 'Izsūta asinhronu iekārtu izmaksu pārskata ģenerēšanu (PDF).',
+    'Equipamento / Ativo Afetado *' => 'Skartā iekārta / aktīvs *',
+    'Equipamentos com Mais Avarias' => 'Visvairāk bojātās iekārtas',
+    'Exportar PDF de custos por equipamento' => 'Eksportēt iekārtu izmaksu PDF pārskatu',
+    'Nenhum equipamento ativo encontrado.' => 'Nav atrasta neviena aktīva iekārta.',
+    'O custo não pode ser um valor negativo.' => 'Izmaksas nevar būt negatīva vērtība.',
+    'O custo real não pode ser um valor negativo.' => 'Reālās izmaksas nevar būt negatīva vērtība.',
+    'O tempo despendido não pode ser um valor negativo.' => 'Patērētais laiks nevar būt negatīva vērtība.',
+    'Piquete Técnico Ativo' => 'Aktīva tehniķu dežūra',
+    'Plano com equipamento e peças associadas' => 'Plāns ar saistītajām iekārtām un detaļām',
+    'Ranking dos equipamentos mais intervencionados.' => 'Iekārtu ar visvairāk intervencēm rangs.',
+    'Sem equipamentos registados nesta sala.' => 'Šajā telpā nav reģistrētu iekārtu.',
+    'Sem sala associada a este equipamento.' => 'Ar šo iekārtu nav saistīta neviena telpa.',
+    'Ex: ThinkPad X1 Carbon' => 'Piemērs: ThinkPad X1 Carbon',
+    'Ex: Lenovo Group' => 'Piemērs: Lenovo Group',
+];

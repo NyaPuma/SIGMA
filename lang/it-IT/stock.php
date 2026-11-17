@@ -113,4 +113,7 @@ return [
     'consumo' => 'consumo',
     'em stock' => 'in stock',
     'peças' => 'pezzi',
+    'Clique para selecionar peça...' => 'Clicca per selezionare un pezzo...',
+    'Consumo de peças e respetivo valor nas intervenções de cada equipamento.' => 'Consumo di pezzi e relativo valore negli interventi su ciascuna apparecchiatura.',
+    'Não existem saídas de peças associadas a equipamentos no período selecionado.' => 'Non ci sono uscite di pezzi associate ad apparecchiature nel periodo selezionato.',
 ];

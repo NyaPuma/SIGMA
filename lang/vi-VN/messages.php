@@ -113,4 +113,10 @@ Protegido globalmente via middleware e verificado via Policy.' => 'Liệt kê c�
     'Utilizador criado com sucesso.' => 'Người dùng đã được tạo thành công.',
     'Utilizador inativado com sucesso.' => 'Người dùng đã được vô hiệu hóa thành công.',
     'Valor total do stock, total de peças, contagem de peças com stock baixo e lista de alertas.' => 'Giá trị tồn kho, tổng số phụ tùng, số lượng phụ tùng tồn kho thấp và danh sách cảnh báo.',
+    'Aparência atualizada com sucesso.' => 'Đã cập nhật giao diện thành công.',
+    'Escolha um tema pré-definido — a sua preferência é guardada por utilizador e aplicada nos próximos acessos.' => 'Chọn một chủ đề có sẵn — tùy chọn của bạn được lưu theo từng người dùng và áp dụng ở những lần truy cập sau.',
+    'Canal de envio:' => 'Kênh gửi:',
+    'Este é um disparo de validação estrutural enviado para confirmar a correta integração, credenciação e entrega de mensagens na plataforma.' => 'Đây là bản kiểm tra tính hợp lệ về cấu trúc được gửi đi nhằm xác nhận rằng việc tích hợp, xác thực và phân phối tin nhắn trên nền tảng được thực hiện chính xác.',
+    'Ligação Estabelecida com Sucesso' => 'Kết nối được thiết lập thành công',
+    'Verificação de Serviço' => 'Xác minh dịch vụ',
 ];

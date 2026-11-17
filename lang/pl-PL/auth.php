@@ -72,4 +72,9 @@ return [
     'Login / Registo' => 'Logowanie / rejestracja',
     'Terminar sessão' => 'Zakończ sesję',
     'Ver perfil' => 'Zobacz profil',
+    'verifying_credentials' => 'Weryfikacja poświadczeń na serwerze...',
+    'invalid_credentials' => 'Nieprawidłowe dane logowania.',
+    'auth_success' => 'Uwierzytelnianie zakończone powodzeniem! Przekierowywanie...',
+    'server_communication_failed' => 'Krytyczny błąd komunikacji z serwerem.',
+    'authenticating' => 'Uwierzytelnianie...',
 ];

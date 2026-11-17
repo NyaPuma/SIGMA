@@ -113,4 +113,10 @@ Protegido globalmente via middleware e verificado via Policy.' => 'הצג את �
     'Utilizador criado com sucesso.' => 'המשתמש נוצר בהצלחה.',
     'Utilizador inativado com sucesso.' => 'המשתמש הושבת בהצלחה.',
     'Valor total do stock, total de peças, contagem de peças com stock baixo e lista de alertas.' => 'ערך כולל של המלאי, סה"כ חלקים, ספירת חלקים עם מלאי נמוך ורשימת התראות.',
+    'Aparência atualizada com sucesso.' => 'העיצוב עודכן בהצלחה.',
+    'Escolha um tema pré-definido — a sua preferência é guardada por utilizador e aplicada nos próximos acessos.' => 'בחר נושא מוגדר מראש — ההעדפה נשמרת לכל משתמש ומוחלת בכניסות הבאות.',
+    'Canal de envio:' => 'ערוץ שליחה:',
+    'Este é um disparo de validação estrutural enviado para confirmar a correta integração, credenciação e entrega de mensagens na plataforma.' => 'זוהי הפעלת בדיקת מבנה שנשלחה כדי לאשר את השילוב, את האימות ואת מסירת ההודעות בפלטפורמה.',
+    'Ligação Estabelecida com Sucesso' => 'החיבור הוקם בהצלחה',
+    'Verificação de Serviço' => 'בדיקת שירות',
 ];

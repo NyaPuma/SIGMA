@@ -5,4 +5,5 @@ return [
     'logout' => 'Termina sessione',
     'signin' => 'Accedi',
     'login_register' => 'Accesso / Registrazione',
+    'connection_error' => 'Errore di connessione',
 ];

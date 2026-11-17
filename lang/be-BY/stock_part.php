@@ -2,11 +2,11 @@
 
 return [
     'min' => 'хв.',
-    'out' => 'Out of stock',
+    'out' => 'Склад вычарпаны',
     'low' => 'Нізкі stock',
     'ok' => 'OK',
-    'details' => 'Прагляд дзetails',
+    'details' => 'Паглядзець падрабязнасці',
     'edit' => 'Рэдагаваць',
-    'empty' => 'Не parts founдз witгадз tгадзe applieдз filters',
-    'Limiar a partir do qual um orçamento precisa de aprovação.' => 'Tгадзresгадзolдз above wгадзicгадз a buдзget neeдзs approval.',
+    'empty' => 'Няма дэталяў, знойдзеных з прымененымі фільтрамі',
+    'Limiar a partir do qual um orçamento precisa de aprovação.' => 'Парог, паводле якога бюджэт патрабуе зацвярджэння.',
 ];

@@ -113,4 +113,10 @@ Protegido globalmente via middleware e verificado via Policy.' => 'رکورده�
     'Utilizador criado com sucesso.' => 'کاربر با موفقیت ایجاد شد.',
     'Utilizador inativado com sucesso.' => 'کاربر با موفقیت غیرفعال شد.',
     'Valor total do stock, total de peças, contagem de peças com stock baixo e lista de alertas.' => 'ارزش کل انبار، تعداد کل قطعات، تعداد قطعات با کمبود انبار و لیست هشدارها.',
+    'Aparência atualizada com sucesso.' => 'ظاهر با موفقیت به‌روزرسانی شد.',
+    'Escolha um tema pré-definido — a sua preferência é guardada por utilizador e aplicada nos próximos acessos.' => 'یکی از قالب‌های از پیش تعریف‌شده را انتخاب کنید — ترجیح شما برای هر کاربر ذخیره می‌شود و در ورودهای بعدی اعمال می‌گردد.',
+    'Canal de envio:' => 'کانال ارسال:',
+    'Este é um disparo de validação estrutural enviado para confirmar a correta integração, credenciação e entrega de mensagens na plataforma.' => 'این یک راه‌اندازی اعتبارسنجی ساختاری است که برای تأیید یکپارچه‌سازی، احراز هویت و تحویل پیام‌ها در پلتفرم ارسال شده است.',
+    'Ligação Estabelecida com Sucesso' => 'اتصال با موفقیت برقرار شد',
+    'Verificação de Serviço' => 'اعتبارسنجی سرویس',
 ];

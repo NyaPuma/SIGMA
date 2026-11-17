@@ -113,4 +113,7 @@ return [
     'consumo' => '消費',
     'em stock' => '在庫あり',
     'peças' => '部品',
+    'Clique para selecionar peça...' => 'クリックして部品を選択...',
+    'Consumo de peças e respetivo valor nas intervenções de cada equipamento.' => '各設備の修理における部品の消費量と関連金額。',
+    'Não existem saídas de peças associadas a equipamentos no período selecionado.' => '選択した期間に、設備に関連する部品の出庫はありません。',
 ];

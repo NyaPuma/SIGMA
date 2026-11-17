@@ -1,8 +1,9 @@
 <?php
 
 return [
-    'profile' => 'View Profile',
+    'profile' => 'Shiko profilin',
     'logout' => 'Dil',
-    'signin' => 'Sign in',
-    'login_register' => 'Login / Register',
+    'signin' => 'Hyrja',
+    'login_register' => 'Hyrje / Regjistrim',
+    'connection_error' => 'Gabim lidhjeje',
 ];

@@ -72,4 +72,9 @@ return [
     'Login / Registo' => 'Bejelentkezés / regisztráció',
     'Terminar sessão' => 'Kijelentkezés',
     'Ver perfil' => 'Profil megtekintése',
+    'verifying_credentials' => 'A hitelesítő adatok ellenőrzése a szerveren...',
+    'invalid_credentials' => 'Érvénytelen hitelesítő adatok.',
+    'auth_success' => 'Sikeres hitelesítés! Átirányítás...',
+    'server_communication_failed' => 'Kritikus szerverkommunikációs hiba.',
+    'authenticating' => 'Hitelesítés...',
 ];

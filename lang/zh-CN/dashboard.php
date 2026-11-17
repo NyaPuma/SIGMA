@@ -33,4 +33,5 @@ return [
     'Tickets Resolvidos' => '已解决的工单',
     'Urgentes' => '紧急',
     'Últimas ações registadas na plataforma para acompanhar rapidamente a atividade operacional.' => '平台上记录的最新操作，用于快速跟进运营活动。',
+    'Sem ocorrências em curso' => '没有进行中的事件',
 ];

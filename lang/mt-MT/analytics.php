@@ -15,4 +15,8 @@ return [
     'hours' => 'h',
     'day' => 'd',
     'days' => 'd',
+    'load_error' => 'Żball fit-tagħbija tad-data analitika.',
+    'export_processing' => 'Qed jiġi ġġenerat...',
+    'export_start_error' => 'Il-bidu tal-esportazzjoni falla.',
+    'export_network_error' => 'Żball tan-netwerk fil-bidu tal-esportazzjoni. Erġa\' pprova.',
 ];

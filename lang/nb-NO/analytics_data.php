@@ -2,7 +2,7 @@
 
 return [
     'urgent' => 'Hast',
-    'normal' => 'Normal',
+    'normal' => 'Normale',
     'web' => 'Web',
     'qr' => 'QR-kode',
     'api' => 'API',

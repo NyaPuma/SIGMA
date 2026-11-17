@@ -113,4 +113,7 @@ return [
     'consumo' => 'kulutus',
     'em stock' => 'varastossa',
     'peças' => 'varaosat',
+    'Clique para selecionar peça...' => 'Valitse osa napsauttamalla...',
+    'Consumo de peças e respetivo valor nas intervenções de cada equipamento.' => 'Osien kulutus ja niiden arvo kunkin laitteen toimenpiteissä.',
+    'Não existem saídas de peças associadas a equipamentos no período selecionado.' => 'Valitulla jaksolla ei ole laitteisiin liittyviä osien ulosottoja.',
 ];

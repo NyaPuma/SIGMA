@@ -113,4 +113,7 @@ return [
     'consumo' => 'разход',
     'em stock' => 'в наличност',
     'peças' => 'части',
+    'Clique para selecionar peça...' => 'Кликнете, за да изберете част...',
+    'Consumo de peças e respetivo valor nas intervenções de cada equipamento.' => 'Разход на части и съответната стойност в интервенциите за всяко оборудване.',
+    'Não existem saídas de peças associadas a equipamentos no período selecionado.' => 'Няма движения на части, свързани с оборудване в избрания период.',
 ];

@@ -63,8 +63,7 @@ return [
     'Intervenção concluída e ticket fechado com sucesso.' => 'Intervence dokončena a tiket úspěšně uzavřen.',
     'Intervenção iniciada com sucesso.' => 'Intervence byla úspěšně zahájena.',
     'Lista os registos de auditoria do sistema.
-Protegido globalmente via middleware e verificado via Policy.' => 'Lista os registos de auditoria do sistema.
-Protegido globalmente via middleware e verificado via Policy.',
+Protegido globalmente via middleware e verificado via Policy.' => 'Vypisuje záznamy auditu systému. Globálně chráněno přes middleware a ověřováno přes Policy.',
     'Manutenção preventiva agendada com sucesso.' => 'Preventivní údržba byla úspěšně naplánována.',
     'Mensagem automática de sistema • Não responda a este endereço' => 'Automatická systémová zpráva • Neodpovídejte na tuto adresu',
     'Movimento de stock registado com sucesso.' => 'Pohyb zásob byl úspěšně zaznamenán.',
@@ -113,4 +112,10 @@ Protegido globalmente via middleware e verificado via Policy.',
     'Utilizador criado com sucesso.' => 'Uživatel byl úspěšně vytvořen.',
     'Utilizador inativado com sucesso.' => 'Uživatel byl úspěšně deaktivován.',
     'Valor total do stock, total de peças, contagem de peças com stock baixo e lista de alertas.' => 'Celková hodnota zásob, celkový počet dílů, počet dílů s nízkou zásobou a seznam upozornění.',
+    'Aparência atualizada com sucesso.' => 'Vzhled byl úspěšně aktualizován.',
+    'Escolha um tema pré-definido — a sua preferência é guardada por utilizador e aplicada nos próximos acessos.' => 'Zvolte předdefinovaný motiv — vaše předvolba se ukládá pro každého uživatele a použije se při příštích přihlášeních.',
+    'Canal de envio:' => 'Kanál pro odesílání:',
+    'Este é um disparo de validação estrutural enviado para confirmar a correta integração, credenciação e entrega de mensagens na plataforma.' => 'Jedná se o testovací odeslání strukturální validace, zaslané k potvrzení správné integrace, ověření a doručování zpráv na platformě.',
+    'Ligação Estabelecida com Sucesso' => 'Připojení úspěšně navázáno',
+    'Verificação de Serviço' => 'Ověření služby',
 ];

@@ -113,4 +113,7 @@ return [
     'consumo' => 'verbruik',
     'em stock' => 'in voorraad',
     'peças' => 'onderdelen',
+    'Clique para selecionar peça...' => 'Klik om een onderdeel te selecteren...',
+    'Consumo de peças e respetivo valor nas intervenções de cada equipamento.' => 'Onderdeelverbruik en de bijbehorende kosten bij de interventies van elk apparaat.',
+    'Não existem saídas de peças associadas a equipamentos no período selecionado.' => 'Er zijn in de geselecteerde periode geen uitgaande bewegingen van onderdelen gekoppeld aan apparaten.',
 ];

@@ -1,0 +1,26 @@
+<?php
+
+return [
+    'A carregar peças...' => 'S\'estan carregant les peces...',
+    'Atualiza uma peça.' => 'Actualitza una peça.',
+    'Atualizar categoria de peças' => 'Actualitzar la categoria de peces',
+    'Atualizar peça' => 'Actualitzar la peça',
+    'Desativar categoria de peças' => 'Desactivar la categoria de peces',
+    'Entradas e saídas de stock aparecerão aqui.' => 'Les entrades i sortides d\'estoc apareixeran aquí.',
+    'Informação da Peça' => 'Informació de la peça',
+    'Lista paginada de peças' => 'Llista paginada de peces',
+    'Mínimo' => 'Mínim',
+    'Mínimo 8 caracteres' => 'Mínim 8 caràcters',
+    'Mínimo de 8 caracteres' => 'Mínim de 8 caràcters',
+    'Peça não encontrada' => 'Peça no trobada',
+    'Peças mais consumidas' => 'Peces més consumides',
+    'Stock inicial' => 'Estoc inicial',
+    'Stock inicial de catalogação' => 'Estoc inicial de catalogació',
+    'Stock máximo' => 'Estoc màxim',
+    'Stock mínimo' => 'Estoc mínim',
+    'Valor em stock' => 'Valor de l\'estoc',
+    'Ajuste de inventário' => 'Ajust d\'inventari',
+    'Consumo em intervenção' => 'Consum en intervenció',
+    'Devolução de sobrante' => 'Devolució de sobrant',
+    'consumo' => 'consum',
+];
