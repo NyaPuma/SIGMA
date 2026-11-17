@@ -109,4 +109,10 @@ return [
     'Tem a certeza que pretende remover esta fotografia?' => 'คุณแน่ใจหรือไม่ว่าต้องการลบรูปภาพนี้?',
     'Ticket atribuído' => 'มอบหมายตั๋วแล้ว',
     'Ticket atualizado' => 'อัปเดตตั๋วแล้ว',
+    'Relatório limitado aos :total registos mais recentes.' => 'รายงานจำกัดเฉพาะ :total บันทึกล่าสุด',
+    'Registos:' => 'บันทึก:',
+    'Emitido em:' => 'ออกเมื่อ:',
+    'Gerado automaticamente' => 'สร้างโดยอัตโนมัติ',
+    'Análise dos estados operacionais, tempos de resolução e custos.' => 'วิเคราะห์สถานะการทำงาน เวลาในการแก้ไข และค่าใช้จ่าย',
+    'Sem registos de tickets para os parâmetros selecionados.' => 'ไม่มีบันทึกตั๋วที่ตรงกับพารามิเตอร์ที่เลือก',
 ];

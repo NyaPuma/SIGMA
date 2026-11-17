@@ -13,7 +13,7 @@ These tests verify that **different subsystems cooperate correctly**. While unit
 | **Events** | Ticket events reach the listeners that send notifications (a status change really notifies the owner and the technician) |
 | **Queues** | Background jobs are queued and processed correctly (exports, emails, notifications) |
 | **Database** | Foreign key integrity (you can't delete a room that still has equipment in it), soft deletes, model lifecycles, mass assignment protection, relationship correctness |
-| **Mail** | Email delivery works correctly (test email via Mailgun) |
+| **Mail** | Email delivery works correctly (test email through the configured mailer) |
 
 ## How to run these tests
 

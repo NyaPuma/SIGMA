@@ -1,7 +1,7 @@
 <?php
 
 return [
-    'inventory_adjustment' => 'Inventory adjustment',
-    'surplus_return' => 'Return of surplus',
-    'intervention_consumption' => 'Consumption during intervention',
+    'inventory_adjustment' => 'Inventāra korekcija',
+    'surplus_return' => 'Atlikuma atgriešana',
+    'intervention_consumption' => 'Patēriņš intervences laikā',
 ];

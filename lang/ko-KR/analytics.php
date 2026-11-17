@@ -15,4 +15,8 @@ return [
     'hours' => '시간',
     'day' => '일',
     'days' => '일',
+    'load_error' => '분석 데이터를 불러올 수 없습니다.',
+    'export_processing' => '생성 중...',
+    'export_start_error' => '내보내기를 시작할 수 없습니다.',
+    'export_network_error' => '내보내기를 시작하는 동안 네트워크 오류가 발생했습니다. 다시 시도해 주세요.',
 ];

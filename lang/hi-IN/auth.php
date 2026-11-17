@@ -72,4 +72,9 @@ return [
     'Login / Registo' => 'लॉगिन / पंजीकरण',
     'Terminar sessão' => 'लॉगआउट',
     'Ver perfil' => 'प्रोफ़ाइल देखें',
+    'verifying_credentials' => 'सर्वर पर क्रेडेंशियल सत्यापित किए जा रहे हैं...',
+    'invalid_credentials' => 'अमान्य लॉगिन क्रेडेंशियल।',
+    'auth_success' => 'प्रमाणीकरण सफल! पुनर्निर्देशित किया जा रहा...',
+    'server_communication_failed' => 'सर्वर संचार में गंभीर विफलता।',
+    'authenticating' => 'प्रमाणित किया जा रहा...',
 ];

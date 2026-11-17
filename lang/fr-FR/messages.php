@@ -63,8 +63,7 @@ return [
     'Intervenção concluída e ticket fechado com sucesso.' => 'Intervention terminée et ticket fermé avec succès.',
     'Intervenção iniciada com sucesso.' => 'Intervention démarrée avec succès.',
     'Lista os registos de auditoria do sistema.
-Protegido globalmente via middleware e verificado via Policy.' => 'Lista os registos de auditoria do sistema.
-Protegido globalmente via middleware e verificado via Policy.',
+Protegido globalmente via middleware e verificado via Policy.' => 'Répertorie les journaux d\'audit du système. Protégé globalement via middleware et vérifié via Policy.',
     'Manutenção preventiva agendada com sucesso.' => 'Maintenance préventive planifiée avec succès.',
     'Mensagem automática de sistema • Não responda a este endereço' => 'Message automatique du système • Ne répondez pas à cette adresse',
     'Movimento de stock registado com sucesso.' => 'Mouvement de stock enregistré avec succès.',
@@ -113,4 +112,10 @@ Protegido globalmente via middleware e verificado via Policy.',
     'Utilizador criado com sucesso.' => 'Utilisateur créé avec succès.',
     'Utilizador inativado com sucesso.' => 'Utilisateur désactivé avec succès.',
     'Valor total do stock, total de peças, contagem de peças com stock baixo e lista de alertas.' => 'Valeur totale du stock, total des pièces, nombre de pièces à stock faible et liste des alertes.',
+    'Aparência atualizada com sucesso.' => 'Apparence mise à jour avec succès.',
+    'Escolha um tema pré-definido — a sua preferência é guardada por utilizador e aplicada nos próximos acessos.' => 'Choisissez un thème prédéfini — votre préférence est enregistrée par utilisateur et appliquée lors de vos prochaines connexions.',
+    'Canal de envio:' => 'Canal d\'envoi :',
+    'Este é um disparo de validação estrutural enviado para confirmar a correta integração, credenciação e entrega de mensagens na plataforma.' => 'Ceci est un test de validation structurelle envoyé pour confirmer la bonne intégration, l\'authentification et la livraison des messages sur la plateforme.',
+    'Ligação Estabelecida com Sucesso' => 'Connexion établie avec succès',
+    'Verificação de Serviço' => 'Vérification du service',
 ];

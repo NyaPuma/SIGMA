@@ -109,4 +109,10 @@ return [
     'Tem a certeza que pretende remover esta fotografia?' => 'Bu fotoğrafı kaldırmak istediğinizden emin misiniz?',
     'Ticket atribuído' => 'Atanan ticket',
     'Ticket atualizado' => 'Güncellenen ticket',
+    'Relatório limitado aos :total registos mais recentes.' => 'Rapor, en son :total kayıtla sınırlandırıldı.',
+    'Registos:' => 'Kayıtlar:',
+    'Emitido em:' => 'Düzenlenme tarihi:',
+    'Gerado automaticamente' => 'Otomatik olarak oluşturuldu',
+    'Análise dos estados operacionais, tempos de resolução e custos.' => 'Operasyonel durumların, çözüm sürelerinin ve maliyetlerin analizi.',
+    'Sem registos de tickets para os parâmetros selecionados.' => 'Seçilen parametrelere ait ticket kaydı yok.',
 ];

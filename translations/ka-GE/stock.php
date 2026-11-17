@@ -1,0 +1,35 @@
+<?php
+
+declare(strict_types=1);
+
+return [
+    ':part — stock atual :current (mínimo :min)' => ':part — მიმდინარე მარაგი :current (მინიმუმი :min)',
+    'CSV Inventário' => 'ინვენტარის CSV',
+    'Catálogo de peças, controlo de stock e localização.' => 'ნაწილების კატალოგი, მარაგის კონტროლი და ადგილმდებარეობა.',
+    'Catálogo de peças, fornecedores, movimentos de stock, dashboard e relatórios' => 'ნაწილების კატალოგი, მომწოდებლები, მარაგის მოძრაობები, სამმართველო დაფა და ანგარიშები',
+    'Criar categoria de peças' => 'ნაწილების კატეგორიის შექმნა',
+    'Elimina logicamente uma peça.' => 'ლოგიკურად შლის ნაწილს.',
+    'Entradas e saídas de stock aparecerão aqui.' => 'მარაგის შემოსვლები და გასვლები აქ გამოჩნდება.',
+    'Estado do stock (low_stock, out_of_stock, healthy)' => 'მარაგის სტატუსი (low_stock, out_of_stock, healthy)',
+    'Exporta a lista de peças com stock baixo em CSV.' => 'დაბალი მარაგის მქონე ნაწილების სია CSV-ში ექსპორტირდება.',
+    'Exporta o inventário completo em CSV.' => 'სრული ინვენტარი CSV-ში ექსპორტირდება.',
+    'Ficheiro CSV de peças com stock baixo' => 'დაბალი მარაგის მქონე ნაწილების CSV ფაილი',
+    'Gestão administrativa de peças, fornecedores, taxas de IVA, categorias e planos de manutenção' => 'ნაწილების, მომწოდებლების, დღგ-ის განაკვეთების, კატეგორიებისა და მოვლა-შენახვის გეგმების ადმინისტრაციული მართვა',
+    'Lista de movimentos de stock' => 'მარაგის მოძრაობების სია',
+    'Listar movimentos de stock' => 'მარაგის მოძრაობების ჩამოთვლა',
+    'Listar peças' => 'ნაწილების ჩამოთვლა',
+    'Nova Peça' => 'ახალი ნაწილი',
+    'Peça' => 'ნაწილი',
+    'Peça ativa no catálogo' => 'აქტიური ნაწილი კატალოგში',
+    'Peça com categoria, taxa de IVA e fornecedores' => 'ნაწილი კატეგორიით, დღგ-ის განაკვეთითა და მომწოდებლებით',
+    'Peças do plano' => 'გეგმის ნაწილები',
+    'Peças em catálogo' => 'ნაწილები კატალოგში',
+    'Selecione peça...' => 'აირჩიეთ ნაწილი...',
+    'Stock atual' => 'მიმდინარე მარაგი',
+    'Total de custos em peças' => 'ნაწილების ხარჯების ჯამი',
+    'Valor em stock' => 'მარაგის ღირებულება',
+    'Voltar às Peças' => 'ნაწილებზე დაბრუნება',
+    'consumo' => 'მოხმარება',
+    'em stock' => 'მარაგში',
+    'peças' => 'ნაწილები',
+];

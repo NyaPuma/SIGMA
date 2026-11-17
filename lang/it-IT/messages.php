@@ -63,8 +63,7 @@ return [
     'Intervenção concluída e ticket fechado com sucesso.' => 'Intervento concluso e ticket chiuso con successo.',
     'Intervenção iniciada com sucesso.' => 'Intervento avviato con successo.',
     'Lista os registos de auditoria do sistema.
-Protegido globalmente via middleware e verificado via Policy.' => 'Lista os registos de auditoria do sistema.
-Protegido globalmente via middleware e verificado via Policy.',
+Protegido globalmente via middleware e verificado via Policy.' => 'Elenca i registri di audit del sistema. Protetto globalmente tramite middleware e verificato tramite Policy.',
     'Manutenção preventiva agendada com sucesso.' => 'Manutenzione preventiva programmata con successo.',
     'Mensagem automática de sistema • Não responda a este endereço' => 'Messaggio automatico di sistema • Non rispondere a questo indirizzo',
     'Movimento de stock registado com sucesso.' => 'Movimento di stock registrato con successo.',
@@ -113,4 +112,10 @@ Protegido globalmente via middleware e verificado via Policy.',
     'Utilizador criado com sucesso.' => 'Utente creato con successo.',
     'Utilizador inativado com sucesso.' => 'Utente disattivato con successo.',
     'Valor total do stock, total de peças, contagem de peças com stock baixo e lista de alertas.' => 'Valore totale dello stock, totale dei pezzi, conteggio dei pezzi con stock basso ed elenco degli avvisi.',
+    'Aparência atualizada com sucesso.' => 'Aspetto aggiornato con successo.',
+    'Escolha um tema pré-definido — a sua preferência é guardada por utilizador e aplicada nos próximos acessos.' => 'Scegli un tema predefinito — la tua preferenza viene salvata per utente e applicata ai prossimi accessi.',
+    'Canal de envio:' => 'Canale di invio:',
+    'Este é um disparo de validação estrutural enviado para confirmar a correta integração, credenciação e entrega de mensagens na plataforma.' => 'Questo è un test di validazione strutturale inviato per confermare la corretta integrazione, autenticazione e consegna dei messaggi sulla piattaforma.',
+    'Ligação Estabelecida com Sucesso' => 'Connessione stabilita con successo',
+    'Verificação de Serviço' => 'Verifica del servizio',
 ];

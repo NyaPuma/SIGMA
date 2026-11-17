@@ -1,17 +1,17 @@
 <?php
 
 return [
-    'urgent' => 'Urgent',
-    'normal' => 'Normal',
+    'urgent' => 'Հրատապ',
+    'normal' => 'Նորմալ',
     'web' => 'Web',
-    'qr' => 'QR Code',
+    'qr' => 'ՔՐ կոդ',
     'api' => 'API',
-    'mobile' => 'Mobile',
-    'phone' => 'Telephone',
-    'ticket_updated' => 'Ticket updated',
-    'ticket_assigned' => 'Ticket assigned',
-    'comment_added' => 'Comment added',
-    'attachment_added' => 'Attachment added',
-    'budget_request' => 'Budget request',
-    'Estatísticas' => 'Statistics',
+    'mobile' => 'Բջջային',
+    'phone' => 'Հեռախոս',
+    'ticket_updated' => 'Տոմսը թարմացվեց',
+    'ticket_assigned' => 'Տոմսը նշանակվեց',
+    'comment_added' => 'Դիտողություն ավելացվեց',
+    'attachment_added' => 'Կից ֆայլ ավելացվեց',
+    'budget_request' => 'Բյուջեի հայտ',
+    'Estatísticas' => 'Վիճակագրություն',
 ];

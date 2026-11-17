@@ -72,4 +72,9 @@ return [
     'Login / Registo' => 'เข้าสู่ระบบ / ลงทะเบียน',
     'Terminar sessão' => 'ออกจากระบบ',
     'Ver perfil' => 'ดูโปรไฟล์',
+    'verifying_credentials' => 'กำลังตรวจสอบข้อมูลเข้าสู่ระบบบนเซิร์ฟเวอร์...',
+    'invalid_credentials' => 'ข้อมูลเข้าสู่ระบบไม่ถูกต้อง',
+    'auth_success' => 'ยืนยันตัวตนสำเร็จ กำลังเปลี่ยนหน้า...',
+    'server_communication_failed' => 'การสื่อสารกับเซิร์ฟเวอร์ล้มเหลวอย่างรุนแรง',
+    'authenticating' => 'กำลังยืนยันตัวตน...',
 ];

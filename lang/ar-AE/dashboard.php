@@ -9,7 +9,7 @@ return [
     'Aceda ao painel de operação com um ambiente profissional, simples e focado na autenticação.' => 'الدخول إلى لوحة التشغيل في بيئة مهنية وبسيطة ومركزة على المصادقة.',
     'Aparência do Painel' => 'مظهر لوحة التحكم',
     'Atividade Recente' => 'النشاط الأخير',
-    'Cada família tem um par claro/escuro com o mesmo matiz — o botão do painel alterna entre os dois.' => 'كل فئة لها زوج فاتح/غامق بنفس اللون — زر لوحة التحكم يalternates بينهما.',
+    'Cada família tem um par claro/escuro com o mesmo matiz — o botão do painel alterna entre os dois.' => 'كل فئة لها زوج فاتح/غامق بنفس اللون — زر لوحة التحكم يبدّل بينهما.',
     'Dashboard' => 'لوحة التحكم',
     'Dashboard Analítico' => 'لوحة التحكم التحليلية',
     'Este é o texto principal do painel, desenhado para leitura confortável no dia a dia.' => 'هذا هو النص الرئيسي للوحة التحكم، مصمم للقراءة المريحة في الحياة اليومية.',
@@ -33,4 +33,5 @@ return [
     'Tickets Resolvidos' => 'التذاكر التي تم حلها',
     'Urgentes' => 'عاجلة',
     'Últimas ações registadas na plataforma para acompanhar rapidamente a atividade operacional.' => 'آخر الإجراءات المسجلة على المنصة لمتابعة النشاط التشغيلي بسرعة.',
+    'Sem ocorrências em curso' => 'لا توجد حوادث جارية',
 ];

@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="pt">
+<html lang="{{ app()->getLocale() }}">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Teste de Configuração de Email</title>
+    <title>{{ __('notifications.mail_test_subject') }}</title>
     <style>
         /* Reset and Safe Rendering Rules */
         body {
@@ -104,22 +104,21 @@
         <tr>
             <td>
                 {{-- Context Identifier --}}
-                <div class="header-badge">Verificação de Serviço</div>
-                <h1 class="title">Ligação Estabelecida com Sucesso</h1>
+                <div class="header-badge">{{ __('messages.Verificação de Serviço') }}</div>
+                <h1 class="title">{{ __('messages.Ligação Estabelecida com Sucesso') }}</h1>
 
-                <p class="text-body">Olá, {{ $recipientName ?? 'Utilizador' }}.</p>
-                <p class="text-body text-body--no-margin">Este é um disparo de validação estrutural enviado para confirmar a correta integração, credenciação e entrega de mensagens na plataforma.</p>
+                <p class="text-body">{{ __('notifications.greeting', ['name' => $recipientName]) }}</p>
+                <p class="text-body text-body--no-margin">{{ __('messages.Este é um disparo de validação estrutural enviado para confirmar a correta integração, credenciação e entrega de mensagens na plataforma.') }}</p>
 
                 {{-- System Diagnostics Metadata --}}
                 <div class="telemetry-box">
-                    <span class="telemetry-label">TRAFFIC CHANNEL:</span> Mailgun API Driver<br>
-                    <span class="telemetry-label">STATUS:</span> Connection Active / Valid<br>
-                    <span class="telemetry-label">ISSUED AT:</span> {{ now()->format('Y-m-d H:i:s') }} UTC
+                    <span class="telemetry-label">{{ __('messages.Canal de envio:') }}</span> {{ $mailerName }}<br>
+                    <span class="telemetry-label">{{ __('common.Emitido em:') }}</span> {{ now()->format('Y-m-d H:i:s') }} UTC
                 </div>
 
                 {{-- System Footer --}}
                 <div class="footer">
-                    <p class="footer-text">Mensagem automática de diagnóstico • Não responda a este endereço</p>
+                    <p class="footer-text">{{ __('messages.Mensagem automática de sistema • Não responda a este endereço') }}</p>
                 </div>
             </td>
         </tr>

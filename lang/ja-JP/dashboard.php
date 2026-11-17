@@ -33,4 +33,5 @@ return [
     'Tickets Resolvidos' => '解決済みチケット',
     'Urgentes' => '緊急',
     'Últimas ações registadas na plataforma para acompanhar rapidamente a atividade operacional.' => 'プラットフォームに記録された最新の操作。運用活動を迅速に追跡するため。',
+    'Sem ocorrências em curso' => '進行中のインシデントはありません',
 ];

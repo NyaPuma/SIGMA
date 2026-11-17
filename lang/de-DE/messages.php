@@ -63,8 +63,7 @@ return [
     'Intervenção concluída e ticket fechado com sucesso.' => 'Einsatz abgeschlossen und Ticket erfolgreich geschlossen.',
     'Intervenção iniciada com sucesso.' => 'Einsatz erfolgreich gestartet.',
     'Lista os registos de auditoria do sistema.
-Protegido globalmente via middleware e verificado via Policy.' => 'Lista os registos de auditoria do sistema.
-Protegido globalmente via middleware e verificado via Policy.',
+Protegido globalmente via middleware e verificado via Policy.' => 'Listet die Prüfprotokolle des Systems auf. Global über Middleware geschützt und über Policy überprüft.',
     'Manutenção preventiva agendada com sucesso.' => 'Vorbeugende Wartung erfolgreich geplant.',
     'Mensagem automática de sistema • Não responda a este endereço' => 'Automatische Systemnachricht • Antworten Sie nicht an diese Adresse',
     'Movimento de stock registado com sucesso.' => 'Bestandsbewegung erfolgreich erfasst.',
@@ -113,4 +112,10 @@ Protegido globalmente via middleware e verificado via Policy.',
     'Utilizador criado com sucesso.' => 'Benutzer erfolgreich erstellt.',
     'Utilizador inativado com sucesso.' => 'Benutzer erfolgreich deaktiviert.',
     'Valor total do stock, total de peças, contagem de peças com stock baixo e lista de alertas.' => 'Gesamtwert des Bestands, Gesamtzahl der Ersatzteile, Anzahl der Ersatzteile mit niedrigem Bestand und Liste der Warnungen.',
+    'Aparência atualizada com sucesso.' => 'Erscheinungsbild erfolgreich aktualisiert.',
+    'Escolha um tema pré-definido — a sua preferência é guardada por utilizador e aplicada nos próximos acessos.' => 'Wählen Sie ein vordefiniertes Design — Ihre Einstellung wird pro Benutzer gespeichert und bei den nächsten Besuchen angewendet.',
+    'Canal de envio:' => 'Versandkanal:',
+    'Este é um disparo de validação estrutural enviado para confirmar a correta integração, credenciação e entrega de mensagens na plataforma.' => 'Dies ist eine strukturelle Validierungsmeldung, die gesendet wurde, um die korrekte Integration, Authentifizierung und Zustellung von Nachrichten auf der Plattform zu bestätigen.',
+    'Ligação Estabelecida com Sucesso' => 'Verbindung erfolgreich hergestellt',
+    'Verificação de Serviço' => 'Überprüfung des Dienstes',
 ];

@@ -5,4 +5,5 @@ return [
     'logout' => 'Odhlásiť sa',
     'signin' => 'Prihlásiť sa',
     'login_register' => 'Prihlásenie / Registrácia',
+    'connection_error' => 'Chyba pripojenia',
 ];

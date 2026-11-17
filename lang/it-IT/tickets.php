@@ -109,4 +109,10 @@ return [
     'Tem a certeza que pretende remover esta fotografia?' => 'Sei sicuro di voler rimuovere questa foto?',
     'Ticket atribuído' => 'Ticket assegnato',
     'Ticket atualizado' => 'Ticket aggiornato',
+    'Relatório limitado aos :total registos mais recentes.' => 'Report limitato ai :total registri più recenti.',
+    'Registos:' => 'Registri:',
+    'Emitido em:' => 'Emesso il:',
+    'Gerado automaticamente' => 'Generato automaticamente',
+    'Análise dos estados operacionais, tempos de resolução e custos.' => 'Analisi degli stati operativi, dei tempi di risoluzione e dei costi.',
+    'Sem registos de tickets para os parâmetros selecionados.' => 'Nessun record di ticket per i parametri selezionati.',
 ];

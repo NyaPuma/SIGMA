@@ -109,4 +109,10 @@ return [
     'Tem a certeza que pretende remover esta fotografia?' => '确定要移除这张照片吗？',
     'Ticket atribuído' => '工单已分配',
     'Ticket atualizado' => '工单已更新',
+    'Relatório limitado aos :total registos mais recentes.' => '报告仅包含最近的 :total 条记录。',
+    'Registos:' => '记录：',
+    'Emitido em:' => '签发日期：',
+    'Gerado automaticamente' => '自动生成',
+    'Análise dos estados operacionais, tempos de resolução e custos.' => '对运行状态、解决时间和成本的分析。',
+    'Sem registos de tickets para os parâmetros selecionados.' => '所选参数下没有工单记录。',
 ];

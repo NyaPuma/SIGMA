@@ -109,4 +109,10 @@ return [
     'Tem a certeza que pretende remover esta fotografia?' => 'هل أنت متأكد من إزالة هذه الصورة؟',
     'Ticket atribuído' => 'تم تعيين التذكرة',
     'Ticket atualizado' => 'تم تحديث التذكرة',
+    'Relatório limitado aos :total registos mais recentes.' => 'التقرير محدود بأحدث :total سجلات.',
+    'Registos:' => 'السجلات:',
+    'Emitido em:' => 'تاريخ الإصدار:',
+    'Gerado automaticamente' => 'أُنشئ تلقائيًا',
+    'Análise dos estados operacionais, tempos de resolução e custos.' => 'تحليل الحالات التشغيلية وأوقات الحل والتكاليف.',
+    'Sem registos de tickets para os parâmetros selecionados.' => 'لا توجد سجلات تذاكر للمعايير المحددة.',
 ];

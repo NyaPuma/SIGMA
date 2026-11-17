@@ -63,8 +63,8 @@ return [
     'Intervenção concluída e ticket fechado com sucesso.' => 'Η παρέμβαση ολοκληρώθηκε και το δελτίο έκλεισε με επιτυχία.',
     'Intervenção iniciada com sucesso.' => 'Η παρέμβαση ξεκίνησε με επιτυχία.',
     'Lista os registos de auditoria do sistema.
-Protegido globalmente via middleware e verificado via Policy.' => 'Lista os registos de auditoria do sistema.
-Protegido globalmente via middleware e verificado via Policy.',
+Protegido globalmente via middleware e verificado via Policy.' => 'Παραθέτει τα αρχεία ελέγχου του συστήματος.
+Προστατεύεται καθολικά μέσω middleware και επαληθεύεται μέσω Policy.',
     'Manutenção preventiva agendada com sucesso.' => 'Η προληπτική συντήρηση προγραμματίστηκε με επιτυχία.',
     'Mensagem automática de sistema • Não responda a este endereço' => 'Αυτόματο μήνυμα συστήματος • Μην απαντήσετε σε αυτή τη διεύθυνση',
     'Movimento de stock registado com sucesso.' => 'Η κίνηση αποθέματος καταγράφηκε με επιτυχία.',
@@ -113,4 +113,10 @@ Protegido globalmente via middleware e verificado via Policy.',
     'Utilizador criado com sucesso.' => 'Ο χρήστης δημιουργήθηκε με επιτυχία.',
     'Utilizador inativado com sucesso.' => 'Ο χρήστης απενεργοποιήθηκε με επιτυχία.',
     'Valor total do stock, total de peças, contagem de peças com stock baixo e lista de alertas.' => 'Συνολική αξία αποθέματος, σύνολο ανταλλακτικών, πλήθος ανταλλακτικών με χαμηλό απόθεμα και λίστα ειδοποιήσεων.',
+    'Aparência atualizada com sucesso.' => 'Η εμφάνιση ενημερώθηκε με επιτυχία.',
+    'Escolha um tema pré-definido — a sua preferência é guardada por utilizador e aplicada nos próximos acessos.' => 'Επιλέξτε ένα προκαθορισμένο θέμα — η προτίμησή σας αποθηκεύεται ανά χρήστη και εφαρμόζεται στις επόμενες προσβάσεις σας.',
+    'Canal de envio:' => 'Κανάλι αποστολής:',
+    'Este é um disparo de validação estrutural enviado para confirmar a correta integração, credenciação e entrega de mensagens na plataforma.' => 'Πρόκειται για δοκιμαστική εκτέλεση δομικής επικύρωσης, που εστάλη για να επιβεβαιώσει τη σωστή ενσωμάτωση, την πιστοποίηση και την παράδοση μηνυμάτων στην πλατφόρμα.',
+    'Ligação Estabelecida com Sucesso' => 'Η σύνδεση δημιουργήθηκε με επιτυχία',
+    'Verificação de Serviço' => 'Έλεγχος Υπηρεσίας',
 ];

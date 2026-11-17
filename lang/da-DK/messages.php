@@ -63,8 +63,7 @@ return [
     'Intervenção concluída e ticket fechado com sucesso.' => 'Indsatsen afsluttet, og sagen lukket succesfuldt.',
     'Intervenção iniciada com sucesso.' => 'Indsatsen blev påbegyndt succesfuldt.',
     'Lista os registos de auditoria do sistema.
-Protegido globalmente via middleware e verificado via Policy.' => 'Lista os registos de auditoria do sistema.
-Protegido globalmente via middleware e verificado via Policy.',
+Protegido globalmente via middleware e verificado via Policy.' => 'Viser systemets revisionslogfiler. Globalt beskyttet via middleware og verificeret via Policy.',
     'Manutenção preventiva agendada com sucesso.' => 'Den forebyggende vedligeholdelse blev planlagt succesfuldt.',
     'Mensagem automática de sistema • Não responda a este endereço' => 'Automatisk systembesked • Svar ikke på denne adresse',
     'Movimento de stock registado com sucesso.' => 'Lagerbevægelsen blev registreret succesfuldt.',
@@ -113,4 +112,10 @@ Protegido globalmente via middleware e verificado via Policy.',
     'Utilizador criado com sucesso.' => 'Brugeren blev oprettet succesfuldt.',
     'Utilizador inativado com sucesso.' => 'Brugeren blev deaktiveret succesfuldt.',
     'Valor total do stock, total de peças, contagem de peças com stock baixo e lista de alertas.' => 'Lagrets totalværdi, totalt antal dele, antal dele med lavt lager og liste over advarsler.',
+    'Aparência atualizada com sucesso.' => 'Udseendet er opdateret.',
+    'Escolha um tema pré-definido — a sua preferência é guardada por utilizador e aplicada nos próximos acessos.' => 'Vælg et foruddefineret tema — din indstilling gemmes pr. bruger og anvendes ved fremtidige logind.',
+    'Canal de envio:' => 'Kanal for afsendelse:',
+    'Este é um disparo de validação estrutural enviado para confirmar a correta integração, credenciação e entrega de mensagens na plataforma.' => 'Dette er en strukturel valideringstest, der er sendt for at bekræfte korrekt integration, autentifikation og levering af beskeder på platformen.',
+    'Ligação Estabelecida com Sucesso' => 'Forbindelse etableret',
+    'Verificação de Serviço' => 'Verificering af tjenesten',
 ];

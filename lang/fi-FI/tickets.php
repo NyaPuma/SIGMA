@@ -109,4 +109,10 @@ return [
     'Tem a certeza que pretende remover esta fotografia?' => 'Haluatko varmasti poistaa tämän valokuvan?',
     'Ticket atribuído' => 'Tiketti määritetty',
     'Ticket atualizado' => 'Tiketti päivitetty',
+    'Relatório limitado aos :total registos mais recentes.' => 'Raportti on rajoitettu :total viimeisimpään tietueeseen.',
+    'Registos:' => 'Tietueet:',
+    'Emitido em:' => 'Laadittu:',
+    'Gerado automaticamente' => 'Automaattisesti luotu',
+    'Análise dos estados operacionais, tempos de resolução e custos.' => 'Analyysi toimintatiloista, käsittelyajoista ja kustannuksista.',
+    'Sem registos de tickets para os parâmetros selecionados.' => 'Ei tiketitietoja valituilla parametreilla.',
 ];

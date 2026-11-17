@@ -5,4 +5,5 @@ return [
     'logout' => 'Выйти',
     'signin' => 'Войти',
     'login_register' => 'Вход / Регистрация',
+    'connection_error' => 'Ошибка соединения',
 ];
