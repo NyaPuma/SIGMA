@@ -63,8 +63,7 @@ return [
     'Intervenção concluída e ticket fechado com sucesso.' => 'Åtgärden slutförd och ärendet stängt framgångsrikt.',
     'Intervenção iniciada com sucesso.' => 'Åtgärden påbörjades framgångsrikt.',
     'Lista os registos de auditoria do sistema.
-Protegido globalmente via middleware e verificado via Policy.' => 'Lista os registos de auditoria do sistema.
-Protegido globalmente via middleware e verificado via Policy.',
+Protegido globalmente via middleware e verificado via Policy.' => 'Listar systemets revisionsloggar. Globalt skyddad via middleware och verifierad via Policy.',
     'Manutenção preventiva agendada com sucesso.' => 'Det förebyggande underhållet schemalades framgångsrikt.',
     'Mensagem automática de sistema • Não responda a este endereço' => 'Automatiskt systemmeddelande • Svara inte på denna adress',
     'Movimento de stock registado com sucesso.' => 'Lagerrörelsen registrerades framgångsrikt.',
@@ -113,4 +112,10 @@ Protegido globalmente via middleware e verificado via Policy.',
     'Utilizador criado com sucesso.' => 'Användaren skapades framgångsrikt.',
     'Utilizador inativado com sucesso.' => 'Användaren inaktiverades framgångsrikt.',
     'Valor total do stock, total de peças, contagem de peças com stock baixo e lista de alertas.' => 'Lagrets totalvärde, totalt antal delar, antal delar med lågt lager och lista över larm.',
+    'Aparência atualizada com sucesso.' => 'Utseendet har uppdaterats.',
+    'Escolha um tema pré-definido — a sua preferência é guardada por utilizador e aplicada nos próximos acessos.' => 'Välj ett fördefinierat tema — din inställning sparas per användare och tillämpas vid framtida inloggningar.',
+    'Canal de envio:' => 'Kanal för utskick:',
+    'Este é um disparo de validação estrutural enviado para confirmar a correta integração, credenciação e entrega de mensagens na plataforma.' => 'Detta är ett strukturellt valideringsavskick som skickats för att bekräfta korrekt integration, autentisering och leverans av meddelanden på plattformen.',
+    'Ligação Estabelecida com Sucesso' => 'Anslutningen har upprättats',
+    'Verificação de Serviço' => 'Verifiering av tjänsten',
 ];

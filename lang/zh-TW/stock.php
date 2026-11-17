@@ -113,4 +113,7 @@ return [
     'consumo' => '消耗',
     'em stock' => '有庫存',
     'peças' => '零件',
+    'Clique para selecionar peça...' => '點擊以選擇零件...',
+    'Consumo de peças e respetivo valor nas intervenções de cada equipamento.' => '各設備每次維修的零件消耗量及其價值。',
+    'Não existem saídas de peças associadas a equipamentos no período selecionado.' => '所選期間內沒有與設備相關的零件出庫記錄。',
 ];

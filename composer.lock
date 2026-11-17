@@ -2439,16 +2439,16 @@
         },
         {
             "name": "laravel/pulse",
-            "version": "v1.8.1",
+            "version": "v1.10.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/laravel/pulse.git",
-                "reference": "0f828f61f92656de7f0d0bc83bacbf6908ed8460"
+                "reference": "98fef652633180732378dec905f695217f005612"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/laravel/pulse/zipball/0f828f61f92656de7f0d0bc83bacbf6908ed8460",
-                "reference": "0f828f61f92656de7f0d0bc83bacbf6908ed8460",
+                "url": "https://api.github.com/repos/laravel/pulse/zipball/98fef652633180732378dec905f695217f005612",
+                "reference": "98fef652633180732378dec905f695217f005612",
                 "shasum": ""
             },
             "require": {
@@ -2524,7 +2524,7 @@
                 "issues": "https://github.com/laravel/pulse/issues",
                 "source": "https://github.com/laravel/pulse"
             },
-            "time": "2026-08-20T10:00:14+00:00"
+            "time": "2026-11-10T16:09:00+00:00"
         },
         {
             "name": "laravel/sanctum",
@@ -2772,7 +2772,7 @@
                 "issues": "https://github.com/laravel/tinker/issues",
                 "source": "https://github.com/laravel/tinker/tree/v3.1.0"
             },
-            "time": "2026-10-16T11:13:33+00:00"
+            "time": "2026-03-17T14:54:13+00:00"
         },
         {
             "name": "league/commonmark",
@@ -9893,16 +9893,16 @@
         },
         {
             "name": "laravel/sail",
-            "version": "v1.69.0",
+            "version": "v1.70.0",
             "source": {
                 "type": "git",
                 "url": "https://github.com/laravel/sail.git",
-                "reference": "3587ac9d68e8f2eaf36bd9fb003a4555861dca9d"
+                "reference": "56c1c94117ef12ee707d50433273228ebee7138e"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/laravel/sail/zipball/3587ac9d68e8f2eaf36bd9fb003a4555861dca9d",
-                "reference": "3587ac9d68e8f2eaf36bd9fb003a4555861dca9d",
+                "url": "https://api.github.com/repos/laravel/sail/zipball/56c1c94117ef12ee707d50433273228ebee7138e",
+                "reference": "56c1c94117ef12ee707d50433273228ebee7138e",
                 "shasum": ""
             },
             "require": {

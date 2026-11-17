@@ -113,4 +113,7 @@ return [
     'consumo' => 'tüketim',
     'em stock' => 'stokta',
     'peças' => 'parçalar',
+    'Clique para selecionar peça...' => 'Parça seçmek için tıklayın...',
+    'Consumo de peças e respetivo valor nas intervenções de cada equipamento.' => 'Her ekipmanın müdahalelerindeki parça tüketimi ve karşılığı olan tutar.',
+    'Não existem saídas de peças associadas a equipamentos no período selecionado.' => 'Seçilen dönemde ekipmanlarla ilişkili parça çıkışı yok.',
 ];

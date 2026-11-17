@@ -109,4 +109,10 @@ return [
     'Tem a certeza que pretende remover esta fotografia?' => 'Weet u zeker dat u deze foto wilt verwijderen?',
     'Ticket atribuído' => 'Ticket toegewezen',
     'Ticket atualizado' => 'Ticket bijgewerkt',
+    'Relatório limitado aos :total registos mais recentes.' => 'Rapport beperkt tot de :total meest recente records.',
+    'Registos:' => 'Registraties:',
+    'Emitido em:' => 'Uitgegeven op:',
+    'Gerado automaticamente' => 'Automatisch gegenereerd',
+    'Análise dos estados operacionais, tempos de resolução e custos.' => 'Analyse van de operationele statussen, oplostijden en kosten.',
+    'Sem registos de tickets para os parâmetros selecionados.' => 'Geen ticketrecords voor de geselecteerde parameters.',
 ];

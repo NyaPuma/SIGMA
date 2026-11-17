@@ -2,11 +2,11 @@
 
 return [
     'min' => 'min.',
-    'out' => 'Out of stock',
-    'low' => 'Low stock',
+    'out' => 'Mbaruar',
+    'low' => 'Stok i ulët',
     'ok' => 'OK',
-    'details' => 'View details',
+    'details' => 'Shiko detajet',
     'edit' => 'Ndrysho',
-    'empty' => 'No parts found with the applied filters',
-    'Limiar a partir do qual um orçamento precisa de aprovação.' => 'Threshold above which a budget needs approval.',
+    'empty' => 'Asnjë pjesë nuk u gjet me filtrat e aplikuar',
+    'Limiar a partir do qual um orçamento precisa de aprovação.' => 'Pragu mbi të cilin një buxhet kërkon miratim.',
 ];

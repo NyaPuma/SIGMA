@@ -570,6 +570,17 @@ return [
             'number_format' => ['decimal' => '.', 'thousand' => ','],
             'currencies' => ['IDR', 'EUR', 'USD'],
         ],
+        'ms-MY' => [
+            'name' => 'Malayo',
+            'native' => 'Bahasa Melayu',
+            'flag' => 'my',
+            'rtl' => false,
+            'default_locale' => 'ms-MY',
+            'continent' => 'asia',
+            'unit_system' => 'metric',
+            'number_format' => ['decimal' => '.', 'thousand' => ','],
+            'currencies' => ['MYR', 'EUR', 'USD'],
+        ],
         'he-IL' => [
             'name' => 'Hebraico',
             'native' => 'עברית',

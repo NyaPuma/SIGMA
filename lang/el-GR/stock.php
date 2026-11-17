@@ -113,4 +113,7 @@ return [
     'consumo' => 'κατανάλωση',
     'em stock' => 'σε απόθεμα',
     'peças' => 'ανταλλακτικά',
+    'Clique para selecionar peça...' => 'Κάντε κλικ για επιλογή ανταλλακτικού...',
+    'Consumo de peças e respetivo valor nas intervenções de cada equipamento.' => 'Κατανάλωση ανταλλακτικών και αντίστοιχη αξία στις παρεμβάσεις κάθε εξοπλισμού.',
+    'Não existem saídas de peças associadas a equipamentos no período selecionado.' => 'Δεν υπάρχουν έξοδοι ανταλλακτικών συσχετισμένες με εξοπλισμό την επιλεγμένη περίοδο.',
 ];

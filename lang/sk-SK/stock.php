@@ -113,4 +113,7 @@ return [
     'consumo' => 'spotreba',
     'em stock' => 'na sklade',
     'peças' => 'diely',
+    'Clique para selecionar peça...' => 'Kliknutím vyberte diel...',
+    'Consumo de peças e respetivo valor nas intervenções de cada equipamento.' => 'Spotreba dielov a ich hodnota pri zásahoch na jednotlivom vybavení.',
+    'Não existem saídas de peças associadas a equipamentos no período selecionado.' => 'Vo zvolenom období nie sú žiadne výdaje dielov viazané na vybavenie.',
 ];

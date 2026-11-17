@@ -113,4 +113,7 @@ return [
     'consumo' => 'споживання',
     'em stock' => 'у запасі',
     'peças' => 'деталі',
+    'Clique para selecionar peça...' => 'Натисніть, щоб вибрати деталь...',
+    'Consumo de peças e respetivo valor nas intervenções de cada equipamento.' => 'Витрата деталей та їхня вартість під час втручань для кожного обладнання.',
+    'Não existem saídas de peças associadas a equipamentos no período selecionado.' => 'У вибраному періоді немає видатків деталей, пов’язаних з обладнанням.',
 ];

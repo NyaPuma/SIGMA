@@ -15,4 +15,8 @@ return [
     'hours' => 'h',
     'day' => 'd',
     'days' => 'd',
+    'load_error' => 'Napaka pri nalaganju analitičnih podatkov.',
+    'export_processing' => 'Ustvarjanje ...',
+    'export_start_error' => 'Izvoza ni bilo mogoče zagnati.',
+    'export_network_error' => 'Omrežna napaka pri zagonu izvoza. Poskusite znova.',
 ];

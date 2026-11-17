@@ -72,4 +72,9 @@ return [
     'Login / Registo' => 'Autentificare / Înregistrare',
     'Terminar sessão' => 'Termină sesiunea',
     'Ver perfil' => 'Vezi profilul',
+    'verifying_credentials' => 'Se verifică credențialele pe server...',
+    'invalid_credentials' => 'Credențiale invalide.',
+    'auth_success' => 'Autentificare reușită! Redirecționare...',
+    'server_communication_failed' => 'Eroare critică de comunicare cu serverul.',
+    'authenticating' => 'Se autentifică...',
 ];

@@ -17,6 +17,7 @@ final class TestMail extends Mailable
 
     public function __construct(
         public readonly string $recipientName,
+        public readonly string $mailerName = '',
     ) {}
 
     public function envelope(): Envelope
@@ -30,7 +31,9 @@ final class TestMail extends Mailable
     {
         return new Content(
             view: 'emails.test-mail',
-            // $recipientName is automatically injected into the view as a public property
+            with: [
+                'mailerName' => $this->mailerName !== '' ? $this->mailerName : (is_string(config('mail.default', 'log')) ? (string) config('mail.default', 'log') : 'log'),
+            ],
         );
     }
 }

@@ -33,4 +33,5 @@ return [
     'Tickets Resolvidos' => 'Ratkaistut tiketit',
     'Urgentes' => 'Kiireelliset',
     'Últimas ações registadas na plataforma para acompanhar rapidamente a atividade operacional.' => 'Alustalle rekisteröidyt viimeisimmät toimenpiteet operatiivisen toiminnan nopeaan seuraamiseen.',
+    'Sem ocorrências em curso' => 'Ei käynnissä olevia tapahtumia',
 ];

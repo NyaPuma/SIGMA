@@ -15,4 +15,8 @@ return [
     'hours' => 'val',
     'day' => 'd',
     'days' => 'd',
+    'load_error' => 'Klaida įkeliant analitikos duomenis.',
+    'export_processing' => 'Generuojama...',
+    'export_start_error' => 'Nepavyko pradėti eksportavimo.',
+    'export_network_error' => 'Tinklo klaida pradedant eksportavimą. Bandykite dar kartą.',
 ];

@@ -3,6 +3,7 @@
 return [
     'profile' => 'Veure Perfil',
     'logout' => 'Tancar sessió',
-    'signin' => 'Sign in',
+    'signin' => 'Iniciar sessió',
     'login_register' => 'Iniciar sessió / Registrar-se',
+    'connection_error' => 'Error de connexió',
 ];

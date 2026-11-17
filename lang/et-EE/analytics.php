@@ -15,4 +15,8 @@ return [
     'hours' => 't',
     'day' => 'p',
     'days' => 'p',
+    'load_error' => 'Analüüsiandmete laadimise viga.',
+    'export_processing' => 'Genereerimine...',
+    'export_start_error' => 'Eksportimise alustamine ebaõnnestus.',
+    'export_network_error' => 'Võrguviga eksportimise alustamisel. Proovi uuesti.',
 ];

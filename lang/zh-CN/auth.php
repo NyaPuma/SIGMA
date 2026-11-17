@@ -72,4 +72,9 @@ return [
     'Login / Registo' => '登录 / 注册',
     'Terminar sessão' => '退出登录',
     'Ver perfil' => '查看个人资料',
+    'verifying_credentials' => '正在服务器上验证凭据...',
+    'invalid_credentials' => '凭据无效。',
+    'auth_success' => '身份验证成功！正在跳转...',
+    'server_communication_failed' => '与服务器的通信出现严重故障。',
+    'authenticating' => '正在验证身份...',
 ];

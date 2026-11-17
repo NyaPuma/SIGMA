@@ -3,6 +3,7 @@
 return [
     'profile' => 'ნახვა პროფილი',
     'logout' => 'გასვლა',
-    'signin' => 'Sign in',
+    'signin' => 'შესვლა',
     'login_register' => 'შესვლა / რეგისტრაცია',
+    'connection_error' => 'კავშირის შეცდომა',
 ];
