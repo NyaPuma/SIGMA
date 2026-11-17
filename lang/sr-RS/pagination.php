@@ -1,8 +1,8 @@
 <?php
 
 return [
-    'previous' => 'Previous',
+    'previous' => 'Prethodna',
     'next' => 'Sledeće',
-    'page' => 'Page',
-    'of' => 'of',
+    'page' => 'Stranica',
+    'of' => 'od',
 ];

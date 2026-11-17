@@ -15,4 +15,8 @@ return [
     'hours' => 'שעות',
     'day' => 'יום',
     'days' => 'ימים',
+    'load_error' => 'שגיאה בטעינת נתוני הניתוח.',
+    'export_processing' => 'יוצר...',
+    'export_start_error' => 'שגיאה בהתחלת הייצוא.',
+    'export_network_error' => 'שגיאת רשת בהתחלת הייצוא. נסה שוב.',
 ];

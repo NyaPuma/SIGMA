@@ -113,4 +113,7 @@ return [
     'consumo' => 'zużycie',
     'em stock' => 'w magazynie',
     'peças' => 'części',
+    'Clique para selecionar peça...' => 'Kliknij, aby wybrać część...',
+    'Consumo de peças e respetivo valor nas intervenções de cada equipamento.' => 'Zużycie części i ich wartość w interwencjach dotyczących poszczególnych urządzeń.',
+    'Não existem saídas de peças associadas a equipamentos no período selecionado.' => 'W wybranym okresie nie ma wydań części powiązanych z urządzeniami.',
 ];

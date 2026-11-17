@@ -109,4 +109,10 @@ return [
     'Tem a certeza que pretende remover esta fotografia?' => 'Er du sikker på, at du vil fjerne dette foto?',
     'Ticket atribuído' => 'Sag tildelt',
     'Ticket atualizado' => 'Sag opdateret',
+    'Relatório limitado aos :total registos mais recentes.' => 'Rapporten er begrænset til de :total seneste registreringer.',
+    'Registos:' => 'Registreringer:',
+    'Emitido em:' => 'Udstedt:',
+    'Gerado automaticamente' => 'Automatisk genereret',
+    'Análise dos estados operacionais, tempos de resolução e custos.' => 'Analyse af driftsstatus, svartider og omkostninger.',
+    'Sem registos de tickets para os parâmetros selecionados.' => 'Ingen sagsregistreringer for de valgte parametre.',
 ];

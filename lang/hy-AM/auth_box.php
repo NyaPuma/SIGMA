@@ -1,8 +1,9 @@
 <?php
 
 return [
-    'profile' => 'View Profile',
-    'logout' => 'Sign Out',
-    'signin' => 'Sign in',
-    'login_register' => 'Login / Register',
+    'profile' => 'Դիտել պրոֆիլը',
+    'logout' => 'Ավարտել նիստը',
+    'signin' => 'Մուտք գործել',
+    'login_register' => 'Մուտք / Գրանցում',
+    'connection_error' => 'Միացման սխալ',
 ];

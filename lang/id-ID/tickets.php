@@ -109,4 +109,10 @@ return [
     'Tem a certeza que pretende remover esta fotografia?' => 'Apakah Anda yakin ingin menghapus foto ini?',
     'Ticket atribuído' => 'Tiket ditugaskan',
     'Ticket atualizado' => 'Tiket diperbarui',
+    'Relatório limitado aos :total registos mais recentes.' => 'Laporan dibatasi pada :total catatan terbaru.',
+    'Registos:' => 'Catatan:',
+    'Emitido em:' => 'Diterbitkan pada:',
+    'Gerado automaticamente' => 'Dibuat secara otomatis',
+    'Análise dos estados operacionais, tempos de resolução e custos.' => 'Analisis status operasional, waktu penyelesaian, dan biaya.',
+    'Sem registos de tickets para os parâmetros selecionados.' => 'Tidak ada catatan tiket untuk parameter yang dipilih.',
 ];

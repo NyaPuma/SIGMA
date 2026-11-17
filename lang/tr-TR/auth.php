@@ -72,4 +72,9 @@ return [
     'Login / Registo' => 'Giriş / Kayıt',
     'Terminar sessão' => 'Oturumu sonlandır',
     'Ver perfil' => 'Profili görüntüle',
+    'verifying_credentials' => 'Kimlik bilgileri sunucuda doğrulanıyor...',
+    'invalid_credentials' => 'Geçersiz kimlik bilgileri.',
+    'auth_success' => 'Kimlik doğrulama başarılı! Yönlendiriliyor...',
+    'server_communication_failed' => 'Sunucuyla iletişim kurulamadı (kritik arıza).',
+    'authenticating' => 'Kimlik doğrulanıyor...',
 ];

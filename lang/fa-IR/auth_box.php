@@ -5,4 +5,5 @@ return [
     'logout' => 'پایان نشست',
     'signin' => 'ورود',
     'login_register' => 'ورود / ثبت نام',
+    'connection_error' => 'خطای اتصال',
 ];

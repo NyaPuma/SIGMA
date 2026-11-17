@@ -113,4 +113,7 @@ return [
     'consumo' => 'потребление',
     'em stock' => 'в запасе',
     'peças' => 'детали',
+    'Clique para selecionar peça...' => 'Нажмите, чтобы выбрать деталь...',
+    'Consumo de peças e respetivo valor nas intervenções de cada equipamento.' => 'Расход деталей и их стоимость при выполнении работ по каждому образцу оборудования.',
+    'Não existem saídas de peças associadas a equipamentos no período selecionado.' => 'В выбранном периоде нет списаний деталей, связанных с оборудованием.',
 ];

@@ -113,4 +113,7 @@ return [
     'consumo' => 'Verbrauch',
     'em stock' => 'auf Lager',
     'peças' => 'Ersatzteile',
+    'Clique para selecionar peça...' => 'Klicken Sie hier, um ein Ersatzteil auszuwählen...',
+    'Consumo de peças e respetivo valor nas intervenções de cada equipamento.' => 'Ersatzteilverbrauch und zugehörige Kosten bei den Einsätzen jedes Geräts.',
+    'Não existem saídas de peças associadas a equipamentos no período selecionado.' => 'Im gewählten Zeitraum sind keine Entnahmen von Ersatzteilen im Zusammenhang mit Geräten erfasst.',
 ];

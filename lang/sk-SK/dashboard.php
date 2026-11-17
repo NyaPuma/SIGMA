@@ -33,4 +33,5 @@ return [
     'Tickets Resolvidos' => 'Vyriešené lístky',
     'Urgentes' => 'Urgentné',
     'Últimas ações registadas na plataforma para acompanhar rapidamente a atividade operacional.' => 'Najnovšie akcie zaznamenané na platforme pre rýchly prehľad prevádzkovej aktivity.',
+    'Sem ocorrências em curso' => 'Žiadne prebiehajúce incidenty',
 ];

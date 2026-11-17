@@ -109,4 +109,10 @@ return [
     'Tem a certeza que pretende remover esta fotografia?' => 'Är du säker på att du vill ta bort detta fotografi?',
     'Ticket atribuído' => 'Ärende tilldelat',
     'Ticket atualizado' => 'Ärende uppdaterat',
+    'Relatório limitado aos :total registos mais recentes.' => 'Rapporten är begränsad till de :total senaste posterna.',
+    'Registos:' => 'Poster:',
+    'Emitido em:' => 'Utfärdat:',
+    'Gerado automaticamente' => 'Automatiskt genererad',
+    'Análise dos estados operacionais, tempos de resolução e custos.' => 'Analys av driftstatus, löstider och kostnader.',
+    'Sem registos de tickets para os parâmetros selecionados.' => 'Inga ärendeposter för de valda parametrarna.',
 ];

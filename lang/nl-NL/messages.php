@@ -63,8 +63,7 @@ return [
     'Intervenção concluída e ticket fechado com sucesso.' => 'Interventie afgerond en ticket succesvol gesloten.',
     'Intervenção iniciada com sucesso.' => 'Interventie succesvol gestart.',
     'Lista os registos de auditoria do sistema.
-Protegido globalmente via middleware e verificado via Policy.' => 'Lista os registos de auditoria do sistema.
-Protegido globalmente via middleware e verificado via Policy.',
+Protegido globalmente via middleware e verificado via Policy.' => 'Geeft de auditrecords van het systeem weer. Globaal beschermd via middleware en gecontroleerd via Policy.',
     'Manutenção preventiva agendada com sucesso.' => 'Preventief onderhoud succesvol gepland.',
     'Mensagem automática de sistema • Não responda a este endereço' => 'Automatisch systeembericht • Reageer niet op dit adres',
     'Movimento de stock registado com sucesso.' => 'Voorraadbeweging succesvol geregistreerd.',
@@ -113,4 +112,10 @@ Protegido globalmente via middleware e verificado via Policy.',
     'Utilizador criado com sucesso.' => 'Gebruiker succesvol aangemaakt.',
     'Utilizador inativado com sucesso.' => 'Gebruiker succesvol gedeactiveerd.',
     'Valor total do stock, total de peças, contagem de peças com stock baixo e lista de alertas.' => 'Totale voorraadwaarde, totaal onderdelen, aantal onderdelen met lage voorraad en lijst van meldingen.',
+    'Aparência atualizada com sucesso.' => 'Weergave succesvol bijgewerkt.',
+    'Escolha um tema pré-definido — a sua preferência é guardada por utilizador e aplicada nos próximos acessos.' => 'Kies een vooraf gedefinieerd thema — uw voorkeur wordt per gebruiker opgeslagen en toegepast bij volgende bezoeken.',
+    'Canal de envio:' => 'Verzendkanaal:',
+    'Este é um disparo de validação estrutural enviado para confirmar a correta integração, credenciação e entrega de mensagens na plataforma.' => 'Dit is een test voor structurele validatie, verzonden om de juiste integratie, authenticatie en bezorging van berichten op het platform te bevestigen.',
+    'Ligação Estabelecida com Sucesso' => 'Verbinding met succes tot stand gebracht',
+    'Verificação de Serviço' => 'Serviceverificatie',
 ];

@@ -109,4 +109,10 @@ return [
     'Tem a certeza que pretende remover esta fotografia?' => 'Sigur doriți să eliminați această fotografie?',
     'Ticket atribuído' => 'Tichet atribuit',
     'Ticket atualizado' => 'Tichet actualizat',
+    'Relatório limitado aos :total registos mais recentes.' => 'Raport limitat la cele mai recente :total înregistrări.',
+    'Registos:' => 'Înregistrări:',
+    'Emitido em:' => 'Emis la:',
+    'Gerado automaticamente' => 'Generat automat',
+    'Análise dos estados operacionais, tempos de resolução e custos.' => 'Analiza stărilor operaționale, a timpilor de rezolvare și a costurilor.',
+    'Sem registos de tickets para os parâmetros selecionados.' => 'Fără înregistrări de tichete pentru parametrii selectați.',
 ];

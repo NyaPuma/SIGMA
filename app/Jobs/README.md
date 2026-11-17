@@ -325,7 +325,7 @@ Files are never written to the `public` disk: `Dockerfile` runs `storage:link`, 
 **`handle()` logic:**
 1. Reads `config('services.custom.notification.mailer')` to get the configured mailer name.
 2. If a custom mailer is configured, uses `Mail::mailer($mailerConfig)`; otherwise falls back to `Mail::mailer()` (default mailer).
-3. Sends `new TestMail($this->name)` to `$this->email`.
+3. Sends `new TestMail($this->name, $mailerConfig ?? config('mail.default'))` to `$this->email`, so the template names the mailer that is really carrying the message.
 4. Logs success with the email and mailer used.
 
 **WHO dispatches it and WHEN:**

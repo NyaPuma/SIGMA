@@ -109,4 +109,10 @@ return [
     'Tem a certeza que pretende remover esta fotografia?' => 'Biztosan el akarja távolítani ezt a fényképet?',
     'Ticket atribuído' => 'Jegy kijelölve',
     'Ticket atualizado' => 'Jegy frissítve',
+    'Relatório limitado aos :total registos mais recentes.' => 'A jelentés a legutóbbi :total rekordra korlátozódik.',
+    'Registos:' => 'Rekordok:',
+    'Emitido em:' => 'Kibocsátva:',
+    'Gerado automaticamente' => 'Automatikusan generálva',
+    'Análise dos estados operacionais, tempos de resolução e custos.' => 'Az üzemi állapotok, a megoldási idők és a költségek elemzése.',
+    'Sem registos de tickets para os parâmetros selecionados.' => 'Nincs jegyrekord a kiválasztott paraméterekkel.',
 ];

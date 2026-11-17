@@ -5,4 +5,5 @@ return [
     'logout' => 'ログアウト',
     'signin' => 'ログイン',
     'login_register' => 'ログイン / 新規登録',
+    'connection_error' => '接続エラー',
 ];

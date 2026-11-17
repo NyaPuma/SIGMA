@@ -72,4 +72,9 @@ return [
     'Login / Registo' => 'تسجيل الدخول / التسجيل',
     'Terminar sessão' => 'إنهاء الجلسة',
     'Ver perfil' => 'عرض الملف الشخصي',
+    'verifying_credentials' => 'جارٍ التحقق من بيانات الاعتماد على الخادم...',
+    'invalid_credentials' => 'بيانات اعتماد غير صالحة.',
+    'auth_success' => 'تم المصادقة بنجاح! جارٍ إعادة التوجيه...',
+    'server_communication_failed' => 'فشل حرج في الاتصال بالخادم.',
+    'authenticating' => 'جارٍ المصادقة...',
 ];

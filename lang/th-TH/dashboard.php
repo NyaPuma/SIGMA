@@ -33,4 +33,5 @@ return [
     'Tickets Resolvidos' => 'ตั๋วที่แก้ไขแล้ว',
     'Urgentes' => 'เร่งด่วน',
     'Últimas ações registadas na plataforma para acompanhar rapidamente a atividade operacional.' => 'การกระทำล่าสุดที่บันทึกไว้บนแพลตฟอร์มเพื่อติดตามกิจกรรมการดำเนินงานอย่างรวดเร็ว',
+    'Sem ocorrências em curso' => 'ไม่มีเหตุการณ์ที่กำลังดำเนินการ',
 ];

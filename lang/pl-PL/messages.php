@@ -63,8 +63,7 @@ return [
     'Intervenção concluída e ticket fechado com sucesso.' => 'Interwencja zakończona i ticket zamknięty pomyślnie.',
     'Intervenção iniciada com sucesso.' => 'Rozpoczęto interwencję pomyślnie.',
     'Lista os registos de auditoria do sistema.
-Protegido globalmente via middleware e verificado via Policy.' => 'Lista os registos de auditoria do sistema.
-Protegido globalmente via middleware e verificado via Policy.',
+Protegido globalmente via middleware e verificado via Policy.' => 'Wyświetla rejestry audytu systemu. Globalnie chronione za pośrednictwem middleware i weryfikowane za pośrednictwem Policy.',
     'Manutenção preventiva agendada com sucesso.' => 'Zaplanowano konserwację zapobiegawczą pomyślnie.',
     'Mensagem automática de sistema • Não responda a este endereço' => 'Automatyczna wiadomość systemowa • Nie odpowiadaj na ten adres',
     'Movimento de stock registado com sucesso.' => 'Ruch magazynowy zarejestrowany pomyślnie.',
@@ -113,4 +112,10 @@ Protegido globalmente via middleware e verificado via Policy.',
     'Utilizador criado com sucesso.' => 'Utworzono użytkownika pomyślnie.',
     'Utilizador inativado com sucesso.' => 'Dezaktywowano użytkownika pomyślnie.',
     'Valor total do stock, total de peças, contagem de peças com stock baixo e lista de alertas.' => 'Całkowita wartość zapasów, łączna liczba części, liczba części z niskim stanem zapasów i lista alertów.',
+    'Aparência atualizada com sucesso.' => 'Wygląd został pomyślnie zaktualizowany.',
+    'Escolha um tema pré-definido — a sua preferência é guardada por utilizador e aplicada nos próximos acessos.' => 'Wybierz gotowy motyw — Twoje preferencje są zapisywane osobno dla każdego użytkownika i stosowane przy następnych logowaniach.',
+    'Canal de envio:' => 'Kanał wysyłki:',
+    'Este é um disparo de validação estrutural enviado para confirmar a correta integração, credenciação e entrega de mensagens na plataforma.' => 'Jest to testowa wysyłka walidacji strukturalnej, przesłana w celu potwierdzenia prawidłowej integracji, uwierzytelniania i dostarczania wiadomości na platformie.',
+    'Ligação Estabelecida com Sucesso' => 'Połączenie nawiązane pomyślnie',
+    'Verificação de Serviço' => 'Weryfikacja usługi',
 ];

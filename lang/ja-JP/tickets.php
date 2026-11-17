@@ -109,4 +109,10 @@ return [
     'Tem a certeza que pretende remover esta fotografia?' => 'この写真を削除してもよろしいですか？',
     'Ticket atribuído' => 'チケットが割り当てられました',
     'Ticket atualizado' => 'チケットが更新されました',
+    'Relatório limitado aos :total registos mais recentes.' => 'レポートは直近の :total 件の記録に限定されています。',
+    'Registos:' => '記録：',
+    'Emitido em:' => '発行日：',
+    'Gerado automaticamente' => '自動生成',
+    'Análise dos estados operacionais, tempos de resolução e custos.' => '運用ステータス、解決時間、コストの分析。',
+    'Sem registos de tickets para os parâmetros selecionados.' => '選択した条件のチケット記録はありません。',
 ];
